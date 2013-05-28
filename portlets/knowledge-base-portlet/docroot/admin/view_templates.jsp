@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -89,7 +89,7 @@
 				<aui:button-row>
 					<c:if test="<%= AdminPermission.contains(permissionChecker, scopeGroupId, ActionKeys.ADD_KB_TEMPLATE) %>">
 						<liferay-portlet:renderURL var="addKBTemplateURL">
-							<portlet:param name="mvcPath" value='<%= jspPath + "edit_template.jsp" %>' />
+							<portlet:param name="mvcPath" value='<%= templatePath + "edit_template.jsp" %>' />
 							<portlet:param name="redirect" value="<%= redirect %>" />
 						</liferay-portlet:renderURL>
 

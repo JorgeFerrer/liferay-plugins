@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -15,10 +15,9 @@
 package com.liferay.calendar.workflow;
 
 import com.liferay.calendar.model.CalendarBooking;
-import com.liferay.calendar.model.CalendarEvent;
 import com.liferay.calendar.model.CalendarResource;
 import com.liferay.calendar.service.CalendarBookingLocalServiceUtil;
-import com.liferay.calendar.service.permission.CalendarResourcePermission;
+import com.liferay.calendar.service.permission.CalendarPermission;
 import com.liferay.calendar.util.ActionKeys;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -32,6 +31,7 @@ import java.util.Map;
 
 /**
  * @author Michael C. Han
+ * @author Eduardo Lundgren
  */
 public class CalendarBookingApprovalWorkflowImpl
 	implements CalendarBookingApprovalWorkflow {
@@ -50,9 +50,9 @@ public class CalendarBookingApprovalWorkflowImpl
 
 			List<String> transitions = new ArrayList<String>();
 
-			if (CalendarResourcePermission.contains(
-					permissionChecker, calendarBooking.getCalendarResourceId(),
-					ActionKeys.UPDATE_BOOKINGS)) {
+			if (CalendarPermission.contains(
+					permissionChecker, calendarBooking.getCalendarId(),
+					ActionKeys.MANAGE_BOOKINGS)) {
 
 				if (calendarBooking.getStatus() !=
 						CalendarBookingWorkflowConstants.STATUS_APPROVED) {
@@ -119,9 +119,7 @@ public class CalendarBookingApprovalWorkflowImpl
 			return false;
 		}
 
-		CalendarEvent calendarEvent = calendarBooking.getCalendarEvent();
-
-		if (userId != calendarEvent.getUserId()) {
+		if (userId != calendarBooking.getUserId()) {
 			return false;
 		}
 

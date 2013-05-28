@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -19,7 +19,7 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.scripting.ScriptingUtil;
 import com.liferay.portal.workflow.kaleo.model.KaleoCondition;
 import com.liferay.portal.workflow.kaleo.runtime.ExecutionContext;
-import com.liferay.portal.workflow.kaleo.runtime.util.ScriptingContextBuilder;
+import com.liferay.portal.workflow.kaleo.runtime.util.ScriptingContextBuilderUtil;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -31,15 +31,17 @@ import java.util.Set;
 public class ScriptingConditionEvaluator implements ConditionEvaluator {
 
 	public String evaluate(
-			KaleoCondition kaleoCondition, ExecutionContext executionContext)
+			KaleoCondition kaleoCondition, ExecutionContext executionContext,
+			ClassLoader... classLoaders)
 		throws PortalException, SystemException {
 
 		Map<String, Object> inputObjects =
-			ScriptingContextBuilder.buildScriptingContext(executionContext);
+			ScriptingContextBuilderUtil.buildScriptingContext(executionContext);
 
 		Map<String, Object> results = ScriptingUtil.eval(
 			null, inputObjects, _outputNames,
-			kaleoCondition.getScriptLanguage(), kaleoCondition.getScript());
+			kaleoCondition.getScriptLanguage(), kaleoCondition.getScript(),
+			classLoaders);
 
 		String returnValue = (String)results.get(_RETURN_VALUE);
 

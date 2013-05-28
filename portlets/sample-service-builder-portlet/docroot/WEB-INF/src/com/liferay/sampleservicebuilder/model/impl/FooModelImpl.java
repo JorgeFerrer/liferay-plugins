@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -99,6 +99,7 @@ public class FooModelImpl extends BaseModelImpl<Foo> implements FooModel {
 	public static long FIELD2_COLUMN_BITMASK = 2L;
 	public static long GROUPID_COLUMN_BITMASK = 4L;
 	public static long UUID_COLUMN_BITMASK = 8L;
+	public static long FIELD1_COLUMN_BITMASK = 16L;
 
 	/**
 	 * Converts the soap model instance into a normal model instance.
@@ -107,6 +108,10 @@ public class FooModelImpl extends BaseModelImpl<Foo> implements FooModel {
 	 * @return the normal model instance
 	 */
 	public static Foo toModel(FooSoap soapModel) {
+		if (soapModel == null) {
+			return null;
+		}
+
 		Foo model = new FooImpl();
 
 		model.setUuid(soapModel.getUuid());
@@ -133,6 +138,10 @@ public class FooModelImpl extends BaseModelImpl<Foo> implements FooModel {
 	 * @return the normal model instances
 	 */
 	public static List<Foo> toModels(FooSoap[] soapModels) {
+		if (soapModels == null) {
+			return null;
+		}
+
 		List<Foo> models = new ArrayList<Foo>(soapModels.length);
 
 		for (FooSoap soapModel : soapModels) {
@@ -148,26 +157,32 @@ public class FooModelImpl extends BaseModelImpl<Foo> implements FooModel {
 	public FooModelImpl() {
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _fooId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setFooId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
-		return new Long(_fooId);
+		return _fooId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return Foo.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return Foo.class.getName();
 	}
@@ -274,6 +289,7 @@ public class FooModelImpl extends BaseModelImpl<Foo> implements FooModel {
 		}
 	}
 
+	@Override
 	@JSON
 	public String getUuid() {
 		if (_uuid == null) {
@@ -284,6 +300,7 @@ public class FooModelImpl extends BaseModelImpl<Foo> implements FooModel {
 		}
 	}
 
+	@Override
 	public void setUuid(String uuid) {
 		if (_originalUuid == null) {
 			_originalUuid = _uuid;
@@ -296,20 +313,24 @@ public class FooModelImpl extends BaseModelImpl<Foo> implements FooModel {
 		return GetterUtil.getString(_originalUuid);
 	}
 
+	@Override
 	@JSON
 	public long getFooId() {
 		return _fooId;
 	}
 
+	@Override
 	public void setFooId(long fooId) {
 		_fooId = fooId;
 	}
 
+	@Override
 	@JSON
 	public long getGroupId() {
 		return _groupId;
 	}
 
+	@Override
 	public void setGroupId(long groupId) {
 		_columnBitmask |= GROUPID_COLUMN_BITMASK;
 
@@ -326,11 +347,13 @@ public class FooModelImpl extends BaseModelImpl<Foo> implements FooModel {
 		return _originalGroupId;
 	}
 
+	@Override
 	@JSON
 	public long getCompanyId() {
 		return _companyId;
 	}
 
+	@Override
 	public void setCompanyId(long companyId) {
 		_columnBitmask |= COMPANYID_COLUMN_BITMASK;
 
@@ -347,23 +370,28 @@ public class FooModelImpl extends BaseModelImpl<Foo> implements FooModel {
 		return _originalCompanyId;
 	}
 
+	@Override
 	@JSON
 	public long getUserId() {
 		return _userId;
 	}
 
+	@Override
 	public void setUserId(long userId) {
 		_userId = userId;
 	}
 
+	@Override
 	public String getUserUuid() throws SystemException {
 		return PortalUtil.getUserValue(getUserId(), "uuid", _userUuid);
 	}
 
+	@Override
 	public void setUserUuid(String userUuid) {
 		_userUuid = userUuid;
 	}
 
+	@Override
 	@JSON
 	public String getUserName() {
 		if (_userName == null) {
@@ -374,28 +402,34 @@ public class FooModelImpl extends BaseModelImpl<Foo> implements FooModel {
 		}
 	}
 
+	@Override
 	public void setUserName(String userName) {
 		_userName = userName;
 	}
 
+	@Override
 	@JSON
 	public Date getCreateDate() {
 		return _createDate;
 	}
 
+	@Override
 	public void setCreateDate(Date createDate) {
 		_createDate = createDate;
 	}
 
+	@Override
 	@JSON
 	public Date getModifiedDate() {
 		return _modifiedDate;
 	}
 
+	@Override
 	public void setModifiedDate(Date modifiedDate) {
 		_modifiedDate = modifiedDate;
 	}
 
+	@Override
 	@JSON
 	public String getField1() {
 		if (_field1 == null) {
@@ -406,21 +440,25 @@ public class FooModelImpl extends BaseModelImpl<Foo> implements FooModel {
 		}
 	}
 
+	@Override
 	public void setField1(String field1) {
 		_columnBitmask = -1L;
 
 		_field1 = field1;
 	}
 
+	@Override
 	@JSON
 	public boolean getField2() {
 		return _field2;
 	}
 
+	@Override
 	public boolean isField2() {
 		return _field2;
 	}
 
+	@Override
 	public void setField2(boolean field2) {
 		_columnBitmask |= FIELD2_COLUMN_BITMASK;
 
@@ -437,24 +475,29 @@ public class FooModelImpl extends BaseModelImpl<Foo> implements FooModel {
 		return _originalField2;
 	}
 
+	@Override
 	@JSON
 	public int getField3() {
 		return _field3;
 	}
 
+	@Override
 	public void setField3(int field3) {
 		_field3 = field3;
 	}
 
+	@Override
 	@JSON
 	public Date getField4() {
 		return _field4;
 	}
 
+	@Override
 	public void setField4(Date field4) {
 		_field4 = field4;
 	}
 
+	@Override
 	@JSON
 	public String getField5() {
 		if (_field5 == null) {
@@ -465,6 +508,7 @@ public class FooModelImpl extends BaseModelImpl<Foo> implements FooModel {
 		}
 	}
 
+	@Override
 	public void setField5(String field5) {
 		_field5 = field5;
 	}
@@ -474,29 +518,26 @@ public class FooModelImpl extends BaseModelImpl<Foo> implements FooModel {
 	}
 
 	@Override
-	public Foo toEscapedModel() {
-		if (_escapedModelProxy == null) {
-			_escapedModelProxy = (Foo)ProxyUtil.newProxyInstance(_classLoader,
-					_escapedModelProxyInterfaces,
-					new AutoEscapeBeanHandler(this));
-		}
-
-		return _escapedModelProxy;
-	}
-
-	@Override
 	public ExpandoBridge getExpandoBridge() {
-		if (_expandoBridge == null) {
-			_expandoBridge = ExpandoBridgeFactoryUtil.getExpandoBridge(getCompanyId(),
-					Foo.class.getName(), getPrimaryKey());
-		}
-
-		return _expandoBridge;
+		return ExpandoBridgeFactoryUtil.getExpandoBridge(getCompanyId(),
+			Foo.class.getName(), getPrimaryKey());
 	}
 
 	@Override
 	public void setExpandoBridgeAttributes(ServiceContext serviceContext) {
-		getExpandoBridge().setAttributes(serviceContext);
+		ExpandoBridge expandoBridge = getExpandoBridge();
+
+		expandoBridge.setAttributes(serviceContext);
+	}
+
+	@Override
+	public Foo toEscapedModel() {
+		if (_escapedModel == null) {
+			_escapedModel = (Foo)ProxyUtil.newProxyInstance(_classLoader,
+					_escapedModelInterfaces, new AutoEscapeBeanHandler(this));
+		}
+
+		return _escapedModel;
 	}
 
 	@Override
@@ -522,6 +563,7 @@ public class FooModelImpl extends BaseModelImpl<Foo> implements FooModel {
 		return fooImpl;
 	}
 
+	@Override
 	public int compareTo(Foo foo) {
 		int value = 0;
 
@@ -536,18 +578,15 @@ public class FooModelImpl extends BaseModelImpl<Foo> implements FooModel {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof Foo)) {
 			return false;
 		}
 
-		Foo foo = null;
-
-		try {
-			foo = (Foo)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		Foo foo = (Foo)obj;
 
 		long primaryKey = foo.getPrimaryKey();
 
@@ -698,6 +737,7 @@ public class FooModelImpl extends BaseModelImpl<Foo> implements FooModel {
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
 		StringBundler sb = new StringBundler(43);
 
@@ -764,9 +804,7 @@ public class FooModelImpl extends BaseModelImpl<Foo> implements FooModel {
 	}
 
 	private static ClassLoader _classLoader = Foo.class.getClassLoader();
-	private static Class<?>[] _escapedModelProxyInterfaces = new Class[] {
-			Foo.class
-		};
+	private static Class<?>[] _escapedModelInterfaces = new Class[] { Foo.class };
 	private String _uuid;
 	private String _originalUuid;
 	private long _fooId;
@@ -788,7 +826,6 @@ public class FooModelImpl extends BaseModelImpl<Foo> implements FooModel {
 	private int _field3;
 	private Date _field4;
 	private String _field5;
-	private transient ExpandoBridge _expandoBridge;
 	private long _columnBitmask;
-	private Foo _escapedModelProxy;
+	private Foo _escapedModel;
 }

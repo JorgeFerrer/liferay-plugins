@@ -9,6 +9,10 @@ AUI.add(
 
 		var ParseContent = A.Plugin.ParseContent;
 
+		var CSS_SELECTED_CHECKBOX = 'input[type="checkbox"]:not(:disabled):checked';
+
+		var CSS_NOT_SELECTED_CHECKBOX = 'input[type="checkbox"]:not(:disabled):not(:checked)';
+
 		var STR_UNDEFINED = 'undefined';
 
 		var TPL_BLOCK_IMG =
@@ -112,7 +116,7 @@ AUI.add(
 				'</div>' +
 				'<div class="lfr-contact-info">' +
 					'<div class="lfr-contact-name">' +
-						'<a>{lastName} {firstName}</a>' +
+						'<a>{lastName}, {firstName}</a>' +
 					'</div>' +
 					'<div class="lfr-contact-extra">' +
 						'{emailAddress}' +
@@ -136,6 +140,8 @@ AUI.add(
 					initializer: function(config) {
 						var instance = this;
 
+						instance._config = config;
+
 						instance._namespace = config.namespace;
 
 						instance._contactCenterToolbar = instance.byId('contactCenterToolbarButtons');
@@ -151,8 +157,15 @@ AUI.add(
 						instance._exportButton = instance.byId('exportButton');
 						instance._followButton = instance.byId('followButton');
 						instance._removeConnectionButton = instance.byId('removeConnectionButton');
+						instance._sendMessageButton = instance.byId('sendMessageButton');
 						instance._unblockButton = instance.byId('unblockButton');
 						instance._unfollowButton = instance.byId('unfollowButton');
+
+						instance._contactsCheckBox = A.one('.contacts-result');
+
+						instance._checkAll = instance.byId('checkAll');
+
+						instance._checkAll.on('click', instance._onCheckAll, instance);
 
 						instance._buttonAddConnectionUserIds = [];
 						instance._buttonBlockUserIds = [];
@@ -197,6 +210,21 @@ AUI.add(
 						instance._updateToolbarButtonsAdd(data);
 
 						instance._messageContainer.empty();
+
+						instance._checkAll.set('checked', (instance._contactsCheckBox.all(CSS_NOT_SELECTED_CHECKBOX).size() <= 0));
+					},
+
+					addContactResults: function(data) {
+						var instance = this;
+
+						var contacts = data.contacts;
+
+						Array.map(
+							contacts,
+							function(contact) {
+								instance.addContactResult(contact);
+							}
+						);
 					},
 
 					closePopup: function() {
@@ -226,7 +254,20 @@ AUI.add(
 							}
 
 							instance._messageContainer.empty();
+
+							instance._checkAll.set('checked', false);
 						}
+					},
+
+					deleteContactResults: function(userIds) {
+						var instance = this;
+
+						Array.map(
+							userIds,
+							function(userId) {
+								instance.deleteContactResult(userId);
+							}
+						);
 					},
 
 					renderContent: function(data, clear) {
@@ -293,7 +334,7 @@ AUI.add(
 							else {
 								instance._clearContactResult();
 
-								A.Array.map(
+								Array.map(
 									contacts,
 									function(contact) {
 										instance.addContactResult(contact);
@@ -388,9 +429,15 @@ AUI.add(
 
 						A.all('.contacts-portlet .aui-toolbar-content button').hide();
 
+						if (instance._sendMessageButton) {
+							instance._sendMessageButton.show();
+						}
+
 						instance._contactCenterToolbar.hide();
 
 						instance._numSelectedContacts = 0;
+
+						instance._checkAll.set('checked', false);
 					},
 
 					_createDataSource: function(url) {
@@ -551,6 +598,51 @@ AUI.add(
 						}
 					},
 
+					_onCheckAll: function(event) {
+						var instance = this;
+
+						var config = instance._config;
+
+						var checkBox = event.target;
+
+						if (checkBox.get('checked')) {
+							var contacts = instance._contactsCheckBox.all(CSS_NOT_SELECTED_CHECKBOX);
+
+							if (contacts.size() > 0) {
+								contacts.set('checked', true);
+
+								var userIds = contacts.val();
+
+								A.io.request(
+									config.getSelectedContactsURL,
+									{
+										after: {
+											failure: function(event, id, obj) {
+												instance.showMessage(false);
+											},
+											success: function(event, id, obj) {
+												instance.addContactResults(this.get('responseData'));
+											}
+										},
+										data: {
+											userIds: userIds.join()
+										},
+										dataType: 'json'
+									}
+								);
+							}
+						}
+						else {
+							var contacts = instance._contactsCheckBox.all(CSS_SELECTED_CHECKBOX);
+
+							if (contacts.size() > 0) {
+								contacts.set('checked', false);
+
+								instance.deleteContactResults(contacts.val());
+							}
+						}
+					},
+
 					_renderContact: function(data) {
 						var instance = this;
 
@@ -658,7 +750,7 @@ AUI.add(
 							}
 
 							buffer.push(
-								A.Array.map(
+								Array.map(
 									results,
 									function(result) {
 										var displayLastNameAnchor = false;
@@ -668,7 +760,7 @@ AUI.add(
 										var name;
 
 										if (result.portalUser) {
-										 	name = result.lastName;
+											name = result.lastName;
 										}
 										else {
 											name = result.fullName;
@@ -694,7 +786,7 @@ AUI.add(
 													checked: ((Array.indexOf(selectedUsersIds, result.userId) != -1) ? 'checked="true"' : ''),
 													disabled: (themeDisplay.getUserId() == result.userId) ? 'disabled="true"' : '',
 													emailAddress: (result.emailAddress ? result.emailAddress : ''),
-													lastNameAnchor: (displayLastNameAnchor ? '<div class="lastNameAnchor"><a>' + lastNameAnchor + '</a></div>' : ''),
+													lastNameAnchor: (displayLastNameAnchor ? '<div class="last-name-anchor"><a>' + lastNameAnchor + '</a></div>' : ''),
 													firstName: (result.firstName ? result.firstName : ''),
 													fullName: (result.fullName ? result.fullName : ''),
 													lastName: (result.lastName ? result.lastName + ',' : ''),
@@ -710,7 +802,7 @@ AUI.add(
 												{
 													entryId: result.entryId,
 													emailAddress: (result.emailAddress ? result.emailAddress : ''),
-													lastNameAnchor: (displayLastNameAnchor ? '<div class="lastNameAnchor"><a>' + lastNameAnchor + '</a></div>' : ''),
+													lastNameAnchor: (displayLastNameAnchor ? '<div class="last-name-anchor"><a>' + lastNameAnchor + '</a></div>' : ''),
 													fullName: (result.fullName ? result.fullName : ''),
 													portraitURL: (result.portraitURL ? result.portraitURL : ''),
 													viewSummaryURL: (result.viewSummaryURL ? result.viewSummaryURL : '')
@@ -763,6 +855,10 @@ AUI.add(
 						var buffer = instance._renderResult(data, true, ' ');
 
 						event.currentTarget._listNode.html(buffer.join(''));
+
+						instance._contactsCheckBox = A.one('.contacts-result');
+
+						instance._checkAll.set('checked', (instance._contactsCheckBox.all(CSS_NOT_SELECTED_CHECKBOX).size() <= 0));
 					},
 
 					_updateToolbarButtonsAdd: function(data) {
@@ -956,8 +1052,12 @@ AUI.add(
 						var unfollowButton = instance.byId('unfollowButton');
 
 						if (user.block) {
+							addConnectionButton.hide();
 							blockButton.hide();
+							followButton.hide();
+							removeConnectionButton.hide();
 							unblockButton.show();
+							unfollowButton.hide();
 						}
 						else {
 							blockButton.show();

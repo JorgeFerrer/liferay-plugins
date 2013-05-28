@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -23,19 +23,21 @@
 
 <%@ page import="com.liferay.chat.model.Status" %><%@
 page import="com.liferay.chat.service.StatusLocalServiceUtil" %><%@
+page import="com.liferay.chat.util.BuddyFinderUtil" %><%@
 page import="com.liferay.chat.util.ChatExtensionsUtil" %><%@
-page import="com.liferay.chat.util.ChatUtil" %><%@
+page import="com.liferay.portal.kernel.json.JSONFactoryUtil" %><%@
+page import="com.liferay.portal.kernel.json.JSONObject" %><%@
 page import="com.liferay.portal.kernel.language.LanguageUtil" %><%@
 page import="com.liferay.portal.kernel.servlet.BrowserSnifferUtil" %><%@
-page import="com.liferay.portal.kernel.servlet.HttpHeaders" %><%@
 page import="com.liferay.portal.kernel.servlet.ServletContextPool" %><%@
-page import="com.liferay.portal.kernel.util.ContentTypes" %><%@
 page import="com.liferay.portal.kernel.util.HtmlUtil" %><%@
+page import="com.liferay.portal.kernel.util.StringPool" %><%@
 page import="com.liferay.portal.kernel.util.Validator" %><%@
 page import="com.liferay.portal.model.ContactConstants" %><%@
 page import="com.liferay.portal.model.Portlet" %><%@
 page import="com.liferay.portal.service.PortletLocalServiceUtil" %><%@
-page import="com.liferay.portal.util.PortalUtil" %>
+page import="com.liferay.portal.util.PortalUtil" %><%@
+page import="com.liferay.portal.webserver.WebServerServletTokenUtil" %>
 
 <%@ page import="java.util.List" %><%@
 page import="java.util.Map" %><%@

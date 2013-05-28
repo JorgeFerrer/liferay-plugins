@@ -1,22 +1,27 @@
 <%--
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2.1 of the License, or (at your option)
- * any later version.
+ * This file is part of Liferay Social Office. Liferay Social Office is free
+ * software: you can redistribute it and/or modify it under the terms of the GNU
+ * Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
+ * Liferay Social Office is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * Liferay Social Office. If not, see http://www.gnu.org/licenses/agpl-3.0.html.
  */
 --%>
 
 <%@ include file="/init.jsp" %>
 
 <%
+String redirect = ParamUtil.getString(request, "redirect");
+
 long mbThreadId = ParamUtil.getLong(request, "mbThreadId");
 
 String subject = StringPool.BLANK;
@@ -33,19 +38,37 @@ if (mbThreadId != 0) {
 
 	to = ListUtil.toString(userThreads, "userId", ", ");
 }
+
+long[] userIds = StringUtil.split(ParamUtil.getString(request, "userIds"), 0L);
+
+StringBundler sb = new StringBundler(userIds.length * 6);
+
+for (long userId : userIds) {
+	try {
+		User user2 = UserLocalServiceUtil.getUser(userId);
+
+		sb.append(user2.getFullName());
+		sb.append(CharPool.SPACE);
+		sb.append(CharPool.LESS_THAN);
+		sb.append(user2.getScreenName());
+		sb.append(CharPool.GREATER_THAN);
+		sb.append(StringPool.COMMA_AND_SPACE);
+	}
+	catch (Exception e) {
+	}
+}
+
+to = sb.toString() + to;
 %>
 
 <div id="<portlet:namespace />messageContainer"></div>
 
-<portlet:renderURL var="backURL" windowState="<%= WindowState.NORMAL.toString() %>" />
-
 <liferay-portlet:actionURL name="sendMessage" var="sendMessageURL">
-	<portlet:param name="redirect" value="<%= PortalUtil.getLayoutURL(themeDisplay) %>" />
+	<portlet:param name="redirect" value="<%= redirect %>" />
 </liferay-portlet:actionURL>
 
 <aui:layout cssClass="message-body-container">
 	<aui:form action="<%= sendMessageURL %>" enctype="multipart/form-data" method="post" name="fm" onSubmit="event.preventDefault();">
-		<aui:input name="redirect" type="hidden" value="<%= backURL %>" />
 		<aui:input name="userId" type="hidden" value="<%= user.getUserId() %>" />
 		<aui:input name="mbThreadId" type="hidden" value="<%= mbThreadId %>" />
 
@@ -89,7 +112,7 @@ if (mbThreadId != 0) {
 	}
 </aui:script>
 
-<aui:script use="aui-base,aui-io-request,aui-loading-mask,autocomplete">
+<aui:script use="aui-button-item,aui-io-request,aui-loading-mask,autocomplete,json-parse,io-upload-iframe">
 	var form = A.one('#<portlet:namespace />fm');
 
 	form.on(
@@ -118,24 +141,24 @@ if (mbThreadId != 0) {
 			var loadingMask = new A.LoadingMask(
 				{
 					'strings.loading': '<%= UnicodeLanguageUtil.get(pageContext, "sending-message") %>',
-					target: A.one('.private-messaging-portlet .aui-dialog-bd')
+					target: A.one('.private-messaging-portlet .message-body-container')
 				}
 			);
 
 			loadingMask.show();
 
 			A.io.request(
-				'<liferay-portlet:resourceURL id="checkRecipients"><liferay-portlet:param name="redirect" value="<%= PortalUtil.getLayoutURL(themeDisplay) %>" /></liferay-portlet:resourceURL>',
+				'<liferay-portlet:resourceURL id="checkData"><liferay-portlet:param name="redirect" value="<%= PortalUtil.getLayoutURL(themeDisplay) %>" /></liferay-portlet:resourceURL>',
 				{
 					after: {
 						success: function(event, id, obj) {
-							var response = this.get('responseData');
+							var responseData = this.get('responseData');
 
-							if (response.success) {
+							if (responseData.success) {
 								submitForm(document.<portlet:namespace />fm);
 							}
 							else {
-								<portlet:namespace />showMessage('<span class="portlet-msg-error"><%= UnicodeLanguageUtil.get(pageContext, "the-following-users-were-not-found") %>&nbsp;<em>' + response.message + '</em></span>');
+								<portlet:namespace />showMessage('<span class="portlet-msg-error">' + responseData.message + '</span>');
 
 								loadingMask.hide();
 							}
@@ -146,10 +169,10 @@ if (mbThreadId != 0) {
 							loadingMask.hide();
 						}
 					},
-					data: {
-						recipients: recipients
-					},
-					dataType: 'json'
+					dataType: 'json',
+					form: {
+						id: form.getDOM()
+					}
 				}
 			);
 		}

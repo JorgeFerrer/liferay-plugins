@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -16,6 +16,7 @@ package com.liferay.portal.workflow.kaleo.runtime.node;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.model.Organization;
 import com.liferay.portal.model.Role;
@@ -42,6 +43,7 @@ import com.liferay.portal.workflow.kaleo.runtime.assignment.TaskAssignmentSelect
 import com.liferay.portal.workflow.kaleo.runtime.calendar.DueDateCalculator;
 import com.liferay.portal.workflow.kaleo.runtime.graph.PathElement;
 import com.liferay.portal.workflow.kaleo.runtime.notification.NotificationUtil;
+import com.liferay.portal.workflow.kaleo.runtime.util.ClassLoaderUtil;
 
 import java.io.Serializable;
 
@@ -100,7 +102,8 @@ public class TaskNodeExecutor extends BaseNodeExecutor {
 			ServiceContext serviceContext,
 			KaleoInstanceToken kaleoInstanceToken, KaleoTask kaleoTask,
 			Date dueDate)
-		throws SystemException, PortalException {
+		throws PortalException, SystemException {
+
 		Collection<KaleoTaskAssignment> configuredKaleoTaskAssignments =
 			kaleoTask.getKaleoTaskAssignments();
 
@@ -110,9 +113,17 @@ public class TaskNodeExecutor extends BaseNodeExecutor {
 		for (KaleoTaskAssignment configuredKaleoTaskAssignment :
 				configuredKaleoTaskAssignments) {
 
+			String[] assigneeScriptRequiredContexts = StringUtil.split(
+				configuredKaleoTaskAssignment.
+					getAssigneeScriptRequiredContexts());
+
+			ClassLoader[] classLoaders = ClassLoaderUtil.getClassLoaders(
+				assigneeScriptRequiredContexts);
+
 			Collection<KaleoTaskAssignment> calculatedKaleoTaskAssignments =
 				_taskAssignmentSelector.calculateTaskAssignments(
-					configuredKaleoTaskAssignment, executionContext);
+					configuredKaleoTaskAssignment, executionContext,
+					classLoaders);
 
 			kaleoTaskAssignments.addAll(calculatedKaleoTaskAssignments);
 		}
@@ -132,7 +143,7 @@ public class TaskNodeExecutor extends BaseNodeExecutor {
 	}
 
 	@Override
-	protected void doEnter(
+	protected boolean doEnter(
 			KaleoNode currentKaleoNode, ExecutionContext executionContext)
 		throws PortalException, SystemException {
 
@@ -165,6 +176,8 @@ public class TaskNodeExecutor extends BaseNodeExecutor {
 		kaleoLogLocalService.addTaskAssignmentKaleoLog(
 			null, kaleoTaskInstanceToken, "Assigned initial task.",
 			workflowContext, serviceContext);
+
+		return true;
 	}
 
 	@Override
@@ -196,10 +209,6 @@ public class TaskNodeExecutor extends BaseNodeExecutor {
 			List<PathElement> remainingPathElements)
 		throws PortalException, SystemException {
 
-		Map<String, Serializable> workflowContext =
-			executionContext.getWorkflowContext();
-		ServiceContext serviceContext = executionContext.getServiceContext();
-
 		String transitionName = executionContext.getTransitionName();
 
 		KaleoTransition kaleoTransition = null;
@@ -213,8 +222,9 @@ public class TaskNodeExecutor extends BaseNodeExecutor {
 		}
 
 		ExecutionContext newExecutionContext = new ExecutionContext(
-			executionContext.getKaleoInstanceToken(), workflowContext,
-			serviceContext);
+			executionContext.getKaleoInstanceToken(),
+			executionContext.getWorkflowContext(),
+			executionContext.getServiceContext());
 
 		PathElement pathElement = new PathElement(
 			null, kaleoTransition.getTargetKaleoNode(), newExecutionContext);
@@ -226,7 +236,7 @@ public class TaskNodeExecutor extends BaseNodeExecutor {
 			getOrganizationKaleoTaskAssignments(
 				Collection<KaleoTaskAssignment> kaleoTaskAssignments,
 				ExecutionContext executionContext)
-		throws SystemException, PortalException {
+		throws PortalException, SystemException {
 
 		long userId = executionContext.getKaleoInstanceToken().getUserId();
 

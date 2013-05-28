@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -39,9 +39,11 @@ public class CalendarResourceSoap implements Serializable {
 		soapModel.setUserName(model.getUserName());
 		soapModel.setCreateDate(model.getCreateDate());
 		soapModel.setModifiedDate(model.getModifiedDate());
+		soapModel.setResourceBlockId(model.getResourceBlockId());
 		soapModel.setClassNameId(model.getClassNameId());
 		soapModel.setClassPK(model.getClassPK());
 		soapModel.setClassUuid(model.getClassUuid());
+		soapModel.setCode(model.getCode());
 		soapModel.setName(model.getName());
 		soapModel.setDescription(model.getDescription());
 		soapModel.setActive(model.getActive());
@@ -163,6 +165,14 @@ public class CalendarResourceSoap implements Serializable {
 		_modifiedDate = modifiedDate;
 	}
 
+	public long getResourceBlockId() {
+		return _resourceBlockId;
+	}
+
+	public void setResourceBlockId(long resourceBlockId) {
+		_resourceBlockId = resourceBlockId;
+	}
+
 	public long getClassNameId() {
 		return _classNameId;
 	}
@@ -185,6 +195,14 @@ public class CalendarResourceSoap implements Serializable {
 
 	public void setClassUuid(String classUuid) {
 		_classUuid = classUuid;
+	}
+
+	public String getCode() {
+		return _code;
+	}
+
+	public void setCode(String code) {
+		_code = code;
 	}
 
 	public String getName() {
@@ -223,9 +241,11 @@ public class CalendarResourceSoap implements Serializable {
 	private String _userName;
 	private Date _createDate;
 	private Date _modifiedDate;
+	private long _resourceBlockId;
 	private long _classNameId;
 	private long _classPK;
 	private String _classUuid;
+	private String _code;
 	private String _name;
 	private String _description;
 	private boolean _active;

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -20,7 +20,10 @@ import com.liferay.portal.model.CacheModel;
 
 import com.liferay.socialcoding.model.JIRAChangeItem;
 
-import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 /**
  * The cache model class for representing JIRAChangeItem in entity cache.
@@ -30,7 +33,7 @@ import java.io.Serializable;
  * @generated
  */
 public class JIRAChangeItemCacheModel implements CacheModel<JIRAChangeItem>,
-	Serializable {
+	Externalizable {
 	@Override
 	public String toString() {
 		StringBundler sb = new StringBundler(15);
@@ -54,6 +57,7 @@ public class JIRAChangeItemCacheModel implements CacheModel<JIRAChangeItem>,
 		return sb.toString();
 	}
 
+	@Override
 	public JIRAChangeItem toEntityModel() {
 		JIRAChangeItemImpl jiraChangeItemImpl = new JIRAChangeItemImpl();
 
@@ -98,6 +102,59 @@ public class JIRAChangeItemCacheModel implements CacheModel<JIRAChangeItem>,
 		jiraChangeItemImpl.resetOriginalValues();
 
 		return jiraChangeItemImpl;
+	}
+
+	@Override
+	public void readExternal(ObjectInput objectInput) throws IOException {
+		jiraChangeItemId = objectInput.readLong();
+		jiraChangeGroupId = objectInput.readLong();
+		field = objectInput.readUTF();
+		oldValue = objectInput.readUTF();
+		oldString = objectInput.readUTF();
+		newValue = objectInput.readUTF();
+		newString = objectInput.readUTF();
+	}
+
+	@Override
+	public void writeExternal(ObjectOutput objectOutput)
+		throws IOException {
+		objectOutput.writeLong(jiraChangeItemId);
+		objectOutput.writeLong(jiraChangeGroupId);
+
+		if (field == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(field);
+		}
+
+		if (oldValue == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(oldValue);
+		}
+
+		if (oldString == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(oldString);
+		}
+
+		if (newValue == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(newValue);
+		}
+
+		if (newString == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(newString);
+		}
 	}
 
 	public long jiraChangeItemId;

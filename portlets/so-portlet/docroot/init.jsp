@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This file is part of Liferay Social Office. Liferay Social Office is free
  * software: you can redistribute it and/or modify it under the terms of the GNU
@@ -56,7 +56,6 @@ page import="com.liferay.portal.kernel.util.UnicodeProperties" %><%@
 page import="com.liferay.portal.kernel.util.Validator" %><%@
 page import="com.liferay.portal.kernel.workflow.WorkflowConstants" %><%@
 page import="com.liferay.portal.model.Group" %><%@
-page import="com.liferay.portal.model.GroupConstants" %><%@
 page import="com.liferay.portal.model.Layout" %><%@
 page import="com.liferay.portal.model.LayoutSetPrototype" %><%@
 page import="com.liferay.portal.model.Portlet" %><%@
@@ -76,18 +75,15 @@ page import="com.liferay.portal.service.UserNotificationEventLocalServiceUtil" %
 page import="com.liferay.portal.service.permission.GroupPermissionUtil" %><%@
 page import="com.liferay.portal.service.permission.PortalPermissionUtil" %><%@
 page import="com.liferay.portal.util.PortalUtil" %><%@
-page import="com.liferay.portal.util.comparator.ContactFirstNameComparator" %><%@
-page import="com.liferay.portal.util.comparator.GroupNameComparator" %><%@
 page import="com.liferay.portal.util.comparator.RoleNameComparator" %><%@
+page import="com.liferay.portal.util.comparator.UserFirstNameComparator" %><%@
 page import="com.liferay.portlet.PortletPreferencesFactoryUtil" %><%@
 page import="com.liferay.portlet.PortletURLFactoryUtil" %><%@
 page import="com.liferay.portlet.expando.model.ExpandoBridge" %><%@
-page import="com.liferay.portlet.social.model.SocialActivity" %><%@
 page import="com.liferay.portlet.social.model.SocialActivityFeedEntry" %><%@
 page import="com.liferay.portlet.social.model.SocialRelationConstants" %><%@
 page import="com.liferay.portlet.social.model.SocialRequestConstants" %><%@
 page import="com.liferay.portlet.social.service.SocialActivityInterpreterLocalServiceUtil" %><%@
-page import="com.liferay.portlet.social.service.SocialActivityLocalServiceUtil" %><%@
 page import="com.liferay.portlet.usersadmin.util.UsersAdminUtil" %><%@
 page import="com.liferay.so.invitemembers.util.InviteMembersConstants" %><%@
 page import="com.liferay.so.model.ProjectsEntry" %><%@
@@ -96,7 +92,9 @@ page import="com.liferay.so.service.MemberRequestLocalServiceUtil" %><%@
 page import="com.liferay.so.service.ProjectsEntryLocalServiceUtil" %><%@
 page import="com.liferay.so.service.SocialOfficeServiceUtil" %><%@
 page import="com.liferay.so.sites.util.SitesUtil" %><%@
+page import="com.liferay.so.util.GroupConstants" %><%@
 page import="com.liferay.so.util.PortletKeys" %><%@
+page import="com.liferay.so.util.PortletPropsValues" %><%@
 page import="com.liferay.so.util.RoleConstants" %>
 
 <%@ page import="java.text.Format" %>
@@ -104,6 +102,7 @@ page import="com.liferay.so.util.RoleConstants" %>
 <%@ page import="java.util.ArrayList" %><%@
 page import="java.util.Calendar" %><%@
 page import="java.util.Date" %><%@
+page import="java.util.Iterator" %><%@
 page import="java.util.LinkedHashMap" %><%@
 page import="java.util.List" %>
 

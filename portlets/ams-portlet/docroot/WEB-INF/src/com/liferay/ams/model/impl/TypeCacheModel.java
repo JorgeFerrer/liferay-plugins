@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -20,7 +20,10 @@ import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.model.CacheModel;
 
-import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 /**
  * The cache model class for representing Type in entity cache.
@@ -29,7 +32,7 @@ import java.io.Serializable;
  * @see Type
  * @generated
  */
-public class TypeCacheModel implements CacheModel<Type>, Serializable {
+public class TypeCacheModel implements CacheModel<Type>, Externalizable {
 	@Override
 	public String toString() {
 		StringBundler sb = new StringBundler(7);
@@ -45,6 +48,7 @@ public class TypeCacheModel implements CacheModel<Type>, Serializable {
 		return sb.toString();
 	}
 
+	@Override
 	public Type toEntityModel() {
 		TypeImpl typeImpl = new TypeImpl();
 
@@ -61,6 +65,27 @@ public class TypeCacheModel implements CacheModel<Type>, Serializable {
 		typeImpl.resetOriginalValues();
 
 		return typeImpl;
+	}
+
+	@Override
+	public void readExternal(ObjectInput objectInput) throws IOException {
+		typeId = objectInput.readLong();
+		groupId = objectInput.readLong();
+		name = objectInput.readUTF();
+	}
+
+	@Override
+	public void writeExternal(ObjectOutput objectOutput)
+		throws IOException {
+		objectOutput.writeLong(typeId);
+		objectOutput.writeLong(groupId);
+
+		if (name == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(name);
+		}
 	}
 
 	public long typeId;

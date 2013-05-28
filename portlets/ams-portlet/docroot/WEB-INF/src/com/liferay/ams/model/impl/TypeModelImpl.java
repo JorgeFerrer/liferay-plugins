@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -81,26 +81,32 @@ public class TypeModelImpl extends BaseModelImpl<Type> implements TypeModel {
 	public TypeModelImpl() {
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _typeId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setTypeId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
-		return new Long(_typeId);
+		return _typeId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return Type.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return Type.class.getName();
 	}
@@ -137,22 +143,27 @@ public class TypeModelImpl extends BaseModelImpl<Type> implements TypeModel {
 		}
 	}
 
+	@Override
 	public long getTypeId() {
 		return _typeId;
 	}
 
+	@Override
 	public void setTypeId(long typeId) {
 		_typeId = typeId;
 	}
 
+	@Override
 	public long getGroupId() {
 		return _groupId;
 	}
 
+	@Override
 	public void setGroupId(long groupId) {
 		_groupId = groupId;
 	}
 
+	@Override
 	public String getName() {
 		if (_name == null) {
 			return StringPool.BLANK;
@@ -162,34 +173,32 @@ public class TypeModelImpl extends BaseModelImpl<Type> implements TypeModel {
 		}
 	}
 
+	@Override
 	public void setName(String name) {
 		_name = name;
 	}
 
 	@Override
-	public Type toEscapedModel() {
-		if (_escapedModelProxy == null) {
-			_escapedModelProxy = (Type)ProxyUtil.newProxyInstance(_classLoader,
-					_escapedModelProxyInterfaces,
-					new AutoEscapeBeanHandler(this));
-		}
-
-		return _escapedModelProxy;
-	}
-
-	@Override
 	public ExpandoBridge getExpandoBridge() {
-		if (_expandoBridge == null) {
-			_expandoBridge = ExpandoBridgeFactoryUtil.getExpandoBridge(0,
-					Type.class.getName(), getPrimaryKey());
-		}
-
-		return _expandoBridge;
+		return ExpandoBridgeFactoryUtil.getExpandoBridge(0,
+			Type.class.getName(), getPrimaryKey());
 	}
 
 	@Override
 	public void setExpandoBridgeAttributes(ServiceContext serviceContext) {
-		getExpandoBridge().setAttributes(serviceContext);
+		ExpandoBridge expandoBridge = getExpandoBridge();
+
+		expandoBridge.setAttributes(serviceContext);
+	}
+
+	@Override
+	public Type toEscapedModel() {
+		if (_escapedModel == null) {
+			_escapedModel = (Type)ProxyUtil.newProxyInstance(_classLoader,
+					_escapedModelInterfaces, new AutoEscapeBeanHandler(this));
+		}
+
+		return _escapedModel;
 	}
 
 	@Override
@@ -205,6 +214,7 @@ public class TypeModelImpl extends BaseModelImpl<Type> implements TypeModel {
 		return typeImpl;
 	}
 
+	@Override
 	public int compareTo(Type type) {
 		int value = 0;
 
@@ -219,18 +229,15 @@ public class TypeModelImpl extends BaseModelImpl<Type> implements TypeModel {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof Type)) {
 			return false;
 		}
 
-		Type type = null;
-
-		try {
-			type = (Type)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		Type type = (Type)obj;
 
 		long primaryKey = type.getPrimaryKey();
 
@@ -285,6 +292,7 @@ public class TypeModelImpl extends BaseModelImpl<Type> implements TypeModel {
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
 		StringBundler sb = new StringBundler(13);
 
@@ -311,12 +319,9 @@ public class TypeModelImpl extends BaseModelImpl<Type> implements TypeModel {
 	}
 
 	private static ClassLoader _classLoader = Type.class.getClassLoader();
-	private static Class<?>[] _escapedModelProxyInterfaces = new Class[] {
-			Type.class
-		};
+	private static Class<?>[] _escapedModelInterfaces = new Class[] { Type.class };
 	private long _typeId;
 	private long _groupId;
 	private String _name;
-	private transient ExpandoBridge _expandoBridge;
-	private Type _escapedModelProxy;
+	private Type _escapedModel;
 }

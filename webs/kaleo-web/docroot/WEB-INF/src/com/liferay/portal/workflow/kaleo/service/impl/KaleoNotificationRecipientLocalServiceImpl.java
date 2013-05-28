@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -64,7 +64,7 @@ public class KaleoNotificationRecipientLocalServiceImpl
 		setRecipient(kaleoNotificationRecipient, recipient, serviceContext);
 
 		kaleoNotificationRecipientPersistence.update(
-			kaleoNotificationRecipient, false);
+			kaleoNotificationRecipient);
 
 		return kaleoNotificationRecipient;
 	}
@@ -104,17 +104,21 @@ public class KaleoNotificationRecipientLocalServiceImpl
 
 			RoleRecipient roleRecipient = (RoleRecipient)recipient;
 
-			int roleType = RoleUtil.getRoleType(roleRecipient.getRoleType());
+			int roleType = 0;
 
 			Role role = null;
 
 			if (Validator.isNotNull(roleRecipient.getRoleName())) {
+				roleType = RoleUtil.getRoleType(roleRecipient.getRoleType());
+
 				role = RoleUtil.getRole(
 					roleRecipient.getRoleName(), roleType,
 					roleRecipient.isAutoCreate(), serviceContext);
 			}
 			else {
 				role = roleLocalService.getRole(roleRecipient.getRoleId());
+
+				roleType = role.getType();
 			}
 
 			kaleoNotificationRecipient.setRecipientClassPK(role.getClassPK());
@@ -148,10 +152,15 @@ public class KaleoNotificationRecipientLocalServiceImpl
 			}
 		}
 		else {
-			AddressRecipient addressRecipient = (AddressRecipient)recipient;
+			kaleoNotificationRecipient.setRecipientClassName(
+				recipientType.name());
 
-			kaleoNotificationRecipient.setAddress(
-				addressRecipient.getAddress());
+			if (recipientType.equals(RecipientType.ADDRESS)) {
+				AddressRecipient addressRecipient = (AddressRecipient)recipient;
+
+				kaleoNotificationRecipient.setAddress(
+					addressRecipient.getAddress());
+			}
 		}
 	}
 

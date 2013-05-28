@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -39,21 +39,21 @@ public class CalendarBookingSoap implements Serializable {
 		soapModel.setUserName(model.getUserName());
 		soapModel.setCreateDate(model.getCreateDate());
 		soapModel.setModifiedDate(model.getModifiedDate());
-		soapModel.setCalendarEventId(model.getCalendarEventId());
+		soapModel.setResourceBlockId(model.getResourceBlockId());
+		soapModel.setCalendarId(model.getCalendarId());
 		soapModel.setCalendarResourceId(model.getCalendarResourceId());
-		soapModel.setClassNameId(model.getClassNameId());
-		soapModel.setClassPK(model.getClassPK());
+		soapModel.setParentCalendarBookingId(model.getParentCalendarBookingId());
 		soapModel.setTitle(model.getTitle());
-		soapModel.setName(model.getName());
 		soapModel.setDescription(model.getDescription());
 		soapModel.setLocation(model.getLocation());
-		soapModel.setStartDate(model.getStartDate());
-		soapModel.setEndDate(model.getEndDate());
-		soapModel.setDurationHour(model.getDurationHour());
-		soapModel.setDurationMinute(model.getDurationMinute());
+		soapModel.setStartTime(model.getStartTime());
+		soapModel.setEndTime(model.getEndTime());
+		soapModel.setAllDay(model.getAllDay());
 		soapModel.setRecurrence(model.getRecurrence());
-		soapModel.setType(model.getType());
-		soapModel.setRequired(model.getRequired());
+		soapModel.setFirstReminder(model.getFirstReminder());
+		soapModel.setFirstReminderType(model.getFirstReminderType());
+		soapModel.setSecondReminder(model.getSecondReminder());
+		soapModel.setSecondReminderType(model.getSecondReminderType());
 		soapModel.setStatus(model.getStatus());
 		soapModel.setStatusByUserId(model.getStatusByUserId());
 		soapModel.setStatusByUserName(model.getStatusByUserName());
@@ -176,12 +176,20 @@ public class CalendarBookingSoap implements Serializable {
 		_modifiedDate = modifiedDate;
 	}
 
-	public long getCalendarEventId() {
-		return _calendarEventId;
+	public long getResourceBlockId() {
+		return _resourceBlockId;
 	}
 
-	public void setCalendarEventId(long calendarEventId) {
-		_calendarEventId = calendarEventId;
+	public void setResourceBlockId(long resourceBlockId) {
+		_resourceBlockId = resourceBlockId;
+	}
+
+	public long getCalendarId() {
+		return _calendarId;
+	}
+
+	public void setCalendarId(long calendarId) {
+		_calendarId = calendarId;
 	}
 
 	public long getCalendarResourceId() {
@@ -192,20 +200,12 @@ public class CalendarBookingSoap implements Serializable {
 		_calendarResourceId = calendarResourceId;
 	}
 
-	public long getClassNameId() {
-		return _classNameId;
+	public long getParentCalendarBookingId() {
+		return _parentCalendarBookingId;
 	}
 
-	public void setClassNameId(long classNameId) {
-		_classNameId = classNameId;
-	}
-
-	public long getClassPK() {
-		return _classPK;
-	}
-
-	public void setClassPK(long classPK) {
-		_classPK = classPK;
+	public void setParentCalendarBookingId(long parentCalendarBookingId) {
+		_parentCalendarBookingId = parentCalendarBookingId;
 	}
 
 	public String getTitle() {
@@ -214,14 +214,6 @@ public class CalendarBookingSoap implements Serializable {
 
 	public void setTitle(String title) {
 		_title = title;
-	}
-
-	public String getName() {
-		return _name;
-	}
-
-	public void setName(String name) {
-		_name = name;
 	}
 
 	public String getDescription() {
@@ -240,36 +232,32 @@ public class CalendarBookingSoap implements Serializable {
 		_location = location;
 	}
 
-	public Date getStartDate() {
-		return _startDate;
+	public long getStartTime() {
+		return _startTime;
 	}
 
-	public void setStartDate(Date startDate) {
-		_startDate = startDate;
+	public void setStartTime(long startTime) {
+		_startTime = startTime;
 	}
 
-	public Date getEndDate() {
-		return _endDate;
+	public long getEndTime() {
+		return _endTime;
 	}
 
-	public void setEndDate(Date endDate) {
-		_endDate = endDate;
+	public void setEndTime(long endTime) {
+		_endTime = endTime;
 	}
 
-	public int getDurationHour() {
-		return _durationHour;
+	public boolean getAllDay() {
+		return _allDay;
 	}
 
-	public void setDurationHour(int durationHour) {
-		_durationHour = durationHour;
+	public boolean isAllDay() {
+		return _allDay;
 	}
 
-	public int getDurationMinute() {
-		return _durationMinute;
-	}
-
-	public void setDurationMinute(int durationMinute) {
-		_durationMinute = durationMinute;
+	public void setAllDay(boolean allDay) {
+		_allDay = allDay;
 	}
 
 	public String getRecurrence() {
@@ -280,24 +268,36 @@ public class CalendarBookingSoap implements Serializable {
 		_recurrence = recurrence;
 	}
 
-	public String getType() {
-		return _type;
+	public long getFirstReminder() {
+		return _firstReminder;
 	}
 
-	public void setType(String type) {
-		_type = type;
+	public void setFirstReminder(long firstReminder) {
+		_firstReminder = firstReminder;
 	}
 
-	public boolean getRequired() {
-		return _required;
+	public String getFirstReminderType() {
+		return _firstReminderType;
 	}
 
-	public boolean isRequired() {
-		return _required;
+	public void setFirstReminderType(String firstReminderType) {
+		_firstReminderType = firstReminderType;
 	}
 
-	public void setRequired(boolean required) {
-		_required = required;
+	public long getSecondReminder() {
+		return _secondReminder;
+	}
+
+	public void setSecondReminder(long secondReminder) {
+		_secondReminder = secondReminder;
+	}
+
+	public String getSecondReminderType() {
+		return _secondReminderType;
+	}
+
+	public void setSecondReminderType(String secondReminderType) {
+		_secondReminderType = secondReminderType;
 	}
 
 	public int getStatus() {
@@ -340,21 +340,21 @@ public class CalendarBookingSoap implements Serializable {
 	private String _userName;
 	private Date _createDate;
 	private Date _modifiedDate;
-	private long _calendarEventId;
+	private long _resourceBlockId;
+	private long _calendarId;
 	private long _calendarResourceId;
-	private long _classNameId;
-	private long _classPK;
+	private long _parentCalendarBookingId;
 	private String _title;
-	private String _name;
 	private String _description;
 	private String _location;
-	private Date _startDate;
-	private Date _endDate;
-	private int _durationHour;
-	private int _durationMinute;
+	private long _startTime;
+	private long _endTime;
+	private boolean _allDay;
 	private String _recurrence;
-	private String _type;
-	private boolean _required;
+	private long _firstReminder;
+	private String _firstReminderType;
+	private long _secondReminder;
+	private String _secondReminderType;
 	private int _status;
 	private long _statusByUserId;
 	private String _statusByUserName;

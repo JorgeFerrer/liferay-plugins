@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -27,8 +27,7 @@ import oasis.names.tc.wsrp.v2.types.RegistrationContext;
 /**
  * @author Brian Wing Shun Chan
  */
-public class WSRPConsumerImpl
-	extends WSRPConsumerBaseImpl {
+public class WSRPConsumerImpl extends WSRPConsumerBaseImpl {
 
 	public WSRPConsumerImpl() {
 	}
@@ -41,9 +40,8 @@ public class WSRPConsumerImpl
 		String registrationContextString = getRegistrationContextString();
 
 		if (Validator.isNotNull(registrationContextString)) {
-			_registrationContext =
-				(RegistrationContext)Base64.stringToObject(
-					registrationContextString, getClass().getClassLoader());
+			_registrationContext = (RegistrationContext)Base64.stringToObject(
+				registrationContextString, getClass().getClassLoader());
 		}
 
 		return _registrationContext;

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -100,26 +100,32 @@ public class JIRAIssueModelImpl extends BaseModelImpl<JIRAIssue>
 	public JIRAIssueModelImpl() {
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _jiraIssueId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setJiraIssueId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
-		return new Long(_jiraIssueId);
+		return _jiraIssueId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return JIRAIssue.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return JIRAIssue.class.getName();
 	}
@@ -212,26 +218,32 @@ public class JIRAIssueModelImpl extends BaseModelImpl<JIRAIssue>
 		}
 	}
 
+	@Override
 	public long getJiraIssueId() {
 		return _jiraIssueId;
 	}
 
+	@Override
 	public void setJiraIssueId(long jiraIssueId) {
 		_jiraIssueId = jiraIssueId;
 	}
 
+	@Override
 	public Date getCreateDate() {
 		return _createDate;
 	}
 
+	@Override
 	public void setCreateDate(Date createDate) {
 		_createDate = createDate;
 	}
 
+	@Override
 	public Date getModifiedDate() {
 		return _modifiedDate;
 	}
 
+	@Override
 	public void setModifiedDate(Date modifiedDate) {
 		_columnBitmask = -1L;
 
@@ -246,10 +258,12 @@ public class JIRAIssueModelImpl extends BaseModelImpl<JIRAIssue>
 		return _originalModifiedDate;
 	}
 
+	@Override
 	public long getProjectId() {
 		return _projectId;
 	}
 
+	@Override
 	public void setProjectId(long projectId) {
 		_columnBitmask |= PROJECTID_COLUMN_BITMASK;
 
@@ -266,6 +280,7 @@ public class JIRAIssueModelImpl extends BaseModelImpl<JIRAIssue>
 		return _originalProjectId;
 	}
 
+	@Override
 	public String getKey() {
 		if (_key == null) {
 			return StringPool.BLANK;
@@ -275,6 +290,7 @@ public class JIRAIssueModelImpl extends BaseModelImpl<JIRAIssue>
 		}
 	}
 
+	@Override
 	public void setKey(String key) {
 		_columnBitmask |= KEY_COLUMN_BITMASK;
 
@@ -289,6 +305,7 @@ public class JIRAIssueModelImpl extends BaseModelImpl<JIRAIssue>
 		return GetterUtil.getString(_originalKey);
 	}
 
+	@Override
 	public String getSummary() {
 		if (_summary == null) {
 			return StringPool.BLANK;
@@ -298,10 +315,12 @@ public class JIRAIssueModelImpl extends BaseModelImpl<JIRAIssue>
 		}
 	}
 
+	@Override
 	public void setSummary(String summary) {
 		_summary = summary;
 	}
 
+	@Override
 	public String getDescription() {
 		if (_description == null) {
 			return StringPool.BLANK;
@@ -311,10 +330,12 @@ public class JIRAIssueModelImpl extends BaseModelImpl<JIRAIssue>
 		}
 	}
 
+	@Override
 	public void setDescription(String description) {
 		_description = description;
 	}
 
+	@Override
 	public String getReporterJiraUserId() {
 		if (_reporterJiraUserId == null) {
 			return StringPool.BLANK;
@@ -324,6 +345,7 @@ public class JIRAIssueModelImpl extends BaseModelImpl<JIRAIssue>
 		}
 	}
 
+	@Override
 	public void setReporterJiraUserId(String reporterJiraUserId) {
 		_columnBitmask |= REPORTERJIRAUSERID_COLUMN_BITMASK;
 
@@ -338,6 +360,7 @@ public class JIRAIssueModelImpl extends BaseModelImpl<JIRAIssue>
 		return GetterUtil.getString(_originalReporterJiraUserId);
 	}
 
+	@Override
 	public String getAssigneeJiraUserId() {
 		if (_assigneeJiraUserId == null) {
 			return StringPool.BLANK;
@@ -347,6 +370,7 @@ public class JIRAIssueModelImpl extends BaseModelImpl<JIRAIssue>
 		}
 	}
 
+	@Override
 	public void setAssigneeJiraUserId(String assigneeJiraUserId) {
 		_columnBitmask |= ASSIGNEEJIRAUSERID_COLUMN_BITMASK;
 
@@ -361,6 +385,7 @@ public class JIRAIssueModelImpl extends BaseModelImpl<JIRAIssue>
 		return GetterUtil.getString(_originalAssigneeJiraUserId);
 	}
 
+	@Override
 	public String getResolution() {
 		if (_resolution == null) {
 			return StringPool.BLANK;
@@ -370,10 +395,12 @@ public class JIRAIssueModelImpl extends BaseModelImpl<JIRAIssue>
 		}
 	}
 
+	@Override
 	public void setResolution(String resolution) {
 		_resolution = resolution;
 	}
 
+	@Override
 	public String getStatus() {
 		if (_status == null) {
 			return StringPool.BLANK;
@@ -383,6 +410,7 @@ public class JIRAIssueModelImpl extends BaseModelImpl<JIRAIssue>
 		}
 	}
 
+	@Override
 	public void setStatus(String status) {
 		_columnBitmask |= STATUS_COLUMN_BITMASK;
 
@@ -402,29 +430,26 @@ public class JIRAIssueModelImpl extends BaseModelImpl<JIRAIssue>
 	}
 
 	@Override
-	public JIRAIssue toEscapedModel() {
-		if (_escapedModelProxy == null) {
-			_escapedModelProxy = (JIRAIssue)ProxyUtil.newProxyInstance(_classLoader,
-					_escapedModelProxyInterfaces,
-					new AutoEscapeBeanHandler(this));
-		}
-
-		return _escapedModelProxy;
-	}
-
-	@Override
 	public ExpandoBridge getExpandoBridge() {
-		if (_expandoBridge == null) {
-			_expandoBridge = ExpandoBridgeFactoryUtil.getExpandoBridge(0,
-					JIRAIssue.class.getName(), getPrimaryKey());
-		}
-
-		return _expandoBridge;
+		return ExpandoBridgeFactoryUtil.getExpandoBridge(0,
+			JIRAIssue.class.getName(), getPrimaryKey());
 	}
 
 	@Override
 	public void setExpandoBridgeAttributes(ServiceContext serviceContext) {
-		getExpandoBridge().setAttributes(serviceContext);
+		ExpandoBridge expandoBridge = getExpandoBridge();
+
+		expandoBridge.setAttributes(serviceContext);
+	}
+
+	@Override
+	public JIRAIssue toEscapedModel() {
+		if (_escapedModel == null) {
+			_escapedModel = (JIRAIssue)ProxyUtil.newProxyInstance(_classLoader,
+					_escapedModelInterfaces, new AutoEscapeBeanHandler(this));
+		}
+
+		return _escapedModel;
 	}
 
 	@Override
@@ -448,6 +473,7 @@ public class JIRAIssueModelImpl extends BaseModelImpl<JIRAIssue>
 		return jiraIssueImpl;
 	}
 
+	@Override
 	public int compareTo(JIRAIssue jiraIssue) {
 		int value = 0;
 
@@ -465,18 +491,15 @@ public class JIRAIssueModelImpl extends BaseModelImpl<JIRAIssue>
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof JIRAIssue)) {
 			return false;
 		}
 
-		JIRAIssue jiraIssue = null;
-
-		try {
-			jiraIssue = (JIRAIssue)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		JIRAIssue jiraIssue = (JIRAIssue)obj;
 
 		long primaryKey = jiraIssue.getPrimaryKey();
 
@@ -630,6 +653,7 @@ public class JIRAIssueModelImpl extends BaseModelImpl<JIRAIssue>
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
 		StringBundler sb = new StringBundler(37);
 
@@ -688,7 +712,7 @@ public class JIRAIssueModelImpl extends BaseModelImpl<JIRAIssue>
 	}
 
 	private static ClassLoader _classLoader = JIRAIssue.class.getClassLoader();
-	private static Class<?>[] _escapedModelProxyInterfaces = new Class[] {
+	private static Class<?>[] _escapedModelInterfaces = new Class[] {
 			JIRAIssue.class
 		};
 	private long _jiraIssueId;
@@ -709,7 +733,6 @@ public class JIRAIssueModelImpl extends BaseModelImpl<JIRAIssue>
 	private String _resolution;
 	private String _status;
 	private String _originalStatus;
-	private transient ExpandoBridge _expandoBridge;
 	private long _columnBitmask;
-	private JIRAIssue _escapedModelProxy;
+	private JIRAIssue _escapedModel;
 }

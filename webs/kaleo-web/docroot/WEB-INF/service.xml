@@ -32,6 +32,7 @@
 		<column name="executionType" type="String" />
 		<column name="script" type="String" />
 		<column name="scriptLanguage" type="String" />
+		<column name="scriptRequiredContexts" type="String" />
 		<column name="priority" type="int" />
 
 		<!-- Order -->
@@ -47,6 +48,10 @@
 		</finder>
 		<finder name="KaleoDefinitionId" return-type="Collection">
 			<finder-column name="kaleoDefinitionId" />
+		</finder>
+		<finder name="KCN_KCPK" return-type="Collection">
+			<finder-column name="kaleoClassName" />
+			<finder-column name="kaleoClassPK" />
 		</finder>
 		<finder name="KCN_KCPK_ET" return-type="Collection">
 			<finder-column name="kaleoClassName" />
@@ -78,6 +83,7 @@
 		<column name="kaleoNodeId" type="long" />
 		<column name="script" type="String" />
 		<column name="scriptLanguage" type="String" />
+		<column name="scriptRequiredContexts" type="String" />
 
 		<!-- Order -->
 
@@ -124,10 +130,6 @@
 		<column name="version" type="int" />
 		<column name="active" type="boolean" />
 		<column name="startKaleoNodeId" type="long" />
-
-		<!-- Relationships -->
-
-		<column name="kaleoNodes" type="Collection" entity="KaleoNode" mapping-key="kaleoDefinitionId" />
 
 		<!-- Order -->
 
@@ -374,11 +376,6 @@
 		<column name="initial" type="boolean" />
 		<column name="terminal" type="boolean" />
 
-		<!-- Relationships -->
-
-		<column name="kaleoActions" type="Collection" entity="KaleoAction" mapping-key="kaleoNodeId" />
-		<column name="kaleoTransitions" type="Collection" entity="KaleoTransition" mapping-key="kaleoNodeId" />
-
 		<!-- Order -->
 
 		<order by="asc">
@@ -429,10 +426,6 @@
 		<column name="templateLanguage" type="String" />
 		<column name="notificationTypes" type="String" />
 
-		<!-- Relationships -->
-
-		<column name="receipients" type="Collection" entity="KaleoNotificationRecipient" mapping-key="kaleoNotificationId" />
-
 		<!-- Order -->
 
 		<order by="asc">
@@ -446,6 +439,10 @@
 		</finder>
 		<finder name="KaleoDefinitionId" return-type="Collection">
 			<finder-column name="kaleoDefinitionId" />
+		</finder>
+		<finder name="KCN_KCPK" return-type="Collection">
+			<finder-column name="kaleoClassName" />
+			<finder-column name="kaleoClassPK" />
 		</finder>
 		<finder name="KCN_KCPK_ET" return-type="Collection">
 			<finder-column name="kaleoClassName" />
@@ -574,6 +571,7 @@
 		<column name="assigneeActionId" type="String" />
 		<column name="assigneeScript" type="String" />
 		<column name="assigneeScriptLanguage" type="String" />
+		<column name="assigneeScriptRequiredContexts" type="String" />
 
 		<!-- Order -->
 
@@ -687,10 +685,6 @@
 		<column name="completionDate" type="Date" />
 		<column name="dueDate" type="Date" />
 		<column name="workflowContext" type="String" />
-
-		<!-- Relationships -->
-
-		<column name="kaleoTaskAssignmentInstances" type="Collection" entity="KaleoTaskAssignmentInstance" mapping-key="kaleoTaskInstanceTokenId" />
 
 		<!-- Order -->
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -42,7 +42,7 @@ public class ConfigurationActionImpl extends DefaultConfigurationAction {
 		super.processAction(portletConfig, actionRequest, actionResponse);
 	}
 
-	protected void validateNode(ActionRequest actionRequest) throws Exception{
+	protected void validateNode(ActionRequest actionRequest) throws Exception {
 		long selNodeId = GetterUtil.getLong(
 			getParameter(actionRequest, "selNodeId"));
 
@@ -50,7 +50,7 @@ public class ConfigurationActionImpl extends DefaultConfigurationAction {
 			WikiNodeServiceUtil.getNode(selNodeId);
 		}
 		catch (NoSuchNodeException nsne) {
-			SessionErrors.add(actionRequest, nsne.getClass().getName());
+			SessionErrors.add(actionRequest, nsne.getClass());
 		}
 	}
 

@@ -35,7 +35,14 @@ AUI.add(
 					checksum: {},
 					content: {},
 					country: {
-						value: 'ALL'
+						setter: function(v) {
+							if (v) {
+								return v;
+							}
+							else {
+								return 'ALL';
+							}
+						}
 					},
 					debug: {},
 					height: {
@@ -55,7 +62,14 @@ AUI.add(
 						getter: '_getIframeUrl'
 					},
 					language: {
-						value: 'ALL'
+						setter: function(v) {
+							if (v) {
+								return v;
+							}
+							else {
+								return 'ALL';
+							}
+						}
 					},
 					moduleId: {
 						valueFn: function() {
@@ -104,7 +118,14 @@ AUI.add(
 						}
 					},
 					userPrefs: {
-						value: {}
+						setter: function(v) {
+							if (v) {
+								return v;
+							}
+							else {
+								return {};
+							}
+						}
 					},
 					view: {
 						value: 'default'
@@ -556,24 +577,15 @@ AUI.add(
 					savePrefs: function(gadget) {
 						var instance = this;
 
-						var serviceParameterTypes = [
-							'long',
-							'java.lang.String',
-							'java.lang.String',
-							'java.lang.String',
-							'long',
-							'java.lang.String'
-						];
-
-						return Liferay.Service.Expando.ExpandoValue.addValue(
+						Liferay.Service(
+							'/expandovalue/add-value',
 							{
 								companyId: themeDisplay.getCompanyId(),
 								className: instance._CLASS_NAME,
 								tableName: instance._TABLE_NAME,
 								columnName: instance.get('userPrefsKey'),
 								classPK: themeDisplay.getPlid(),
-								data: A.JSON.stringify(gadget.get('userPrefs')),
-								serviceParameterTypes: A.JSON.stringify(serviceParameterTypes)
+								data: A.JSON.stringify(gadget.get('userPrefs'))
 							}
 						);
 					},
@@ -845,7 +857,7 @@ AUI.add(
 
 		gadgets.rpc.register(
 			'set_pref',
-			 function(editToken, name, value) {
+			function(editToken, name, value) {
 				var gadget = Gadget.get(this.f);
 
 				if (gadget) {
@@ -873,6 +885,6 @@ AUI.add(
 	},
 	'',
 	{
-		requires: ['aui-base', 'aui-io', 'cookie', 'json', 'liferay-portlet-url', 'liferay-service', 'querystring']
+		requires: ['aui-base', 'aui-io', 'cookie', 'json', 'liferay-portlet-url', 'querystring']
 	}
 );

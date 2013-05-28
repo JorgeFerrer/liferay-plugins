@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -134,22 +134,10 @@
 							String wallToWallHREF = null;
 
 							if ((wallUser.getUserId() != themeDisplay.getUserId()) || ((wallUser.getUserId() == themeDisplay.getUserId()) && Validator.isNull(myWallLayoutFriendlyURL))) {
-								wallLayoutFriendlyURL = PortletPropsValues.WALL_LAYOUT_FRIENDLY_URL;
-
-								if (Validator.isNull(wallLayoutFriendlyURL)) {
-									Group wallGroup = wallUser.getGroup();
-
-									long wallPlid = LayoutLocalServiceUtil.getDefaultPlid(wallGroup.getGroupId(), false, portletDisplay.getId());
-
-									if (wallPlid != 0) {
-										Layout wallLayout = LayoutLocalServiceUtil.getLayout(wallPlid);
-
-										wallLayoutFriendlyURL = wallLayout.getFriendlyURL();
-									}
-								}
+								wallLayoutFriendlyURL = WallUtil.getWallLayoutFriendlyURL(wallUser);
 
 								if (Validator.isNotNull(wallLayoutFriendlyURL) && (wallUser.getUserId() != themeDisplay.getUserId())) {
-									wallToWallHREF = themeDisplay.getPathFriendlyURLPublic() + StringPool.SLASH + wallUser.getScreenName() + wallLayoutFriendlyURL + "/-/wall/" + wallUser.getScreenName();
+									wallToWallHREF = WallUtil.getWallLink(wallUser, wallLayoutFriendlyURL, HtmlUtil.escapeURL(wallUser.getScreenName()), themeDisplay);
 								}
 							}
 							%>
@@ -177,7 +165,7 @@
 								postMessage = "write-on-my-wall";
 							}
 							else {
-								postMessage = LanguageUtil.format(pageContext, "write-on-x-wall", wallUser.getFirstName());
+								postMessage = LanguageUtil.format(pageContext, "write-on-x-wall", HtmlUtil.escape(wallUser.getFirstName()));
 							}
 
 							String postHREF = themeDisplay.getPathFriendlyURLPublic() + StringPool.SLASH + wallUser.getScreenName() + wallLayoutFriendlyURL + "/-/wall";
@@ -244,13 +232,13 @@
 						<c:when test="<%= SocialRequestLocalServiceUtil.hasRequest(user2.getUserId(), User.class.getName(), user2.getUserId(), FriendsRequestKeys.ADD_FRIEND, user.getUserId(), SocialRequestConstants.STATUS_PENDING) %>">
 							<%= LanguageUtil.format(pageContext, "you-need-to-approve-x-as-your-friend", HtmlUtil.escape(user2.getFirstName())) %>
 						</c:when>
-						<c:otherwise>
-							<liferay-portlet:actionURL name="addFriend" portletName="1_WAR_socialnetworkingportlet" var="addAsFriendURL">
-								<portlet:param name="redirect" value='<%= currentURL %>' />
+						<c:when test="<%= layoutTypePortlet.hasPortletId(PortletKeys.SUMMARY) %>">
+							<liferay-portlet:actionURL name="addFriend" portletName="<%= PortletKeys.SUMMARY %>" var="addAsFriendURL">
+								<portlet:param name="redirect" value="<%= currentURL %>" />
 							</liferay-portlet:actionURL>
 
 							<a href="<%= addAsFriendURL %>"><%= LanguageUtil.format(pageContext, "ask-x-to-be-your-friend", HtmlUtil.escape(user2.getFirstName())) %></a>
-						</c:otherwise>
+						</c:when>
 					</c:choose>
 				</c:when>
 				<c:otherwise>

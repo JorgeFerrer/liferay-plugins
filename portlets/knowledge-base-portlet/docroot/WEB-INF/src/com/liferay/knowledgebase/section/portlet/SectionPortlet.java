@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -24,25 +24,25 @@ import com.liferay.knowledgebase.model.KBArticle;
 import com.liferay.knowledgebase.model.KBComment;
 import com.liferay.knowledgebase.service.KBArticleServiceUtil;
 import com.liferay.knowledgebase.service.KBCommentLocalServiceUtil;
+import com.liferay.knowledgebase.service.KBCommentServiceUtil;
 import com.liferay.knowledgebase.service.permission.KBArticlePermission;
 import com.liferay.knowledgebase.util.ActionKeys;
 import com.liferay.knowledgebase.util.PortletKeys;
 import com.liferay.knowledgebase.util.WebKeys;
 import com.liferay.portal.NoSuchSubscriptionException;
 import com.liferay.portal.kernel.portlet.PortletResponseUtil;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.upload.UploadPortletRequest;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ContentTypes;
-import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HttpUtil;
-import com.liferay.portal.kernel.util.MimeTypesUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.StreamUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
-import com.liferay.portal.model.CompanyConstants;
+import com.liferay.portal.portletfilerepository.PortletFileRepositoryUtil;
 import com.liferay.portal.security.auth.PrincipalException;
 import com.liferay.portal.security.permission.PermissionChecker;
 import com.liferay.portal.service.ServiceContext;
@@ -53,7 +53,6 @@ import com.liferay.portlet.documentlibrary.DuplicateFileException;
 import com.liferay.portlet.documentlibrary.FileNameException;
 import com.liferay.portlet.documentlibrary.FileSizeException;
 import com.liferay.portlet.documentlibrary.NoSuchFileException;
-import com.liferay.portlet.documentlibrary.store.DLStoreUtil;
 import com.liferay.util.bridges.mvc.MVCPortlet;
 
 import java.io.IOException;
@@ -147,7 +146,7 @@ public class SectionPortlet extends MVCPortlet {
 
 		long kbCommentId = ParamUtil.getLong(actionRequest, "kbCommentId");
 
-		KBCommentLocalServiceUtil.deleteKBComment(kbCommentId);
+		KBCommentServiceUtil.deleteKBComment(kbCommentId);
 	}
 
 	public void moveKBArticle(
@@ -168,7 +167,7 @@ public class SectionPortlet extends MVCPortlet {
 	@Override
 	public void render(
 			RenderRequest renderRequest, RenderResponse renderResponse)
-		throws PortletException, IOException {
+		throws IOException, PortletException {
 
 		try {
 			int status = getStatus(renderRequest);
@@ -192,7 +191,7 @@ public class SectionPortlet extends MVCPortlet {
 			if (e instanceof NoSuchArticleException ||
 				e instanceof PrincipalException) {
 
-				SessionErrors.add(renderRequest, e.getClass().getName());
+				SessionErrors.add(renderRequest, e.getClass());
 			}
 			else {
 				throw new PortletException(e);
@@ -206,21 +205,26 @@ public class SectionPortlet extends MVCPortlet {
 			ResourceRequest resourceRequest, ResourceResponse resourceResponse)
 		throws Exception {
 
-		long companyId = ParamUtil.getLong(resourceRequest, "companyId");
-		String fileName = ParamUtil.getString(resourceRequest, "fileName");
+		long fileEntryId = ParamUtil.getLong(resourceRequest, "fileEntryId");
 
-		String shortFileName = FileUtil.getShortFileName(fileName);
-		InputStream is = DLStoreUtil.getFileAsStream(
-			companyId, CompanyConstants.SYSTEM, fileName);
-		String contentType = MimeTypesUtil.getContentType(fileName);
+		FileEntry fileEntry = PortletFileRepositoryUtil.getPortletFileEntry(
+			fileEntryId);
 
 		PortletResponseUtil.sendFile(
-			resourceRequest, resourceResponse, shortFileName, is, contentType);
+			resourceRequest, resourceResponse, fileEntry.getTitle(),
+			fileEntry.getContentStream(), fileEntry.getMimeType());
 	}
 
 	public void serveKBArticleRSS(
 			ResourceRequest resourceRequest, ResourceResponse resourceResponse)
 		throws Exception {
+
+		if (!PortalUtil.isRSSFeedsEnabled()) {
+			PortalUtil.sendRSSFeedsDisabledError(
+				resourceRequest, resourceResponse);
+
+			return;
+		}
 
 		ThemeDisplay themeDisplay = (ThemeDisplay)resourceRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
@@ -413,7 +417,7 @@ public class SectionPortlet extends MVCPortlet {
 				helpful, serviceContext);
 		}
 		else if (cmd.equals(Constants.UPDATE)) {
-			KBCommentLocalServiceUtil.updateKBComment(
+			KBCommentServiceUtil.updateKBComment(
 				kbCommentId, classNameId, classPK, content, helpful,
 				serviceContext);
 		}

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -95,32 +95,39 @@ public class MemberRequestModelImpl extends BaseModelImpl<MemberRequest>
 	public static long KEY_COLUMN_BITMASK = 2L;
 	public static long RECEIVERUSERID_COLUMN_BITMASK = 4L;
 	public static long STATUS_COLUMN_BITMASK = 8L;
+	public static long CREATEDATE_COLUMN_BITMASK = 16L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(com.liferay.util.service.ServiceProps.get(
 				"lock.expiration.time.com.liferay.so.model.MemberRequest"));
 
 	public MemberRequestModelImpl() {
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _memberRequestId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setMemberRequestId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
-		return new Long(_memberRequestId);
+		return _memberRequestId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return MemberRequest.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return MemberRequest.class.getName();
 	}
@@ -220,18 +227,22 @@ public class MemberRequestModelImpl extends BaseModelImpl<MemberRequest>
 		}
 	}
 
+	@Override
 	public long getMemberRequestId() {
 		return _memberRequestId;
 	}
 
+	@Override
 	public void setMemberRequestId(long memberRequestId) {
 		_memberRequestId = memberRequestId;
 	}
 
+	@Override
 	public long getGroupId() {
 		return _groupId;
 	}
 
+	@Override
 	public void setGroupId(long groupId) {
 		_columnBitmask |= GROUPID_COLUMN_BITMASK;
 
@@ -248,30 +259,37 @@ public class MemberRequestModelImpl extends BaseModelImpl<MemberRequest>
 		return _originalGroupId;
 	}
 
+	@Override
 	public long getCompanyId() {
 		return _companyId;
 	}
 
+	@Override
 	public void setCompanyId(long companyId) {
 		_companyId = companyId;
 	}
 
+	@Override
 	public long getUserId() {
 		return _userId;
 	}
 
+	@Override
 	public void setUserId(long userId) {
 		_userId = userId;
 	}
 
+	@Override
 	public String getUserUuid() throws SystemException {
 		return PortalUtil.getUserValue(getUserId(), "uuid", _userUuid);
 	}
 
+	@Override
 	public void setUserUuid(String userUuid) {
 		_userUuid = userUuid;
 	}
 
+	@Override
 	public String getUserName() {
 		if (_userName == null) {
 			return StringPool.BLANK;
@@ -281,28 +299,34 @@ public class MemberRequestModelImpl extends BaseModelImpl<MemberRequest>
 		}
 	}
 
+	@Override
 	public void setUserName(String userName) {
 		_userName = userName;
 	}
 
+	@Override
 	public Date getCreateDate() {
 		return _createDate;
 	}
 
+	@Override
 	public void setCreateDate(Date createDate) {
 		_columnBitmask = -1L;
 
 		_createDate = createDate;
 	}
 
+	@Override
 	public Date getModifiedDate() {
 		return _modifiedDate;
 	}
 
+	@Override
 	public void setModifiedDate(Date modifiedDate) {
 		_modifiedDate = modifiedDate;
 	}
 
+	@Override
 	public String getKey() {
 		if (_key == null) {
 			return StringPool.BLANK;
@@ -312,6 +336,7 @@ public class MemberRequestModelImpl extends BaseModelImpl<MemberRequest>
 		}
 	}
 
+	@Override
 	public void setKey(String key) {
 		_columnBitmask |= KEY_COLUMN_BITMASK;
 
@@ -326,10 +351,12 @@ public class MemberRequestModelImpl extends BaseModelImpl<MemberRequest>
 		return GetterUtil.getString(_originalKey);
 	}
 
+	@Override
 	public long getReceiverUserId() {
 		return _receiverUserId;
 	}
 
+	@Override
 	public void setReceiverUserId(long receiverUserId) {
 		_columnBitmask |= RECEIVERUSERID_COLUMN_BITMASK;
 
@@ -342,11 +369,13 @@ public class MemberRequestModelImpl extends BaseModelImpl<MemberRequest>
 		_receiverUserId = receiverUserId;
 	}
 
+	@Override
 	public String getReceiverUserUuid() throws SystemException {
 		return PortalUtil.getUserValue(getReceiverUserId(), "uuid",
 			_receiverUserUuid);
 	}
 
+	@Override
 	public void setReceiverUserUuid(String receiverUserUuid) {
 		_receiverUserUuid = receiverUserUuid;
 	}
@@ -355,26 +384,32 @@ public class MemberRequestModelImpl extends BaseModelImpl<MemberRequest>
 		return _originalReceiverUserId;
 	}
 
+	@Override
 	public long getInvitedRoleId() {
 		return _invitedRoleId;
 	}
 
+	@Override
 	public void setInvitedRoleId(long invitedRoleId) {
 		_invitedRoleId = invitedRoleId;
 	}
 
+	@Override
 	public long getInvitedTeamId() {
 		return _invitedTeamId;
 	}
 
+	@Override
 	public void setInvitedTeamId(long invitedTeamId) {
 		_invitedTeamId = invitedTeamId;
 	}
 
+	@Override
 	public int getStatus() {
 		return _status;
 	}
 
+	@Override
 	public void setStatus(int status) {
 		_columnBitmask |= STATUS_COLUMN_BITMASK;
 
@@ -396,29 +431,26 @@ public class MemberRequestModelImpl extends BaseModelImpl<MemberRequest>
 	}
 
 	@Override
-	public MemberRequest toEscapedModel() {
-		if (_escapedModelProxy == null) {
-			_escapedModelProxy = (MemberRequest)ProxyUtil.newProxyInstance(_classLoader,
-					_escapedModelProxyInterfaces,
-					new AutoEscapeBeanHandler(this));
-		}
-
-		return _escapedModelProxy;
-	}
-
-	@Override
 	public ExpandoBridge getExpandoBridge() {
-		if (_expandoBridge == null) {
-			_expandoBridge = ExpandoBridgeFactoryUtil.getExpandoBridge(getCompanyId(),
-					MemberRequest.class.getName(), getPrimaryKey());
-		}
-
-		return _expandoBridge;
+		return ExpandoBridgeFactoryUtil.getExpandoBridge(getCompanyId(),
+			MemberRequest.class.getName(), getPrimaryKey());
 	}
 
 	@Override
 	public void setExpandoBridgeAttributes(ServiceContext serviceContext) {
-		getExpandoBridge().setAttributes(serviceContext);
+		ExpandoBridge expandoBridge = getExpandoBridge();
+
+		expandoBridge.setAttributes(serviceContext);
+	}
+
+	@Override
+	public MemberRequest toEscapedModel() {
+		if (_escapedModel == null) {
+			_escapedModel = (MemberRequest)ProxyUtil.newProxyInstance(_classLoader,
+					_escapedModelInterfaces, new AutoEscapeBeanHandler(this));
+		}
+
+		return _escapedModel;
 	}
 
 	@Override
@@ -443,6 +475,7 @@ public class MemberRequestModelImpl extends BaseModelImpl<MemberRequest>
 		return memberRequestImpl;
 	}
 
+	@Override
 	public int compareTo(MemberRequest memberRequest) {
 		int value = 0;
 
@@ -460,18 +493,15 @@ public class MemberRequestModelImpl extends BaseModelImpl<MemberRequest>
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof MemberRequest)) {
 			return false;
 		}
 
-		MemberRequest memberRequest = null;
-
-		try {
-			memberRequest = (MemberRequest)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		MemberRequest memberRequest = (MemberRequest)obj;
 
 		long primaryKey = memberRequest.getPrimaryKey();
 
@@ -599,6 +629,7 @@ public class MemberRequestModelImpl extends BaseModelImpl<MemberRequest>
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
 		StringBundler sb = new StringBundler(40);
 
@@ -661,7 +692,7 @@ public class MemberRequestModelImpl extends BaseModelImpl<MemberRequest>
 	}
 
 	private static ClassLoader _classLoader = MemberRequest.class.getClassLoader();
-	private static Class<?>[] _escapedModelProxyInterfaces = new Class[] {
+	private static Class<?>[] _escapedModelInterfaces = new Class[] {
 			MemberRequest.class
 		};
 	private long _memberRequestId;
@@ -685,7 +716,6 @@ public class MemberRequestModelImpl extends BaseModelImpl<MemberRequest>
 	private int _status;
 	private int _originalStatus;
 	private boolean _setOriginalStatus;
-	private transient ExpandoBridge _expandoBridge;
 	private long _columnBitmask;
-	private MemberRequest _escapedModelProxy;
+	private MemberRequest _escapedModel;
 }

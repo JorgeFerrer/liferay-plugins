@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -20,7 +20,10 @@ import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.model.CacheModel;
 
-import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 import java.util.Date;
 
@@ -31,7 +34,7 @@ import java.util.Date;
  * @see Message
  * @generated
  */
-public class MessageCacheModel implements CacheModel<Message>, Serializable {
+public class MessageCacheModel implements CacheModel<Message>, Externalizable {
 	@Override
 	public String toString() {
 		StringBundler sb = new StringBundler(39);
@@ -79,6 +82,7 @@ public class MessageCacheModel implements CacheModel<Message>, Serializable {
 		return sb.toString();
 	}
 
+	@Override
 	public Message toEntityModel() {
 		MessageImpl messageImpl = new MessageImpl();
 
@@ -179,6 +183,110 @@ public class MessageCacheModel implements CacheModel<Message>, Serializable {
 		messageImpl.resetOriginalValues();
 
 		return messageImpl;
+	}
+
+	@Override
+	public void readExternal(ObjectInput objectInput) throws IOException {
+		messageId = objectInput.readLong();
+		companyId = objectInput.readLong();
+		userId = objectInput.readLong();
+		userName = objectInput.readUTF();
+		createDate = objectInput.readLong();
+		modifiedDate = objectInput.readLong();
+		accountId = objectInput.readLong();
+		folderId = objectInput.readLong();
+		sender = objectInput.readUTF();
+		to = objectInput.readUTF();
+		cc = objectInput.readUTF();
+		bcc = objectInput.readUTF();
+		sentDate = objectInput.readLong();
+		subject = objectInput.readUTF();
+		preview = objectInput.readUTF();
+		body = objectInput.readUTF();
+		flags = objectInput.readUTF();
+		size = objectInput.readLong();
+		remoteMessageId = objectInput.readLong();
+	}
+
+	@Override
+	public void writeExternal(ObjectOutput objectOutput)
+		throws IOException {
+		objectOutput.writeLong(messageId);
+		objectOutput.writeLong(companyId);
+		objectOutput.writeLong(userId);
+
+		if (userName == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(userName);
+		}
+
+		objectOutput.writeLong(createDate);
+		objectOutput.writeLong(modifiedDate);
+		objectOutput.writeLong(accountId);
+		objectOutput.writeLong(folderId);
+
+		if (sender == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(sender);
+		}
+
+		if (to == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(to);
+		}
+
+		if (cc == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(cc);
+		}
+
+		if (bcc == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(bcc);
+		}
+
+		objectOutput.writeLong(sentDate);
+
+		if (subject == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(subject);
+		}
+
+		if (preview == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(preview);
+		}
+
+		if (body == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(body);
+		}
+
+		if (flags == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(flags);
+		}
+
+		objectOutput.writeLong(size);
+		objectOutput.writeLong(remoteMessageId);
 	}
 
 	public long messageId;

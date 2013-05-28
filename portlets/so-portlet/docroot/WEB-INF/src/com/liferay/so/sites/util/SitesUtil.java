@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This file is part of Liferay Social Office. Liferay Social Office is free
  * software: you can redistribute it and/or modify it under the terms of the GNU
@@ -69,11 +69,11 @@ public class SitesUtil {
 
 	public static List<Group> getVisibleSites(
 		long companyId, long userId, String keywords, boolean usersSites,
-		int maxResultSize) {
+		int start, int end) {
 
 		try {
 			return doGetVisibleSites(
-				companyId, userId, keywords, usersSites, maxResultSize);
+				companyId, userId, keywords, usersSites, start, end);
 		}
 		catch (Exception e) {
 			_log.error(e, e);
@@ -98,68 +98,29 @@ public class SitesUtil {
 
 	protected static List<Group> doGetVisibleSites(
 			long companyId, long userId, String keywords, boolean usersSites,
-			int maxResultSize)
-		throws Exception {
-
-		List<Group> groups = new ArrayList<Group>(maxResultSize);
-
-		LinkedHashMap<String, Object> params =
-			new LinkedHashMap<String, Object>();
-
-		params.put("usersGroups", userId);
-
-		List<Group> usersGroups = GroupLocalServiceUtil.search(
-			companyId, keywords, null, params, 0, maxResultSize,
-			new GroupNameComparator(true));
-
-		groups.addAll(usersGroups);
-
-		if (usersSites || (groups.size() >= maxResultSize)) {
-			return groups;
-		}
-
-		params.clear();
-
-		List<Integer> types = new ArrayList<Integer>();
-
-		types.add(GroupConstants.TYPE_SITE_OPEN);
-		types.add(GroupConstants.TYPE_SITE_RESTRICTED);
-
-		params.put("types", types);
-
-		List<Group> visibleGroup = GroupLocalServiceUtil.search(
-			companyId, keywords, null, params, 0, maxResultSize,
-			new GroupNameComparator(true));
-
-		for (Group group : visibleGroup) {
-			if (!usersGroups.contains(group)) {
-				groups.add(group);
-			}
-
-			if (groups.size() > maxResultSize) {
-				break;
-			}
-		}
-
-		return groups;
-	}
-
-	protected static int doGetVisibleSitesCount(
-			long comapnyId, long userId, String keywords, boolean usersSites)
+			int start, int end)
 		throws Exception {
 
 		if (usersSites) {
 			LinkedHashMap<String, Object> params =
 				new LinkedHashMap<String, Object>();
 
+			params.put("active", Boolean.TRUE);
+			params.put("pageCount", Boolean.TRUE);
 			params.put("usersGroups", userId);
 
-			return GroupLocalServiceUtil.searchCount(
-				comapnyId, keywords, null, params);
+			List<Group> groups = GroupLocalServiceUtil.search(
+				companyId, keywords, null, params, true, start, end,
+				new GroupNameComparator(true));
+
+			return groups;
 		}
 		else {
 			LinkedHashMap<String, Object> params =
 				new LinkedHashMap<String, Object>();
+
+			params.put("active", Boolean.TRUE);
+			params.put("pageCount", Boolean.TRUE);
 
 			List<Integer> types = new ArrayList<Integer>();
 
@@ -168,21 +129,45 @@ public class SitesUtil {
 
 			params.put("types", types);
 
-			int groupsCount = GroupLocalServiceUtil.searchCount(
-				comapnyId, keywords, null, params);
+			List<Group> groups = GroupLocalServiceUtil.search(
+				companyId, keywords, null, params, true, start, end,
+				new GroupNameComparator(true));
 
-			params.clear();
+			return groups;
+		}
+	}
 
+	protected static int doGetVisibleSitesCount(
+			long companyId, long userId, String keywords, boolean usersSites)
+		throws Exception {
+
+		if (usersSites) {
+			LinkedHashMap<String, Object> params =
+				new LinkedHashMap<String, Object>();
+
+			params.put("active", Boolean.TRUE);
+			params.put("pageCount", Boolean.TRUE);
 			params.put("usersGroups", userId);
 
-			types.clear();
+			return GroupLocalServiceUtil.searchCount(
+				companyId, keywords, null, params, true);
+		}
+		else {
+			LinkedHashMap<String, Object> params =
+				new LinkedHashMap<String, Object>();
 
-			types.add(GroupConstants.TYPE_SITE_PRIVATE);
+			params.put("active", Boolean.TRUE);
+			params.put("pageCount", Boolean.TRUE);
+
+			List<Integer> types = new ArrayList<Integer>();
+
+			types.add(GroupConstants.TYPE_SITE_OPEN);
+			types.add(GroupConstants.TYPE_SITE_RESTRICTED);
 
 			params.put("types", types);
 
-			return groupsCount + GroupLocalServiceUtil.searchCount(
-				comapnyId, keywords, null, params);
+			return GroupLocalServiceUtil.searchCount(
+				companyId, keywords, null, params, true);
 		}
 	}
 

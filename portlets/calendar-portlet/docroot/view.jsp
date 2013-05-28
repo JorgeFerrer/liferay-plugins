@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -16,4 +16,24 @@
 
 <%@ include file="/init.jsp" %>
 
-view.jsp
+<%
+String tabs1 = ParamUtil.getString(request, "tabs1", "calendar");
+
+PortletURL portletURL = renderResponse.createRenderURL();
+
+portletURL.setParameter("tabs1", tabs1);
+%>
+
+<liferay-ui:tabs
+	names='<%= themeDisplay.isSignedIn() ? "calendar,resources" : "calendar" %>'
+	url="<%= portletURL.toString() %>"
+/>
+
+<c:choose>
+	<c:when test='<%= tabs1.equals("calendar") %>'>
+		<liferay-util:include page="/view_calendar.jsp" servletContext="<%= application %>" />
+	</c:when>
+	<c:when test='<%= tabs1.equals("resources") %>'>
+		<liferay-util:include page="/view_calendar_resources.jsp" servletContext="<%= application %>" />
+	</c:when>
+</c:choose>

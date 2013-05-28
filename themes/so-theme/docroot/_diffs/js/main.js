@@ -8,7 +8,7 @@ AUI().ready(
 		if (toggleFluid) {
 			toggleFluid.on(
 				'click',
-				function (event) {
+				function(event) {
 					if (!body.hasClass('so-layout-fluid-ad')) {
 						body.toggleClass('so-layout-fluid');
 
@@ -21,6 +21,29 @@ AUI().ready(
 							}
 						);
 					};
+				}
+			);
+		}
+
+		var memberButton = A.one('#memberButton');
+
+		if (memberButton) {
+			memberButton.on(
+				'click',
+				function(event) {
+					event.preventDefault();
+
+					A.io.request(
+						event.target.get('href'),
+						{
+							method: 'POST',
+							on: {
+								success: function(event, id, obj) {
+									window.location = '';
+								}
+							}
+						}
+					);
 				}
 			);
 		}

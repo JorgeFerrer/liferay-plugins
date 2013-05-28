@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -95,19 +95,349 @@ public class JIRAChangeGroupUtil {
 	}
 
 	/**
-	 * @see com.liferay.portal.service.persistence.BasePersistence#update(com.liferay.portal.model.BaseModel, boolean)
+	 * @see com.liferay.portal.service.persistence.BasePersistence#update(com.liferay.portal.model.BaseModel)
 	 */
-	public static JIRAChangeGroup update(JIRAChangeGroup jiraChangeGroup,
-		boolean merge) throws SystemException {
-		return getPersistence().update(jiraChangeGroup, merge);
+	public static JIRAChangeGroup update(JIRAChangeGroup jiraChangeGroup)
+		throws SystemException {
+		return getPersistence().update(jiraChangeGroup);
 	}
 
 	/**
-	 * @see com.liferay.portal.service.persistence.BasePersistence#update(com.liferay.portal.model.BaseModel, boolean, ServiceContext)
+	 * @see com.liferay.portal.service.persistence.BasePersistence#update(com.liferay.portal.model.BaseModel, ServiceContext)
 	 */
 	public static JIRAChangeGroup update(JIRAChangeGroup jiraChangeGroup,
-		boolean merge, ServiceContext serviceContext) throws SystemException {
-		return getPersistence().update(jiraChangeGroup, merge, serviceContext);
+		ServiceContext serviceContext) throws SystemException {
+		return getPersistence().update(jiraChangeGroup, serviceContext);
+	}
+
+	/**
+	* Returns all the j i r a change groups where jiraUserId = &#63;.
+	*
+	* @param jiraUserId the jira user ID
+	* @return the matching j i r a change groups
+	* @throws SystemException if a system exception occurred
+	*/
+	public static java.util.List<com.liferay.socialcoding.model.JIRAChangeGroup> findByJiraUserId(
+		java.lang.String jiraUserId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getPersistence().findByJiraUserId(jiraUserId);
+	}
+
+	/**
+	* Returns a range of all the j i r a change groups where jiraUserId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.socialcoding.model.impl.JIRAChangeGroupModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param jiraUserId the jira user ID
+	* @param start the lower bound of the range of j i r a change groups
+	* @param end the upper bound of the range of j i r a change groups (not inclusive)
+	* @return the range of matching j i r a change groups
+	* @throws SystemException if a system exception occurred
+	*/
+	public static java.util.List<com.liferay.socialcoding.model.JIRAChangeGroup> findByJiraUserId(
+		java.lang.String jiraUserId, int start, int end)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getPersistence().findByJiraUserId(jiraUserId, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the j i r a change groups where jiraUserId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.socialcoding.model.impl.JIRAChangeGroupModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param jiraUserId the jira user ID
+	* @param start the lower bound of the range of j i r a change groups
+	* @param end the upper bound of the range of j i r a change groups (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching j i r a change groups
+	* @throws SystemException if a system exception occurred
+	*/
+	public static java.util.List<com.liferay.socialcoding.model.JIRAChangeGroup> findByJiraUserId(
+		java.lang.String jiraUserId, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getPersistence()
+				   .findByJiraUserId(jiraUserId, start, end, orderByComparator);
+	}
+
+	/**
+	* Returns the first j i r a change group in the ordered set where jiraUserId = &#63;.
+	*
+	* @param jiraUserId the jira user ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching j i r a change group
+	* @throws com.liferay.socialcoding.NoSuchJIRAChangeGroupException if a matching j i r a change group could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static com.liferay.socialcoding.model.JIRAChangeGroup findByJiraUserId_First(
+		java.lang.String jiraUserId,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException,
+			com.liferay.socialcoding.NoSuchJIRAChangeGroupException {
+		return getPersistence()
+				   .findByJiraUserId_First(jiraUserId, orderByComparator);
+	}
+
+	/**
+	* Returns the first j i r a change group in the ordered set where jiraUserId = &#63;.
+	*
+	* @param jiraUserId the jira user ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching j i r a change group, or <code>null</code> if a matching j i r a change group could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static com.liferay.socialcoding.model.JIRAChangeGroup fetchByJiraUserId_First(
+		java.lang.String jiraUserId,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getPersistence()
+				   .fetchByJiraUserId_First(jiraUserId, orderByComparator);
+	}
+
+	/**
+	* Returns the last j i r a change group in the ordered set where jiraUserId = &#63;.
+	*
+	* @param jiraUserId the jira user ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching j i r a change group
+	* @throws com.liferay.socialcoding.NoSuchJIRAChangeGroupException if a matching j i r a change group could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static com.liferay.socialcoding.model.JIRAChangeGroup findByJiraUserId_Last(
+		java.lang.String jiraUserId,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException,
+			com.liferay.socialcoding.NoSuchJIRAChangeGroupException {
+		return getPersistence()
+				   .findByJiraUserId_Last(jiraUserId, orderByComparator);
+	}
+
+	/**
+	* Returns the last j i r a change group in the ordered set where jiraUserId = &#63;.
+	*
+	* @param jiraUserId the jira user ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching j i r a change group, or <code>null</code> if a matching j i r a change group could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static com.liferay.socialcoding.model.JIRAChangeGroup fetchByJiraUserId_Last(
+		java.lang.String jiraUserId,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getPersistence()
+				   .fetchByJiraUserId_Last(jiraUserId, orderByComparator);
+	}
+
+	/**
+	* Returns the j i r a change groups before and after the current j i r a change group in the ordered set where jiraUserId = &#63;.
+	*
+	* @param jiraChangeGroupId the primary key of the current j i r a change group
+	* @param jiraUserId the jira user ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next j i r a change group
+	* @throws com.liferay.socialcoding.NoSuchJIRAChangeGroupException if a j i r a change group with the primary key could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static com.liferay.socialcoding.model.JIRAChangeGroup[] findByJiraUserId_PrevAndNext(
+		long jiraChangeGroupId, java.lang.String jiraUserId,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException,
+			com.liferay.socialcoding.NoSuchJIRAChangeGroupException {
+		return getPersistence()
+				   .findByJiraUserId_PrevAndNext(jiraChangeGroupId, jiraUserId,
+			orderByComparator);
+	}
+
+	/**
+	* Removes all the j i r a change groups where jiraUserId = &#63; from the database.
+	*
+	* @param jiraUserId the jira user ID
+	* @throws SystemException if a system exception occurred
+	*/
+	public static void removeByJiraUserId(java.lang.String jiraUserId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		getPersistence().removeByJiraUserId(jiraUserId);
+	}
+
+	/**
+	* Returns the number of j i r a change groups where jiraUserId = &#63;.
+	*
+	* @param jiraUserId the jira user ID
+	* @return the number of matching j i r a change groups
+	* @throws SystemException if a system exception occurred
+	*/
+	public static int countByJiraUserId(java.lang.String jiraUserId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getPersistence().countByJiraUserId(jiraUserId);
+	}
+
+	/**
+	* Returns all the j i r a change groups where jiraIssueId = &#63;.
+	*
+	* @param jiraIssueId the jira issue ID
+	* @return the matching j i r a change groups
+	* @throws SystemException if a system exception occurred
+	*/
+	public static java.util.List<com.liferay.socialcoding.model.JIRAChangeGroup> findByJiraIssueId(
+		long jiraIssueId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getPersistence().findByJiraIssueId(jiraIssueId);
+	}
+
+	/**
+	* Returns a range of all the j i r a change groups where jiraIssueId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.socialcoding.model.impl.JIRAChangeGroupModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param jiraIssueId the jira issue ID
+	* @param start the lower bound of the range of j i r a change groups
+	* @param end the upper bound of the range of j i r a change groups (not inclusive)
+	* @return the range of matching j i r a change groups
+	* @throws SystemException if a system exception occurred
+	*/
+	public static java.util.List<com.liferay.socialcoding.model.JIRAChangeGroup> findByJiraIssueId(
+		long jiraIssueId, int start, int end)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getPersistence().findByJiraIssueId(jiraIssueId, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the j i r a change groups where jiraIssueId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.socialcoding.model.impl.JIRAChangeGroupModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param jiraIssueId the jira issue ID
+	* @param start the lower bound of the range of j i r a change groups
+	* @param end the upper bound of the range of j i r a change groups (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching j i r a change groups
+	* @throws SystemException if a system exception occurred
+	*/
+	public static java.util.List<com.liferay.socialcoding.model.JIRAChangeGroup> findByJiraIssueId(
+		long jiraIssueId, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getPersistence()
+				   .findByJiraIssueId(jiraIssueId, start, end, orderByComparator);
+	}
+
+	/**
+	* Returns the first j i r a change group in the ordered set where jiraIssueId = &#63;.
+	*
+	* @param jiraIssueId the jira issue ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching j i r a change group
+	* @throws com.liferay.socialcoding.NoSuchJIRAChangeGroupException if a matching j i r a change group could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static com.liferay.socialcoding.model.JIRAChangeGroup findByJiraIssueId_First(
+		long jiraIssueId,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException,
+			com.liferay.socialcoding.NoSuchJIRAChangeGroupException {
+		return getPersistence()
+				   .findByJiraIssueId_First(jiraIssueId, orderByComparator);
+	}
+
+	/**
+	* Returns the first j i r a change group in the ordered set where jiraIssueId = &#63;.
+	*
+	* @param jiraIssueId the jira issue ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching j i r a change group, or <code>null</code> if a matching j i r a change group could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static com.liferay.socialcoding.model.JIRAChangeGroup fetchByJiraIssueId_First(
+		long jiraIssueId,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getPersistence()
+				   .fetchByJiraIssueId_First(jiraIssueId, orderByComparator);
+	}
+
+	/**
+	* Returns the last j i r a change group in the ordered set where jiraIssueId = &#63;.
+	*
+	* @param jiraIssueId the jira issue ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching j i r a change group
+	* @throws com.liferay.socialcoding.NoSuchJIRAChangeGroupException if a matching j i r a change group could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static com.liferay.socialcoding.model.JIRAChangeGroup findByJiraIssueId_Last(
+		long jiraIssueId,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException,
+			com.liferay.socialcoding.NoSuchJIRAChangeGroupException {
+		return getPersistence()
+				   .findByJiraIssueId_Last(jiraIssueId, orderByComparator);
+	}
+
+	/**
+	* Returns the last j i r a change group in the ordered set where jiraIssueId = &#63;.
+	*
+	* @param jiraIssueId the jira issue ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching j i r a change group, or <code>null</code> if a matching j i r a change group could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static com.liferay.socialcoding.model.JIRAChangeGroup fetchByJiraIssueId_Last(
+		long jiraIssueId,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getPersistence()
+				   .fetchByJiraIssueId_Last(jiraIssueId, orderByComparator);
+	}
+
+	/**
+	* Returns the j i r a change groups before and after the current j i r a change group in the ordered set where jiraIssueId = &#63;.
+	*
+	* @param jiraChangeGroupId the primary key of the current j i r a change group
+	* @param jiraIssueId the jira issue ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next j i r a change group
+	* @throws com.liferay.socialcoding.NoSuchJIRAChangeGroupException if a j i r a change group with the primary key could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static com.liferay.socialcoding.model.JIRAChangeGroup[] findByJiraIssueId_PrevAndNext(
+		long jiraChangeGroupId, long jiraIssueId,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException,
+			com.liferay.socialcoding.NoSuchJIRAChangeGroupException {
+		return getPersistence()
+				   .findByJiraIssueId_PrevAndNext(jiraChangeGroupId,
+			jiraIssueId, orderByComparator);
+	}
+
+	/**
+	* Removes all the j i r a change groups where jiraIssueId = &#63; from the database.
+	*
+	* @param jiraIssueId the jira issue ID
+	* @throws SystemException if a system exception occurred
+	*/
+	public static void removeByJiraIssueId(long jiraIssueId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		getPersistence().removeByJiraIssueId(jiraIssueId);
+	}
+
+	/**
+	* Returns the number of j i r a change groups where jiraIssueId = &#63;.
+	*
+	* @param jiraIssueId the jira issue ID
+	* @return the number of matching j i r a change groups
+	* @throws SystemException if a system exception occurred
+	*/
+	public static int countByJiraIssueId(long jiraIssueId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getPersistence().countByJiraIssueId(jiraIssueId);
 	}
 
 	/**
@@ -157,10 +487,9 @@ public class JIRAChangeGroupUtil {
 	}
 
 	public static com.liferay.socialcoding.model.JIRAChangeGroup updateImpl(
-		com.liferay.socialcoding.model.JIRAChangeGroup jiraChangeGroup,
-		boolean merge)
+		com.liferay.socialcoding.model.JIRAChangeGroup jiraChangeGroup)
 		throws com.liferay.portal.kernel.exception.SystemException {
-		return getPersistence().updateImpl(jiraChangeGroup, merge);
+		return getPersistence().updateImpl(jiraChangeGroup);
 	}
 
 	/**
@@ -192,250 +521,6 @@ public class JIRAChangeGroupUtil {
 	}
 
 	/**
-	* Returns all the j i r a change groups where jiraUserId = &#63;.
-	*
-	* @param jiraUserId the jira user ID
-	* @return the matching j i r a change groups
-	* @throws SystemException if a system exception occurred
-	*/
-	public static java.util.List<com.liferay.socialcoding.model.JIRAChangeGroup> findByJiraUserId(
-		java.lang.String jiraUserId)
-		throws com.liferay.portal.kernel.exception.SystemException {
-		return getPersistence().findByJiraUserId(jiraUserId);
-	}
-
-	/**
-	* Returns a range of all the j i r a change groups where jiraUserId = &#63;.
-	*
-	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
-	* </p>
-	*
-	* @param jiraUserId the jira user ID
-	* @param start the lower bound of the range of j i r a change groups
-	* @param end the upper bound of the range of j i r a change groups (not inclusive)
-	* @return the range of matching j i r a change groups
-	* @throws SystemException if a system exception occurred
-	*/
-	public static java.util.List<com.liferay.socialcoding.model.JIRAChangeGroup> findByJiraUserId(
-		java.lang.String jiraUserId, int start, int end)
-		throws com.liferay.portal.kernel.exception.SystemException {
-		return getPersistence().findByJiraUserId(jiraUserId, start, end);
-	}
-
-	/**
-	* Returns an ordered range of all the j i r a change groups where jiraUserId = &#63;.
-	*
-	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
-	* </p>
-	*
-	* @param jiraUserId the jira user ID
-	* @param start the lower bound of the range of j i r a change groups
-	* @param end the upper bound of the range of j i r a change groups (not inclusive)
-	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	* @return the ordered range of matching j i r a change groups
-	* @throws SystemException if a system exception occurred
-	*/
-	public static java.util.List<com.liferay.socialcoding.model.JIRAChangeGroup> findByJiraUserId(
-		java.lang.String jiraUserId, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException {
-		return getPersistence()
-				   .findByJiraUserId(jiraUserId, start, end, orderByComparator);
-	}
-
-	/**
-	* Returns the first j i r a change group in the ordered set where jiraUserId = &#63;.
-	*
-	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
-	* </p>
-	*
-	* @param jiraUserId the jira user ID
-	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	* @return the first matching j i r a change group
-	* @throws com.liferay.socialcoding.NoSuchJIRAChangeGroupException if a matching j i r a change group could not be found
-	* @throws SystemException if a system exception occurred
-	*/
-	public static com.liferay.socialcoding.model.JIRAChangeGroup findByJiraUserId_First(
-		java.lang.String jiraUserId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.socialcoding.NoSuchJIRAChangeGroupException {
-		return getPersistence()
-				   .findByJiraUserId_First(jiraUserId, orderByComparator);
-	}
-
-	/**
-	* Returns the last j i r a change group in the ordered set where jiraUserId = &#63;.
-	*
-	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
-	* </p>
-	*
-	* @param jiraUserId the jira user ID
-	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	* @return the last matching j i r a change group
-	* @throws com.liferay.socialcoding.NoSuchJIRAChangeGroupException if a matching j i r a change group could not be found
-	* @throws SystemException if a system exception occurred
-	*/
-	public static com.liferay.socialcoding.model.JIRAChangeGroup findByJiraUserId_Last(
-		java.lang.String jiraUserId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.socialcoding.NoSuchJIRAChangeGroupException {
-		return getPersistence()
-				   .findByJiraUserId_Last(jiraUserId, orderByComparator);
-	}
-
-	/**
-	* Returns the j i r a change groups before and after the current j i r a change group in the ordered set where jiraUserId = &#63;.
-	*
-	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
-	* </p>
-	*
-	* @param jiraChangeGroupId the primary key of the current j i r a change group
-	* @param jiraUserId the jira user ID
-	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	* @return the previous, current, and next j i r a change group
-	* @throws com.liferay.socialcoding.NoSuchJIRAChangeGroupException if a j i r a change group with the primary key could not be found
-	* @throws SystemException if a system exception occurred
-	*/
-	public static com.liferay.socialcoding.model.JIRAChangeGroup[] findByJiraUserId_PrevAndNext(
-		long jiraChangeGroupId, java.lang.String jiraUserId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.socialcoding.NoSuchJIRAChangeGroupException {
-		return getPersistence()
-				   .findByJiraUserId_PrevAndNext(jiraChangeGroupId, jiraUserId,
-			orderByComparator);
-	}
-
-	/**
-	* Returns all the j i r a change groups where jiraIssueId = &#63;.
-	*
-	* @param jiraIssueId the jira issue ID
-	* @return the matching j i r a change groups
-	* @throws SystemException if a system exception occurred
-	*/
-	public static java.util.List<com.liferay.socialcoding.model.JIRAChangeGroup> findByJiraIssueId(
-		long jiraIssueId)
-		throws com.liferay.portal.kernel.exception.SystemException {
-		return getPersistence().findByJiraIssueId(jiraIssueId);
-	}
-
-	/**
-	* Returns a range of all the j i r a change groups where jiraIssueId = &#63;.
-	*
-	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
-	* </p>
-	*
-	* @param jiraIssueId the jira issue ID
-	* @param start the lower bound of the range of j i r a change groups
-	* @param end the upper bound of the range of j i r a change groups (not inclusive)
-	* @return the range of matching j i r a change groups
-	* @throws SystemException if a system exception occurred
-	*/
-	public static java.util.List<com.liferay.socialcoding.model.JIRAChangeGroup> findByJiraIssueId(
-		long jiraIssueId, int start, int end)
-		throws com.liferay.portal.kernel.exception.SystemException {
-		return getPersistence().findByJiraIssueId(jiraIssueId, start, end);
-	}
-
-	/**
-	* Returns an ordered range of all the j i r a change groups where jiraIssueId = &#63;.
-	*
-	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
-	* </p>
-	*
-	* @param jiraIssueId the jira issue ID
-	* @param start the lower bound of the range of j i r a change groups
-	* @param end the upper bound of the range of j i r a change groups (not inclusive)
-	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	* @return the ordered range of matching j i r a change groups
-	* @throws SystemException if a system exception occurred
-	*/
-	public static java.util.List<com.liferay.socialcoding.model.JIRAChangeGroup> findByJiraIssueId(
-		long jiraIssueId, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException {
-		return getPersistence()
-				   .findByJiraIssueId(jiraIssueId, start, end, orderByComparator);
-	}
-
-	/**
-	* Returns the first j i r a change group in the ordered set where jiraIssueId = &#63;.
-	*
-	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
-	* </p>
-	*
-	* @param jiraIssueId the jira issue ID
-	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	* @return the first matching j i r a change group
-	* @throws com.liferay.socialcoding.NoSuchJIRAChangeGroupException if a matching j i r a change group could not be found
-	* @throws SystemException if a system exception occurred
-	*/
-	public static com.liferay.socialcoding.model.JIRAChangeGroup findByJiraIssueId_First(
-		long jiraIssueId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.socialcoding.NoSuchJIRAChangeGroupException {
-		return getPersistence()
-				   .findByJiraIssueId_First(jiraIssueId, orderByComparator);
-	}
-
-	/**
-	* Returns the last j i r a change group in the ordered set where jiraIssueId = &#63;.
-	*
-	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
-	* </p>
-	*
-	* @param jiraIssueId the jira issue ID
-	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	* @return the last matching j i r a change group
-	* @throws com.liferay.socialcoding.NoSuchJIRAChangeGroupException if a matching j i r a change group could not be found
-	* @throws SystemException if a system exception occurred
-	*/
-	public static com.liferay.socialcoding.model.JIRAChangeGroup findByJiraIssueId_Last(
-		long jiraIssueId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.socialcoding.NoSuchJIRAChangeGroupException {
-		return getPersistence()
-				   .findByJiraIssueId_Last(jiraIssueId, orderByComparator);
-	}
-
-	/**
-	* Returns the j i r a change groups before and after the current j i r a change group in the ordered set where jiraIssueId = &#63;.
-	*
-	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
-	* </p>
-	*
-	* @param jiraChangeGroupId the primary key of the current j i r a change group
-	* @param jiraIssueId the jira issue ID
-	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	* @return the previous, current, and next j i r a change group
-	* @throws com.liferay.socialcoding.NoSuchJIRAChangeGroupException if a j i r a change group with the primary key could not be found
-	* @throws SystemException if a system exception occurred
-	*/
-	public static com.liferay.socialcoding.model.JIRAChangeGroup[] findByJiraIssueId_PrevAndNext(
-		long jiraChangeGroupId, long jiraIssueId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.socialcoding.NoSuchJIRAChangeGroupException {
-		return getPersistence()
-				   .findByJiraIssueId_PrevAndNext(jiraChangeGroupId,
-			jiraIssueId, orderByComparator);
-	}
-
-	/**
 	* Returns all the j i r a change groups.
 	*
 	* @return the j i r a change groups
@@ -450,7 +535,7 @@ public class JIRAChangeGroupUtil {
 	* Returns a range of all the j i r a change groups.
 	*
 	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.socialcoding.model.impl.JIRAChangeGroupModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	* </p>
 	*
 	* @param start the lower bound of the range of j i r a change groups
@@ -468,7 +553,7 @@ public class JIRAChangeGroupUtil {
 	* Returns an ordered range of all the j i r a change groups.
 	*
 	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.socialcoding.model.impl.JIRAChangeGroupModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	* </p>
 	*
 	* @param start the lower bound of the range of j i r a change groups
@@ -485,28 +570,6 @@ public class JIRAChangeGroupUtil {
 	}
 
 	/**
-	* Removes all the j i r a change groups where jiraUserId = &#63; from the database.
-	*
-	* @param jiraUserId the jira user ID
-	* @throws SystemException if a system exception occurred
-	*/
-	public static void removeByJiraUserId(java.lang.String jiraUserId)
-		throws com.liferay.portal.kernel.exception.SystemException {
-		getPersistence().removeByJiraUserId(jiraUserId);
-	}
-
-	/**
-	* Removes all the j i r a change groups where jiraIssueId = &#63; from the database.
-	*
-	* @param jiraIssueId the jira issue ID
-	* @throws SystemException if a system exception occurred
-	*/
-	public static void removeByJiraIssueId(long jiraIssueId)
-		throws com.liferay.portal.kernel.exception.SystemException {
-		getPersistence().removeByJiraIssueId(jiraIssueId);
-	}
-
-	/**
 	* Removes all the j i r a change groups from the database.
 	*
 	* @throws SystemException if a system exception occurred
@@ -514,30 +577,6 @@ public class JIRAChangeGroupUtil {
 	public static void removeAll()
 		throws com.liferay.portal.kernel.exception.SystemException {
 		getPersistence().removeAll();
-	}
-
-	/**
-	* Returns the number of j i r a change groups where jiraUserId = &#63;.
-	*
-	* @param jiraUserId the jira user ID
-	* @return the number of matching j i r a change groups
-	* @throws SystemException if a system exception occurred
-	*/
-	public static int countByJiraUserId(java.lang.String jiraUserId)
-		throws com.liferay.portal.kernel.exception.SystemException {
-		return getPersistence().countByJiraUserId(jiraUserId);
-	}
-
-	/**
-	* Returns the number of j i r a change groups where jiraIssueId = &#63;.
-	*
-	* @param jiraIssueId the jira issue ID
-	* @return the number of matching j i r a change groups
-	* @throws SystemException if a system exception occurred
-	*/
-	public static int countByJiraIssueId(long jiraIssueId)
-		throws com.liferay.portal.kernel.exception.SystemException {
-		return getPersistence().countByJiraIssueId(jiraIssueId);
 	}
 
 	/**
@@ -564,7 +603,7 @@ public class JIRAChangeGroupUtil {
 	}
 
 	/**
-	 * @deprecated
+	 * @deprecated As of 6.2.0
 	 */
 	public void setPersistence(JIRAChangeGroupPersistence persistence) {
 	}

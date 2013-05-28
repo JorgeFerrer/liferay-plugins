@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -97,6 +97,7 @@ public class KBTemplateModelImpl extends BaseModelImpl<KBTemplate>
 	public static long COMPANYID_COLUMN_BITMASK = 1L;
 	public static long GROUPID_COLUMN_BITMASK = 2L;
 	public static long UUID_COLUMN_BITMASK = 4L;
+	public static long MODIFIEDDATE_COLUMN_BITMASK = 8L;
 
 	/**
 	 * Converts the soap model instance into a normal model instance.
@@ -105,6 +106,10 @@ public class KBTemplateModelImpl extends BaseModelImpl<KBTemplate>
 	 * @return the normal model instance
 	 */
 	public static KBTemplate toModel(KBTemplateSoap soapModel) {
+		if (soapModel == null) {
+			return null;
+		}
+
 		KBTemplate model = new KBTemplateImpl();
 
 		model.setUuid(soapModel.getUuid());
@@ -128,6 +133,10 @@ public class KBTemplateModelImpl extends BaseModelImpl<KBTemplate>
 	 * @return the normal model instances
 	 */
 	public static List<KBTemplate> toModels(KBTemplateSoap[] soapModels) {
+		if (soapModels == null) {
+			return null;
+		}
+
 		List<KBTemplate> models = new ArrayList<KBTemplate>(soapModels.length);
 
 		for (KBTemplateSoap soapModel : soapModels) {
@@ -143,26 +152,32 @@ public class KBTemplateModelImpl extends BaseModelImpl<KBTemplate>
 	public KBTemplateModelImpl() {
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _kbTemplateId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setKbTemplateId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
-		return new Long(_kbTemplateId);
+		return _kbTemplateId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return KBTemplate.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return KBTemplate.class.getName();
 	}
@@ -248,6 +263,7 @@ public class KBTemplateModelImpl extends BaseModelImpl<KBTemplate>
 		}
 	}
 
+	@Override
 	@JSON
 	public String getUuid() {
 		if (_uuid == null) {
@@ -258,6 +274,7 @@ public class KBTemplateModelImpl extends BaseModelImpl<KBTemplate>
 		}
 	}
 
+	@Override
 	public void setUuid(String uuid) {
 		if (_originalUuid == null) {
 			_originalUuid = _uuid;
@@ -270,20 +287,24 @@ public class KBTemplateModelImpl extends BaseModelImpl<KBTemplate>
 		return GetterUtil.getString(_originalUuid);
 	}
 
+	@Override
 	@JSON
 	public long getKbTemplateId() {
 		return _kbTemplateId;
 	}
 
+	@Override
 	public void setKbTemplateId(long kbTemplateId) {
 		_kbTemplateId = kbTemplateId;
 	}
 
+	@Override
 	@JSON
 	public long getGroupId() {
 		return _groupId;
 	}
 
+	@Override
 	public void setGroupId(long groupId) {
 		_columnBitmask |= GROUPID_COLUMN_BITMASK;
 
@@ -300,11 +321,13 @@ public class KBTemplateModelImpl extends BaseModelImpl<KBTemplate>
 		return _originalGroupId;
 	}
 
+	@Override
 	@JSON
 	public long getCompanyId() {
 		return _companyId;
 	}
 
+	@Override
 	public void setCompanyId(long companyId) {
 		_columnBitmask |= COMPANYID_COLUMN_BITMASK;
 
@@ -321,23 +344,28 @@ public class KBTemplateModelImpl extends BaseModelImpl<KBTemplate>
 		return _originalCompanyId;
 	}
 
+	@Override
 	@JSON
 	public long getUserId() {
 		return _userId;
 	}
 
+	@Override
 	public void setUserId(long userId) {
 		_userId = userId;
 	}
 
+	@Override
 	public String getUserUuid() throws SystemException {
 		return PortalUtil.getUserValue(getUserId(), "uuid", _userUuid);
 	}
 
+	@Override
 	public void setUserUuid(String userUuid) {
 		_userUuid = userUuid;
 	}
 
+	@Override
 	@JSON
 	public String getUserName() {
 		if (_userName == null) {
@@ -348,30 +376,36 @@ public class KBTemplateModelImpl extends BaseModelImpl<KBTemplate>
 		}
 	}
 
+	@Override
 	public void setUserName(String userName) {
 		_userName = userName;
 	}
 
+	@Override
 	@JSON
 	public Date getCreateDate() {
 		return _createDate;
 	}
 
+	@Override
 	public void setCreateDate(Date createDate) {
 		_createDate = createDate;
 	}
 
+	@Override
 	@JSON
 	public Date getModifiedDate() {
 		return _modifiedDate;
 	}
 
+	@Override
 	public void setModifiedDate(Date modifiedDate) {
 		_columnBitmask = -1L;
 
 		_modifiedDate = modifiedDate;
 	}
 
+	@Override
 	@JSON
 	public String getTitle() {
 		if (_title == null) {
@@ -382,10 +416,12 @@ public class KBTemplateModelImpl extends BaseModelImpl<KBTemplate>
 		}
 	}
 
+	@Override
 	public void setTitle(String title) {
 		_title = title;
 	}
 
+	@Override
 	@JSON
 	public String getContent() {
 		if (_content == null) {
@@ -396,6 +432,7 @@ public class KBTemplateModelImpl extends BaseModelImpl<KBTemplate>
 		}
 	}
 
+	@Override
 	public void setContent(String content) {
 		_content = content;
 	}
@@ -405,29 +442,26 @@ public class KBTemplateModelImpl extends BaseModelImpl<KBTemplate>
 	}
 
 	@Override
-	public KBTemplate toEscapedModel() {
-		if (_escapedModelProxy == null) {
-			_escapedModelProxy = (KBTemplate)ProxyUtil.newProxyInstance(_classLoader,
-					_escapedModelProxyInterfaces,
-					new AutoEscapeBeanHandler(this));
-		}
-
-		return _escapedModelProxy;
-	}
-
-	@Override
 	public ExpandoBridge getExpandoBridge() {
-		if (_expandoBridge == null) {
-			_expandoBridge = ExpandoBridgeFactoryUtil.getExpandoBridge(getCompanyId(),
-					KBTemplate.class.getName(), getPrimaryKey());
-		}
-
-		return _expandoBridge;
+		return ExpandoBridgeFactoryUtil.getExpandoBridge(getCompanyId(),
+			KBTemplate.class.getName(), getPrimaryKey());
 	}
 
 	@Override
 	public void setExpandoBridgeAttributes(ServiceContext serviceContext) {
-		getExpandoBridge().setAttributes(serviceContext);
+		ExpandoBridge expandoBridge = getExpandoBridge();
+
+		expandoBridge.setAttributes(serviceContext);
+	}
+
+	@Override
+	public KBTemplate toEscapedModel() {
+		if (_escapedModel == null) {
+			_escapedModel = (KBTemplate)ProxyUtil.newProxyInstance(_classLoader,
+					_escapedModelInterfaces, new AutoEscapeBeanHandler(this));
+		}
+
+		return _escapedModel;
 	}
 
 	@Override
@@ -450,6 +484,7 @@ public class KBTemplateModelImpl extends BaseModelImpl<KBTemplate>
 		return kbTemplateImpl;
 	}
 
+	@Override
 	public int compareTo(KBTemplate kbTemplate) {
 		int value = 0;
 
@@ -467,18 +502,15 @@ public class KBTemplateModelImpl extends BaseModelImpl<KBTemplate>
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof KBTemplate)) {
 			return false;
 		}
 
-		KBTemplate kbTemplate = null;
-
-		try {
-			kbTemplate = (KBTemplate)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		KBTemplate kbTemplate = (KBTemplate)obj;
 
 		long primaryKey = kbTemplate.getPrimaryKey();
 
@@ -606,6 +638,7 @@ public class KBTemplateModelImpl extends BaseModelImpl<KBTemplate>
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
 		StringBundler sb = new StringBundler(34);
 
@@ -660,7 +693,7 @@ public class KBTemplateModelImpl extends BaseModelImpl<KBTemplate>
 	}
 
 	private static ClassLoader _classLoader = KBTemplate.class.getClassLoader();
-	private static Class<?>[] _escapedModelProxyInterfaces = new Class[] {
+	private static Class<?>[] _escapedModelInterfaces = new Class[] {
 			KBTemplate.class
 		};
 	private String _uuid;
@@ -679,7 +712,6 @@ public class KBTemplateModelImpl extends BaseModelImpl<KBTemplate>
 	private Date _modifiedDate;
 	private String _title;
 	private String _content;
-	private transient ExpandoBridge _expandoBridge;
 	private long _columnBitmask;
-	private KBTemplate _escapedModelProxy;
+	private KBTemplate _escapedModel;
 }

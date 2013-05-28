@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -93,26 +93,32 @@ public class OAuthConsumerModelImpl extends BaseModelImpl<OAuthConsumer>
 	public OAuthConsumerModelImpl() {
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _oAuthConsumerId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setOAuthConsumerId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
-		return new Long(_oAuthConsumerId);
+		return _oAuthConsumerId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return OAuthConsumer.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return OAuthConsumer.class.getName();
 	}
@@ -191,38 +197,47 @@ public class OAuthConsumerModelImpl extends BaseModelImpl<OAuthConsumer>
 		}
 	}
 
+	@Override
 	public long getOAuthConsumerId() {
 		return _oAuthConsumerId;
 	}
 
+	@Override
 	public void setOAuthConsumerId(long oAuthConsumerId) {
 		_oAuthConsumerId = oAuthConsumerId;
 	}
 
+	@Override
 	public long getCompanyId() {
 		return _companyId;
 	}
 
+	@Override
 	public void setCompanyId(long companyId) {
 		_companyId = companyId;
 	}
 
+	@Override
 	public Date getCreateDate() {
 		return _createDate;
 	}
 
+	@Override
 	public void setCreateDate(Date createDate) {
 		_createDate = createDate;
 	}
 
+	@Override
 	public Date getModifiedDate() {
 		return _modifiedDate;
 	}
 
+	@Override
 	public void setModifiedDate(Date modifiedDate) {
 		_modifiedDate = modifiedDate;
 	}
 
+	@Override
 	public String getGadgetKey() {
 		if (_gadgetKey == null) {
 			return StringPool.BLANK;
@@ -232,6 +247,7 @@ public class OAuthConsumerModelImpl extends BaseModelImpl<OAuthConsumer>
 		}
 	}
 
+	@Override
 	public void setGadgetKey(String gadgetKey) {
 		_columnBitmask |= GADGETKEY_COLUMN_BITMASK;
 
@@ -246,6 +262,7 @@ public class OAuthConsumerModelImpl extends BaseModelImpl<OAuthConsumer>
 		return GetterUtil.getString(_originalGadgetKey);
 	}
 
+	@Override
 	public String getServiceName() {
 		if (_serviceName == null) {
 			return StringPool.BLANK;
@@ -255,6 +272,7 @@ public class OAuthConsumerModelImpl extends BaseModelImpl<OAuthConsumer>
 		}
 	}
 
+	@Override
 	public void setServiceName(String serviceName) {
 		_columnBitmask = -1L;
 
@@ -269,6 +287,7 @@ public class OAuthConsumerModelImpl extends BaseModelImpl<OAuthConsumer>
 		return GetterUtil.getString(_originalServiceName);
 	}
 
+	@Override
 	public String getConsumerKey() {
 		if (_consumerKey == null) {
 			return StringPool.BLANK;
@@ -278,10 +297,12 @@ public class OAuthConsumerModelImpl extends BaseModelImpl<OAuthConsumer>
 		}
 	}
 
+	@Override
 	public void setConsumerKey(String consumerKey) {
 		_consumerKey = consumerKey;
 	}
 
+	@Override
 	public String getConsumerSecret() {
 		if (_consumerSecret == null) {
 			return StringPool.BLANK;
@@ -291,10 +312,12 @@ public class OAuthConsumerModelImpl extends BaseModelImpl<OAuthConsumer>
 		}
 	}
 
+	@Override
 	public void setConsumerSecret(String consumerSecret) {
 		_consumerSecret = consumerSecret;
 	}
 
+	@Override
 	public String getKeyType() {
 		if (_keyType == null) {
 			return StringPool.BLANK;
@@ -304,6 +327,7 @@ public class OAuthConsumerModelImpl extends BaseModelImpl<OAuthConsumer>
 		}
 	}
 
+	@Override
 	public void setKeyType(String keyType) {
 		_keyType = keyType;
 	}
@@ -313,29 +337,26 @@ public class OAuthConsumerModelImpl extends BaseModelImpl<OAuthConsumer>
 	}
 
 	@Override
-	public OAuthConsumer toEscapedModel() {
-		if (_escapedModelProxy == null) {
-			_escapedModelProxy = (OAuthConsumer)ProxyUtil.newProxyInstance(_classLoader,
-					_escapedModelProxyInterfaces,
-					new AutoEscapeBeanHandler(this));
-		}
-
-		return _escapedModelProxy;
-	}
-
-	@Override
 	public ExpandoBridge getExpandoBridge() {
-		if (_expandoBridge == null) {
-			_expandoBridge = ExpandoBridgeFactoryUtil.getExpandoBridge(getCompanyId(),
-					OAuthConsumer.class.getName(), getPrimaryKey());
-		}
-
-		return _expandoBridge;
+		return ExpandoBridgeFactoryUtil.getExpandoBridge(getCompanyId(),
+			OAuthConsumer.class.getName(), getPrimaryKey());
 	}
 
 	@Override
 	public void setExpandoBridgeAttributes(ServiceContext serviceContext) {
-		getExpandoBridge().setAttributes(serviceContext);
+		ExpandoBridge expandoBridge = getExpandoBridge();
+
+		expandoBridge.setAttributes(serviceContext);
+	}
+
+	@Override
+	public OAuthConsumer toEscapedModel() {
+		if (_escapedModel == null) {
+			_escapedModel = (OAuthConsumer)ProxyUtil.newProxyInstance(_classLoader,
+					_escapedModelInterfaces, new AutoEscapeBeanHandler(this));
+		}
+
+		return _escapedModel;
 	}
 
 	@Override
@@ -357,6 +378,7 @@ public class OAuthConsumerModelImpl extends BaseModelImpl<OAuthConsumer>
 		return oAuthConsumerImpl;
 	}
 
+	@Override
 	public int compareTo(OAuthConsumer oAuthConsumer) {
 		int value = 0;
 
@@ -371,18 +393,15 @@ public class OAuthConsumerModelImpl extends BaseModelImpl<OAuthConsumer>
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof OAuthConsumer)) {
 			return false;
 		}
 
-		OAuthConsumer oAuthConsumer = null;
-
-		try {
-			oAuthConsumer = (OAuthConsumer)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		OAuthConsumer oAuthConsumer = (OAuthConsumer)obj;
 
 		long primaryKey = oAuthConsumer.getPrimaryKey();
 
@@ -506,6 +525,7 @@ public class OAuthConsumerModelImpl extends BaseModelImpl<OAuthConsumer>
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
 		StringBundler sb = new StringBundler(31);
 
@@ -556,7 +576,7 @@ public class OAuthConsumerModelImpl extends BaseModelImpl<OAuthConsumer>
 	}
 
 	private static ClassLoader _classLoader = OAuthConsumer.class.getClassLoader();
-	private static Class<?>[] _escapedModelProxyInterfaces = new Class[] {
+	private static Class<?>[] _escapedModelInterfaces = new Class[] {
 			OAuthConsumer.class
 		};
 	private long _oAuthConsumerId;
@@ -570,7 +590,6 @@ public class OAuthConsumerModelImpl extends BaseModelImpl<OAuthConsumer>
 	private String _consumerKey;
 	private String _consumerSecret;
 	private String _keyType;
-	private transient ExpandoBridge _expandoBridge;
 	private long _columnBitmask;
-	private OAuthConsumer _escapedModelProxy;
+	private OAuthConsumer _escapedModel;
 }

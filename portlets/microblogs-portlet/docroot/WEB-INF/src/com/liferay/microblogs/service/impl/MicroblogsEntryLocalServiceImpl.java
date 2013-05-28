@@ -1,15 +1,18 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2.1 of the License, or (at your option)
- * any later version.
+ * This file is part of Liferay Social Office. Liferay Social Office is free
+ * software: you can redistribute it and/or modify it under the terms of the GNU
+ * Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
+ * Liferay Social Office is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * Liferay Social Office. If not, see http://www.gnu.org/licenses/agpl-3.0.html.
  */
 
 package com.liferay.microblogs.service.impl;
@@ -27,7 +30,6 @@ import com.liferay.portal.kernel.notifications.ChannelHubManagerUtil;
 import com.liferay.portal.kernel.notifications.NotificationEvent;
 import com.liferay.portal.kernel.notifications.NotificationEventFactoryUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.model.Group;
 import com.liferay.portal.model.User;
 import com.liferay.portal.service.GroupLocalServiceUtil;
@@ -44,11 +46,11 @@ import java.util.List;
 public class MicroblogsEntryLocalServiceImpl
 	extends MicroblogsEntryLocalServiceBaseImpl {
 
-	 public MicroblogsEntry addMicroblogsEntry(
+	public MicroblogsEntry addMicroblogsEntry(
 			long userId, String content, int type, long receiverUserId,
 			long receiverMicroblogsEntryId, int socialRelationType,
 			ServiceContext serviceContext)
-	 	throws PortalException, SystemException {
+		throws PortalException, SystemException {
 
 		// Microblogs entry
 
@@ -78,7 +80,7 @@ public class MicroblogsEntryLocalServiceImpl
 		microblogsEntry.setReceiverMicroblogsEntryId(receiverMicroblogsEntryId);
 		microblogsEntry.setSocialRelationType(socialRelationType);
 
-		microblogsEntryPersistence.update(microblogsEntry, false);
+		microblogsEntryPersistence.update(microblogsEntry);
 
 		// Resources
 
@@ -92,18 +94,22 @@ public class MicroblogsEntryLocalServiceImpl
 
 		// Social
 
-		int actitivtyKey = MicroblogsActivityKeys.ADD_ENTRY;
+		int activityKey = MicroblogsActivityKeys.ADD_ENTRY;
 
 		if (type == MicroblogsEntryConstants.TYPE_REPLY) {
-			actitivtyKey = MicroblogsActivityKeys.REPLY_ENTRY;
+			activityKey = MicroblogsActivityKeys.REPLY_ENTRY;
 		}
 		else if (type == MicroblogsEntryConstants.TYPE_REPOST) {
-			actitivtyKey = MicroblogsActivityKeys.REPOST_ENTRY;
+			activityKey = MicroblogsActivityKeys.REPOST_ENTRY;
 		}
+
+		JSONObject extraDataJSONObject = JSONFactoryUtil.createJSONObject();
+
+		extraDataJSONObject.put("content", microblogsEntry.getContent());
 
 		SocialActivityLocalServiceUtil.addActivity(
 			userId, 0, MicroblogsEntry.class.getName(), microblogsEntryId,
-			actitivtyKey, StringPool.BLANK, receiverUserId);
+			activityKey, extraDataJSONObject.toString(), receiverUserId);
 
 		// Notification
 
@@ -267,7 +273,7 @@ public class MicroblogsEntryLocalServiceImpl
 		microblogsEntry.setContent(content);
 		microblogsEntry.setSocialRelationType(socialRelationType);
 
-		microblogsEntryPersistence.update(microblogsEntry, false);
+		microblogsEntryPersistence.update(microblogsEntry);
 
 		// Asset
 
@@ -323,9 +329,7 @@ public class MicroblogsEntryLocalServiceImpl
 			return;
 		}
 
-		if ((type == MicroblogsEntryConstants.TYPE_REPLY) ||
-			(type == MicroblogsEntryConstants.TYPE_REPOST)) {
-
+		if (type == MicroblogsEntryConstants.TYPE_REPOST) {
 			throw new UnsupportedMicroblogsEntryException();
 		}
 	}

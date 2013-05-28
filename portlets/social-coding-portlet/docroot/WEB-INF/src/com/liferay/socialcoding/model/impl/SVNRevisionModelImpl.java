@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -84,32 +84,39 @@ public class SVNRevisionModelImpl extends BaseModelImpl<SVNRevision>
 			true);
 	public static long SVNREPOSITORYID_COLUMN_BITMASK = 1L;
 	public static long SVNUSERID_COLUMN_BITMASK = 2L;
+	public static long REVISIONNUMBER_COLUMN_BITMASK = 4L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(com.liferay.util.service.ServiceProps.get(
 				"lock.expiration.time.com.liferay.socialcoding.model.SVNRevision"));
 
 	public SVNRevisionModelImpl() {
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _svnRevisionId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setSvnRevisionId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
-		return new Long(_svnRevisionId);
+		return _svnRevisionId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return SVNRevision.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return SVNRevision.class.getName();
 	}
@@ -167,14 +174,17 @@ public class SVNRevisionModelImpl extends BaseModelImpl<SVNRevision>
 		}
 	}
 
+	@Override
 	public long getSvnRevisionId() {
 		return _svnRevisionId;
 	}
 
+	@Override
 	public void setSvnRevisionId(long svnRevisionId) {
 		_svnRevisionId = svnRevisionId;
 	}
 
+	@Override
 	public String getSvnUserId() {
 		if (_svnUserId == null) {
 			return StringPool.BLANK;
@@ -184,6 +194,7 @@ public class SVNRevisionModelImpl extends BaseModelImpl<SVNRevision>
 		}
 	}
 
+	@Override
 	public void setSvnUserId(String svnUserId) {
 		_columnBitmask |= SVNUSERID_COLUMN_BITMASK;
 
@@ -198,18 +209,22 @@ public class SVNRevisionModelImpl extends BaseModelImpl<SVNRevision>
 		return GetterUtil.getString(_originalSvnUserId);
 	}
 
+	@Override
 	public Date getCreateDate() {
 		return _createDate;
 	}
 
+	@Override
 	public void setCreateDate(Date createDate) {
 		_createDate = createDate;
 	}
 
+	@Override
 	public long getSvnRepositoryId() {
 		return _svnRepositoryId;
 	}
 
+	@Override
 	public void setSvnRepositoryId(long svnRepositoryId) {
 		_columnBitmask |= SVNREPOSITORYID_COLUMN_BITMASK;
 
@@ -226,16 +241,19 @@ public class SVNRevisionModelImpl extends BaseModelImpl<SVNRevision>
 		return _originalSvnRepositoryId;
 	}
 
+	@Override
 	public long getRevisionNumber() {
 		return _revisionNumber;
 	}
 
+	@Override
 	public void setRevisionNumber(long revisionNumber) {
 		_columnBitmask = -1L;
 
 		_revisionNumber = revisionNumber;
 	}
 
+	@Override
 	public String getComments() {
 		if (_comments == null) {
 			return StringPool.BLANK;
@@ -245,6 +263,7 @@ public class SVNRevisionModelImpl extends BaseModelImpl<SVNRevision>
 		}
 	}
 
+	@Override
 	public void setComments(String comments) {
 		_comments = comments;
 	}
@@ -254,29 +273,26 @@ public class SVNRevisionModelImpl extends BaseModelImpl<SVNRevision>
 	}
 
 	@Override
-	public SVNRevision toEscapedModel() {
-		if (_escapedModelProxy == null) {
-			_escapedModelProxy = (SVNRevision)ProxyUtil.newProxyInstance(_classLoader,
-					_escapedModelProxyInterfaces,
-					new AutoEscapeBeanHandler(this));
-		}
-
-		return _escapedModelProxy;
-	}
-
-	@Override
 	public ExpandoBridge getExpandoBridge() {
-		if (_expandoBridge == null) {
-			_expandoBridge = ExpandoBridgeFactoryUtil.getExpandoBridge(0,
-					SVNRevision.class.getName(), getPrimaryKey());
-		}
-
-		return _expandoBridge;
+		return ExpandoBridgeFactoryUtil.getExpandoBridge(0,
+			SVNRevision.class.getName(), getPrimaryKey());
 	}
 
 	@Override
 	public void setExpandoBridgeAttributes(ServiceContext serviceContext) {
-		getExpandoBridge().setAttributes(serviceContext);
+		ExpandoBridge expandoBridge = getExpandoBridge();
+
+		expandoBridge.setAttributes(serviceContext);
+	}
+
+	@Override
+	public SVNRevision toEscapedModel() {
+		if (_escapedModel == null) {
+			_escapedModel = (SVNRevision)ProxyUtil.newProxyInstance(_classLoader,
+					_escapedModelInterfaces, new AutoEscapeBeanHandler(this));
+		}
+
+		return _escapedModel;
 	}
 
 	@Override
@@ -295,6 +311,7 @@ public class SVNRevisionModelImpl extends BaseModelImpl<SVNRevision>
 		return svnRevisionImpl;
 	}
 
+	@Override
 	public int compareTo(SVNRevision svnRevision) {
 		int value = 0;
 
@@ -319,18 +336,15 @@ public class SVNRevisionModelImpl extends BaseModelImpl<SVNRevision>
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof SVNRevision)) {
 			return false;
 		}
 
-		SVNRevision svnRevision = null;
-
-		try {
-			svnRevision = (SVNRevision)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		SVNRevision svnRevision = (SVNRevision)obj;
 
 		long primaryKey = svnRevision.getPrimaryKey();
 
@@ -419,6 +433,7 @@ public class SVNRevisionModelImpl extends BaseModelImpl<SVNRevision>
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
 		StringBundler sb = new StringBundler(22);
 
@@ -457,7 +472,7 @@ public class SVNRevisionModelImpl extends BaseModelImpl<SVNRevision>
 	}
 
 	private static ClassLoader _classLoader = SVNRevision.class.getClassLoader();
-	private static Class<?>[] _escapedModelProxyInterfaces = new Class[] {
+	private static Class<?>[] _escapedModelInterfaces = new Class[] {
 			SVNRevision.class
 		};
 	private long _svnRevisionId;
@@ -469,7 +484,6 @@ public class SVNRevisionModelImpl extends BaseModelImpl<SVNRevision>
 	private boolean _setOriginalSvnRepositoryId;
 	private long _revisionNumber;
 	private String _comments;
-	private transient ExpandoBridge _expandoBridge;
 	private long _columnBitmask;
-	private SVNRevision _escapedModelProxy;
+	private SVNRevision _escapedModel;
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -46,6 +46,7 @@ public class KaleoTaskAssignmentSoap implements Serializable {
 		soapModel.setAssigneeActionId(model.getAssigneeActionId());
 		soapModel.setAssigneeScript(model.getAssigneeScript());
 		soapModel.setAssigneeScriptLanguage(model.getAssigneeScriptLanguage());
+		soapModel.setAssigneeScriptRequiredContexts(model.getAssigneeScriptRequiredContexts());
 
 		return soapModel;
 	}
@@ -229,6 +230,15 @@ public class KaleoTaskAssignmentSoap implements Serializable {
 		_assigneeScriptLanguage = assigneeScriptLanguage;
 	}
 
+	public String getAssigneeScriptRequiredContexts() {
+		return _assigneeScriptRequiredContexts;
+	}
+
+	public void setAssigneeScriptRequiredContexts(
+		String assigneeScriptRequiredContexts) {
+		_assigneeScriptRequiredContexts = assigneeScriptRequiredContexts;
+	}
+
 	private long _kaleoTaskAssignmentId;
 	private long _groupId;
 	private long _companyId;
@@ -245,4 +255,5 @@ public class KaleoTaskAssignmentSoap implements Serializable {
 	private String _assigneeActionId;
 	private String _assigneeScript;
 	private String _assigneeScriptLanguage;
+	private String _assigneeScriptRequiredContexts;
 }

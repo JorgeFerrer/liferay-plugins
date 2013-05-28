@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This file is part of Liferay Social Office. Liferay Social Office is free
  * software: you can redistribute it and/or modify it under the terms of the GNU
@@ -45,14 +45,14 @@ public class ProjectsEntryLocalServiceImpl
 
 		Date startDate = PortalUtil.getDate(
 			startDateMonth, startDateDay, startDateYear, user.getTimeZone(),
-			new ProjectsEntryStartDateException());
+			ProjectsEntryStartDateException.class);
 
 		Date endDate = null;
 
 		if (!current) {
 			endDate = PortalUtil.getDate(
 				endDateMonth, endDateDay, endDateYear, user.getTimeZone(),
-				new ProjectsEntryEndDateException());
+				ProjectsEntryEndDateException.class);
 		}
 
 		Date now = new Date();
@@ -73,7 +73,7 @@ public class ProjectsEntryLocalServiceImpl
 		projectsEntry.setEndDate(endDate);
 		projectsEntry.setData(data);
 
-		projectsEntryPersistence.update(projectsEntry, false);
+		projectsEntryPersistence.update(projectsEntry);
 
 		return projectsEntry;
 	}
@@ -102,14 +102,14 @@ public class ProjectsEntryLocalServiceImpl
 
 		Date startDate = PortalUtil.getDate(
 			startDateMonth, startDateDay, startDateYear, user.getTimeZone(),
-			new ProjectsEntryStartDateException());
+			ProjectsEntryStartDateException.class);
 
 		Date endDate = null;
 
 		if (!current) {
 			endDate = PortalUtil.getDate(
 				endDateMonth, endDateDay, endDateYear, user.getTimeZone(),
-				new ProjectsEntryEndDateException());
+				ProjectsEntryEndDateException.class);
 		}
 
 		projectsEntry.setModifiedDate(new Date());
@@ -119,7 +119,7 @@ public class ProjectsEntryLocalServiceImpl
 		projectsEntry.setEndDate(endDate);
 		projectsEntry.setData(data);
 
-		projectsEntryPersistence.update(projectsEntry, false);
+		projectsEntryPersistence.update(projectsEntry);
 
 		return projectsEntry;
 	}

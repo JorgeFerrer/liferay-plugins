@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -20,7 +20,10 @@ import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.model.CacheModel;
 
-import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 import java.util.Date;
 
@@ -31,7 +34,7 @@ import java.util.Date;
  * @see Account
  * @generated
  */
-public class AccountCacheModel implements CacheModel<Account>, Serializable {
+public class AccountCacheModel implements CacheModel<Account>, Externalizable {
 	@Override
 	public String toString() {
 		StringBundler sb = new StringBundler(53);
@@ -93,6 +96,7 @@ public class AccountCacheModel implements CacheModel<Account>, Serializable {
 		return sb.toString();
 	}
 
+	@Override
 	public Account toEntityModel() {
 		AccountImpl accountImpl = new AccountImpl();
 
@@ -203,6 +207,133 @@ public class AccountCacheModel implements CacheModel<Account>, Serializable {
 		accountImpl.resetOriginalValues();
 
 		return accountImpl;
+	}
+
+	@Override
+	public void readExternal(ObjectInput objectInput) throws IOException {
+		accountId = objectInput.readLong();
+		companyId = objectInput.readLong();
+		userId = objectInput.readLong();
+		userName = objectInput.readUTF();
+		createDate = objectInput.readLong();
+		modifiedDate = objectInput.readLong();
+		address = objectInput.readUTF();
+		personalName = objectInput.readUTF();
+		protocol = objectInput.readUTF();
+		incomingHostName = objectInput.readUTF();
+		incomingPort = objectInput.readInt();
+		incomingSecure = objectInput.readBoolean();
+		outgoingHostName = objectInput.readUTF();
+		outgoingPort = objectInput.readInt();
+		outgoingSecure = objectInput.readBoolean();
+		login = objectInput.readUTF();
+		password = objectInput.readUTF();
+		savePassword = objectInput.readBoolean();
+		signature = objectInput.readUTF();
+		useSignature = objectInput.readBoolean();
+		folderPrefix = objectInput.readUTF();
+		inboxFolderId = objectInput.readLong();
+		draftFolderId = objectInput.readLong();
+		sentFolderId = objectInput.readLong();
+		trashFolderId = objectInput.readLong();
+		defaultSender = objectInput.readBoolean();
+	}
+
+	@Override
+	public void writeExternal(ObjectOutput objectOutput)
+		throws IOException {
+		objectOutput.writeLong(accountId);
+		objectOutput.writeLong(companyId);
+		objectOutput.writeLong(userId);
+
+		if (userName == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(userName);
+		}
+
+		objectOutput.writeLong(createDate);
+		objectOutput.writeLong(modifiedDate);
+
+		if (address == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(address);
+		}
+
+		if (personalName == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(personalName);
+		}
+
+		if (protocol == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(protocol);
+		}
+
+		if (incomingHostName == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(incomingHostName);
+		}
+
+		objectOutput.writeInt(incomingPort);
+		objectOutput.writeBoolean(incomingSecure);
+
+		if (outgoingHostName == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(outgoingHostName);
+		}
+
+		objectOutput.writeInt(outgoingPort);
+		objectOutput.writeBoolean(outgoingSecure);
+
+		if (login == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(login);
+		}
+
+		if (password == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(password);
+		}
+
+		objectOutput.writeBoolean(savePassword);
+
+		if (signature == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(signature);
+		}
+
+		objectOutput.writeBoolean(useSignature);
+
+		if (folderPrefix == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(folderPrefix);
+		}
+
+		objectOutput.writeLong(inboxFolderId);
+		objectOutput.writeLong(draftFolderId);
+		objectOutput.writeLong(sentFolderId);
+		objectOutput.writeLong(trashFolderId);
+		objectOutput.writeBoolean(defaultSender);
 	}
 
 	public long accountId;
