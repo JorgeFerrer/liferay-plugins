@@ -16,9 +16,11 @@ package com.liferay.portal.mobile.device.wurfl;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.mobile.device.Capability;
+import com.liferay.portal.kernel.mobile.device.Dimensions;
 import com.liferay.portal.kernel.mobile.device.KnownDevices;
 import com.liferay.portal.kernel.mobile.device.NoKnownDevices;
 import com.liferay.portal.kernel.mobile.device.VersionableName;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.HashMap;
@@ -62,6 +64,17 @@ public class WURFLKnownDevices implements KnownDevices {
 		return _devicesIds;
 	}
 
+	@Override
+	public Set<Dimensions> getDisplaySizes() {
+		if (!_initialized) {
+			NoKnownDevices noKnownDevices = NoKnownDevices.getInstance();
+
+			return noKnownDevices.getDisplaySizes();
+		}
+
+		return _displaySizes;
+	}
+
 	public Set<VersionableName> getOperatingSystems() {
 		if (!_initialized) {
 			NoKnownDevices noKnownDevices = NoKnownDevices.getInstance();
@@ -82,6 +95,18 @@ public class WURFLKnownDevices implements KnownDevices {
 		return _pointingMethods;
 	}
 
+	@Override
+	public Set<Dimensions> getScreenResolutions() {
+		if (!_initialized) {
+			NoKnownDevices noKnownDevices = NoKnownDevices.getInstance();
+
+			return noKnownDevices.getScreenResolutions();
+		}
+
+		return _screenResolutins;
+	}
+
+	
 	public synchronized void initialize() {
 		loadWURFLDevices();
 	}
@@ -146,6 +171,12 @@ public class WURFLKnownDevices implements KnownDevices {
 			updateCapability(
 				device, _pointingMethods, WURFLConstants.POINTING_METHOD);
 
+			updateCapability(
+				device, _displaySizes, WURFLConstants.DISPLAY_HEIGHT, WURFLConstants.DISPLAY_WIDTH);
+
+			updateCapability(
+				device, _screenResolutins, WURFLConstants.RESOLUTION_HEIGHT, WURFLConstants.RESOLUTION_WIDTH);
+
 			updateDevicesIds(device, WURFLConstants.DEVICE_OS);
 		}
 
@@ -168,6 +199,17 @@ public class WURFLKnownDevices implements KnownDevices {
 
 		if (Validator.isNotNull(capabilityValue)) {
 			capabilityValues.add(capabilityValue);
+		}
+	}
+
+	protected void updateCapability(
+		Device device, Set<Dimensions> capabilityValues, String capabilityHeight, String capabilityWidth) {
+
+		int heightValue = GetterUtil.getInteger(device.getCapability(capabilityHeight));
+		int widthValue = GetterUtil.getInteger(device.getCapability(capabilityWidth));
+		
+		if (heightValue > 0 && widthValue > 0) {
+			capabilityValues.add(new Dimensions(heightValue, widthValue));
 		}
 	}
 
@@ -248,9 +290,11 @@ public class WURFLKnownDevices implements KnownDevices {
 	private Set<VersionableName> _browsers;
 	private Map<Capability, Set<String>> _devicesIds =
 		new HashMap<Capability, Set<String>>();
+	private Set<Dimensions> _displaySizes = new TreeSet<Dimensions>();
 	private boolean _initialized;
 	private Set<VersionableName> _operatingSystems;
 	private Set<String> _pointingMethods = new TreeSet<String>();
+	private Set<Dimensions> _screenResolutins = new TreeSet<Dimensions>();
 	private WURFLHolder _wurflHolder;
 
 }
