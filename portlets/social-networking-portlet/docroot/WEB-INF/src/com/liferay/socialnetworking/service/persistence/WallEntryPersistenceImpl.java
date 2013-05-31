@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,8 +14,6 @@
 
 package com.liferay.socialnetworking.service.persistence;
 
-import com.liferay.portal.NoSuchModelException;
-import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.cache.CacheRegistryUtil;
 import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
 import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
@@ -35,10 +33,9 @@ import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.UnmodifiableList;
 import com.liferay.portal.model.CacheModel;
 import com.liferay.portal.model.ModelListener;
-import com.liferay.portal.service.persistence.BatchSessionUtil;
-import com.liferay.portal.service.persistence.UserPersistence;
 import com.liferay.portal.service.persistence.impl.BasePersistenceImpl;
 
 import com.liferay.socialnetworking.NoSuchWallEntryException;
@@ -76,63 +73,6 @@ public class WallEntryPersistenceImpl extends BasePersistenceImpl<WallEntry>
 		".List1";
 	public static final String FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION = FINDER_CLASS_NAME_ENTITY +
 		".List2";
-	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_GROUPID = new FinderPath(WallEntryModelImpl.ENTITY_CACHE_ENABLED,
-			WallEntryModelImpl.FINDER_CACHE_ENABLED, WallEntryImpl.class,
-			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByGroupId",
-			new String[] {
-				Long.class.getName(),
-				
-			"java.lang.Integer", "java.lang.Integer",
-				"com.liferay.portal.kernel.util.OrderByComparator"
-			});
-	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GROUPID =
-		new FinderPath(WallEntryModelImpl.ENTITY_CACHE_ENABLED,
-			WallEntryModelImpl.FINDER_CACHE_ENABLED, WallEntryImpl.class,
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByGroupId",
-			new String[] { Long.class.getName() },
-			WallEntryModelImpl.GROUPID_COLUMN_BITMASK);
-	public static final FinderPath FINDER_PATH_COUNT_BY_GROUPID = new FinderPath(WallEntryModelImpl.ENTITY_CACHE_ENABLED,
-			WallEntryModelImpl.FINDER_CACHE_ENABLED, Long.class,
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByGroupId",
-			new String[] { Long.class.getName() });
-	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_USERID = new FinderPath(WallEntryModelImpl.ENTITY_CACHE_ENABLED,
-			WallEntryModelImpl.FINDER_CACHE_ENABLED, WallEntryImpl.class,
-			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByUserId",
-			new String[] {
-				Long.class.getName(),
-				
-			"java.lang.Integer", "java.lang.Integer",
-				"com.liferay.portal.kernel.util.OrderByComparator"
-			});
-	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_USERID =
-		new FinderPath(WallEntryModelImpl.ENTITY_CACHE_ENABLED,
-			WallEntryModelImpl.FINDER_CACHE_ENABLED, WallEntryImpl.class,
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByUserId",
-			new String[] { Long.class.getName() },
-			WallEntryModelImpl.USERID_COLUMN_BITMASK);
-	public static final FinderPath FINDER_PATH_COUNT_BY_USERID = new FinderPath(WallEntryModelImpl.ENTITY_CACHE_ENABLED,
-			WallEntryModelImpl.FINDER_CACHE_ENABLED, Long.class,
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUserId",
-			new String[] { Long.class.getName() });
-	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_G_U = new FinderPath(WallEntryModelImpl.ENTITY_CACHE_ENABLED,
-			WallEntryModelImpl.FINDER_CACHE_ENABLED, WallEntryImpl.class,
-			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_U",
-			new String[] {
-				Long.class.getName(), Long.class.getName(),
-				
-			"java.lang.Integer", "java.lang.Integer",
-				"com.liferay.portal.kernel.util.OrderByComparator"
-			});
-	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_U = new FinderPath(WallEntryModelImpl.ENTITY_CACHE_ENABLED,
-			WallEntryModelImpl.FINDER_CACHE_ENABLED, WallEntryImpl.class,
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_U",
-			new String[] { Long.class.getName(), Long.class.getName() },
-			WallEntryModelImpl.GROUPID_COLUMN_BITMASK |
-			WallEntryModelImpl.USERID_COLUMN_BITMASK);
-	public static final FinderPath FINDER_PATH_COUNT_BY_G_U = new FinderPath(WallEntryModelImpl.ENTITY_CACHE_ENABLED,
-			WallEntryModelImpl.FINDER_CACHE_ENABLED, Long.class,
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_U",
-			new String[] { Long.class.getName(), Long.class.getName() });
 	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_ALL = new FinderPath(WallEntryModelImpl.ENTITY_CACHE_ENABLED,
 			WallEntryModelImpl.FINDER_CACHE_ENABLED, WallEntryImpl.class,
 			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findAll", new String[0]);
@@ -142,393 +82,26 @@ public class WallEntryPersistenceImpl extends BasePersistenceImpl<WallEntry>
 	public static final FinderPath FINDER_PATH_COUNT_ALL = new FinderPath(WallEntryModelImpl.ENTITY_CACHE_ENABLED,
 			WallEntryModelImpl.FINDER_CACHE_ENABLED, Long.class,
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countAll", new String[0]);
-
-	/**
-	 * Caches the wall entry in the entity cache if it is enabled.
-	 *
-	 * @param wallEntry the wall entry
-	 */
-	public void cacheResult(WallEntry wallEntry) {
-		EntityCacheUtil.putResult(WallEntryModelImpl.ENTITY_CACHE_ENABLED,
-			WallEntryImpl.class, wallEntry.getPrimaryKey(), wallEntry);
-
-		wallEntry.resetOriginalValues();
-	}
-
-	/**
-	 * Caches the wall entries in the entity cache if it is enabled.
-	 *
-	 * @param wallEntries the wall entries
-	 */
-	public void cacheResult(List<WallEntry> wallEntries) {
-		for (WallEntry wallEntry : wallEntries) {
-			if (EntityCacheUtil.getResult(
-						WallEntryModelImpl.ENTITY_CACHE_ENABLED,
-						WallEntryImpl.class, wallEntry.getPrimaryKey()) == null) {
-				cacheResult(wallEntry);
-			}
-			else {
-				wallEntry.resetOriginalValues();
-			}
-		}
-	}
-
-	/**
-	 * Clears the cache for all wall entries.
-	 *
-	 * <p>
-	 * The {@link com.liferay.portal.kernel.dao.orm.EntityCache} and {@link com.liferay.portal.kernel.dao.orm.FinderCache} are both cleared by this method.
-	 * </p>
-	 */
-	@Override
-	public void clearCache() {
-		if (_HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE) {
-			CacheRegistryUtil.clear(WallEntryImpl.class.getName());
-		}
-
-		EntityCacheUtil.clearCache(WallEntryImpl.class.getName());
-
-		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_ENTITY);
-		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
-		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
-	}
-
-	/**
-	 * Clears the cache for the wall entry.
-	 *
-	 * <p>
-	 * The {@link com.liferay.portal.kernel.dao.orm.EntityCache} and {@link com.liferay.portal.kernel.dao.orm.FinderCache} are both cleared by this method.
-	 * </p>
-	 */
-	@Override
-	public void clearCache(WallEntry wallEntry) {
-		EntityCacheUtil.removeResult(WallEntryModelImpl.ENTITY_CACHE_ENABLED,
-			WallEntryImpl.class, wallEntry.getPrimaryKey());
-
-		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
-		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
-	}
-
-	@Override
-	public void clearCache(List<WallEntry> wallEntries) {
-		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
-		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
-
-		for (WallEntry wallEntry : wallEntries) {
-			EntityCacheUtil.removeResult(WallEntryModelImpl.ENTITY_CACHE_ENABLED,
-				WallEntryImpl.class, wallEntry.getPrimaryKey());
-		}
-	}
-
-	/**
-	 * Creates a new wall entry with the primary key. Does not add the wall entry to the database.
-	 *
-	 * @param wallEntryId the primary key for the new wall entry
-	 * @return the new wall entry
-	 */
-	public WallEntry create(long wallEntryId) {
-		WallEntry wallEntry = new WallEntryImpl();
-
-		wallEntry.setNew(true);
-		wallEntry.setPrimaryKey(wallEntryId);
-
-		return wallEntry;
-	}
-
-	/**
-	 * Removes the wall entry with the primary key from the database. Also notifies the appropriate model listeners.
-	 *
-	 * @param wallEntryId the primary key of the wall entry
-	 * @return the wall entry that was removed
-	 * @throws com.liferay.socialnetworking.NoSuchWallEntryException if a wall entry with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	public WallEntry remove(long wallEntryId)
-		throws NoSuchWallEntryException, SystemException {
-		return remove(Long.valueOf(wallEntryId));
-	}
-
-	/**
-	 * Removes the wall entry with the primary key from the database. Also notifies the appropriate model listeners.
-	 *
-	 * @param primaryKey the primary key of the wall entry
-	 * @return the wall entry that was removed
-	 * @throws com.liferay.socialnetworking.NoSuchWallEntryException if a wall entry with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	@Override
-	public WallEntry remove(Serializable primaryKey)
-		throws NoSuchWallEntryException, SystemException {
-		Session session = null;
-
-		try {
-			session = openSession();
-
-			WallEntry wallEntry = (WallEntry)session.get(WallEntryImpl.class,
-					primaryKey);
-
-			if (wallEntry == null) {
-				if (_log.isWarnEnabled()) {
-					_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
-				}
-
-				throw new NoSuchWallEntryException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
-					primaryKey);
-			}
-
-			return remove(wallEntry);
-		}
-		catch (NoSuchWallEntryException nsee) {
-			throw nsee;
-		}
-		catch (Exception e) {
-			throw processException(e);
-		}
-		finally {
-			closeSession(session);
-		}
-	}
-
-	@Override
-	protected WallEntry removeImpl(WallEntry wallEntry)
-		throws SystemException {
-		wallEntry = toUnwrappedModel(wallEntry);
-
-		Session session = null;
-
-		try {
-			session = openSession();
-
-			BatchSessionUtil.delete(session, wallEntry);
-		}
-		catch (Exception e) {
-			throw processException(e);
-		}
-		finally {
-			closeSession(session);
-		}
-
-		clearCache(wallEntry);
-
-		return wallEntry;
-	}
-
-	@Override
-	public WallEntry updateImpl(
-		com.liferay.socialnetworking.model.WallEntry wallEntry, boolean merge)
-		throws SystemException {
-		wallEntry = toUnwrappedModel(wallEntry);
-
-		boolean isNew = wallEntry.isNew();
-
-		WallEntryModelImpl wallEntryModelImpl = (WallEntryModelImpl)wallEntry;
-
-		Session session = null;
-
-		try {
-			session = openSession();
-
-			BatchSessionUtil.update(session, wallEntry, merge);
-
-			wallEntry.setNew(false);
-		}
-		catch (Exception e) {
-			throw processException(e);
-		}
-		finally {
-			closeSession(session);
-		}
-
-		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
-
-		if (isNew || !WallEntryModelImpl.COLUMN_BITMASK_ENABLED) {
-			FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
-		}
-		else {
-			if ((wallEntryModelImpl.getColumnBitmask() &
-					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GROUPID.getColumnBitmask()) != 0) {
-				Object[] args = new Object[] {
-						Long.valueOf(wallEntryModelImpl.getOriginalGroupId())
-					};
-
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_GROUPID, args);
-				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GROUPID,
-					args);
-
-				args = new Object[] {
-						Long.valueOf(wallEntryModelImpl.getGroupId())
-					};
-
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_GROUPID, args);
-				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GROUPID,
-					args);
-			}
-
-			if ((wallEntryModelImpl.getColumnBitmask() &
-					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_USERID.getColumnBitmask()) != 0) {
-				Object[] args = new Object[] {
-						Long.valueOf(wallEntryModelImpl.getOriginalUserId())
-					};
-
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_USERID, args);
-				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_USERID,
-					args);
-
-				args = new Object[] { Long.valueOf(wallEntryModelImpl.getUserId()) };
-
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_USERID, args);
-				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_USERID,
-					args);
-			}
-
-			if ((wallEntryModelImpl.getColumnBitmask() &
-					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_U.getColumnBitmask()) != 0) {
-				Object[] args = new Object[] {
-						Long.valueOf(wallEntryModelImpl.getOriginalGroupId()),
-						Long.valueOf(wallEntryModelImpl.getOriginalUserId())
-					};
-
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_G_U, args);
-				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_U,
-					args);
-
-				args = new Object[] {
-						Long.valueOf(wallEntryModelImpl.getGroupId()),
-						Long.valueOf(wallEntryModelImpl.getUserId())
-					};
-
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_G_U, args);
-				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_U,
-					args);
-			}
-		}
-
-		EntityCacheUtil.putResult(WallEntryModelImpl.ENTITY_CACHE_ENABLED,
-			WallEntryImpl.class, wallEntry.getPrimaryKey(), wallEntry);
-
-		return wallEntry;
-	}
-
-	protected WallEntry toUnwrappedModel(WallEntry wallEntry) {
-		if (wallEntry instanceof WallEntryImpl) {
-			return wallEntry;
-		}
-
-		WallEntryImpl wallEntryImpl = new WallEntryImpl();
-
-		wallEntryImpl.setNew(wallEntry.isNew());
-		wallEntryImpl.setPrimaryKey(wallEntry.getPrimaryKey());
-
-		wallEntryImpl.setWallEntryId(wallEntry.getWallEntryId());
-		wallEntryImpl.setGroupId(wallEntry.getGroupId());
-		wallEntryImpl.setCompanyId(wallEntry.getCompanyId());
-		wallEntryImpl.setUserId(wallEntry.getUserId());
-		wallEntryImpl.setUserName(wallEntry.getUserName());
-		wallEntryImpl.setCreateDate(wallEntry.getCreateDate());
-		wallEntryImpl.setModifiedDate(wallEntry.getModifiedDate());
-		wallEntryImpl.setComments(wallEntry.getComments());
-
-		return wallEntryImpl;
-	}
-
-	/**
-	 * Returns the wall entry with the primary key or throws a {@link com.liferay.portal.NoSuchModelException} if it could not be found.
-	 *
-	 * @param primaryKey the primary key of the wall entry
-	 * @return the wall entry
-	 * @throws com.liferay.portal.NoSuchModelException if a wall entry with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	@Override
-	public WallEntry findByPrimaryKey(Serializable primaryKey)
-		throws NoSuchModelException, SystemException {
-		return findByPrimaryKey(((Long)primaryKey).longValue());
-	}
-
-	/**
-	 * Returns the wall entry with the primary key or throws a {@link com.liferay.socialnetworking.NoSuchWallEntryException} if it could not be found.
-	 *
-	 * @param wallEntryId the primary key of the wall entry
-	 * @return the wall entry
-	 * @throws com.liferay.socialnetworking.NoSuchWallEntryException if a wall entry with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	public WallEntry findByPrimaryKey(long wallEntryId)
-		throws NoSuchWallEntryException, SystemException {
-		WallEntry wallEntry = fetchByPrimaryKey(wallEntryId);
-
-		if (wallEntry == null) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + wallEntryId);
-			}
-
-			throw new NoSuchWallEntryException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
-				wallEntryId);
-		}
-
-		return wallEntry;
-	}
-
-	/**
-	 * Returns the wall entry with the primary key or returns <code>null</code> if it could not be found.
-	 *
-	 * @param primaryKey the primary key of the wall entry
-	 * @return the wall entry, or <code>null</code> if a wall entry with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	@Override
-	public WallEntry fetchByPrimaryKey(Serializable primaryKey)
-		throws SystemException {
-		return fetchByPrimaryKey(((Long)primaryKey).longValue());
-	}
-
-	/**
-	 * Returns the wall entry with the primary key or returns <code>null</code> if it could not be found.
-	 *
-	 * @param wallEntryId the primary key of the wall entry
-	 * @return the wall entry, or <code>null</code> if a wall entry with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	public WallEntry fetchByPrimaryKey(long wallEntryId)
-		throws SystemException {
-		WallEntry wallEntry = (WallEntry)EntityCacheUtil.getResult(WallEntryModelImpl.ENTITY_CACHE_ENABLED,
-				WallEntryImpl.class, wallEntryId);
-
-		if (wallEntry == _nullWallEntry) {
-			return null;
-		}
-
-		if (wallEntry == null) {
-			Session session = null;
-
-			boolean hasException = false;
-
-			try {
-				session = openSession();
-
-				wallEntry = (WallEntry)session.get(WallEntryImpl.class,
-						Long.valueOf(wallEntryId));
-			}
-			catch (Exception e) {
-				hasException = true;
-
-				throw processException(e);
-			}
-			finally {
-				if (wallEntry != null) {
-					cacheResult(wallEntry);
-				}
-				else if (!hasException) {
-					EntityCacheUtil.putResult(WallEntryModelImpl.ENTITY_CACHE_ENABLED,
-						WallEntryImpl.class, wallEntryId, _nullWallEntry);
-				}
-
-				closeSession(session);
-			}
-		}
-
-		return wallEntry;
-	}
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_GROUPID = new FinderPath(WallEntryModelImpl.ENTITY_CACHE_ENABLED,
+			WallEntryModelImpl.FINDER_CACHE_ENABLED, WallEntryImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByGroupId",
+			new String[] {
+				Long.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GROUPID =
+		new FinderPath(WallEntryModelImpl.ENTITY_CACHE_ENABLED,
+			WallEntryModelImpl.FINDER_CACHE_ENABLED, WallEntryImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByGroupId",
+			new String[] { Long.class.getName() },
+			WallEntryModelImpl.GROUPID_COLUMN_BITMASK |
+			WallEntryModelImpl.CREATEDATE_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_GROUPID = new FinderPath(WallEntryModelImpl.ENTITY_CACHE_ENABLED,
+			WallEntryModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByGroupId",
+			new String[] { Long.class.getName() });
 
 	/**
 	 * Returns all the wall entries where groupId = &#63;.
@@ -537,6 +110,7 @@ public class WallEntryPersistenceImpl extends BasePersistenceImpl<WallEntry>
 	 * @return the matching wall entries
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<WallEntry> findByGroupId(long groupId)
 		throws SystemException {
 		return findByGroupId(groupId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
@@ -546,7 +120,7 @@ public class WallEntryPersistenceImpl extends BasePersistenceImpl<WallEntry>
 	 * Returns a range of all the wall entries where groupId = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.socialnetworking.model.impl.WallEntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param groupId the group ID
@@ -555,6 +129,7 @@ public class WallEntryPersistenceImpl extends BasePersistenceImpl<WallEntry>
 	 * @return the range of matching wall entries
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<WallEntry> findByGroupId(long groupId, int start, int end)
 		throws SystemException {
 		return findByGroupId(groupId, start, end, null);
@@ -564,7 +139,7 @@ public class WallEntryPersistenceImpl extends BasePersistenceImpl<WallEntry>
 	 * Returns an ordered range of all the wall entries where groupId = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.socialnetworking.model.impl.WallEntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param groupId the group ID
@@ -574,13 +149,16 @@ public class WallEntryPersistenceImpl extends BasePersistenceImpl<WallEntry>
 	 * @return the ordered range of matching wall entries
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<WallEntry> findByGroupId(long groupId, int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
+		boolean pagination = true;
 		FinderPath finderPath = null;
 		Object[] finderArgs = null;
 
 		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
 				(orderByComparator == null)) {
+			pagination = false;
 			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GROUPID;
 			finderArgs = new Object[] { groupId };
 		}
@@ -621,8 +199,8 @@ public class WallEntryPersistenceImpl extends BasePersistenceImpl<WallEntry>
 				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
 					orderByComparator);
 			}
-
-			else {
+			else
+			 if (pagination) {
 				query.append(WallEntryModelImpl.ORDER_BY_JPQL);
 			}
 
@@ -639,22 +217,29 @@ public class WallEntryPersistenceImpl extends BasePersistenceImpl<WallEntry>
 
 				qPos.add(groupId);
 
-				list = (List<WallEntry>)QueryUtil.list(q, getDialect(), start,
-						end);
+				if (!pagination) {
+					list = (List<WallEntry>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = new UnmodifiableList<WallEntry>(list);
+				}
+				else {
+					list = (List<WallEntry>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				FinderCacheUtil.putResult(finderPath, finderArgs, list);
 			}
 			catch (Exception e) {
+				FinderCacheUtil.removeResult(finderPath, finderArgs);
+
 				throw processException(e);
 			}
 			finally {
-				if (list == null) {
-					FinderCacheUtil.removeResult(finderPath, finderArgs);
-				}
-				else {
-					cacheResult(list);
-
-					FinderCacheUtil.putResult(finderPath, finderArgs, list);
-				}
-
 				closeSession(session);
 			}
 		}
@@ -665,44 +250,56 @@ public class WallEntryPersistenceImpl extends BasePersistenceImpl<WallEntry>
 	/**
 	 * Returns the first wall entry in the ordered set where groupId = &#63;.
 	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
-	 * </p>
-	 *
 	 * @param groupId the group ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching wall entry
 	 * @throws com.liferay.socialnetworking.NoSuchWallEntryException if a matching wall entry could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public WallEntry findByGroupId_First(long groupId,
 		OrderByComparator orderByComparator)
 		throws NoSuchWallEntryException, SystemException {
+		WallEntry wallEntry = fetchByGroupId_First(groupId, orderByComparator);
+
+		if (wallEntry != null) {
+			return wallEntry;
+		}
+
+		StringBundler msg = new StringBundler(4);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(StringPool.CLOSE_CURLY_BRACE);
+
+		throw new NoSuchWallEntryException(msg.toString());
+	}
+
+	/**
+	 * Returns the first wall entry in the ordered set where groupId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching wall entry, or <code>null</code> if a matching wall entry could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public WallEntry fetchByGroupId_First(long groupId,
+		OrderByComparator orderByComparator) throws SystemException {
 		List<WallEntry> list = findByGroupId(groupId, 0, 1, orderByComparator);
 
-		if (list.isEmpty()) {
-			StringBundler msg = new StringBundler(4);
-
-			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-			msg.append("groupId=");
-			msg.append(groupId);
-
-			msg.append(StringPool.CLOSE_CURLY_BRACE);
-
-			throw new NoSuchWallEntryException(msg.toString());
-		}
-		else {
+		if (!list.isEmpty()) {
 			return list.get(0);
 		}
+
+		return null;
 	}
 
 	/**
 	 * Returns the last wall entry in the ordered set where groupId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
-	 * </p>
 	 *
 	 * @param groupId the group ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
@@ -710,37 +307,53 @@ public class WallEntryPersistenceImpl extends BasePersistenceImpl<WallEntry>
 	 * @throws com.liferay.socialnetworking.NoSuchWallEntryException if a matching wall entry could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public WallEntry findByGroupId_Last(long groupId,
 		OrderByComparator orderByComparator)
 		throws NoSuchWallEntryException, SystemException {
+		WallEntry wallEntry = fetchByGroupId_Last(groupId, orderByComparator);
+
+		if (wallEntry != null) {
+			return wallEntry;
+		}
+
+		StringBundler msg = new StringBundler(4);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(StringPool.CLOSE_CURLY_BRACE);
+
+		throw new NoSuchWallEntryException(msg.toString());
+	}
+
+	/**
+	 * Returns the last wall entry in the ordered set where groupId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching wall entry, or <code>null</code> if a matching wall entry could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public WallEntry fetchByGroupId_Last(long groupId,
+		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByGroupId(groupId);
 
 		List<WallEntry> list = findByGroupId(groupId, count - 1, count,
 				orderByComparator);
 
-		if (list.isEmpty()) {
-			StringBundler msg = new StringBundler(4);
-
-			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-			msg.append("groupId=");
-			msg.append(groupId);
-
-			msg.append(StringPool.CLOSE_CURLY_BRACE);
-
-			throw new NoSuchWallEntryException(msg.toString());
-		}
-		else {
+		if (!list.isEmpty()) {
 			return list.get(0);
 		}
+
+		return null;
 	}
 
 	/**
 	 * Returns the wall entries before and after the current wall entry in the ordered set where groupId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
-	 * </p>
 	 *
 	 * @param wallEntryId the primary key of the current wall entry
 	 * @param groupId the group ID
@@ -749,6 +362,7 @@ public class WallEntryPersistenceImpl extends BasePersistenceImpl<WallEntry>
 	 * @throws com.liferay.socialnetworking.NoSuchWallEntryException if a wall entry with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public WallEntry[] findByGroupId_PrevAndNext(long wallEntryId,
 		long groupId, OrderByComparator orderByComparator)
 		throws NoSuchWallEntryException, SystemException {
@@ -851,7 +465,6 @@ public class WallEntryPersistenceImpl extends BasePersistenceImpl<WallEntry>
 				}
 			}
 		}
-
 		else {
 			query.append(WallEntryModelImpl.ORDER_BY_JPQL);
 		}
@@ -886,12 +499,102 @@ public class WallEntryPersistenceImpl extends BasePersistenceImpl<WallEntry>
 	}
 
 	/**
+	 * Removes all the wall entries where groupId = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public void removeByGroupId(long groupId) throws SystemException {
+		for (WallEntry wallEntry : findByGroupId(groupId, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null)) {
+			remove(wallEntry);
+		}
+	}
+
+	/**
+	 * Returns the number of wall entries where groupId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @return the number of matching wall entries
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public int countByGroupId(long groupId) throws SystemException {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_GROUPID;
+
+		Object[] finderArgs = new Object[] { groupId };
+
+		Long count = (Long)FinderCacheUtil.getResult(finderPath, finderArgs,
+				this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(2);
+
+			query.append(_SQL_COUNT_WALLENTRY_WHERE);
+
+			query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				count = (Long)q.uniqueResult();
+
+				FinderCacheUtil.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				FinderCacheUtil.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_GROUPID_GROUPID_2 = "wallEntry.groupId = ?";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_USERID = new FinderPath(WallEntryModelImpl.ENTITY_CACHE_ENABLED,
+			WallEntryModelImpl.FINDER_CACHE_ENABLED, WallEntryImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByUserId",
+			new String[] {
+				Long.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_USERID =
+		new FinderPath(WallEntryModelImpl.ENTITY_CACHE_ENABLED,
+			WallEntryModelImpl.FINDER_CACHE_ENABLED, WallEntryImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByUserId",
+			new String[] { Long.class.getName() },
+			WallEntryModelImpl.USERID_COLUMN_BITMASK |
+			WallEntryModelImpl.CREATEDATE_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_USERID = new FinderPath(WallEntryModelImpl.ENTITY_CACHE_ENABLED,
+			WallEntryModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUserId",
+			new String[] { Long.class.getName() });
+
+	/**
 	 * Returns all the wall entries where userId = &#63;.
 	 *
 	 * @param userId the user ID
 	 * @return the matching wall entries
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<WallEntry> findByUserId(long userId) throws SystemException {
 		return findByUserId(userId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
@@ -900,7 +603,7 @@ public class WallEntryPersistenceImpl extends BasePersistenceImpl<WallEntry>
 	 * Returns a range of all the wall entries where userId = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.socialnetworking.model.impl.WallEntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param userId the user ID
@@ -909,6 +612,7 @@ public class WallEntryPersistenceImpl extends BasePersistenceImpl<WallEntry>
 	 * @return the range of matching wall entries
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<WallEntry> findByUserId(long userId, int start, int end)
 		throws SystemException {
 		return findByUserId(userId, start, end, null);
@@ -918,7 +622,7 @@ public class WallEntryPersistenceImpl extends BasePersistenceImpl<WallEntry>
 	 * Returns an ordered range of all the wall entries where userId = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.socialnetworking.model.impl.WallEntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param userId the user ID
@@ -928,13 +632,16 @@ public class WallEntryPersistenceImpl extends BasePersistenceImpl<WallEntry>
 	 * @return the ordered range of matching wall entries
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<WallEntry> findByUserId(long userId, int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
+		boolean pagination = true;
 		FinderPath finderPath = null;
 		Object[] finderArgs = null;
 
 		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
 				(orderByComparator == null)) {
+			pagination = false;
 			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_USERID;
 			finderArgs = new Object[] { userId };
 		}
@@ -975,8 +682,8 @@ public class WallEntryPersistenceImpl extends BasePersistenceImpl<WallEntry>
 				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
 					orderByComparator);
 			}
-
-			else {
+			else
+			 if (pagination) {
 				query.append(WallEntryModelImpl.ORDER_BY_JPQL);
 			}
 
@@ -993,22 +700,29 @@ public class WallEntryPersistenceImpl extends BasePersistenceImpl<WallEntry>
 
 				qPos.add(userId);
 
-				list = (List<WallEntry>)QueryUtil.list(q, getDialect(), start,
-						end);
+				if (!pagination) {
+					list = (List<WallEntry>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = new UnmodifiableList<WallEntry>(list);
+				}
+				else {
+					list = (List<WallEntry>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				FinderCacheUtil.putResult(finderPath, finderArgs, list);
 			}
 			catch (Exception e) {
+				FinderCacheUtil.removeResult(finderPath, finderArgs);
+
 				throw processException(e);
 			}
 			finally {
-				if (list == null) {
-					FinderCacheUtil.removeResult(finderPath, finderArgs);
-				}
-				else {
-					cacheResult(list);
-
-					FinderCacheUtil.putResult(finderPath, finderArgs, list);
-				}
-
 				closeSession(session);
 			}
 		}
@@ -1019,44 +733,56 @@ public class WallEntryPersistenceImpl extends BasePersistenceImpl<WallEntry>
 	/**
 	 * Returns the first wall entry in the ordered set where userId = &#63;.
 	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
-	 * </p>
-	 *
 	 * @param userId the user ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching wall entry
 	 * @throws com.liferay.socialnetworking.NoSuchWallEntryException if a matching wall entry could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public WallEntry findByUserId_First(long userId,
 		OrderByComparator orderByComparator)
 		throws NoSuchWallEntryException, SystemException {
+		WallEntry wallEntry = fetchByUserId_First(userId, orderByComparator);
+
+		if (wallEntry != null) {
+			return wallEntry;
+		}
+
+		StringBundler msg = new StringBundler(4);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("userId=");
+		msg.append(userId);
+
+		msg.append(StringPool.CLOSE_CURLY_BRACE);
+
+		throw new NoSuchWallEntryException(msg.toString());
+	}
+
+	/**
+	 * Returns the first wall entry in the ordered set where userId = &#63;.
+	 *
+	 * @param userId the user ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching wall entry, or <code>null</code> if a matching wall entry could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public WallEntry fetchByUserId_First(long userId,
+		OrderByComparator orderByComparator) throws SystemException {
 		List<WallEntry> list = findByUserId(userId, 0, 1, orderByComparator);
 
-		if (list.isEmpty()) {
-			StringBundler msg = new StringBundler(4);
-
-			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-			msg.append("userId=");
-			msg.append(userId);
-
-			msg.append(StringPool.CLOSE_CURLY_BRACE);
-
-			throw new NoSuchWallEntryException(msg.toString());
-		}
-		else {
+		if (!list.isEmpty()) {
 			return list.get(0);
 		}
+
+		return null;
 	}
 
 	/**
 	 * Returns the last wall entry in the ordered set where userId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
-	 * </p>
 	 *
 	 * @param userId the user ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
@@ -1064,37 +790,53 @@ public class WallEntryPersistenceImpl extends BasePersistenceImpl<WallEntry>
 	 * @throws com.liferay.socialnetworking.NoSuchWallEntryException if a matching wall entry could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public WallEntry findByUserId_Last(long userId,
 		OrderByComparator orderByComparator)
 		throws NoSuchWallEntryException, SystemException {
+		WallEntry wallEntry = fetchByUserId_Last(userId, orderByComparator);
+
+		if (wallEntry != null) {
+			return wallEntry;
+		}
+
+		StringBundler msg = new StringBundler(4);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("userId=");
+		msg.append(userId);
+
+		msg.append(StringPool.CLOSE_CURLY_BRACE);
+
+		throw new NoSuchWallEntryException(msg.toString());
+	}
+
+	/**
+	 * Returns the last wall entry in the ordered set where userId = &#63;.
+	 *
+	 * @param userId the user ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching wall entry, or <code>null</code> if a matching wall entry could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public WallEntry fetchByUserId_Last(long userId,
+		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByUserId(userId);
 
 		List<WallEntry> list = findByUserId(userId, count - 1, count,
 				orderByComparator);
 
-		if (list.isEmpty()) {
-			StringBundler msg = new StringBundler(4);
-
-			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-			msg.append("userId=");
-			msg.append(userId);
-
-			msg.append(StringPool.CLOSE_CURLY_BRACE);
-
-			throw new NoSuchWallEntryException(msg.toString());
-		}
-		else {
+		if (!list.isEmpty()) {
 			return list.get(0);
 		}
+
+		return null;
 	}
 
 	/**
 	 * Returns the wall entries before and after the current wall entry in the ordered set where userId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
-	 * </p>
 	 *
 	 * @param wallEntryId the primary key of the current wall entry
 	 * @param userId the user ID
@@ -1103,6 +845,7 @@ public class WallEntryPersistenceImpl extends BasePersistenceImpl<WallEntry>
 	 * @throws com.liferay.socialnetworking.NoSuchWallEntryException if a wall entry with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public WallEntry[] findByUserId_PrevAndNext(long wallEntryId, long userId,
 		OrderByComparator orderByComparator)
 		throws NoSuchWallEntryException, SystemException {
@@ -1205,7 +948,6 @@ public class WallEntryPersistenceImpl extends BasePersistenceImpl<WallEntry>
 				}
 			}
 		}
-
 		else {
 			query.append(WallEntryModelImpl.ORDER_BY_JPQL);
 		}
@@ -1240,6 +982,95 @@ public class WallEntryPersistenceImpl extends BasePersistenceImpl<WallEntry>
 	}
 
 	/**
+	 * Removes all the wall entries where userId = &#63; from the database.
+	 *
+	 * @param userId the user ID
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public void removeByUserId(long userId) throws SystemException {
+		for (WallEntry wallEntry : findByUserId(userId, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null)) {
+			remove(wallEntry);
+		}
+	}
+
+	/**
+	 * Returns the number of wall entries where userId = &#63;.
+	 *
+	 * @param userId the user ID
+	 * @return the number of matching wall entries
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public int countByUserId(long userId) throws SystemException {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_USERID;
+
+		Object[] finderArgs = new Object[] { userId };
+
+		Long count = (Long)FinderCacheUtil.getResult(finderPath, finderArgs,
+				this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(2);
+
+			query.append(_SQL_COUNT_WALLENTRY_WHERE);
+
+			query.append(_FINDER_COLUMN_USERID_USERID_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(userId);
+
+				count = (Long)q.uniqueResult();
+
+				FinderCacheUtil.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				FinderCacheUtil.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_USERID_USERID_2 = "wallEntry.userId = ?";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_G_U = new FinderPath(WallEntryModelImpl.ENTITY_CACHE_ENABLED,
+			WallEntryModelImpl.FINDER_CACHE_ENABLED, WallEntryImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_U",
+			new String[] {
+				Long.class.getName(), Long.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_U = new FinderPath(WallEntryModelImpl.ENTITY_CACHE_ENABLED,
+			WallEntryModelImpl.FINDER_CACHE_ENABLED, WallEntryImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_U",
+			new String[] { Long.class.getName(), Long.class.getName() },
+			WallEntryModelImpl.GROUPID_COLUMN_BITMASK |
+			WallEntryModelImpl.USERID_COLUMN_BITMASK |
+			WallEntryModelImpl.CREATEDATE_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_G_U = new FinderPath(WallEntryModelImpl.ENTITY_CACHE_ENABLED,
+			WallEntryModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_U",
+			new String[] { Long.class.getName(), Long.class.getName() });
+
+	/**
 	 * Returns all the wall entries where groupId = &#63; and userId = &#63;.
 	 *
 	 * @param groupId the group ID
@@ -1247,6 +1078,7 @@ public class WallEntryPersistenceImpl extends BasePersistenceImpl<WallEntry>
 	 * @return the matching wall entries
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<WallEntry> findByG_U(long groupId, long userId)
 		throws SystemException {
 		return findByG_U(groupId, userId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
@@ -1257,7 +1089,7 @@ public class WallEntryPersistenceImpl extends BasePersistenceImpl<WallEntry>
 	 * Returns a range of all the wall entries where groupId = &#63; and userId = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.socialnetworking.model.impl.WallEntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param groupId the group ID
@@ -1267,6 +1099,7 @@ public class WallEntryPersistenceImpl extends BasePersistenceImpl<WallEntry>
 	 * @return the range of matching wall entries
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<WallEntry> findByG_U(long groupId, long userId, int start,
 		int end) throws SystemException {
 		return findByG_U(groupId, userId, start, end, null);
@@ -1276,7 +1109,7 @@ public class WallEntryPersistenceImpl extends BasePersistenceImpl<WallEntry>
 	 * Returns an ordered range of all the wall entries where groupId = &#63; and userId = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.socialnetworking.model.impl.WallEntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param groupId the group ID
@@ -1287,13 +1120,16 @@ public class WallEntryPersistenceImpl extends BasePersistenceImpl<WallEntry>
 	 * @return the ordered range of matching wall entries
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<WallEntry> findByG_U(long groupId, long userId, int start,
 		int end, OrderByComparator orderByComparator) throws SystemException {
+		boolean pagination = true;
 		FinderPath finderPath = null;
 		Object[] finderArgs = null;
 
 		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
 				(orderByComparator == null)) {
+			pagination = false;
 			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_U;
 			finderArgs = new Object[] { groupId, userId };
 		}
@@ -1341,8 +1177,8 @@ public class WallEntryPersistenceImpl extends BasePersistenceImpl<WallEntry>
 				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
 					orderByComparator);
 			}
-
-			else {
+			else
+			 if (pagination) {
 				query.append(WallEntryModelImpl.ORDER_BY_JPQL);
 			}
 
@@ -1361,22 +1197,29 @@ public class WallEntryPersistenceImpl extends BasePersistenceImpl<WallEntry>
 
 				qPos.add(userId);
 
-				list = (List<WallEntry>)QueryUtil.list(q, getDialect(), start,
-						end);
+				if (!pagination) {
+					list = (List<WallEntry>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = new UnmodifiableList<WallEntry>(list);
+				}
+				else {
+					list = (List<WallEntry>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				FinderCacheUtil.putResult(finderPath, finderArgs, list);
 			}
 			catch (Exception e) {
+				FinderCacheUtil.removeResult(finderPath, finderArgs);
+
 				throw processException(e);
 			}
 			finally {
-				if (list == null) {
-					FinderCacheUtil.removeResult(finderPath, finderArgs);
-				}
-				else {
-					cacheResult(list);
-
-					FinderCacheUtil.putResult(finderPath, finderArgs, list);
-				}
-
 				closeSession(session);
 			}
 		}
@@ -1387,10 +1230,6 @@ public class WallEntryPersistenceImpl extends BasePersistenceImpl<WallEntry>
 	/**
 	 * Returns the first wall entry in the ordered set where groupId = &#63; and userId = &#63;.
 	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
-	 * </p>
-	 *
 	 * @param groupId the group ID
 	 * @param userId the user ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
@@ -1398,38 +1237,56 @@ public class WallEntryPersistenceImpl extends BasePersistenceImpl<WallEntry>
 	 * @throws com.liferay.socialnetworking.NoSuchWallEntryException if a matching wall entry could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public WallEntry findByG_U_First(long groupId, long userId,
 		OrderByComparator orderByComparator)
 		throws NoSuchWallEntryException, SystemException {
+		WallEntry wallEntry = fetchByG_U_First(groupId, userId,
+				orderByComparator);
+
+		if (wallEntry != null) {
+			return wallEntry;
+		}
+
+		StringBundler msg = new StringBundler(6);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", userId=");
+		msg.append(userId);
+
+		msg.append(StringPool.CLOSE_CURLY_BRACE);
+
+		throw new NoSuchWallEntryException(msg.toString());
+	}
+
+	/**
+	 * Returns the first wall entry in the ordered set where groupId = &#63; and userId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param userId the user ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching wall entry, or <code>null</code> if a matching wall entry could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public WallEntry fetchByG_U_First(long groupId, long userId,
+		OrderByComparator orderByComparator) throws SystemException {
 		List<WallEntry> list = findByG_U(groupId, userId, 0, 1,
 				orderByComparator);
 
-		if (list.isEmpty()) {
-			StringBundler msg = new StringBundler(6);
-
-			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-			msg.append("groupId=");
-			msg.append(groupId);
-
-			msg.append(", userId=");
-			msg.append(userId);
-
-			msg.append(StringPool.CLOSE_CURLY_BRACE);
-
-			throw new NoSuchWallEntryException(msg.toString());
-		}
-		else {
+		if (!list.isEmpty()) {
 			return list.get(0);
 		}
+
+		return null;
 	}
 
 	/**
 	 * Returns the last wall entry in the ordered set where groupId = &#63; and userId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
-	 * </p>
 	 *
 	 * @param groupId the group ID
 	 * @param userId the user ID
@@ -1438,40 +1295,57 @@ public class WallEntryPersistenceImpl extends BasePersistenceImpl<WallEntry>
 	 * @throws com.liferay.socialnetworking.NoSuchWallEntryException if a matching wall entry could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public WallEntry findByG_U_Last(long groupId, long userId,
 		OrderByComparator orderByComparator)
 		throws NoSuchWallEntryException, SystemException {
+		WallEntry wallEntry = fetchByG_U_Last(groupId, userId, orderByComparator);
+
+		if (wallEntry != null) {
+			return wallEntry;
+		}
+
+		StringBundler msg = new StringBundler(6);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("groupId=");
+		msg.append(groupId);
+
+		msg.append(", userId=");
+		msg.append(userId);
+
+		msg.append(StringPool.CLOSE_CURLY_BRACE);
+
+		throw new NoSuchWallEntryException(msg.toString());
+	}
+
+	/**
+	 * Returns the last wall entry in the ordered set where groupId = &#63; and userId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param userId the user ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching wall entry, or <code>null</code> if a matching wall entry could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public WallEntry fetchByG_U_Last(long groupId, long userId,
+		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByG_U(groupId, userId);
 
 		List<WallEntry> list = findByG_U(groupId, userId, count - 1, count,
 				orderByComparator);
 
-		if (list.isEmpty()) {
-			StringBundler msg = new StringBundler(6);
-
-			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-			msg.append("groupId=");
-			msg.append(groupId);
-
-			msg.append(", userId=");
-			msg.append(userId);
-
-			msg.append(StringPool.CLOSE_CURLY_BRACE);
-
-			throw new NoSuchWallEntryException(msg.toString());
-		}
-		else {
+		if (!list.isEmpty()) {
 			return list.get(0);
 		}
+
+		return null;
 	}
 
 	/**
 	 * Returns the wall entries before and after the current wall entry in the ordered set where groupId = &#63; and userId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
-	 * </p>
 	 *
 	 * @param wallEntryId the primary key of the current wall entry
 	 * @param groupId the group ID
@@ -1481,6 +1355,7 @@ public class WallEntryPersistenceImpl extends BasePersistenceImpl<WallEntry>
 	 * @throws com.liferay.socialnetworking.NoSuchWallEntryException if a wall entry with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public WallEntry[] findByG_U_PrevAndNext(long wallEntryId, long groupId,
 		long userId, OrderByComparator orderByComparator)
 		throws NoSuchWallEntryException, SystemException {
@@ -1585,7 +1460,6 @@ public class WallEntryPersistenceImpl extends BasePersistenceImpl<WallEntry>
 				}
 			}
 		}
-
 		else {
 			query.append(WallEntryModelImpl.ORDER_BY_JPQL);
 		}
@@ -1622,11 +1496,494 @@ public class WallEntryPersistenceImpl extends BasePersistenceImpl<WallEntry>
 	}
 
 	/**
+	 * Removes all the wall entries where groupId = &#63; and userId = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param userId the user ID
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public void removeByG_U(long groupId, long userId)
+		throws SystemException {
+		for (WallEntry wallEntry : findByG_U(groupId, userId,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+			remove(wallEntry);
+		}
+	}
+
+	/**
+	 * Returns the number of wall entries where groupId = &#63; and userId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param userId the user ID
+	 * @return the number of matching wall entries
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public int countByG_U(long groupId, long userId) throws SystemException {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_G_U;
+
+		Object[] finderArgs = new Object[] { groupId, userId };
+
+		Long count = (Long)FinderCacheUtil.getResult(finderPath, finderArgs,
+				this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(3);
+
+			query.append(_SQL_COUNT_WALLENTRY_WHERE);
+
+			query.append(_FINDER_COLUMN_G_U_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_G_U_USERID_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(userId);
+
+				count = (Long)q.uniqueResult();
+
+				FinderCacheUtil.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				FinderCacheUtil.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_G_U_GROUPID_2 = "wallEntry.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_G_U_USERID_2 = "wallEntry.userId = ?";
+
+	/**
+	 * Caches the wall entry in the entity cache if it is enabled.
+	 *
+	 * @param wallEntry the wall entry
+	 */
+	@Override
+	public void cacheResult(WallEntry wallEntry) {
+		EntityCacheUtil.putResult(WallEntryModelImpl.ENTITY_CACHE_ENABLED,
+			WallEntryImpl.class, wallEntry.getPrimaryKey(), wallEntry);
+
+		wallEntry.resetOriginalValues();
+	}
+
+	/**
+	 * Caches the wall entries in the entity cache if it is enabled.
+	 *
+	 * @param wallEntries the wall entries
+	 */
+	@Override
+	public void cacheResult(List<WallEntry> wallEntries) {
+		for (WallEntry wallEntry : wallEntries) {
+			if (EntityCacheUtil.getResult(
+						WallEntryModelImpl.ENTITY_CACHE_ENABLED,
+						WallEntryImpl.class, wallEntry.getPrimaryKey()) == null) {
+				cacheResult(wallEntry);
+			}
+			else {
+				wallEntry.resetOriginalValues();
+			}
+		}
+	}
+
+	/**
+	 * Clears the cache for all wall entries.
+	 *
+	 * <p>
+	 * The {@link com.liferay.portal.kernel.dao.orm.EntityCache} and {@link com.liferay.portal.kernel.dao.orm.FinderCache} are both cleared by this method.
+	 * </p>
+	 */
+	@Override
+	public void clearCache() {
+		if (_HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE) {
+			CacheRegistryUtil.clear(WallEntryImpl.class.getName());
+		}
+
+		EntityCacheUtil.clearCache(WallEntryImpl.class.getName());
+
+		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_ENTITY);
+		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
+		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
+	}
+
+	/**
+	 * Clears the cache for the wall entry.
+	 *
+	 * <p>
+	 * The {@link com.liferay.portal.kernel.dao.orm.EntityCache} and {@link com.liferay.portal.kernel.dao.orm.FinderCache} are both cleared by this method.
+	 * </p>
+	 */
+	@Override
+	public void clearCache(WallEntry wallEntry) {
+		EntityCacheUtil.removeResult(WallEntryModelImpl.ENTITY_CACHE_ENABLED,
+			WallEntryImpl.class, wallEntry.getPrimaryKey());
+
+		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
+		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
+	}
+
+	@Override
+	public void clearCache(List<WallEntry> wallEntries) {
+		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
+		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
+
+		for (WallEntry wallEntry : wallEntries) {
+			EntityCacheUtil.removeResult(WallEntryModelImpl.ENTITY_CACHE_ENABLED,
+				WallEntryImpl.class, wallEntry.getPrimaryKey());
+		}
+	}
+
+	/**
+	 * Creates a new wall entry with the primary key. Does not add the wall entry to the database.
+	 *
+	 * @param wallEntryId the primary key for the new wall entry
+	 * @return the new wall entry
+	 */
+	@Override
+	public WallEntry create(long wallEntryId) {
+		WallEntry wallEntry = new WallEntryImpl();
+
+		wallEntry.setNew(true);
+		wallEntry.setPrimaryKey(wallEntryId);
+
+		return wallEntry;
+	}
+
+	/**
+	 * Removes the wall entry with the primary key from the database. Also notifies the appropriate model listeners.
+	 *
+	 * @param wallEntryId the primary key of the wall entry
+	 * @return the wall entry that was removed
+	 * @throws com.liferay.socialnetworking.NoSuchWallEntryException if a wall entry with the primary key could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public WallEntry remove(long wallEntryId)
+		throws NoSuchWallEntryException, SystemException {
+		return remove((Serializable)wallEntryId);
+	}
+
+	/**
+	 * Removes the wall entry with the primary key from the database. Also notifies the appropriate model listeners.
+	 *
+	 * @param primaryKey the primary key of the wall entry
+	 * @return the wall entry that was removed
+	 * @throws com.liferay.socialnetworking.NoSuchWallEntryException if a wall entry with the primary key could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public WallEntry remove(Serializable primaryKey)
+		throws NoSuchWallEntryException, SystemException {
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			WallEntry wallEntry = (WallEntry)session.get(WallEntryImpl.class,
+					primaryKey);
+
+			if (wallEntry == null) {
+				if (_log.isWarnEnabled()) {
+					_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
+				}
+
+				throw new NoSuchWallEntryException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
+					primaryKey);
+			}
+
+			return remove(wallEntry);
+		}
+		catch (NoSuchWallEntryException nsee) {
+			throw nsee;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	@Override
+	protected WallEntry removeImpl(WallEntry wallEntry)
+		throws SystemException {
+		wallEntry = toUnwrappedModel(wallEntry);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			if (!session.contains(wallEntry)) {
+				wallEntry = (WallEntry)session.get(WallEntryImpl.class,
+						wallEntry.getPrimaryKeyObj());
+			}
+
+			if (wallEntry != null) {
+				session.delete(wallEntry);
+			}
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+
+		if (wallEntry != null) {
+			clearCache(wallEntry);
+		}
+
+		return wallEntry;
+	}
+
+	@Override
+	public WallEntry updateImpl(
+		com.liferay.socialnetworking.model.WallEntry wallEntry)
+		throws SystemException {
+		wallEntry = toUnwrappedModel(wallEntry);
+
+		boolean isNew = wallEntry.isNew();
+
+		WallEntryModelImpl wallEntryModelImpl = (WallEntryModelImpl)wallEntry;
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			if (wallEntry.isNew()) {
+				session.save(wallEntry);
+
+				wallEntry.setNew(false);
+			}
+			else {
+				session.merge(wallEntry);
+			}
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+
+		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
+
+		if (isNew || !WallEntryModelImpl.COLUMN_BITMASK_ENABLED) {
+			FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
+		}
+
+		else {
+			if ((wallEntryModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GROUPID.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						wallEntryModelImpl.getOriginalGroupId()
+					};
+
+				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_GROUPID, args);
+				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GROUPID,
+					args);
+
+				args = new Object[] { wallEntryModelImpl.getGroupId() };
+
+				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_GROUPID, args);
+				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GROUPID,
+					args);
+			}
+
+			if ((wallEntryModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_USERID.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						wallEntryModelImpl.getOriginalUserId()
+					};
+
+				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_USERID, args);
+				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_USERID,
+					args);
+
+				args = new Object[] { wallEntryModelImpl.getUserId() };
+
+				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_USERID, args);
+				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_USERID,
+					args);
+			}
+
+			if ((wallEntryModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_U.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						wallEntryModelImpl.getOriginalGroupId(),
+						wallEntryModelImpl.getOriginalUserId()
+					};
+
+				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_G_U, args);
+				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_U,
+					args);
+
+				args = new Object[] {
+						wallEntryModelImpl.getGroupId(),
+						wallEntryModelImpl.getUserId()
+					};
+
+				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_G_U, args);
+				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_U,
+					args);
+			}
+		}
+
+		EntityCacheUtil.putResult(WallEntryModelImpl.ENTITY_CACHE_ENABLED,
+			WallEntryImpl.class, wallEntry.getPrimaryKey(), wallEntry);
+
+		return wallEntry;
+	}
+
+	protected WallEntry toUnwrappedModel(WallEntry wallEntry) {
+		if (wallEntry instanceof WallEntryImpl) {
+			return wallEntry;
+		}
+
+		WallEntryImpl wallEntryImpl = new WallEntryImpl();
+
+		wallEntryImpl.setNew(wallEntry.isNew());
+		wallEntryImpl.setPrimaryKey(wallEntry.getPrimaryKey());
+
+		wallEntryImpl.setWallEntryId(wallEntry.getWallEntryId());
+		wallEntryImpl.setGroupId(wallEntry.getGroupId());
+		wallEntryImpl.setCompanyId(wallEntry.getCompanyId());
+		wallEntryImpl.setUserId(wallEntry.getUserId());
+		wallEntryImpl.setUserName(wallEntry.getUserName());
+		wallEntryImpl.setCreateDate(wallEntry.getCreateDate());
+		wallEntryImpl.setModifiedDate(wallEntry.getModifiedDate());
+		wallEntryImpl.setComments(wallEntry.getComments());
+
+		return wallEntryImpl;
+	}
+
+	/**
+	 * Returns the wall entry with the primary key or throws a {@link com.liferay.portal.NoSuchModelException} if it could not be found.
+	 *
+	 * @param primaryKey the primary key of the wall entry
+	 * @return the wall entry
+	 * @throws com.liferay.socialnetworking.NoSuchWallEntryException if a wall entry with the primary key could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public WallEntry findByPrimaryKey(Serializable primaryKey)
+		throws NoSuchWallEntryException, SystemException {
+		WallEntry wallEntry = fetchByPrimaryKey(primaryKey);
+
+		if (wallEntry == null) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
+			}
+
+			throw new NoSuchWallEntryException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
+				primaryKey);
+		}
+
+		return wallEntry;
+	}
+
+	/**
+	 * Returns the wall entry with the primary key or throws a {@link com.liferay.socialnetworking.NoSuchWallEntryException} if it could not be found.
+	 *
+	 * @param wallEntryId the primary key of the wall entry
+	 * @return the wall entry
+	 * @throws com.liferay.socialnetworking.NoSuchWallEntryException if a wall entry with the primary key could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public WallEntry findByPrimaryKey(long wallEntryId)
+		throws NoSuchWallEntryException, SystemException {
+		return findByPrimaryKey((Serializable)wallEntryId);
+	}
+
+	/**
+	 * Returns the wall entry with the primary key or returns <code>null</code> if it could not be found.
+	 *
+	 * @param primaryKey the primary key of the wall entry
+	 * @return the wall entry, or <code>null</code> if a wall entry with the primary key could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public WallEntry fetchByPrimaryKey(Serializable primaryKey)
+		throws SystemException {
+		WallEntry wallEntry = (WallEntry)EntityCacheUtil.getResult(WallEntryModelImpl.ENTITY_CACHE_ENABLED,
+				WallEntryImpl.class, primaryKey);
+
+		if (wallEntry == _nullWallEntry) {
+			return null;
+		}
+
+		if (wallEntry == null) {
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				wallEntry = (WallEntry)session.get(WallEntryImpl.class,
+						primaryKey);
+
+				if (wallEntry != null) {
+					cacheResult(wallEntry);
+				}
+				else {
+					EntityCacheUtil.putResult(WallEntryModelImpl.ENTITY_CACHE_ENABLED,
+						WallEntryImpl.class, primaryKey, _nullWallEntry);
+				}
+			}
+			catch (Exception e) {
+				EntityCacheUtil.removeResult(WallEntryModelImpl.ENTITY_CACHE_ENABLED,
+					WallEntryImpl.class, primaryKey);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return wallEntry;
+	}
+
+	/**
+	 * Returns the wall entry with the primary key or returns <code>null</code> if it could not be found.
+	 *
+	 * @param wallEntryId the primary key of the wall entry
+	 * @return the wall entry, or <code>null</code> if a wall entry with the primary key could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public WallEntry fetchByPrimaryKey(long wallEntryId)
+		throws SystemException {
+		return fetchByPrimaryKey((Serializable)wallEntryId);
+	}
+
+	/**
 	 * Returns all the wall entries.
 	 *
 	 * @return the wall entries
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<WallEntry> findAll() throws SystemException {
 		return findAll(QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
@@ -1635,7 +1992,7 @@ public class WallEntryPersistenceImpl extends BasePersistenceImpl<WallEntry>
 	 * Returns a range of all the wall entries.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.socialnetworking.model.impl.WallEntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param start the lower bound of the range of wall entries
@@ -1643,6 +2000,7 @@ public class WallEntryPersistenceImpl extends BasePersistenceImpl<WallEntry>
 	 * @return the range of wall entries
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<WallEntry> findAll(int start, int end)
 		throws SystemException {
 		return findAll(start, end, null);
@@ -1652,7 +2010,7 @@ public class WallEntryPersistenceImpl extends BasePersistenceImpl<WallEntry>
 	 * Returns an ordered range of all the wall entries.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.socialnetworking.model.impl.WallEntryModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param start the lower bound of the range of wall entries
@@ -1661,13 +2019,16 @@ public class WallEntryPersistenceImpl extends BasePersistenceImpl<WallEntry>
 	 * @return the ordered range of wall entries
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<WallEntry> findAll(int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
+		boolean pagination = true;
 		FinderPath finderPath = null;
-		Object[] finderArgs = new Object[] { start, end, orderByComparator };
+		Object[] finderArgs = null;
 
 		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
 				(orderByComparator == null)) {
+			pagination = false;
 			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_ALL;
 			finderArgs = FINDER_ARGS_EMPTY;
 		}
@@ -1695,7 +2056,11 @@ public class WallEntryPersistenceImpl extends BasePersistenceImpl<WallEntry>
 				sql = query.toString();
 			}
 			else {
-				sql = _SQL_SELECT_WALLENTRY.concat(WallEntryModelImpl.ORDER_BY_JPQL);
+				sql = _SQL_SELECT_WALLENTRY;
+
+				if (pagination) {
+					sql = sql.concat(WallEntryModelImpl.ORDER_BY_JPQL);
+				}
 			}
 
 			Session session = null;
@@ -1705,30 +2070,29 @@ public class WallEntryPersistenceImpl extends BasePersistenceImpl<WallEntry>
 
 				Query q = session.createQuery(sql);
 
-				if (orderByComparator == null) {
+				if (!pagination) {
 					list = (List<WallEntry>)QueryUtil.list(q, getDialect(),
 							start, end, false);
 
 					Collections.sort(list);
+
+					list = new UnmodifiableList<WallEntry>(list);
 				}
 				else {
 					list = (List<WallEntry>)QueryUtil.list(q, getDialect(),
 							start, end);
 				}
+
+				cacheResult(list);
+
+				FinderCacheUtil.putResult(finderPath, finderArgs, list);
 			}
 			catch (Exception e) {
+				FinderCacheUtil.removeResult(finderPath, finderArgs);
+
 				throw processException(e);
 			}
 			finally {
-				if (list == null) {
-					FinderCacheUtil.removeResult(finderPath, finderArgs);
-				}
-				else {
-					cacheResult(list);
-
-					FinderCacheUtil.putResult(finderPath, finderArgs, list);
-				}
-
 				closeSession(session);
 			}
 		}
@@ -1737,216 +2101,15 @@ public class WallEntryPersistenceImpl extends BasePersistenceImpl<WallEntry>
 	}
 
 	/**
-	 * Removes all the wall entries where groupId = &#63; from the database.
-	 *
-	 * @param groupId the group ID
-	 * @throws SystemException if a system exception occurred
-	 */
-	public void removeByGroupId(long groupId) throws SystemException {
-		for (WallEntry wallEntry : findByGroupId(groupId)) {
-			remove(wallEntry);
-		}
-	}
-
-	/**
-	 * Removes all the wall entries where userId = &#63; from the database.
-	 *
-	 * @param userId the user ID
-	 * @throws SystemException if a system exception occurred
-	 */
-	public void removeByUserId(long userId) throws SystemException {
-		for (WallEntry wallEntry : findByUserId(userId)) {
-			remove(wallEntry);
-		}
-	}
-
-	/**
-	 * Removes all the wall entries where groupId = &#63; and userId = &#63; from the database.
-	 *
-	 * @param groupId the group ID
-	 * @param userId the user ID
-	 * @throws SystemException if a system exception occurred
-	 */
-	public void removeByG_U(long groupId, long userId)
-		throws SystemException {
-		for (WallEntry wallEntry : findByG_U(groupId, userId)) {
-			remove(wallEntry);
-		}
-	}
-
-	/**
 	 * Removes all the wall entries from the database.
 	 *
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeAll() throws SystemException {
 		for (WallEntry wallEntry : findAll()) {
 			remove(wallEntry);
 		}
-	}
-
-	/**
-	 * Returns the number of wall entries where groupId = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @return the number of matching wall entries
-	 * @throws SystemException if a system exception occurred
-	 */
-	public int countByGroupId(long groupId) throws SystemException {
-		Object[] finderArgs = new Object[] { groupId };
-
-		Long count = (Long)FinderCacheUtil.getResult(FINDER_PATH_COUNT_BY_GROUPID,
-				finderArgs, this);
-
-		if (count == null) {
-			StringBundler query = new StringBundler(2);
-
-			query.append(_SQL_COUNT_WALLENTRY_WHERE);
-
-			query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
-
-			String sql = query.toString();
-
-			Session session = null;
-
-			try {
-				session = openSession();
-
-				Query q = session.createQuery(sql);
-
-				QueryPos qPos = QueryPos.getInstance(q);
-
-				qPos.add(groupId);
-
-				count = (Long)q.uniqueResult();
-			}
-			catch (Exception e) {
-				throw processException(e);
-			}
-			finally {
-				if (count == null) {
-					count = Long.valueOf(0);
-				}
-
-				FinderCacheUtil.putResult(FINDER_PATH_COUNT_BY_GROUPID,
-					finderArgs, count);
-
-				closeSession(session);
-			}
-		}
-
-		return count.intValue();
-	}
-
-	/**
-	 * Returns the number of wall entries where userId = &#63;.
-	 *
-	 * @param userId the user ID
-	 * @return the number of matching wall entries
-	 * @throws SystemException if a system exception occurred
-	 */
-	public int countByUserId(long userId) throws SystemException {
-		Object[] finderArgs = new Object[] { userId };
-
-		Long count = (Long)FinderCacheUtil.getResult(FINDER_PATH_COUNT_BY_USERID,
-				finderArgs, this);
-
-		if (count == null) {
-			StringBundler query = new StringBundler(2);
-
-			query.append(_SQL_COUNT_WALLENTRY_WHERE);
-
-			query.append(_FINDER_COLUMN_USERID_USERID_2);
-
-			String sql = query.toString();
-
-			Session session = null;
-
-			try {
-				session = openSession();
-
-				Query q = session.createQuery(sql);
-
-				QueryPos qPos = QueryPos.getInstance(q);
-
-				qPos.add(userId);
-
-				count = (Long)q.uniqueResult();
-			}
-			catch (Exception e) {
-				throw processException(e);
-			}
-			finally {
-				if (count == null) {
-					count = Long.valueOf(0);
-				}
-
-				FinderCacheUtil.putResult(FINDER_PATH_COUNT_BY_USERID,
-					finderArgs, count);
-
-				closeSession(session);
-			}
-		}
-
-		return count.intValue();
-	}
-
-	/**
-	 * Returns the number of wall entries where groupId = &#63; and userId = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param userId the user ID
-	 * @return the number of matching wall entries
-	 * @throws SystemException if a system exception occurred
-	 */
-	public int countByG_U(long groupId, long userId) throws SystemException {
-		Object[] finderArgs = new Object[] { groupId, userId };
-
-		Long count = (Long)FinderCacheUtil.getResult(FINDER_PATH_COUNT_BY_G_U,
-				finderArgs, this);
-
-		if (count == null) {
-			StringBundler query = new StringBundler(3);
-
-			query.append(_SQL_COUNT_WALLENTRY_WHERE);
-
-			query.append(_FINDER_COLUMN_G_U_GROUPID_2);
-
-			query.append(_FINDER_COLUMN_G_U_USERID_2);
-
-			String sql = query.toString();
-
-			Session session = null;
-
-			try {
-				session = openSession();
-
-				Query q = session.createQuery(sql);
-
-				QueryPos qPos = QueryPos.getInstance(q);
-
-				qPos.add(groupId);
-
-				qPos.add(userId);
-
-				count = (Long)q.uniqueResult();
-			}
-			catch (Exception e) {
-				throw processException(e);
-			}
-			finally {
-				if (count == null) {
-					count = Long.valueOf(0);
-				}
-
-				FinderCacheUtil.putResult(FINDER_PATH_COUNT_BY_G_U, finderArgs,
-					count);
-
-				closeSession(session);
-			}
-		}
-
-		return count.intValue();
 	}
 
 	/**
@@ -1955,6 +2118,7 @@ public class WallEntryPersistenceImpl extends BasePersistenceImpl<WallEntry>
 	 * @return the number of wall entries
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countAll() throws SystemException {
 		Long count = (Long)FinderCacheUtil.getResult(FINDER_PATH_COUNT_ALL,
 				FINDER_ARGS_EMPTY, this);
@@ -1968,18 +2132,17 @@ public class WallEntryPersistenceImpl extends BasePersistenceImpl<WallEntry>
 				Query q = session.createQuery(_SQL_COUNT_WALLENTRY);
 
 				count = (Long)q.uniqueResult();
-			}
-			catch (Exception e) {
-				throw processException(e);
-			}
-			finally {
-				if (count == null) {
-					count = Long.valueOf(0);
-				}
 
 				FinderCacheUtil.putResult(FINDER_PATH_COUNT_ALL,
 					FINDER_ARGS_EMPTY, count);
+			}
+			catch (Exception e) {
+				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_ALL,
+					FINDER_ARGS_EMPTY);
 
+				throw processException(e);
+			}
+			finally {
 				closeSession(session);
 			}
 		}
@@ -2001,7 +2164,7 @@ public class WallEntryPersistenceImpl extends BasePersistenceImpl<WallEntry>
 
 				for (String listenerClassName : listenerClassNames) {
 					listenersList.add((ModelListener<WallEntry>)InstanceFactory.newInstance(
-							listenerClassName));
+							getClassLoader(), listenerClassName));
 				}
 
 				listeners = listenersList.toArray(new ModelListener[listenersList.size()]);
@@ -2015,25 +2178,14 @@ public class WallEntryPersistenceImpl extends BasePersistenceImpl<WallEntry>
 	public void destroy() {
 		EntityCacheUtil.removeCache(WallEntryImpl.class.getName());
 		FinderCacheUtil.removeCache(FINDER_CLASS_NAME_ENTITY);
+		FinderCacheUtil.removeCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
 		FinderCacheUtil.removeCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 	}
 
-	@BeanReference(type = MeetupsEntryPersistence.class)
-	protected MeetupsEntryPersistence meetupsEntryPersistence;
-	@BeanReference(type = MeetupsRegistrationPersistence.class)
-	protected MeetupsRegistrationPersistence meetupsRegistrationPersistence;
-	@BeanReference(type = WallEntryPersistence.class)
-	protected WallEntryPersistence wallEntryPersistence;
-	@BeanReference(type = UserPersistence.class)
-	protected UserPersistence userPersistence;
 	private static final String _SQL_SELECT_WALLENTRY = "SELECT wallEntry FROM WallEntry wallEntry";
 	private static final String _SQL_SELECT_WALLENTRY_WHERE = "SELECT wallEntry FROM WallEntry wallEntry WHERE ";
 	private static final String _SQL_COUNT_WALLENTRY = "SELECT COUNT(wallEntry) FROM WallEntry wallEntry";
 	private static final String _SQL_COUNT_WALLENTRY_WHERE = "SELECT COUNT(wallEntry) FROM WallEntry wallEntry WHERE ";
-	private static final String _FINDER_COLUMN_GROUPID_GROUPID_2 = "wallEntry.groupId = ?";
-	private static final String _FINDER_COLUMN_USERID_USERID_2 = "wallEntry.userId = ?";
-	private static final String _FINDER_COLUMN_G_U_GROUPID_2 = "wallEntry.groupId = ? AND ";
-	private static final String _FINDER_COLUMN_G_U_USERID_2 = "wallEntry.userId = ?";
 	private static final String _ORDER_BY_ENTITY_ALIAS = "wallEntry.";
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No WallEntry exists with the primary key ";
 	private static final String _NO_SUCH_ENTITY_WITH_KEY = "No WallEntry exists with the key {";
@@ -2053,6 +2205,7 @@ public class WallEntryPersistenceImpl extends BasePersistenceImpl<WallEntry>
 		};
 
 	private static CacheModel<WallEntry> _nullWallEntryCacheModel = new CacheModel<WallEntry>() {
+			@Override
 			public WallEntry toEntityModel() {
 				return _nullWallEntry;
 			}

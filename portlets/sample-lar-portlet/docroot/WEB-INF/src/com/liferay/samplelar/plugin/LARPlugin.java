@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -15,6 +15,7 @@
 package com.liferay.samplelar.plugin;
 
 import com.liferay.portal.kernel.lar.BasePortletDataHandler;
+import com.liferay.portal.kernel.lar.DataLevel;
 import com.liferay.portal.kernel.lar.PortletDataContext;
 import com.liferay.portal.kernel.lar.PortletDataException;
 import com.liferay.portal.kernel.lar.PortletDataHandlerBoolean;
@@ -36,6 +37,10 @@ import javax.portlet.PortletPreferences;
  * @author Raymond Augé
  */
 public class LARPlugin extends BasePortletDataHandler {
+
+	public LARPlugin() {
+		setDataLevel(DataLevel.PORTLET_INSTANCE);
+	}
 
 	@Override
 	public PortletPreferences deleteData(

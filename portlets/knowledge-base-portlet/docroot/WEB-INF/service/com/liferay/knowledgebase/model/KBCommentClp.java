@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,11 +14,13 @@
 
 package com.liferay.knowledgebase.model;
 
+import com.liferay.knowledgebase.service.ClpSerializer;
 import com.liferay.knowledgebase.service.KBCommentLocalServiceUtil;
 
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.util.DateUtil;
+import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
@@ -28,7 +30,7 @@ import com.liferay.portal.util.PortalUtil;
 
 import java.io.Serializable;
 
-import java.lang.reflect.Proxy;
+import java.lang.reflect.Method;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -41,30 +43,37 @@ public class KBCommentClp extends BaseModelImpl<KBComment> implements KBComment 
 	public KBCommentClp() {
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return KBComment.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return KBComment.class.getName();
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _kbCommentId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setKbCommentId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
-		return new Long(_kbCommentId);
+		return _kbCommentId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
 
+	@Override
 	public Map<String, Object> getModelAttributes() {
 		Map<String, Object> attributes = new HashMap<String, Object>();
 
@@ -84,6 +93,7 @@ public class KBCommentClp extends BaseModelImpl<KBComment> implements KBComment 
 		return attributes;
 	}
 
+	@Override
 	public void setModelAttributes(Map<String, Object> attributes) {
 		String uuid = (String)attributes.get("uuid");
 
@@ -158,78 +168,201 @@ public class KBCommentClp extends BaseModelImpl<KBComment> implements KBComment 
 		}
 	}
 
+	@Override
 	public String getUuid() {
 		return _uuid;
 	}
 
+	@Override
 	public void setUuid(String uuid) {
 		_uuid = uuid;
+
+		if (_kbCommentRemoteModel != null) {
+			try {
+				Class<?> clazz = _kbCommentRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setUuid", String.class);
+
+				method.invoke(_kbCommentRemoteModel, uuid);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getKbCommentId() {
 		return _kbCommentId;
 	}
 
+	@Override
 	public void setKbCommentId(long kbCommentId) {
 		_kbCommentId = kbCommentId;
+
+		if (_kbCommentRemoteModel != null) {
+			try {
+				Class<?> clazz = _kbCommentRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setKbCommentId", long.class);
+
+				method.invoke(_kbCommentRemoteModel, kbCommentId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getGroupId() {
 		return _groupId;
 	}
 
+	@Override
 	public void setGroupId(long groupId) {
 		_groupId = groupId;
+
+		if (_kbCommentRemoteModel != null) {
+			try {
+				Class<?> clazz = _kbCommentRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setGroupId", long.class);
+
+				method.invoke(_kbCommentRemoteModel, groupId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getCompanyId() {
 		return _companyId;
 	}
 
+	@Override
 	public void setCompanyId(long companyId) {
 		_companyId = companyId;
+
+		if (_kbCommentRemoteModel != null) {
+			try {
+				Class<?> clazz = _kbCommentRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setCompanyId", long.class);
+
+				method.invoke(_kbCommentRemoteModel, companyId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getUserId() {
 		return _userId;
 	}
 
+	@Override
 	public void setUserId(long userId) {
 		_userId = userId;
+
+		if (_kbCommentRemoteModel != null) {
+			try {
+				Class<?> clazz = _kbCommentRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setUserId", long.class);
+
+				method.invoke(_kbCommentRemoteModel, userId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getUserUuid() throws SystemException {
 		return PortalUtil.getUserValue(getUserId(), "uuid", _userUuid);
 	}
 
+	@Override
 	public void setUserUuid(String userUuid) {
 		_userUuid = userUuid;
 	}
 
+	@Override
 	public String getUserName() {
 		return _userName;
 	}
 
+	@Override
 	public void setUserName(String userName) {
 		_userName = userName;
+
+		if (_kbCommentRemoteModel != null) {
+			try {
+				Class<?> clazz = _kbCommentRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setUserName", String.class);
+
+				method.invoke(_kbCommentRemoteModel, userName);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public Date getCreateDate() {
 		return _createDate;
 	}
 
+	@Override
 	public void setCreateDate(Date createDate) {
 		_createDate = createDate;
+
+		if (_kbCommentRemoteModel != null) {
+			try {
+				Class<?> clazz = _kbCommentRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setCreateDate", Date.class);
+
+				method.invoke(_kbCommentRemoteModel, createDate);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public Date getModifiedDate() {
 		return _modifiedDate;
 	}
 
+	@Override
 	public void setModifiedDate(Date modifiedDate) {
 		_modifiedDate = modifiedDate;
+
+		if (_kbCommentRemoteModel != null) {
+			try {
+				Class<?> clazz = _kbCommentRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setModifiedDate", Date.class);
+
+				method.invoke(_kbCommentRemoteModel, modifiedDate);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getClassName() {
 		if (getClassNameId() <= 0) {
 			return StringPool.BLANK;
@@ -238,6 +371,7 @@ public class KBCommentClp extends BaseModelImpl<KBComment> implements KBComment 
 		return PortalUtil.getClassName(getClassNameId());
 	}
 
+	@Override
 	public void setClassName(String className) {
 		long classNameId = 0;
 
@@ -248,40 +382,101 @@ public class KBCommentClp extends BaseModelImpl<KBComment> implements KBComment 
 		setClassNameId(classNameId);
 	}
 
+	@Override
 	public long getClassNameId() {
 		return _classNameId;
 	}
 
+	@Override
 	public void setClassNameId(long classNameId) {
 		_classNameId = classNameId;
+
+		if (_kbCommentRemoteModel != null) {
+			try {
+				Class<?> clazz = _kbCommentRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setClassNameId", long.class);
+
+				method.invoke(_kbCommentRemoteModel, classNameId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getClassPK() {
 		return _classPK;
 	}
 
+	@Override
 	public void setClassPK(long classPK) {
 		_classPK = classPK;
+
+		if (_kbCommentRemoteModel != null) {
+			try {
+				Class<?> clazz = _kbCommentRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setClassPK", long.class);
+
+				method.invoke(_kbCommentRemoteModel, classPK);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getContent() {
 		return _content;
 	}
 
+	@Override
 	public void setContent(String content) {
 		_content = content;
+
+		if (_kbCommentRemoteModel != null) {
+			try {
+				Class<?> clazz = _kbCommentRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setContent", String.class);
+
+				method.invoke(_kbCommentRemoteModel, content);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public boolean getHelpful() {
 		return _helpful;
 	}
 
+	@Override
 	public boolean isHelpful() {
 		return _helpful;
 	}
 
+	@Override
 	public void setHelpful(boolean helpful) {
 		_helpful = helpful;
+
+		if (_kbCommentRemoteModel != null) {
+			try {
+				Class<?> clazz = _kbCommentRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setHelpful", boolean.class);
+
+				method.invoke(_kbCommentRemoteModel, helpful);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public BaseModel<?> getKBCommentRemoteModel() {
@@ -292,6 +487,48 @@ public class KBCommentClp extends BaseModelImpl<KBComment> implements KBComment 
 		_kbCommentRemoteModel = kbCommentRemoteModel;
 	}
 
+	public Object invokeOnRemoteModel(String methodName,
+		Class<?>[] parameterTypes, Object[] parameterValues)
+		throws Exception {
+		Object[] remoteParameterValues = new Object[parameterValues.length];
+
+		for (int i = 0; i < parameterValues.length; i++) {
+			if (parameterValues[i] != null) {
+				remoteParameterValues[i] = ClpSerializer.translateInput(parameterValues[i]);
+			}
+		}
+
+		Class<?> remoteModelClass = _kbCommentRemoteModel.getClass();
+
+		ClassLoader remoteModelClassLoader = remoteModelClass.getClassLoader();
+
+		Class<?>[] remoteParameterTypes = new Class[parameterTypes.length];
+
+		for (int i = 0; i < parameterTypes.length; i++) {
+			if (parameterTypes[i].isPrimitive()) {
+				remoteParameterTypes[i] = parameterTypes[i];
+			}
+			else {
+				String parameterTypeName = parameterTypes[i].getName();
+
+				remoteParameterTypes[i] = remoteModelClassLoader.loadClass(parameterTypeName);
+			}
+		}
+
+		Method method = remoteModelClass.getMethod(methodName,
+				remoteParameterTypes);
+
+		Object returnValue = method.invoke(_kbCommentRemoteModel,
+				remoteParameterValues);
+
+		if (returnValue != null) {
+			returnValue = ClpSerializer.translateOutput(returnValue);
+		}
+
+		return returnValue;
+	}
+
+	@Override
 	public void persist() throws SystemException {
 		if (this.isNew()) {
 			KBCommentLocalServiceUtil.addKBComment(this);
@@ -303,7 +540,7 @@ public class KBCommentClp extends BaseModelImpl<KBComment> implements KBComment 
 
 	@Override
 	public KBComment toEscapedModel() {
-		return (KBComment)Proxy.newProxyInstance(KBComment.class.getClassLoader(),
+		return (KBComment)ProxyUtil.newProxyInstance(KBComment.class.getClassLoader(),
 			new Class[] { KBComment.class }, new AutoEscapeBeanHandler(this));
 	}
 
@@ -327,6 +564,7 @@ public class KBCommentClp extends BaseModelImpl<KBComment> implements KBComment 
 		return clone;
 	}
 
+	@Override
 	public int compareTo(KBComment kbComment) {
 		int value = 0;
 
@@ -344,18 +582,15 @@ public class KBCommentClp extends BaseModelImpl<KBComment> implements KBComment 
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof KBCommentClp)) {
 			return false;
 		}
 
-		KBCommentClp kbComment = null;
-
-		try {
-			kbComment = (KBCommentClp)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		KBCommentClp kbComment = (KBCommentClp)obj;
 
 		long primaryKey = kbComment.getPrimaryKey();
 
@@ -405,6 +640,7 @@ public class KBCommentClp extends BaseModelImpl<KBComment> implements KBComment 
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
 		StringBundler sb = new StringBundler(40);
 

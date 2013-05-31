@@ -6,9 +6,9 @@
 		<portlet-name>1</portlet-name>
 		<icon>/tasks/icon.png</icon>
 		<social-activity-interpreter-class>com.liferay.tasks.social.TasksActivityInterpreter</social-activity-interpreter-class>
+		<asset-renderer-factory>com.liferay.tasks.asset.TasksEntryAssetRendererFactory</asset-renderer-factory>
 		<header-portlet-css>/tasks/css/main.css</header-portlet-css>
 		<header-portlet-javascript>/tasks/js/main.js</header-portlet-javascript>
-		<footer-portal-javascript>/html/js/liferay/service.js</footer-portal-javascript>
 		<css-class-wrapper>tasks-portlet</css-class-wrapper>
 		<add-default-resource>true</add-default-resource>
 	</portlet>
@@ -17,7 +17,6 @@
 		<icon>/tasks/icon.png</icon>
 		<header-portlet-css>/tasks/css/main.css</header-portlet-css>
 		<header-portlet-javascript>/tasks/js/main.js</header-portlet-javascript>
-		<footer-portal-javascript>/html/js/liferay/service.js</footer-portal-javascript>
 		<css-class-wrapper>upcoming-tasks-portlet</css-class-wrapper>
 	</portlet>
 	<role-mapper>

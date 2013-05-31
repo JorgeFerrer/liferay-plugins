@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,6 +14,7 @@
 
 package com.liferay.portal.workflow.kaleo.model;
 
+import com.liferay.portal.LocaleException;
 import com.liferay.portal.kernel.bean.AutoEscape;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.model.BaseModel;
@@ -83,6 +84,7 @@ public interface KaleoDefinitionModel extends BaseModel<KaleoDefinition>,
 	 *
 	 * @return the group ID of this kaleo definition
 	 */
+	@Override
 	public long getGroupId();
 
 	/**
@@ -90,6 +92,7 @@ public interface KaleoDefinitionModel extends BaseModel<KaleoDefinition>,
 	 *
 	 * @param groupId the group ID of this kaleo definition
 	 */
+	@Override
 	public void setGroupId(long groupId);
 
 	/**
@@ -97,6 +100,7 @@ public interface KaleoDefinitionModel extends BaseModel<KaleoDefinition>,
 	 *
 	 * @return the company ID of this kaleo definition
 	 */
+	@Override
 	public long getCompanyId();
 
 	/**
@@ -104,6 +108,7 @@ public interface KaleoDefinitionModel extends BaseModel<KaleoDefinition>,
 	 *
 	 * @param companyId the company ID of this kaleo definition
 	 */
+	@Override
 	public void setCompanyId(long companyId);
 
 	/**
@@ -111,6 +116,7 @@ public interface KaleoDefinitionModel extends BaseModel<KaleoDefinition>,
 	 *
 	 * @return the user ID of this kaleo definition
 	 */
+	@Override
 	public long getUserId();
 
 	/**
@@ -118,6 +124,7 @@ public interface KaleoDefinitionModel extends BaseModel<KaleoDefinition>,
 	 *
 	 * @param userId the user ID of this kaleo definition
 	 */
+	@Override
 	public void setUserId(long userId);
 
 	/**
@@ -126,6 +133,7 @@ public interface KaleoDefinitionModel extends BaseModel<KaleoDefinition>,
 	 * @return the user uuid of this kaleo definition
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public String getUserUuid() throws SystemException;
 
 	/**
@@ -133,6 +141,7 @@ public interface KaleoDefinitionModel extends BaseModel<KaleoDefinition>,
 	 *
 	 * @param userUuid the user uuid of this kaleo definition
 	 */
+	@Override
 	public void setUserUuid(String userUuid);
 
 	/**
@@ -141,6 +150,7 @@ public interface KaleoDefinitionModel extends BaseModel<KaleoDefinition>,
 	 * @return the user name of this kaleo definition
 	 */
 	@AutoEscape
+	@Override
 	public String getUserName();
 
 	/**
@@ -148,6 +158,7 @@ public interface KaleoDefinitionModel extends BaseModel<KaleoDefinition>,
 	 *
 	 * @param userName the user name of this kaleo definition
 	 */
+	@Override
 	public void setUserName(String userName);
 
 	/**
@@ -155,6 +166,7 @@ public interface KaleoDefinitionModel extends BaseModel<KaleoDefinition>,
 	 *
 	 * @return the create date of this kaleo definition
 	 */
+	@Override
 	public Date getCreateDate();
 
 	/**
@@ -162,6 +174,7 @@ public interface KaleoDefinitionModel extends BaseModel<KaleoDefinition>,
 	 *
 	 * @param createDate the create date of this kaleo definition
 	 */
+	@Override
 	public void setCreateDate(Date createDate);
 
 	/**
@@ -169,6 +182,7 @@ public interface KaleoDefinitionModel extends BaseModel<KaleoDefinition>,
 	 *
 	 * @return the modified date of this kaleo definition
 	 */
+	@Override
 	public Date getModifiedDate();
 
 	/**
@@ -176,6 +190,7 @@ public interface KaleoDefinitionModel extends BaseModel<KaleoDefinition>,
 	 *
 	 * @param modifiedDate the modified date of this kaleo definition
 	 */
+	@Override
 	public void setModifiedDate(Date modifiedDate);
 
 	/**
@@ -371,35 +386,63 @@ public interface KaleoDefinitionModel extends BaseModel<KaleoDefinition>,
 	 */
 	public void setStartKaleoNodeId(long startKaleoNodeId);
 
+	@Override
 	public boolean isNew();
 
+	@Override
 	public void setNew(boolean n);
 
+	@Override
 	public boolean isCachedModel();
 
+	@Override
 	public void setCachedModel(boolean cachedModel);
 
+	@Override
 	public boolean isEscapedModel();
 
+	@Override
 	public Serializable getPrimaryKeyObj();
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj);
 
+	@Override
 	public ExpandoBridge getExpandoBridge();
 
+	@Override
+	public void setExpandoBridgeAttributes(BaseModel<?> baseModel);
+
+	@Override
+	public void setExpandoBridgeAttributes(ExpandoBridge expandoBridge);
+
+	@Override
 	public void setExpandoBridgeAttributes(ServiceContext serviceContext);
 
+	public void prepareLocalizedFieldsForImport(Locale defaultImportLocale)
+		throws LocaleException;
+
+	@Override
 	public Object clone();
 
+	@Override
 	public int compareTo(KaleoDefinition kaleoDefinition);
 
+	@Override
 	public int hashCode();
 
+	@Override
 	public CacheModel<KaleoDefinition> toCacheModel();
 
+	@Override
 	public KaleoDefinition toEscapedModel();
 
+	@Override
+	public KaleoDefinition toUnescapedModel();
+
+	@Override
 	public String toString();
 
+	@Override
 	public String toXmlString();
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -15,9 +15,11 @@
 package com.liferay.ams.model;
 
 import com.liferay.ams.service.CheckoutLocalServiceUtil;
+import com.liferay.ams.service.ClpSerializer;
 
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.model.BaseModel;
 import com.liferay.portal.model.impl.BaseModelImpl;
@@ -25,7 +27,7 @@ import com.liferay.portal.util.PortalUtil;
 
 import java.io.Serializable;
 
-import java.lang.reflect.Proxy;
+import java.lang.reflect.Method;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -38,30 +40,37 @@ public class CheckoutClp extends BaseModelImpl<Checkout> implements Checkout {
 	public CheckoutClp() {
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return Checkout.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return Checkout.class.getName();
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _checkoutId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setCheckoutId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
-		return new Long(_checkoutId);
+		return _checkoutId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
 
+	@Override
 	public Map<String, Object> getModelAttributes() {
 		Map<String, Object> attributes = new HashMap<String, Object>();
 
@@ -79,6 +88,7 @@ public class CheckoutClp extends BaseModelImpl<Checkout> implements Checkout {
 		return attributes;
 	}
 
+	@Override
 	public void setModelAttributes(Map<String, Object> attributes) {
 		Long checkoutId = (Long)attributes.get("checkoutId");
 
@@ -141,92 +151,246 @@ public class CheckoutClp extends BaseModelImpl<Checkout> implements Checkout {
 		}
 	}
 
+	@Override
 	public long getCheckoutId() {
 		return _checkoutId;
 	}
 
+	@Override
 	public void setCheckoutId(long checkoutId) {
 		_checkoutId = checkoutId;
+
+		if (_checkoutRemoteModel != null) {
+			try {
+				Class<?> clazz = _checkoutRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setCheckoutId", long.class);
+
+				method.invoke(_checkoutRemoteModel, checkoutId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getCompanyId() {
 		return _companyId;
 	}
 
+	@Override
 	public void setCompanyId(long companyId) {
 		_companyId = companyId;
+
+		if (_checkoutRemoteModel != null) {
+			try {
+				Class<?> clazz = _checkoutRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setCompanyId", long.class);
+
+				method.invoke(_checkoutRemoteModel, companyId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getUserId() {
 		return _userId;
 	}
 
+	@Override
 	public void setUserId(long userId) {
 		_userId = userId;
+
+		if (_checkoutRemoteModel != null) {
+			try {
+				Class<?> clazz = _checkoutRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setUserId", long.class);
+
+				method.invoke(_checkoutRemoteModel, userId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getUserUuid() throws SystemException {
 		return PortalUtil.getUserValue(getUserId(), "uuid", _userUuid);
 	}
 
+	@Override
 	public void setUserUuid(String userUuid) {
 		_userUuid = userUuid;
 	}
 
+	@Override
 	public String getUserName() {
 		return _userName;
 	}
 
+	@Override
 	public void setUserName(String userName) {
 		_userName = userName;
+
+		if (_checkoutRemoteModel != null) {
+			try {
+				Class<?> clazz = _checkoutRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setUserName", String.class);
+
+				method.invoke(_checkoutRemoteModel, userName);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public Date getCreateDate() {
 		return _createDate;
 	}
 
+	@Override
 	public void setCreateDate(Date createDate) {
 		_createDate = createDate;
+
+		if (_checkoutRemoteModel != null) {
+			try {
+				Class<?> clazz = _checkoutRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setCreateDate", Date.class);
+
+				method.invoke(_checkoutRemoteModel, createDate);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public Date getModifiedDate() {
 		return _modifiedDate;
 	}
 
+	@Override
 	public void setModifiedDate(Date modifiedDate) {
 		_modifiedDate = modifiedDate;
+
+		if (_checkoutRemoteModel != null) {
+			try {
+				Class<?> clazz = _checkoutRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setModifiedDate", Date.class);
+
+				method.invoke(_checkoutRemoteModel, modifiedDate);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getAssetId() {
 		return _assetId;
 	}
 
+	@Override
 	public void setAssetId(long assetId) {
 		_assetId = assetId;
+
+		if (_checkoutRemoteModel != null) {
+			try {
+				Class<?> clazz = _checkoutRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setAssetId", long.class);
+
+				method.invoke(_checkoutRemoteModel, assetId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public Date getCheckOutDate() {
 		return _checkOutDate;
 	}
 
+	@Override
 	public void setCheckOutDate(Date checkOutDate) {
 		_checkOutDate = checkOutDate;
+
+		if (_checkoutRemoteModel != null) {
+			try {
+				Class<?> clazz = _checkoutRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setCheckOutDate", Date.class);
+
+				method.invoke(_checkoutRemoteModel, checkOutDate);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public Date getExpectedCheckInDate() {
 		return _expectedCheckInDate;
 	}
 
+	@Override
 	public void setExpectedCheckInDate(Date expectedCheckInDate) {
 		_expectedCheckInDate = expectedCheckInDate;
+
+		if (_checkoutRemoteModel != null) {
+			try {
+				Class<?> clazz = _checkoutRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setExpectedCheckInDate",
+						Date.class);
+
+				method.invoke(_checkoutRemoteModel, expectedCheckInDate);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public Date getActualCheckInDate() {
 		return _actualCheckInDate;
 	}
 
+	@Override
 	public void setActualCheckInDate(Date actualCheckInDate) {
 		_actualCheckInDate = actualCheckInDate;
+
+		if (_checkoutRemoteModel != null) {
+			try {
+				Class<?> clazz = _checkoutRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setActualCheckInDate",
+						Date.class);
+
+				method.invoke(_checkoutRemoteModel, actualCheckInDate);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public BaseModel<?> getCheckoutRemoteModel() {
@@ -237,6 +401,48 @@ public class CheckoutClp extends BaseModelImpl<Checkout> implements Checkout {
 		_checkoutRemoteModel = checkoutRemoteModel;
 	}
 
+	public Object invokeOnRemoteModel(String methodName,
+		Class<?>[] parameterTypes, Object[] parameterValues)
+		throws Exception {
+		Object[] remoteParameterValues = new Object[parameterValues.length];
+
+		for (int i = 0; i < parameterValues.length; i++) {
+			if (parameterValues[i] != null) {
+				remoteParameterValues[i] = ClpSerializer.translateInput(parameterValues[i]);
+			}
+		}
+
+		Class<?> remoteModelClass = _checkoutRemoteModel.getClass();
+
+		ClassLoader remoteModelClassLoader = remoteModelClass.getClassLoader();
+
+		Class<?>[] remoteParameterTypes = new Class[parameterTypes.length];
+
+		for (int i = 0; i < parameterTypes.length; i++) {
+			if (parameterTypes[i].isPrimitive()) {
+				remoteParameterTypes[i] = parameterTypes[i];
+			}
+			else {
+				String parameterTypeName = parameterTypes[i].getName();
+
+				remoteParameterTypes[i] = remoteModelClassLoader.loadClass(parameterTypeName);
+			}
+		}
+
+		Method method = remoteModelClass.getMethod(methodName,
+				remoteParameterTypes);
+
+		Object returnValue = method.invoke(_checkoutRemoteModel,
+				remoteParameterValues);
+
+		if (returnValue != null) {
+			returnValue = ClpSerializer.translateOutput(returnValue);
+		}
+
+		return returnValue;
+	}
+
+	@Override
 	public void persist() throws SystemException {
 		if (this.isNew()) {
 			CheckoutLocalServiceUtil.addCheckout(this);
@@ -248,7 +454,7 @@ public class CheckoutClp extends BaseModelImpl<Checkout> implements Checkout {
 
 	@Override
 	public Checkout toEscapedModel() {
-		return (Checkout)Proxy.newProxyInstance(Checkout.class.getClassLoader(),
+		return (Checkout)ProxyUtil.newProxyInstance(Checkout.class.getClassLoader(),
 			new Class[] { Checkout.class }, new AutoEscapeBeanHandler(this));
 	}
 
@@ -270,6 +476,7 @@ public class CheckoutClp extends BaseModelImpl<Checkout> implements Checkout {
 		return clone;
 	}
 
+	@Override
 	public int compareTo(Checkout checkout) {
 		long primaryKey = checkout.getPrimaryKey();
 
@@ -286,18 +493,15 @@ public class CheckoutClp extends BaseModelImpl<Checkout> implements Checkout {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof CheckoutClp)) {
 			return false;
 		}
 
-		CheckoutClp checkout = null;
-
-		try {
-			checkout = (CheckoutClp)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		CheckoutClp checkout = (CheckoutClp)obj;
 
 		long primaryKey = checkout.getPrimaryKey();
 
@@ -343,6 +547,7 @@ public class CheckoutClp extends BaseModelImpl<Checkout> implements Checkout {
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
 		StringBundler sb = new StringBundler(34);
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,10 +14,12 @@
 
 package com.liferay.chat.model;
 
+import com.liferay.chat.service.ClpSerializer;
 import com.liferay.chat.service.StatusLocalServiceUtil;
 
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.model.BaseModel;
 import com.liferay.portal.model.impl.BaseModelImpl;
@@ -25,7 +27,7 @@ import com.liferay.portal.util.PortalUtil;
 
 import java.io.Serializable;
 
-import java.lang.reflect.Proxy;
+import java.lang.reflect.Method;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,30 +39,37 @@ public class StatusClp extends BaseModelImpl<Status> implements Status {
 	public StatusClp() {
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return Status.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return Status.class.getName();
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _statusId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setStatusId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
-		return new Long(_statusId);
+		return _statusId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
 
+	@Override
 	public Map<String, Object> getModelAttributes() {
 		Map<String, Object> attributes = new HashMap<String, Object>();
 
@@ -69,13 +78,14 @@ public class StatusClp extends BaseModelImpl<Status> implements Status {
 		attributes.put("modifiedDate", getModifiedDate());
 		attributes.put("online", getOnline());
 		attributes.put("awake", getAwake());
-		attributes.put("activePanelId", getActivePanelId());
+		attributes.put("activePanelIds", getActivePanelIds());
 		attributes.put("message", getMessage());
 		attributes.put("playSound", getPlaySound());
 
 		return attributes;
 	}
 
+	@Override
 	public void setModelAttributes(Map<String, Object> attributes) {
 		Long statusId = (Long)attributes.get("statusId");
 
@@ -107,10 +117,10 @@ public class StatusClp extends BaseModelImpl<Status> implements Status {
 			setAwake(awake);
 		}
 
-		String activePanelId = (String)attributes.get("activePanelId");
+		String activePanelIds = (String)attributes.get("activePanelIds");
 
-		if (activePanelId != null) {
-			setActivePanelId(activePanelId);
+		if (activePanelIds != null) {
+			setActivePanelIds(activePanelIds);
 		}
 
 		String message = (String)attributes.get("message");
@@ -126,88 +136,214 @@ public class StatusClp extends BaseModelImpl<Status> implements Status {
 		}
 	}
 
+	@Override
 	public long getStatusId() {
 		return _statusId;
 	}
 
+	@Override
 	public void setStatusId(long statusId) {
 		_statusId = statusId;
+
+		if (_statusRemoteModel != null) {
+			try {
+				Class<?> clazz = _statusRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setStatusId", long.class);
+
+				method.invoke(_statusRemoteModel, statusId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getUserId() {
 		return _userId;
 	}
 
+	@Override
 	public void setUserId(long userId) {
 		_userId = userId;
+
+		if (_statusRemoteModel != null) {
+			try {
+				Class<?> clazz = _statusRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setUserId", long.class);
+
+				method.invoke(_statusRemoteModel, userId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getUserUuid() throws SystemException {
 		return PortalUtil.getUserValue(getUserId(), "uuid", _userUuid);
 	}
 
+	@Override
 	public void setUserUuid(String userUuid) {
 		_userUuid = userUuid;
 	}
 
+	@Override
 	public long getModifiedDate() {
 		return _modifiedDate;
 	}
 
+	@Override
 	public void setModifiedDate(long modifiedDate) {
 		_modifiedDate = modifiedDate;
+
+		if (_statusRemoteModel != null) {
+			try {
+				Class<?> clazz = _statusRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setModifiedDate", long.class);
+
+				method.invoke(_statusRemoteModel, modifiedDate);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public boolean getOnline() {
 		return _online;
 	}
 
+	@Override
 	public boolean isOnline() {
 		return _online;
 	}
 
+	@Override
 	public void setOnline(boolean online) {
 		_online = online;
+
+		if (_statusRemoteModel != null) {
+			try {
+				Class<?> clazz = _statusRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setOnline", boolean.class);
+
+				method.invoke(_statusRemoteModel, online);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public boolean getAwake() {
 		return _awake;
 	}
 
+	@Override
 	public boolean isAwake() {
 		return _awake;
 	}
 
+	@Override
 	public void setAwake(boolean awake) {
 		_awake = awake;
+
+		if (_statusRemoteModel != null) {
+			try {
+				Class<?> clazz = _statusRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setAwake", boolean.class);
+
+				method.invoke(_statusRemoteModel, awake);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
-	public String getActivePanelId() {
-		return _activePanelId;
+	@Override
+	public String getActivePanelIds() {
+		return _activePanelIds;
 	}
 
-	public void setActivePanelId(String activePanelId) {
-		_activePanelId = activePanelId;
+	@Override
+	public void setActivePanelIds(String activePanelIds) {
+		_activePanelIds = activePanelIds;
+
+		if (_statusRemoteModel != null) {
+			try {
+				Class<?> clazz = _statusRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setActivePanelIds",
+						String.class);
+
+				method.invoke(_statusRemoteModel, activePanelIds);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getMessage() {
 		return _message;
 	}
 
+	@Override
 	public void setMessage(String message) {
 		_message = message;
+
+		if (_statusRemoteModel != null) {
+			try {
+				Class<?> clazz = _statusRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setMessage", String.class);
+
+				method.invoke(_statusRemoteModel, message);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public boolean getPlaySound() {
 		return _playSound;
 	}
 
+	@Override
 	public boolean isPlaySound() {
 		return _playSound;
 	}
 
+	@Override
 	public void setPlaySound(boolean playSound) {
 		_playSound = playSound;
+
+		if (_statusRemoteModel != null) {
+			try {
+				Class<?> clazz = _statusRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setPlaySound", boolean.class);
+
+				method.invoke(_statusRemoteModel, playSound);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public BaseModel<?> getStatusRemoteModel() {
@@ -218,6 +354,48 @@ public class StatusClp extends BaseModelImpl<Status> implements Status {
 		_statusRemoteModel = statusRemoteModel;
 	}
 
+	public Object invokeOnRemoteModel(String methodName,
+		Class<?>[] parameterTypes, Object[] parameterValues)
+		throws Exception {
+		Object[] remoteParameterValues = new Object[parameterValues.length];
+
+		for (int i = 0; i < parameterValues.length; i++) {
+			if (parameterValues[i] != null) {
+				remoteParameterValues[i] = ClpSerializer.translateInput(parameterValues[i]);
+			}
+		}
+
+		Class<?> remoteModelClass = _statusRemoteModel.getClass();
+
+		ClassLoader remoteModelClassLoader = remoteModelClass.getClassLoader();
+
+		Class<?>[] remoteParameterTypes = new Class[parameterTypes.length];
+
+		for (int i = 0; i < parameterTypes.length; i++) {
+			if (parameterTypes[i].isPrimitive()) {
+				remoteParameterTypes[i] = parameterTypes[i];
+			}
+			else {
+				String parameterTypeName = parameterTypes[i].getName();
+
+				remoteParameterTypes[i] = remoteModelClassLoader.loadClass(parameterTypeName);
+			}
+		}
+
+		Method method = remoteModelClass.getMethod(methodName,
+				remoteParameterTypes);
+
+		Object returnValue = method.invoke(_statusRemoteModel,
+				remoteParameterValues);
+
+		if (returnValue != null) {
+			returnValue = ClpSerializer.translateOutput(returnValue);
+		}
+
+		return returnValue;
+	}
+
+	@Override
 	public void persist() throws SystemException {
 		if (this.isNew()) {
 			StatusLocalServiceUtil.addStatus(this);
@@ -229,7 +407,7 @@ public class StatusClp extends BaseModelImpl<Status> implements Status {
 
 	@Override
 	public Status toEscapedModel() {
-		return (Status)Proxy.newProxyInstance(Status.class.getClassLoader(),
+		return (Status)ProxyUtil.newProxyInstance(Status.class.getClassLoader(),
 			new Class[] { Status.class }, new AutoEscapeBeanHandler(this));
 	}
 
@@ -242,13 +420,14 @@ public class StatusClp extends BaseModelImpl<Status> implements Status {
 		clone.setModifiedDate(getModifiedDate());
 		clone.setOnline(getOnline());
 		clone.setAwake(getAwake());
-		clone.setActivePanelId(getActivePanelId());
+		clone.setActivePanelIds(getActivePanelIds());
 		clone.setMessage(getMessage());
 		clone.setPlaySound(getPlaySound());
 
 		return clone;
 	}
 
+	@Override
 	public int compareTo(Status status) {
 		long primaryKey = status.getPrimaryKey();
 
@@ -265,18 +444,15 @@ public class StatusClp extends BaseModelImpl<Status> implements Status {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof StatusClp)) {
 			return false;
 		}
 
-		StatusClp status = null;
-
-		try {
-			status = (StatusClp)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		StatusClp status = (StatusClp)obj;
 
 		long primaryKey = status.getPrimaryKey();
 
@@ -307,8 +483,8 @@ public class StatusClp extends BaseModelImpl<Status> implements Status {
 		sb.append(getOnline());
 		sb.append(", awake=");
 		sb.append(getAwake());
-		sb.append(", activePanelId=");
-		sb.append(getActivePanelId());
+		sb.append(", activePanelIds=");
+		sb.append(getActivePanelIds());
 		sb.append(", message=");
 		sb.append(getMessage());
 		sb.append(", playSound=");
@@ -318,6 +494,7 @@ public class StatusClp extends BaseModelImpl<Status> implements Status {
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
 		StringBundler sb = new StringBundler(28);
 
@@ -346,8 +523,8 @@ public class StatusClp extends BaseModelImpl<Status> implements Status {
 		sb.append(getAwake());
 		sb.append("]]></column-value></column>");
 		sb.append(
-			"<column><column-name>activePanelId</column-name><column-value><![CDATA[");
-		sb.append(getActivePanelId());
+			"<column><column-name>activePanelIds</column-name><column-value><![CDATA[");
+		sb.append(getActivePanelIds());
 		sb.append("]]></column-value></column>");
 		sb.append(
 			"<column><column-name>message</column-name><column-value><![CDATA[");
@@ -369,7 +546,7 @@ public class StatusClp extends BaseModelImpl<Status> implements Status {
 	private long _modifiedDate;
 	private boolean _online;
 	private boolean _awake;
-	private String _activePanelId;
+	private String _activePanelIds;
 	private String _message;
 	private boolean _playSound;
 	private BaseModel<?> _statusRemoteModel;

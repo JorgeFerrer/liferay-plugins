@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -16,7 +16,7 @@ package com.liferay.portal.workflow.kaleo.runtime.node;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.service.ServiceContext;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.workflow.kaleo.model.KaleoCondition;
 import com.liferay.portal.workflow.kaleo.model.KaleoInstanceToken;
 import com.liferay.portal.workflow.kaleo.model.KaleoNode;
@@ -25,11 +25,9 @@ import com.liferay.portal.workflow.kaleo.model.KaleoTransition;
 import com.liferay.portal.workflow.kaleo.runtime.ExecutionContext;
 import com.liferay.portal.workflow.kaleo.runtime.condition.ConditionEvaluator;
 import com.liferay.portal.workflow.kaleo.runtime.graph.PathElement;
-
-import java.io.Serializable;
+import com.liferay.portal.workflow.kaleo.runtime.util.ClassLoaderUtil;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Michael C. Han
@@ -41,8 +39,10 @@ public class ConditionNodeExecutor extends BaseNodeExecutor {
 	}
 
 	@Override
-	protected void doEnter(
+	protected boolean doEnter(
 		KaleoNode currentKaleoNode, ExecutionContext executionContext) {
+
+		return true;
 	}
 
 	@Override
@@ -51,10 +51,6 @@ public class ConditionNodeExecutor extends BaseNodeExecutor {
 			List<PathElement> remainingPathElements)
 		throws PortalException, SystemException {
 
-		Map<String, Serializable> workflowContext =
-			executionContext.getWorkflowContext();
-		ServiceContext serviceContext = executionContext.getServiceContext();
-
 		KaleoInstanceToken kaleoInstanceToken =
 			executionContext.getKaleoInstanceToken();
 
@@ -62,14 +58,21 @@ public class ConditionNodeExecutor extends BaseNodeExecutor {
 			kaleoConditionLocalService.getKaleoNodeKaleoCondition(
 				currentKaleoNode.getKaleoNodeId());
 
+		String[] scriptRequiredContexts = StringUtil.split(
+			kaleoCondition.getScriptRequiredContexts());
+
+		ClassLoader[] classloaders = ClassLoaderUtil.getClassLoaders(
+			scriptRequiredContexts);
+
 		String transitionName = _conditionEvaluator.evaluate(
-			kaleoCondition, executionContext);
+			kaleoCondition, executionContext, classloaders);
 
 		KaleoTransition kaleoTransition = currentKaleoNode.getKaleoTransition(
 			transitionName);
 
 		ExecutionContext newExecutionContext = new ExecutionContext(
-			kaleoInstanceToken, workflowContext, serviceContext);
+			kaleoInstanceToken, executionContext.getWorkflowContext(),
+			executionContext.getServiceContext());
 
 		PathElement pathElement = new PathElement(
 			currentKaleoNode, kaleoTransition.getTargetKaleoNode(),

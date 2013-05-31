@@ -5,7 +5,7 @@
 	<portlet>
 		<portlet-name>1</portlet-name>
 		<icon>/icon.png</icon>
-		<portlet-data-handler-class>com.liferay.opensocial.admin.lar.AdminPortletDataHandlerImpl</portlet-data-handler-class>
+		<portlet-data-handler-class>com.liferay.opensocial.admin.lar.AdminPortletDataHandler</portlet-data-handler-class>
 		<control-panel-entry-category>portal</control-panel-entry-category>
 		<header-portlet-css>/admin/css/main.css</header-portlet-css>
 		<css-class-wrapper>opensocial-portlet-admin</css-class-wrapper>
@@ -50,7 +50,6 @@
 		<footer-portlet-javascript>/editor/js/gadget-editor-tabs.js</footer-portlet-javascript>
 		<footer-portlet-javascript>/editor/js/gadget-editor-tree.js</footer-portlet-javascript>
 		<footer-portlet-javascript>/editor/js/main.js</footer-portlet-javascript>
-		<footer-portlet-javascript>/js/service.js</footer-portlet-javascript>
 		<css-class-wrapper>opensocial-portlet-editor</css-class-wrapper>
 	</portlet>
 	<role-mapper>

@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -49,7 +49,7 @@ KBComment kbComment = (KBComment)request.getAttribute("article_comment.jsp-kb_co
 			<br />
 
 			<div>
-				<%= kbComment.getContent() %>
+				<%= HtmlUtil.escape(kbComment.getContent()) %>
 			</div>
 
 			<br />
@@ -58,7 +58,7 @@ KBComment kbComment = (KBComment)request.getAttribute("article_comment.jsp-kb_co
 				<%= LanguageUtil.format(pageContext, "posted-on-x", dateFormatDateTime.format(kbComment.getModifiedDate())) %>
 			</div>
 
-			<c:if test="<%= (user.getUserId() == kbComment.getUserId()) || KBArticlePermission.contains(permissionChecker, kbArticle, ActionKeys.UPDATE) %>">
+			<c:if test="<%= KBCommentPermission.contains(permissionChecker, kbComment, ActionKeys.DELETE) %>">
 				<br />
 
 				<%

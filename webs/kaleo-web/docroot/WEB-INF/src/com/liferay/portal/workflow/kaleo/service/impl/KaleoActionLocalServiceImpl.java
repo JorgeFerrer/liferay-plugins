@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -58,9 +58,11 @@ public class KaleoActionLocalServiceImpl
 		kaleoAction.setExecutionType(action.getExecutionType().getValue());
 		kaleoAction.setScript(action.getScript());
 		kaleoAction.setScriptLanguage(action.getScriptLanguage().getValue());
+		kaleoAction.setScriptRequiredContexts(
+			action.getScriptRequiredContexts());
 		kaleoAction.setPriority(action.getPriority());
 
-		kaleoActionPersistence.update(kaleoAction, false);
+		kaleoActionPersistence.update(kaleoAction);
 
 		return kaleoAction;
 	}
@@ -75,6 +77,14 @@ public class KaleoActionLocalServiceImpl
 		throws SystemException {
 
 		kaleoActionPersistence.removeByKaleoDefinitionId(kaleoDefinitionId);
+	}
+
+	public List<KaleoAction> getKaleoActions(
+			String kaleoClassName, long kaleoClassPK)
+		throws SystemException {
+
+		return kaleoActionPersistence.findByKCN_KCPK(
+			kaleoClassName, kaleoClassPK);
 	}
 
 	public List<KaleoAction> getKaleoActions(

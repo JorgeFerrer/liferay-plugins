@@ -7,6 +7,9 @@ AUI.add(
 
 				instance.namespace = params.namespace;
 
+				instance.checkAll = A.one('#' + instance.namespace + 'checkAll');
+				instance.userThreadsSearchContainer = A.one('#' + instance.namespace + 'userThreadsSearchContainer');
+
 				instance.privateMessagingContainer = A.one('#p_p_id' + params.namespace + ' .private-messaging-container');
 
 				if (instance.privateMessagingContainer) {
@@ -77,18 +80,21 @@ AUI.add(
 			newMessage: function(mbThreadId) {
 				var instance = this;
 
+				var redirectURL = new Liferay.PortletURL.createRenderURL();
+
+				redirectURL.setWindowState('NORMAL');
+
 				var portletURL = new Liferay.PortletURL.createResourceURL();
 
-				portletURL.setParameter('mvcPath', '/new_message.jsp');
 				portletURL.setPortletId('1_WAR_privatemessagingportlet');
 				portletURL.setWindowState('EXCLUSIVE');
 
+				portletURL.setParameter('mvcPath', '/new_message.jsp');
+				portletURL.setParameter('redirect', redirectURL.toString());
+
 				new A.Dialog(
 					{
-						align: {
-							node: null,
-							points: ['tc', 'tc']
-						},
+						align: Liferay.Util.Window.ALIGN_CENTER,
 						cssClass: 'private-messaging-portlet',
 						destroyOnClose: true,
 						modal: true,
@@ -148,25 +154,29 @@ AUI.add(
 				instance.privateMessagingContainer.delegate(
 					'click',
 					function(event) {
-						instance.privateMessagingContainer.all('input[type=checkbox]').each(
-							function(item, index, collection) {
-								item.set('checked', true);
-							}
-						);
+						var checkBox = event.target;
+
+						var  privateMessages = instance.privateMessagingContainer.all('input[type=checkbox]');
+
+						privateMessages.set('checked', checkBox.get('checked'));
 					},
-					'.select-all'
+					'.check-all'
 				);
 
 				instance.privateMessagingContainer.delegate(
 					'click',
 					function(event) {
-						instance.privateMessagingContainer.all('input[type=checkbox]').each(
-							function(item, index, collection) {
-								item.set('checked', false);
-							}
+						var checkBox = event.target;
+
+						Liferay.Util.updateCheckboxValue(checkBox);
+
+						Liferay.Util.checkAllBox(
+							instance.userThreadsSearchContainer,
+							instance.namespace + 'mbThreadCheckbox',
+							instance.checkAll
 						);
 					},
-					'.select-none'
+					'.results-row input[type=checkbox]'
 				);
 			},
 

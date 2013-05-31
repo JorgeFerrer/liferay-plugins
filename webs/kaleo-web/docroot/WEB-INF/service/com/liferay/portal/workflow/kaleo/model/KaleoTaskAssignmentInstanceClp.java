@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -16,15 +16,17 @@ package com.liferay.portal.workflow.kaleo.model;
 
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.model.BaseModel;
 import com.liferay.portal.model.impl.BaseModelImpl;
 import com.liferay.portal.util.PortalUtil;
+import com.liferay.portal.workflow.kaleo.service.ClpSerializer;
 import com.liferay.portal.workflow.kaleo.service.KaleoTaskAssignmentInstanceLocalServiceUtil;
 
 import java.io.Serializable;
 
-import java.lang.reflect.Proxy;
+import java.lang.reflect.Method;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -38,30 +40,37 @@ public class KaleoTaskAssignmentInstanceClp extends BaseModelImpl<KaleoTaskAssig
 	public KaleoTaskAssignmentInstanceClp() {
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return KaleoTaskAssignmentInstance.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return KaleoTaskAssignmentInstance.class.getName();
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _kaleoTaskAssignmentInstanceId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setKaleoTaskAssignmentInstanceId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
-		return new Long(_kaleoTaskAssignmentInstanceId);
+		return _kaleoTaskAssignmentInstanceId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
 
+	@Override
 	public Map<String, Object> getModelAttributes() {
 		Map<String, Object> attributes = new HashMap<String, Object>();
 
@@ -87,6 +96,7 @@ public class KaleoTaskAssignmentInstanceClp extends BaseModelImpl<KaleoTaskAssig
 		return attributes;
 	}
 
+	@Override
 	public void setModelAttributes(Map<String, Object> attributes) {
 		Long kaleoTaskAssignmentInstanceId = (Long)attributes.get(
 				"kaleoTaskAssignmentInstanceId");
@@ -193,153 +203,428 @@ public class KaleoTaskAssignmentInstanceClp extends BaseModelImpl<KaleoTaskAssig
 		}
 	}
 
+	@Override
 	public long getKaleoTaskAssignmentInstanceId() {
 		return _kaleoTaskAssignmentInstanceId;
 	}
 
+	@Override
 	public void setKaleoTaskAssignmentInstanceId(
 		long kaleoTaskAssignmentInstanceId) {
 		_kaleoTaskAssignmentInstanceId = kaleoTaskAssignmentInstanceId;
+
+		if (_kaleoTaskAssignmentInstanceRemoteModel != null) {
+			try {
+				Class<?> clazz = _kaleoTaskAssignmentInstanceRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setKaleoTaskAssignmentInstanceId",
+						long.class);
+
+				method.invoke(_kaleoTaskAssignmentInstanceRemoteModel,
+					kaleoTaskAssignmentInstanceId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getGroupId() {
 		return _groupId;
 	}
 
+	@Override
 	public void setGroupId(long groupId) {
 		_groupId = groupId;
+
+		if (_kaleoTaskAssignmentInstanceRemoteModel != null) {
+			try {
+				Class<?> clazz = _kaleoTaskAssignmentInstanceRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setGroupId", long.class);
+
+				method.invoke(_kaleoTaskAssignmentInstanceRemoteModel, groupId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getCompanyId() {
 		return _companyId;
 	}
 
+	@Override
 	public void setCompanyId(long companyId) {
 		_companyId = companyId;
+
+		if (_kaleoTaskAssignmentInstanceRemoteModel != null) {
+			try {
+				Class<?> clazz = _kaleoTaskAssignmentInstanceRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setCompanyId", long.class);
+
+				method.invoke(_kaleoTaskAssignmentInstanceRemoteModel, companyId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getUserId() {
 		return _userId;
 	}
 
+	@Override
 	public void setUserId(long userId) {
 		_userId = userId;
+
+		if (_kaleoTaskAssignmentInstanceRemoteModel != null) {
+			try {
+				Class<?> clazz = _kaleoTaskAssignmentInstanceRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setUserId", long.class);
+
+				method.invoke(_kaleoTaskAssignmentInstanceRemoteModel, userId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getUserUuid() throws SystemException {
 		return PortalUtil.getUserValue(getUserId(), "uuid", _userUuid);
 	}
 
+	@Override
 	public void setUserUuid(String userUuid) {
 		_userUuid = userUuid;
 	}
 
+	@Override
 	public String getUserName() {
 		return _userName;
 	}
 
+	@Override
 	public void setUserName(String userName) {
 		_userName = userName;
+
+		if (_kaleoTaskAssignmentInstanceRemoteModel != null) {
+			try {
+				Class<?> clazz = _kaleoTaskAssignmentInstanceRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setUserName", String.class);
+
+				method.invoke(_kaleoTaskAssignmentInstanceRemoteModel, userName);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public Date getCreateDate() {
 		return _createDate;
 	}
 
+	@Override
 	public void setCreateDate(Date createDate) {
 		_createDate = createDate;
+
+		if (_kaleoTaskAssignmentInstanceRemoteModel != null) {
+			try {
+				Class<?> clazz = _kaleoTaskAssignmentInstanceRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setCreateDate", Date.class);
+
+				method.invoke(_kaleoTaskAssignmentInstanceRemoteModel,
+					createDate);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public Date getModifiedDate() {
 		return _modifiedDate;
 	}
 
+	@Override
 	public void setModifiedDate(Date modifiedDate) {
 		_modifiedDate = modifiedDate;
+
+		if (_kaleoTaskAssignmentInstanceRemoteModel != null) {
+			try {
+				Class<?> clazz = _kaleoTaskAssignmentInstanceRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setModifiedDate", Date.class);
+
+				method.invoke(_kaleoTaskAssignmentInstanceRemoteModel,
+					modifiedDate);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getKaleoDefinitionId() {
 		return _kaleoDefinitionId;
 	}
 
+	@Override
 	public void setKaleoDefinitionId(long kaleoDefinitionId) {
 		_kaleoDefinitionId = kaleoDefinitionId;
+
+		if (_kaleoTaskAssignmentInstanceRemoteModel != null) {
+			try {
+				Class<?> clazz = _kaleoTaskAssignmentInstanceRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setKaleoDefinitionId",
+						long.class);
+
+				method.invoke(_kaleoTaskAssignmentInstanceRemoteModel,
+					kaleoDefinitionId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getKaleoInstanceId() {
 		return _kaleoInstanceId;
 	}
 
+	@Override
 	public void setKaleoInstanceId(long kaleoInstanceId) {
 		_kaleoInstanceId = kaleoInstanceId;
+
+		if (_kaleoTaskAssignmentInstanceRemoteModel != null) {
+			try {
+				Class<?> clazz = _kaleoTaskAssignmentInstanceRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setKaleoInstanceId", long.class);
+
+				method.invoke(_kaleoTaskAssignmentInstanceRemoteModel,
+					kaleoInstanceId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getKaleoInstanceTokenId() {
 		return _kaleoInstanceTokenId;
 	}
 
+	@Override
 	public void setKaleoInstanceTokenId(long kaleoInstanceTokenId) {
 		_kaleoInstanceTokenId = kaleoInstanceTokenId;
+
+		if (_kaleoTaskAssignmentInstanceRemoteModel != null) {
+			try {
+				Class<?> clazz = _kaleoTaskAssignmentInstanceRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setKaleoInstanceTokenId",
+						long.class);
+
+				method.invoke(_kaleoTaskAssignmentInstanceRemoteModel,
+					kaleoInstanceTokenId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getKaleoTaskInstanceTokenId() {
 		return _kaleoTaskInstanceTokenId;
 	}
 
+	@Override
 	public void setKaleoTaskInstanceTokenId(long kaleoTaskInstanceTokenId) {
 		_kaleoTaskInstanceTokenId = kaleoTaskInstanceTokenId;
+
+		if (_kaleoTaskAssignmentInstanceRemoteModel != null) {
+			try {
+				Class<?> clazz = _kaleoTaskAssignmentInstanceRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setKaleoTaskInstanceTokenId",
+						long.class);
+
+				method.invoke(_kaleoTaskAssignmentInstanceRemoteModel,
+					kaleoTaskInstanceTokenId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getKaleoTaskId() {
 		return _kaleoTaskId;
 	}
 
+	@Override
 	public void setKaleoTaskId(long kaleoTaskId) {
 		_kaleoTaskId = kaleoTaskId;
+
+		if (_kaleoTaskAssignmentInstanceRemoteModel != null) {
+			try {
+				Class<?> clazz = _kaleoTaskAssignmentInstanceRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setKaleoTaskId", long.class);
+
+				method.invoke(_kaleoTaskAssignmentInstanceRemoteModel,
+					kaleoTaskId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getKaleoTaskName() {
 		return _kaleoTaskName;
 	}
 
+	@Override
 	public void setKaleoTaskName(String kaleoTaskName) {
 		_kaleoTaskName = kaleoTaskName;
+
+		if (_kaleoTaskAssignmentInstanceRemoteModel != null) {
+			try {
+				Class<?> clazz = _kaleoTaskAssignmentInstanceRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setKaleoTaskName", String.class);
+
+				method.invoke(_kaleoTaskAssignmentInstanceRemoteModel,
+					kaleoTaskName);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getAssigneeClassName() {
 		return _assigneeClassName;
 	}
 
+	@Override
 	public void setAssigneeClassName(String assigneeClassName) {
 		_assigneeClassName = assigneeClassName;
+
+		if (_kaleoTaskAssignmentInstanceRemoteModel != null) {
+			try {
+				Class<?> clazz = _kaleoTaskAssignmentInstanceRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setAssigneeClassName",
+						String.class);
+
+				method.invoke(_kaleoTaskAssignmentInstanceRemoteModel,
+					assigneeClassName);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getAssigneeClassPK() {
 		return _assigneeClassPK;
 	}
 
+	@Override
 	public void setAssigneeClassPK(long assigneeClassPK) {
 		_assigneeClassPK = assigneeClassPK;
+
+		if (_kaleoTaskAssignmentInstanceRemoteModel != null) {
+			try {
+				Class<?> clazz = _kaleoTaskAssignmentInstanceRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setAssigneeClassPK", long.class);
+
+				method.invoke(_kaleoTaskAssignmentInstanceRemoteModel,
+					assigneeClassPK);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public boolean getCompleted() {
 		return _completed;
 	}
 
+	@Override
 	public boolean isCompleted() {
 		return _completed;
 	}
 
+	@Override
 	public void setCompleted(boolean completed) {
 		_completed = completed;
+
+		if (_kaleoTaskAssignmentInstanceRemoteModel != null) {
+			try {
+				Class<?> clazz = _kaleoTaskAssignmentInstanceRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setCompleted", boolean.class);
+
+				method.invoke(_kaleoTaskAssignmentInstanceRemoteModel, completed);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public Date getCompletionDate() {
 		return _completionDate;
 	}
 
+	@Override
 	public void setCompletionDate(Date completionDate) {
 		_completionDate = completionDate;
+
+		if (_kaleoTaskAssignmentInstanceRemoteModel != null) {
+			try {
+				Class<?> clazz = _kaleoTaskAssignmentInstanceRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setCompletionDate", Date.class);
+
+				method.invoke(_kaleoTaskAssignmentInstanceRemoteModel,
+					completionDate);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public BaseModel<?> getKaleoTaskAssignmentInstanceRemoteModel() {
@@ -351,6 +636,48 @@ public class KaleoTaskAssignmentInstanceClp extends BaseModelImpl<KaleoTaskAssig
 		_kaleoTaskAssignmentInstanceRemoteModel = kaleoTaskAssignmentInstanceRemoteModel;
 	}
 
+	public Object invokeOnRemoteModel(String methodName,
+		Class<?>[] parameterTypes, Object[] parameterValues)
+		throws Exception {
+		Object[] remoteParameterValues = new Object[parameterValues.length];
+
+		for (int i = 0; i < parameterValues.length; i++) {
+			if (parameterValues[i] != null) {
+				remoteParameterValues[i] = ClpSerializer.translateInput(parameterValues[i]);
+			}
+		}
+
+		Class<?> remoteModelClass = _kaleoTaskAssignmentInstanceRemoteModel.getClass();
+
+		ClassLoader remoteModelClassLoader = remoteModelClass.getClassLoader();
+
+		Class<?>[] remoteParameterTypes = new Class[parameterTypes.length];
+
+		for (int i = 0; i < parameterTypes.length; i++) {
+			if (parameterTypes[i].isPrimitive()) {
+				remoteParameterTypes[i] = parameterTypes[i];
+			}
+			else {
+				String parameterTypeName = parameterTypes[i].getName();
+
+				remoteParameterTypes[i] = remoteModelClassLoader.loadClass(parameterTypeName);
+			}
+		}
+
+		Method method = remoteModelClass.getMethod(methodName,
+				remoteParameterTypes);
+
+		Object returnValue = method.invoke(_kaleoTaskAssignmentInstanceRemoteModel,
+				remoteParameterValues);
+
+		if (returnValue != null) {
+			returnValue = ClpSerializer.translateOutput(returnValue);
+		}
+
+		return returnValue;
+	}
+
+	@Override
 	public void persist() throws SystemException {
 		if (this.isNew()) {
 			KaleoTaskAssignmentInstanceLocalServiceUtil.addKaleoTaskAssignmentInstance(this);
@@ -362,7 +689,7 @@ public class KaleoTaskAssignmentInstanceClp extends BaseModelImpl<KaleoTaskAssig
 
 	@Override
 	public KaleoTaskAssignmentInstance toEscapedModel() {
-		return (KaleoTaskAssignmentInstance)Proxy.newProxyInstance(KaleoTaskAssignmentInstance.class.getClassLoader(),
+		return (KaleoTaskAssignmentInstance)ProxyUtil.newProxyInstance(KaleoTaskAssignmentInstance.class.getClassLoader(),
 			new Class[] { KaleoTaskAssignmentInstance.class },
 			new AutoEscapeBeanHandler(this));
 	}
@@ -392,6 +719,7 @@ public class KaleoTaskAssignmentInstanceClp extends BaseModelImpl<KaleoTaskAssig
 		return clone;
 	}
 
+	@Override
 	public int compareTo(
 		KaleoTaskAssignmentInstance kaleoTaskAssignmentInstance) {
 		int value = 0;
@@ -415,18 +743,15 @@ public class KaleoTaskAssignmentInstanceClp extends BaseModelImpl<KaleoTaskAssig
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof KaleoTaskAssignmentInstanceClp)) {
 			return false;
 		}
 
-		KaleoTaskAssignmentInstanceClp kaleoTaskAssignmentInstance = null;
-
-		try {
-			kaleoTaskAssignmentInstance = (KaleoTaskAssignmentInstanceClp)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		KaleoTaskAssignmentInstanceClp kaleoTaskAssignmentInstance = (KaleoTaskAssignmentInstanceClp)obj;
 
 		long primaryKey = kaleoTaskAssignmentInstance.getPrimaryKey();
 
@@ -486,6 +811,7 @@ public class KaleoTaskAssignmentInstanceClp extends BaseModelImpl<KaleoTaskAssig
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
 		StringBundler sb = new StringBundler(55);
 

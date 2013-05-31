@@ -1,13 +1,27 @@
+*~
 *-ext.properties
-.sass-cache/
+*.bak
+*.iml
+*.ipr
+*.iws
+*.swp
+.ant_targets
+.ant-targets-build.xml
+.ivy
+.sass-cache
 .sass_cache_*.css
 _sass_cache_*.css
 
 /*/*/bin
 /*/*/classes
+/*/*/temp
+/*/*/test-classes
+/*/*/test-results
 /*/*/tmp
 
 /*/*/docroot/WEB-INF/classes
+/*/*/docroot/WEB-INF/lib/portal-compat-shared.jar
 
 /build.*.properties
 /dist
+/tools/*/*/*/lib

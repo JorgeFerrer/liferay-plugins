@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -19,7 +19,10 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.model.CacheModel;
 import com.liferay.portal.workflow.kaleo.model.KaleoTimer;
 
-import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 import java.util.Date;
 
@@ -31,7 +34,7 @@ import java.util.Date;
  * @generated
  */
 public class KaleoTimerCacheModel implements CacheModel<KaleoTimer>,
-	Serializable {
+	Externalizable {
 	@Override
 	public String toString() {
 		StringBundler sb = new StringBundler(35);
@@ -75,6 +78,7 @@ public class KaleoTimerCacheModel implements CacheModel<KaleoTimer>,
 		return sb.toString();
 	}
 
+	@Override
 	public KaleoTimer toEntityModel() {
 		KaleoTimerImpl kaleoTimerImpl = new KaleoTimerImpl();
 
@@ -151,6 +155,90 @@ public class KaleoTimerCacheModel implements CacheModel<KaleoTimer>,
 		kaleoTimerImpl.resetOriginalValues();
 
 		return kaleoTimerImpl;
+	}
+
+	@Override
+	public void readExternal(ObjectInput objectInput) throws IOException {
+		kaleoTimerId = objectInput.readLong();
+		groupId = objectInput.readLong();
+		companyId = objectInput.readLong();
+		userId = objectInput.readLong();
+		userName = objectInput.readUTF();
+		createDate = objectInput.readLong();
+		modifiedDate = objectInput.readLong();
+		kaleoClassName = objectInput.readUTF();
+		kaleoClassPK = objectInput.readLong();
+		kaleoDefinitionId = objectInput.readLong();
+		name = objectInput.readUTF();
+		blocking = objectInput.readBoolean();
+		description = objectInput.readUTF();
+		duration = objectInput.readDouble();
+		scale = objectInput.readUTF();
+		recurrenceDuration = objectInput.readDouble();
+		recurrenceScale = objectInput.readUTF();
+	}
+
+	@Override
+	public void writeExternal(ObjectOutput objectOutput)
+		throws IOException {
+		objectOutput.writeLong(kaleoTimerId);
+		objectOutput.writeLong(groupId);
+		objectOutput.writeLong(companyId);
+		objectOutput.writeLong(userId);
+
+		if (userName == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(userName);
+		}
+
+		objectOutput.writeLong(createDate);
+		objectOutput.writeLong(modifiedDate);
+
+		if (kaleoClassName == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(kaleoClassName);
+		}
+
+		objectOutput.writeLong(kaleoClassPK);
+		objectOutput.writeLong(kaleoDefinitionId);
+
+		if (name == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(name);
+		}
+
+		objectOutput.writeBoolean(blocking);
+
+		if (description == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(description);
+		}
+
+		objectOutput.writeDouble(duration);
+
+		if (scale == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(scale);
+		}
+
+		objectOutput.writeDouble(recurrenceDuration);
+
+		if (recurrenceScale == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(recurrenceScale);
+		}
 	}
 
 	public long kaleoTimerId;

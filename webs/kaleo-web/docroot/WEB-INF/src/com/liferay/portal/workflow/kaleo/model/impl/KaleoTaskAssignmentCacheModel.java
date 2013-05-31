@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -19,7 +19,10 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.model.CacheModel;
 import com.liferay.portal.workflow.kaleo.model.KaleoTaskAssignment;
 
-import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 import java.util.Date;
 
@@ -31,10 +34,10 @@ import java.util.Date;
  * @generated
  */
 public class KaleoTaskAssignmentCacheModel implements CacheModel<KaleoTaskAssignment>,
-	Serializable {
+	Externalizable {
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(33);
+		StringBundler sb = new StringBundler(35);
 
 		sb.append("{kaleoTaskAssignmentId=");
 		sb.append(kaleoTaskAssignmentId);
@@ -68,11 +71,14 @@ public class KaleoTaskAssignmentCacheModel implements CacheModel<KaleoTaskAssign
 		sb.append(assigneeScript);
 		sb.append(", assigneeScriptLanguage=");
 		sb.append(assigneeScriptLanguage);
+		sb.append(", assigneeScriptRequiredContexts=");
+		sb.append(assigneeScriptRequiredContexts);
 		sb.append("}");
 
 		return sb.toString();
 	}
 
+	@Override
 	public KaleoTaskAssignment toEntityModel() {
 		KaleoTaskAssignmentImpl kaleoTaskAssignmentImpl = new KaleoTaskAssignmentImpl();
 
@@ -143,9 +149,104 @@ public class KaleoTaskAssignmentCacheModel implements CacheModel<KaleoTaskAssign
 			kaleoTaskAssignmentImpl.setAssigneeScriptLanguage(assigneeScriptLanguage);
 		}
 
+		if (assigneeScriptRequiredContexts == null) {
+			kaleoTaskAssignmentImpl.setAssigneeScriptRequiredContexts(StringPool.BLANK);
+		}
+		else {
+			kaleoTaskAssignmentImpl.setAssigneeScriptRequiredContexts(assigneeScriptRequiredContexts);
+		}
+
 		kaleoTaskAssignmentImpl.resetOriginalValues();
 
 		return kaleoTaskAssignmentImpl;
+	}
+
+	@Override
+	public void readExternal(ObjectInput objectInput) throws IOException {
+		kaleoTaskAssignmentId = objectInput.readLong();
+		groupId = objectInput.readLong();
+		companyId = objectInput.readLong();
+		userId = objectInput.readLong();
+		userName = objectInput.readUTF();
+		createDate = objectInput.readLong();
+		modifiedDate = objectInput.readLong();
+		kaleoClassName = objectInput.readUTF();
+		kaleoClassPK = objectInput.readLong();
+		kaleoDefinitionId = objectInput.readLong();
+		kaleoNodeId = objectInput.readLong();
+		assigneeClassName = objectInput.readUTF();
+		assigneeClassPK = objectInput.readLong();
+		assigneeActionId = objectInput.readUTF();
+		assigneeScript = objectInput.readUTF();
+		assigneeScriptLanguage = objectInput.readUTF();
+		assigneeScriptRequiredContexts = objectInput.readUTF();
+	}
+
+	@Override
+	public void writeExternal(ObjectOutput objectOutput)
+		throws IOException {
+		objectOutput.writeLong(kaleoTaskAssignmentId);
+		objectOutput.writeLong(groupId);
+		objectOutput.writeLong(companyId);
+		objectOutput.writeLong(userId);
+
+		if (userName == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(userName);
+		}
+
+		objectOutput.writeLong(createDate);
+		objectOutput.writeLong(modifiedDate);
+
+		if (kaleoClassName == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(kaleoClassName);
+		}
+
+		objectOutput.writeLong(kaleoClassPK);
+		objectOutput.writeLong(kaleoDefinitionId);
+		objectOutput.writeLong(kaleoNodeId);
+
+		if (assigneeClassName == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(assigneeClassName);
+		}
+
+		objectOutput.writeLong(assigneeClassPK);
+
+		if (assigneeActionId == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(assigneeActionId);
+		}
+
+		if (assigneeScript == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(assigneeScript);
+		}
+
+		if (assigneeScriptLanguage == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(assigneeScriptLanguage);
+		}
+
+		if (assigneeScriptRequiredContexts == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(assigneeScriptRequiredContexts);
+		}
 	}
 
 	public long kaleoTaskAssignmentId;
@@ -164,4 +265,5 @@ public class KaleoTaskAssignmentCacheModel implements CacheModel<KaleoTaskAssign
 	public String assigneeActionId;
 	public String assigneeScript;
 	public String assigneeScriptLanguage;
+	public String assigneeScriptRequiredContexts;
 }

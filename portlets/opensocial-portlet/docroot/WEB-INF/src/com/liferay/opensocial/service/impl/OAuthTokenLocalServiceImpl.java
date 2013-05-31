@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -27,8 +27,7 @@ import java.util.List;
 /**
  * @author Dennis Ju
  */
-public class OAuthTokenLocalServiceImpl
-	extends OAuthTokenLocalServiceBaseImpl {
+public class OAuthTokenLocalServiceImpl extends OAuthTokenLocalServiceBaseImpl {
 
 	public OAuthToken addOAuthToken(
 			long userId, String gadgetKey, String serviceName, long moduleId,
@@ -57,7 +56,7 @@ public class OAuthTokenLocalServiceImpl
 		oAuthToken.setSessionHandle(sessionHandle);
 		oAuthToken.setExpiration(expiration);
 
-		oAuthTokenPersistence.update(oAuthToken, false);
+		oAuthTokenPersistence.update(oAuthToken);
 
 		return oAuthToken;
 	}

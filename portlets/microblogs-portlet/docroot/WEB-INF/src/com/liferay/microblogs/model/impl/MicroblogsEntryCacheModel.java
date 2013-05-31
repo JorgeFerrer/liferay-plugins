@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -20,7 +20,10 @@ import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.model.CacheModel;
 
-import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 import java.util.Date;
 
@@ -32,7 +35,7 @@ import java.util.Date;
  * @generated
  */
 public class MicroblogsEntryCacheModel implements CacheModel<MicroblogsEntry>,
-	Serializable {
+	Externalizable {
 	@Override
 	public String toString() {
 		StringBundler sb = new StringBundler(23);
@@ -64,6 +67,7 @@ public class MicroblogsEntryCacheModel implements CacheModel<MicroblogsEntry>,
 		return sb.toString();
 	}
 
+	@Override
 	public MicroblogsEntry toEntityModel() {
 		MicroblogsEntryImpl microblogsEntryImpl = new MicroblogsEntryImpl();
 
@@ -107,6 +111,51 @@ public class MicroblogsEntryCacheModel implements CacheModel<MicroblogsEntry>,
 		microblogsEntryImpl.resetOriginalValues();
 
 		return microblogsEntryImpl;
+	}
+
+	@Override
+	public void readExternal(ObjectInput objectInput) throws IOException {
+		microblogsEntryId = objectInput.readLong();
+		companyId = objectInput.readLong();
+		userId = objectInput.readLong();
+		userName = objectInput.readUTF();
+		createDate = objectInput.readLong();
+		modifiedDate = objectInput.readLong();
+		content = objectInput.readUTF();
+		type = objectInput.readInt();
+		receiverUserId = objectInput.readLong();
+		receiverMicroblogsEntryId = objectInput.readLong();
+		socialRelationType = objectInput.readInt();
+	}
+
+	@Override
+	public void writeExternal(ObjectOutput objectOutput)
+		throws IOException {
+		objectOutput.writeLong(microblogsEntryId);
+		objectOutput.writeLong(companyId);
+		objectOutput.writeLong(userId);
+
+		if (userName == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(userName);
+		}
+
+		objectOutput.writeLong(createDate);
+		objectOutput.writeLong(modifiedDate);
+
+		if (content == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(content);
+		}
+
+		objectOutput.writeInt(type);
+		objectOutput.writeLong(receiverUserId);
+		objectOutput.writeLong(receiverMicroblogsEntryId);
+		objectOutput.writeInt(socialRelationType);
 	}
 
 	public long microblogsEntryId;

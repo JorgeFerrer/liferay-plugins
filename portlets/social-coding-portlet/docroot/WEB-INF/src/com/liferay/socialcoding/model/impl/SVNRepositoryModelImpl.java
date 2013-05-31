@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -85,26 +85,32 @@ public class SVNRepositoryModelImpl extends BaseModelImpl<SVNRepository>
 	public SVNRepositoryModelImpl() {
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _svnRepositoryId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setSvnRepositoryId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
-		return new Long(_svnRepositoryId);
+		return _svnRepositoryId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return SVNRepository.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return SVNRepository.class.getName();
 	}
@@ -141,14 +147,17 @@ public class SVNRepositoryModelImpl extends BaseModelImpl<SVNRepository>
 		}
 	}
 
+	@Override
 	public long getSvnRepositoryId() {
 		return _svnRepositoryId;
 	}
 
+	@Override
 	public void setSvnRepositoryId(long svnRepositoryId) {
 		_svnRepositoryId = svnRepositoryId;
 	}
 
+	@Override
 	public String getUrl() {
 		if (_url == null) {
 			return StringPool.BLANK;
@@ -158,6 +167,7 @@ public class SVNRepositoryModelImpl extends BaseModelImpl<SVNRepository>
 		}
 	}
 
+	@Override
 	public void setUrl(String url) {
 		_columnBitmask = -1L;
 
@@ -172,10 +182,12 @@ public class SVNRepositoryModelImpl extends BaseModelImpl<SVNRepository>
 		return GetterUtil.getString(_originalUrl);
 	}
 
+	@Override
 	public long getRevisionNumber() {
 		return _revisionNumber;
 	}
 
+	@Override
 	public void setRevisionNumber(long revisionNumber) {
 		_revisionNumber = revisionNumber;
 	}
@@ -185,29 +197,26 @@ public class SVNRepositoryModelImpl extends BaseModelImpl<SVNRepository>
 	}
 
 	@Override
-	public SVNRepository toEscapedModel() {
-		if (_escapedModelProxy == null) {
-			_escapedModelProxy = (SVNRepository)ProxyUtil.newProxyInstance(_classLoader,
-					_escapedModelProxyInterfaces,
-					new AutoEscapeBeanHandler(this));
-		}
-
-		return _escapedModelProxy;
-	}
-
-	@Override
 	public ExpandoBridge getExpandoBridge() {
-		if (_expandoBridge == null) {
-			_expandoBridge = ExpandoBridgeFactoryUtil.getExpandoBridge(0,
-					SVNRepository.class.getName(), getPrimaryKey());
-		}
-
-		return _expandoBridge;
+		return ExpandoBridgeFactoryUtil.getExpandoBridge(0,
+			SVNRepository.class.getName(), getPrimaryKey());
 	}
 
 	@Override
 	public void setExpandoBridgeAttributes(ServiceContext serviceContext) {
-		getExpandoBridge().setAttributes(serviceContext);
+		ExpandoBridge expandoBridge = getExpandoBridge();
+
+		expandoBridge.setAttributes(serviceContext);
+	}
+
+	@Override
+	public SVNRepository toEscapedModel() {
+		if (_escapedModel == null) {
+			_escapedModel = (SVNRepository)ProxyUtil.newProxyInstance(_classLoader,
+					_escapedModelInterfaces, new AutoEscapeBeanHandler(this));
+		}
+
+		return _escapedModel;
 	}
 
 	@Override
@@ -223,6 +232,7 @@ public class SVNRepositoryModelImpl extends BaseModelImpl<SVNRepository>
 		return svnRepositoryImpl;
 	}
 
+	@Override
 	public int compareTo(SVNRepository svnRepository) {
 		int value = 0;
 
@@ -237,18 +247,15 @@ public class SVNRepositoryModelImpl extends BaseModelImpl<SVNRepository>
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof SVNRepository)) {
 			return false;
 		}
 
-		SVNRepository svnRepository = null;
-
-		try {
-			svnRepository = (SVNRepository)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		SVNRepository svnRepository = (SVNRepository)obj;
 
 		long primaryKey = svnRepository.getPrimaryKey();
 
@@ -308,6 +315,7 @@ public class SVNRepositoryModelImpl extends BaseModelImpl<SVNRepository>
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
 		StringBundler sb = new StringBundler(13);
 
@@ -334,14 +342,13 @@ public class SVNRepositoryModelImpl extends BaseModelImpl<SVNRepository>
 	}
 
 	private static ClassLoader _classLoader = SVNRepository.class.getClassLoader();
-	private static Class<?>[] _escapedModelProxyInterfaces = new Class[] {
+	private static Class<?>[] _escapedModelInterfaces = new Class[] {
 			SVNRepository.class
 		};
 	private long _svnRepositoryId;
 	private String _url;
 	private String _originalUrl;
 	private long _revisionNumber;
-	private transient ExpandoBridge _expandoBridge;
 	private long _columnBitmask;
-	private SVNRepository _escapedModelProxy;
+	private SVNRepository _escapedModel;
 }

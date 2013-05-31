@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This file is part of Liferay Social Office. Liferay Social Office is free
  * software: you can redistribute it and/or modify it under the terms of the GNU
@@ -18,6 +18,7 @@
 package com.liferay.so.hook.listeners;
 
 import com.liferay.portal.ModelListenerException;
+import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
 import com.liferay.portal.model.BaseModelListener;
 import com.liferay.portal.model.Group;
 import com.liferay.portal.model.Organization;
@@ -27,8 +28,10 @@ import com.liferay.portal.model.UserGroup;
 import com.liferay.portal.service.GroupLocalServiceUtil;
 import com.liferay.portal.service.RoleLocalServiceUtil;
 import com.liferay.portal.service.UserLocalServiceUtil;
+import com.liferay.so.service.SocialOfficeServiceUtil;
 import com.liferay.so.util.LayoutSetPrototypeUtil;
 import com.liferay.so.util.RoleConstants;
+import com.liferay.so.util.SocialOfficeConstants;
 import com.liferay.so.util.SocialOfficeUtil;
 
 import java.util.List;
@@ -53,39 +56,51 @@ public class RoleListener extends BaseModelListener<Role> {
 				return;
 			}
 
-			if (associationClassName.equals(Group.class.getName())) {
-				Group group = GroupLocalServiceUtil.getGroup(
-					(Long)associationClassPK);
+			if (!associationClassName.equals(Group.class.getName())) {
+				return;
+			}
 
-				List<User> users = null;
+			Group group = GroupLocalServiceUtil.getGroup(
+				(Long)associationClassPK);
 
-				String className = group.getClassName();
+			List<User> users = null;
 
-				if (className.equals(UserGroup.class.getName())) {
-					users = UserLocalServiceUtil.getUserGroupUsers(
-						group.getClassPK());
+			String className = group.getClassName();
+
+			if (className.equals(UserGroup.class.getName())) {
+				users = UserLocalServiceUtil.getUserGroupUsers(
+					group.getClassPK());
+			}
+			else if (className.equals(Organization.class.getName())) {
+				users = UserLocalServiceUtil.getOrganizationUsers(
+					group.getClassPK());
+			}
+			else if (className.equals(Group.class.getName())) {
+				users = UserLocalServiceUtil.getGroupUsers(group.getClassPK());
+			}
+
+			if (users == null) {
+				return;
+			}
+
+			for (User user : users) {
+				Group userGroup = user.getGroup();
+
+				if (SocialOfficeServiceUtil.isSocialOfficeGroup(
+						userGroup.getGroupId())) {
+
+					continue;
 				}
-				else if (className.equals(Organization.class.getName())) {
-					users = UserLocalServiceUtil.getOrganizationUsers(
-						group.getClassPK());
-				}
-				else if (className.equals(Group.class.getName())) {
-					users = UserLocalServiceUtil.getGroupUsers(
-						group.getClassPK());
-				}
 
-				if (users != null) {
-					for (User user : users) {
-						Group userGroup = user.getGroup();
+				LayoutSetPrototypeUtil.updateLayoutSetPrototype(
+					userGroup, false,
+					SocialOfficeConstants.LAYOUT_SET_PROTOTYPE_KEY_USER_PUBLIC);
+				LayoutSetPrototypeUtil.updateLayoutSetPrototype(
+					userGroup, true,
+					SocialOfficeConstants.
+						LAYOUT_SET_PROTOTYPE_KEY_USER_PRIVATE);
 
-						LayoutSetPrototypeUtil.updateLayoutSetPrototype(
-							userGroup, false);
-						LayoutSetPrototypeUtil.updateLayoutSetPrototype(
-							userGroup, true);
-
-						SocialOfficeUtil.enableSocialOffice(userGroup);
-					}
-				}
+				SocialOfficeUtil.enableSocialOffice(userGroup);
 			}
 		}
 		catch (Exception e) {
@@ -108,44 +123,71 @@ public class RoleListener extends BaseModelListener<Role> {
 				return;
 			}
 
-			if (associationClassName.equals(Group.class.getName())) {
-				Group group = GroupLocalServiceUtil.getGroup(
-					(Long)associationClassPK);
+			if (!associationClassName.equals(Group.class.getName())) {
+				return;
+			}
 
-				List<User> users = null;
+			Group group = GroupLocalServiceUtil.getGroup(
+				(Long)associationClassPK);
 
-				String className = group.getClassName();
+			List<User> users = null;
 
-				if (className.equals(UserGroup.class.getName())) {
-					users = UserLocalServiceUtil.getUserGroupUsers(
-						group.getClassPK());
+			String className = group.getClassName();
+
+			if (className.equals(UserGroup.class.getName())) {
+				users = UserLocalServiceUtil.getUserGroupUsers(
+					group.getClassPK());
+			}
+			else if (className.equals(Organization.class.getName())) {
+				users = UserLocalServiceUtil.getOrganizationUsers(
+					group.getClassPK());
+			}
+			else if (className.equals(Group.class.getName())) {
+				users = UserLocalServiceUtil.getGroupUsers(group.getClassPK());
+			}
+
+			if (users == null) {
+				return;
+			}
+
+			for (User user : users) {
+				Group userGroup = user.getGroup();
+
+				if (!SocialOfficeServiceUtil.isSocialOfficeGroup(
+						userGroup.getGroupId())) {
+
+					continue;
 				}
-				else if (className.equals(Organization.class.getName())) {
-					users = UserLocalServiceUtil.getOrganizationUsers(
-						group.getClassPK());
-				}
-				else if (className.equals(Group.class.getName())) {
-					users = UserLocalServiceUtil.getGroupUsers(
-						group.getClassPK());
+
+				FinderCacheUtil.clearCache(_MAPPING_TABLE_USERS_ROLES_NAME);
+
+				if (UserLocalServiceUtil.hasRoleUser(
+						user.getCompanyId(), RoleConstants.SOCIAL_OFFICE_USER,
+						user.getUserId(), true)) {
+
+					continue;
 				}
 
-				if (users != null) {
-					for (User user : users) {
-						Group userGroup = user.getGroup();
+				LayoutSetPrototypeUtil.removeLayoutSetPrototype(
+					userGroup, false,
+					SocialOfficeConstants.LAYOUT_SET_PROTOTYPE_KEY_USER_PUBLIC);
+				LayoutSetPrototypeUtil.removeLayoutSetPrototype(
+					userGroup, true,
+					SocialOfficeConstants.
+						LAYOUT_SET_PROTOTYPE_KEY_USER_PRIVATE);
 
-						LayoutSetPrototypeUtil.removeLayoutSetPrototype(
-							userGroup, false);
-						LayoutSetPrototypeUtil.removeLayoutSetPrototype(
-							userGroup, true);
-
-						SocialOfficeUtil.disableSocialOffice(userGroup);
-					}
-				}
+				SocialOfficeUtil.disableSocialOffice(userGroup);
 			}
 		}
 		catch (Exception e) {
 			throw new ModelListenerException(e);
 		}
 	}
+
+	/**
+	 * {@link
+	 * com.liferay.portal.model.impl.RoleModelImpl#MAPPING_TABLE_USERS_ROLES_NAME}
+	 */
+	private static final String _MAPPING_TABLE_USERS_ROLES_NAME = "Users_Roles";
 
 }

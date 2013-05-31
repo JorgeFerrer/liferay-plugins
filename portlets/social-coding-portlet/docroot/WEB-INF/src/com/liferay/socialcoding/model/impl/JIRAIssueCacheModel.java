@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -20,7 +20,10 @@ import com.liferay.portal.model.CacheModel;
 
 import com.liferay.socialcoding.model.JIRAIssue;
 
-import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 import java.util.Date;
 
@@ -31,7 +34,8 @@ import java.util.Date;
  * @see JIRAIssue
  * @generated
  */
-public class JIRAIssueCacheModel implements CacheModel<JIRAIssue>, Serializable {
+public class JIRAIssueCacheModel implements CacheModel<JIRAIssue>,
+	Externalizable {
 	@Override
 	public String toString() {
 		StringBundler sb = new StringBundler(23);
@@ -63,6 +67,7 @@ public class JIRAIssueCacheModel implements CacheModel<JIRAIssue>, Serializable 
 		return sb.toString();
 	}
 
+	@Override
 	public JIRAIssue toEntityModel() {
 		JIRAIssueImpl jiraIssueImpl = new JIRAIssueImpl();
 
@@ -136,6 +141,79 @@ public class JIRAIssueCacheModel implements CacheModel<JIRAIssue>, Serializable 
 		jiraIssueImpl.resetOriginalValues();
 
 		return jiraIssueImpl;
+	}
+
+	@Override
+	public void readExternal(ObjectInput objectInput) throws IOException {
+		jiraIssueId = objectInput.readLong();
+		createDate = objectInput.readLong();
+		modifiedDate = objectInput.readLong();
+		projectId = objectInput.readLong();
+		key = objectInput.readUTF();
+		summary = objectInput.readUTF();
+		description = objectInput.readUTF();
+		reporterJiraUserId = objectInput.readUTF();
+		assigneeJiraUserId = objectInput.readUTF();
+		resolution = objectInput.readUTF();
+		status = objectInput.readUTF();
+	}
+
+	@Override
+	public void writeExternal(ObjectOutput objectOutput)
+		throws IOException {
+		objectOutput.writeLong(jiraIssueId);
+		objectOutput.writeLong(createDate);
+		objectOutput.writeLong(modifiedDate);
+		objectOutput.writeLong(projectId);
+
+		if (key == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(key);
+		}
+
+		if (summary == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(summary);
+		}
+
+		if (description == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(description);
+		}
+
+		if (reporterJiraUserId == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(reporterJiraUserId);
+		}
+
+		if (assigneeJiraUserId == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(assigneeJiraUserId);
+		}
+
+		if (resolution == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(resolution);
+		}
+
+		if (status == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(status);
+		}
 	}
 
 	public long jiraIssueId;

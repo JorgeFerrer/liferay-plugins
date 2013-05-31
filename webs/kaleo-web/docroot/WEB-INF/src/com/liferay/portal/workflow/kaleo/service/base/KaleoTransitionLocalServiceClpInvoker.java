@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -98,24 +98,17 @@ public class KaleoTransitionLocalServiceClpInvoker {
 				"com.liferay.portal.workflow.kaleo.model.KaleoTransition"
 			};
 
-		_methodName15 = "updateKaleoTransition";
+		_methodName95 = "getBeanIdentifier";
 
-		_methodParameterTypes15 = new String[] {
-				"com.liferay.portal.workflow.kaleo.model.KaleoTransition",
-				"boolean"
-			};
+		_methodParameterTypes95 = new String[] {  };
 
-		_methodName96 = "getBeanIdentifier";
+		_methodName96 = "setBeanIdentifier";
 
-		_methodParameterTypes96 = new String[] {  };
+		_methodParameterTypes96 = new String[] { "java.lang.String" };
 
-		_methodName97 = "setBeanIdentifier";
+		_methodName101 = "addKaleoTransition";
 
-		_methodParameterTypes97 = new String[] { "java.lang.String" };
-
-		_methodName102 = "addKaleoTransition";
-
-		_methodParameterTypes102 = new String[] {
+		_methodParameterTypes101 = new String[] {
 				"long", "long",
 				"com.liferay.portal.workflow.kaleo.definition.Transition",
 				"com.liferay.portal.workflow.kaleo.model.KaleoNode",
@@ -123,15 +116,19 @@ public class KaleoTransitionLocalServiceClpInvoker {
 				"com.liferay.portal.service.ServiceContext"
 			};
 
-		_methodName103 = "deleteCompanyKaleoTransitions";
+		_methodName102 = "deleteCompanyKaleoTransitions";
+
+		_methodParameterTypes102 = new String[] { "long" };
+
+		_methodName103 = "deleteKaleoDefinitionKaleoTransitions";
 
 		_methodParameterTypes103 = new String[] { "long" };
 
-		_methodName104 = "deleteKaleoDefinitionKaleoTransitions";
+		_methodName104 = "getDefaultKaleoTransition";
 
 		_methodParameterTypes104 = new String[] { "long" };
 
-		_methodName105 = "getDefaultKaleoTransition";
+		_methodName105 = "getKaleoDefinitionKaleoTransitions";
 
 		_methodParameterTypes105 = new String[] { "long" };
 
@@ -231,24 +228,20 @@ public class KaleoTransitionLocalServiceClpInvoker {
 			return KaleoTransitionLocalServiceUtil.updateKaleoTransition((com.liferay.portal.workflow.kaleo.model.KaleoTransition)arguments[0]);
 		}
 
-		if (_methodName15.equals(name) &&
-				Arrays.deepEquals(_methodParameterTypes15, parameterTypes)) {
-			return KaleoTransitionLocalServiceUtil.updateKaleoTransition((com.liferay.portal.workflow.kaleo.model.KaleoTransition)arguments[0],
-				((Boolean)arguments[1]).booleanValue());
+		if (_methodName95.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes95, parameterTypes)) {
+			return KaleoTransitionLocalServiceUtil.getBeanIdentifier();
 		}
 
 		if (_methodName96.equals(name) &&
 				Arrays.deepEquals(_methodParameterTypes96, parameterTypes)) {
-			return KaleoTransitionLocalServiceUtil.getBeanIdentifier();
-		}
-
-		if (_methodName97.equals(name) &&
-				Arrays.deepEquals(_methodParameterTypes97, parameterTypes)) {
 			KaleoTransitionLocalServiceUtil.setBeanIdentifier((java.lang.String)arguments[0]);
+
+			return null;
 		}
 
-		if (_methodName102.equals(name) &&
-				Arrays.deepEquals(_methodParameterTypes102, parameterTypes)) {
+		if (_methodName101.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes101, parameterTypes)) {
 			return KaleoTransitionLocalServiceUtil.addKaleoTransition(((Long)arguments[0]).longValue(),
 				((Long)arguments[1]).longValue(),
 				(com.liferay.portal.workflow.kaleo.definition.Transition)arguments[2],
@@ -257,19 +250,28 @@ public class KaleoTransitionLocalServiceClpInvoker {
 				(com.liferay.portal.service.ServiceContext)arguments[5]);
 		}
 
+		if (_methodName102.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes102, parameterTypes)) {
+			KaleoTransitionLocalServiceUtil.deleteCompanyKaleoTransitions(((Long)arguments[0]).longValue());
+
+			return null;
+		}
+
 		if (_methodName103.equals(name) &&
 				Arrays.deepEquals(_methodParameterTypes103, parameterTypes)) {
-			KaleoTransitionLocalServiceUtil.deleteCompanyKaleoTransitions(((Long)arguments[0]).longValue());
+			KaleoTransitionLocalServiceUtil.deleteKaleoDefinitionKaleoTransitions(((Long)arguments[0]).longValue());
+
+			return null;
 		}
 
 		if (_methodName104.equals(name) &&
 				Arrays.deepEquals(_methodParameterTypes104, parameterTypes)) {
-			KaleoTransitionLocalServiceUtil.deleteKaleoDefinitionKaleoTransitions(((Long)arguments[0]).longValue());
+			return KaleoTransitionLocalServiceUtil.getDefaultKaleoTransition(((Long)arguments[0]).longValue());
 		}
 
 		if (_methodName105.equals(name) &&
 				Arrays.deepEquals(_methodParameterTypes105, parameterTypes)) {
-			return KaleoTransitionLocalServiceUtil.getDefaultKaleoTransition(((Long)arguments[0]).longValue());
+			return KaleoTransitionLocalServiceUtil.getKaleoDefinitionKaleoTransitions(((Long)arguments[0]).longValue());
 		}
 
 		if (_methodName106.equals(name) &&
@@ -321,12 +323,12 @@ public class KaleoTransitionLocalServiceClpInvoker {
 	private String[] _methodParameterTypes13;
 	private String _methodName14;
 	private String[] _methodParameterTypes14;
-	private String _methodName15;
-	private String[] _methodParameterTypes15;
+	private String _methodName95;
+	private String[] _methodParameterTypes95;
 	private String _methodName96;
 	private String[] _methodParameterTypes96;
-	private String _methodName97;
-	private String[] _methodParameterTypes97;
+	private String _methodName101;
+	private String[] _methodParameterTypes101;
 	private String _methodName102;
 	private String[] _methodParameterTypes102;
 	private String _methodName103;

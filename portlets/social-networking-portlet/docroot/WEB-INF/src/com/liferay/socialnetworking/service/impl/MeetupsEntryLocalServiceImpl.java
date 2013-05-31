@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -47,11 +47,11 @@ public class MeetupsEntryLocalServiceImpl
 		Date startDate = PortalUtil.getDate(
 			startDateMonth, startDateDay, startDateYear, startDateHour,
 			startDateMinute, user.getTimeZone(),
-			new MeetupsEntryStartDateException());
+			MeetupsEntryStartDateException.class);
 
 		Date endDate = PortalUtil.getDate(
 			endDateMonth, endDateDay, endDateYear, endDateHour, endDateMinute,
-			user.getTimeZone(), new MeetupsEntryEndDateException());
+			user.getTimeZone(), MeetupsEntryEndDateException.class);
 
 		Date now = new Date();
 
@@ -77,7 +77,7 @@ public class MeetupsEntryLocalServiceImpl
 			meetupsEntry.setThumbnailId(counterLocalService.increment());
 		}
 
-		meetupsEntryPersistence.update(meetupsEntry, false);
+		meetupsEntryPersistence.update(meetupsEntry);
 
 		if ((thumbnail != null) && (thumbnail.length > 0)) {
 			ImageLocalServiceUtil.updateImage(
@@ -129,11 +129,11 @@ public class MeetupsEntryLocalServiceImpl
 		Date startDate = PortalUtil.getDate(
 			startDateMonth, startDateDay, startDateYear, startDateHour,
 			startDateMinute, user.getTimeZone(),
-			new MeetupsEntryStartDateException());
+			MeetupsEntryStartDateException.class);
 
 		Date endDate = PortalUtil.getDate(
 			endDateMonth, endDateDay, endDateYear, endDateHour, endDateMinute,
-			user.getTimeZone(), new MeetupsEntryEndDateException());
+			user.getTimeZone(), MeetupsEntryEndDateException.class);
 
 		MeetupsEntry meetupsEntry = meetupsEntryPersistence.findByPrimaryKey(
 			meetupsEntryId);
@@ -153,7 +153,7 @@ public class MeetupsEntryLocalServiceImpl
 			meetupsEntry.setThumbnailId(counterLocalService.increment());
 		}
 
-		meetupsEntryPersistence.update(meetupsEntry, false);
+		meetupsEntryPersistence.update(meetupsEntry);
 
 		if ((thumbnail != null) && (thumbnail.length > 0)) {
 			ImageLocalServiceUtil.updateImage(

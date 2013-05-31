@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -22,7 +22,7 @@ PortletURL portletURL = renderResponse.createRenderURL();
 
 <c:choose>
 	<c:when test="<%= wikiPage != null %>">
-		<liferay-ui:panel-container extended="<%= Boolean.TRUE %>" id='pageMenu' persistState="<%= true %>">
+		<liferay-ui:panel-container extended="<%= Boolean.TRUE %>" id="pageMenu" persistState="<%= true %>">
 
 			<%
 			List<MenuItem> menuItems = MenuItem.fromWikiPage(wikiPage, portletURL);
@@ -60,7 +60,7 @@ PortletURL portletURL = renderResponse.createRenderURL();
 
 			<liferay-ui:icon
 				image="edit"
-				label="true"
+				label="<%= true %>"
 				url="<%= editURL %>"
 			/>
 		</c:if>

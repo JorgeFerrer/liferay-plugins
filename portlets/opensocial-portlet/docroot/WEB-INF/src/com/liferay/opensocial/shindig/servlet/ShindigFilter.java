@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -16,6 +16,7 @@ package com.liferay.opensocial.shindig.servlet;
 
 import com.google.inject.Injector;
 
+import com.liferay.opensocial.shindig.util.HttpServletRequestThreadLocal;
 import com.liferay.opensocial.shindig.util.ShindigUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -33,7 +34,6 @@ import com.liferay.portal.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.security.permission.PermissionThreadLocal;
 import com.liferay.portal.service.CompanyLocalServiceUtil;
 import com.liferay.portal.service.UserLocalServiceUtil;
-import com.liferay.util.CookieUtil;
 import com.liferay.util.Encryptor;
 import com.liferay.util.EncryptorException;
 
@@ -66,9 +66,9 @@ public class ShindigFilter extends InjectedFilter {
 			FilterChain filterChain)
 		throws IOException, ServletException {
 
-		if (injector == null) {
-			HttpServletRequest request = (HttpServletRequest)servletRequest;
+		HttpServletRequest request = (HttpServletRequest)servletRequest;
 
+		if (injector == null) {
 			HttpSession session = request.getSession();
 
 			_init(session.getServletContext());
@@ -81,6 +81,8 @@ public class ShindigFilter extends InjectedFilter {
 			setPermissionChecker(servletRequest);
 		}
 
+		ShindigUtil.setScheme(servletRequest.getScheme());
+
 		String serverName = servletRequest.getServerName();
 
 		String host = serverName.concat(StringPool.COLON).concat(
@@ -88,7 +90,14 @@ public class ShindigFilter extends InjectedFilter {
 
 		ShindigUtil.setHost(host);
 
-		filterChain.doFilter(servletRequest, servletResponse);
+		HttpServletRequestThreadLocal.setHttpServletRequest(request);
+
+		try {
+			filterChain.doFilter(servletRequest, servletResponse);
+		}
+		finally {
+			HttpServletRequestThreadLocal.setHttpServletRequest(null);
+		}
 	}
 
 	@Override
@@ -105,7 +114,7 @@ public class ShindigFilter extends InjectedFilter {
 	}
 
 	protected boolean setPermissionChecker(ServletRequest servletRequest) {
-		String companyIdString = CookieUtil.get(
+		String companyIdString = CookieKeys.getCookie(
 			(HttpServletRequest)servletRequest, CookieKeys.COMPANY_ID);
 
 		if (Validator.isNull(companyIdString)) {
@@ -123,7 +132,7 @@ public class ShindigFilter extends InjectedFilter {
 				return false;
 			}
 
-			String userUUIDString = CookieUtil.get(
+			String userUUIDString = CookieKeys.getCookie(
 				(HttpServletRequest)servletRequest, CookieKeys.USER_UUID);
 
 			if (Validator.isNull(userUUIDString)) {

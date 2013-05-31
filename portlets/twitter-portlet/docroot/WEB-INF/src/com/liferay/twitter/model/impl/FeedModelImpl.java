@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -72,6 +72,8 @@ public class FeedModelImpl extends BaseModelImpl<Feed> implements FeedModel {
 		};
 	public static final String TABLE_SQL_CREATE = "create table Twitter_Feed (feedId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,twitterUserId LONG,twitterScreenName VARCHAR(75) null,lastStatusId LONG)";
 	public static final String TABLE_SQL_DROP = "drop table Twitter_Feed";
+	public static final String ORDER_BY_JPQL = " ORDER BY feed.feedId ASC";
+	public static final String ORDER_BY_SQL = " ORDER BY Twitter_Feed.feedId ASC";
 	public static final String DATA_SOURCE = "liferayDataSource";
 	public static final String SESSION_FACTORY = "liferaySessionFactory";
 	public static final String TX_MANAGER = "liferayTransactionManager";
@@ -84,35 +86,41 @@ public class FeedModelImpl extends BaseModelImpl<Feed> implements FeedModel {
 	public static final boolean COLUMN_BITMASK_ENABLED = GetterUtil.getBoolean(com.liferay.util.service.ServiceProps.get(
 				"value.object.column.bitmask.enabled.com.liferay.twitter.model.Feed"),
 			true);
-	public static long COMPANYID_COLUMN_BITMASK = 1L;
-	public static long TWITTERSCREENNAME_COLUMN_BITMASK = 2L;
-	public static long TWITTERUSERID_COLUMN_BITMASK = 4L;
+	public static long TWITTERSCREENNAME_COLUMN_BITMASK = 1L;
+	public static long USERID_COLUMN_BITMASK = 2L;
+	public static long FEEDID_COLUMN_BITMASK = 4L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(com.liferay.util.service.ServiceProps.get(
 				"lock.expiration.time.com.liferay.twitter.model.Feed"));
 
 	public FeedModelImpl() {
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _feedId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setFeedId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
-		return new Long(_feedId);
+		return _feedId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return Feed.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return Feed.class.getName();
 	}
@@ -191,50 +199,59 @@ public class FeedModelImpl extends BaseModelImpl<Feed> implements FeedModel {
 		}
 	}
 
+	@Override
 	public long getFeedId() {
 		return _feedId;
 	}
 
+	@Override
 	public void setFeedId(long feedId) {
 		_feedId = feedId;
 	}
 
+	@Override
 	public long getCompanyId() {
 		return _companyId;
 	}
 
+	@Override
 	public void setCompanyId(long companyId) {
-		_columnBitmask |= COMPANYID_COLUMN_BITMASK;
-
-		if (!_setOriginalCompanyId) {
-			_setOriginalCompanyId = true;
-
-			_originalCompanyId = _companyId;
-		}
-
 		_companyId = companyId;
 	}
 
-	public long getOriginalCompanyId() {
-		return _originalCompanyId;
-	}
-
+	@Override
 	public long getUserId() {
 		return _userId;
 	}
 
+	@Override
 	public void setUserId(long userId) {
+		_columnBitmask |= USERID_COLUMN_BITMASK;
+
+		if (!_setOriginalUserId) {
+			_setOriginalUserId = true;
+
+			_originalUserId = _userId;
+		}
+
 		_userId = userId;
 	}
 
+	@Override
 	public String getUserUuid() throws SystemException {
 		return PortalUtil.getUserValue(getUserId(), "uuid", _userUuid);
 	}
 
+	@Override
 	public void setUserUuid(String userUuid) {
 		_userUuid = userUuid;
 	}
 
+	public long getOriginalUserId() {
+		return _originalUserId;
+	}
+
+	@Override
 	public String getUserName() {
 		if (_userName == null) {
 			return StringPool.BLANK;
@@ -244,55 +261,53 @@ public class FeedModelImpl extends BaseModelImpl<Feed> implements FeedModel {
 		}
 	}
 
+	@Override
 	public void setUserName(String userName) {
 		_userName = userName;
 	}
 
+	@Override
 	public Date getCreateDate() {
 		return _createDate;
 	}
 
+	@Override
 	public void setCreateDate(Date createDate) {
 		_createDate = createDate;
 	}
 
+	@Override
 	public Date getModifiedDate() {
 		return _modifiedDate;
 	}
 
+	@Override
 	public void setModifiedDate(Date modifiedDate) {
 		_modifiedDate = modifiedDate;
 	}
 
+	@Override
 	public long getTwitterUserId() {
 		return _twitterUserId;
 	}
 
+	@Override
 	public void setTwitterUserId(long twitterUserId) {
-		_columnBitmask |= TWITTERUSERID_COLUMN_BITMASK;
-
-		if (!_setOriginalTwitterUserId) {
-			_setOriginalTwitterUserId = true;
-
-			_originalTwitterUserId = _twitterUserId;
-		}
-
 		_twitterUserId = twitterUserId;
 	}
 
+	@Override
 	public String getTwitterUserUuid() throws SystemException {
 		return PortalUtil.getUserValue(getTwitterUserId(), "uuid",
 			_twitterUserUuid);
 	}
 
+	@Override
 	public void setTwitterUserUuid(String twitterUserUuid) {
 		_twitterUserUuid = twitterUserUuid;
 	}
 
-	public long getOriginalTwitterUserId() {
-		return _originalTwitterUserId;
-	}
-
+	@Override
 	public String getTwitterScreenName() {
 		if (_twitterScreenName == null) {
 			return StringPool.BLANK;
@@ -302,6 +317,7 @@ public class FeedModelImpl extends BaseModelImpl<Feed> implements FeedModel {
 		}
 	}
 
+	@Override
 	public void setTwitterScreenName(String twitterScreenName) {
 		_columnBitmask |= TWITTERSCREENNAME_COLUMN_BITMASK;
 
@@ -316,10 +332,12 @@ public class FeedModelImpl extends BaseModelImpl<Feed> implements FeedModel {
 		return GetterUtil.getString(_originalTwitterScreenName);
 	}
 
+	@Override
 	public long getLastStatusId() {
 		return _lastStatusId;
 	}
 
+	@Override
 	public void setLastStatusId(long lastStatusId) {
 		_lastStatusId = lastStatusId;
 	}
@@ -329,29 +347,26 @@ public class FeedModelImpl extends BaseModelImpl<Feed> implements FeedModel {
 	}
 
 	@Override
-	public Feed toEscapedModel() {
-		if (_escapedModelProxy == null) {
-			_escapedModelProxy = (Feed)ProxyUtil.newProxyInstance(_classLoader,
-					_escapedModelProxyInterfaces,
-					new AutoEscapeBeanHandler(this));
-		}
-
-		return _escapedModelProxy;
-	}
-
-	@Override
 	public ExpandoBridge getExpandoBridge() {
-		if (_expandoBridge == null) {
-			_expandoBridge = ExpandoBridgeFactoryUtil.getExpandoBridge(getCompanyId(),
-					Feed.class.getName(), getPrimaryKey());
-		}
-
-		return _expandoBridge;
+		return ExpandoBridgeFactoryUtil.getExpandoBridge(getCompanyId(),
+			Feed.class.getName(), getPrimaryKey());
 	}
 
 	@Override
 	public void setExpandoBridgeAttributes(ServiceContext serviceContext) {
-		getExpandoBridge().setAttributes(serviceContext);
+		ExpandoBridge expandoBridge = getExpandoBridge();
+
+		expandoBridge.setAttributes(serviceContext);
+	}
+
+	@Override
+	public Feed toEscapedModel() {
+		if (_escapedModel == null) {
+			_escapedModel = (Feed)ProxyUtil.newProxyInstance(_classLoader,
+					_escapedModelInterfaces, new AutoEscapeBeanHandler(this));
+		}
+
+		return _escapedModel;
 	}
 
 	@Override
@@ -373,6 +388,7 @@ public class FeedModelImpl extends BaseModelImpl<Feed> implements FeedModel {
 		return feedImpl;
 	}
 
+	@Override
 	public int compareTo(Feed feed) {
 		long primaryKey = feed.getPrimaryKey();
 
@@ -389,18 +405,15 @@ public class FeedModelImpl extends BaseModelImpl<Feed> implements FeedModel {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof Feed)) {
 			return false;
 		}
 
-		Feed feed = null;
-
-		try {
-			feed = (Feed)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		Feed feed = (Feed)obj;
 
 		long primaryKey = feed.getPrimaryKey();
 
@@ -421,13 +434,9 @@ public class FeedModelImpl extends BaseModelImpl<Feed> implements FeedModel {
 	public void resetOriginalValues() {
 		FeedModelImpl feedModelImpl = this;
 
-		feedModelImpl._originalCompanyId = feedModelImpl._companyId;
+		feedModelImpl._originalUserId = feedModelImpl._userId;
 
-		feedModelImpl._setOriginalCompanyId = false;
-
-		feedModelImpl._originalTwitterUserId = feedModelImpl._twitterUserId;
-
-		feedModelImpl._setOriginalTwitterUserId = false;
+		feedModelImpl._setOriginalUserId = false;
 
 		feedModelImpl._originalTwitterScreenName = feedModelImpl._twitterScreenName;
 
@@ -512,6 +521,7 @@ public class FeedModelImpl extends BaseModelImpl<Feed> implements FeedModel {
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
 		StringBundler sb = new StringBundler(31);
 
@@ -562,26 +572,21 @@ public class FeedModelImpl extends BaseModelImpl<Feed> implements FeedModel {
 	}
 
 	private static ClassLoader _classLoader = Feed.class.getClassLoader();
-	private static Class<?>[] _escapedModelProxyInterfaces = new Class[] {
-			Feed.class
-		};
+	private static Class<?>[] _escapedModelInterfaces = new Class[] { Feed.class };
 	private long _feedId;
 	private long _companyId;
-	private long _originalCompanyId;
-	private boolean _setOriginalCompanyId;
 	private long _userId;
 	private String _userUuid;
+	private long _originalUserId;
+	private boolean _setOriginalUserId;
 	private String _userName;
 	private Date _createDate;
 	private Date _modifiedDate;
 	private long _twitterUserId;
 	private String _twitterUserUuid;
-	private long _originalTwitterUserId;
-	private boolean _setOriginalTwitterUserId;
 	private String _twitterScreenName;
 	private String _originalTwitterScreenName;
 	private long _lastStatusId;
-	private transient ExpandoBridge _expandoBridge;
 	private long _columnBitmask;
-	private Feed _escapedModelProxy;
+	private Feed _escapedModel;
 }

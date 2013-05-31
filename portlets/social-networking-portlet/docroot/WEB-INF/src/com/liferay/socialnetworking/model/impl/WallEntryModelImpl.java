@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -89,32 +89,39 @@ public class WallEntryModelImpl extends BaseModelImpl<WallEntry>
 			true);
 	public static long GROUPID_COLUMN_BITMASK = 1L;
 	public static long USERID_COLUMN_BITMASK = 2L;
+	public static long CREATEDATE_COLUMN_BITMASK = 4L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(com.liferay.util.service.ServiceProps.get(
 				"lock.expiration.time.com.liferay.socialnetworking.model.WallEntry"));
 
 	public WallEntryModelImpl() {
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _wallEntryId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setWallEntryId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
-		return new Long(_wallEntryId);
+		return _wallEntryId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return WallEntry.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return WallEntry.class.getName();
 	}
@@ -186,18 +193,22 @@ public class WallEntryModelImpl extends BaseModelImpl<WallEntry>
 		}
 	}
 
+	@Override
 	public long getWallEntryId() {
 		return _wallEntryId;
 	}
 
+	@Override
 	public void setWallEntryId(long wallEntryId) {
 		_wallEntryId = wallEntryId;
 	}
 
+	@Override
 	public long getGroupId() {
 		return _groupId;
 	}
 
+	@Override
 	public void setGroupId(long groupId) {
 		_columnBitmask |= GROUPID_COLUMN_BITMASK;
 
@@ -214,18 +225,22 @@ public class WallEntryModelImpl extends BaseModelImpl<WallEntry>
 		return _originalGroupId;
 	}
 
+	@Override
 	public long getCompanyId() {
 		return _companyId;
 	}
 
+	@Override
 	public void setCompanyId(long companyId) {
 		_companyId = companyId;
 	}
 
+	@Override
 	public long getUserId() {
 		return _userId;
 	}
 
+	@Override
 	public void setUserId(long userId) {
 		_columnBitmask |= USERID_COLUMN_BITMASK;
 
@@ -238,10 +253,12 @@ public class WallEntryModelImpl extends BaseModelImpl<WallEntry>
 		_userId = userId;
 	}
 
+	@Override
 	public String getUserUuid() throws SystemException {
 		return PortalUtil.getUserValue(getUserId(), "uuid", _userUuid);
 	}
 
+	@Override
 	public void setUserUuid(String userUuid) {
 		_userUuid = userUuid;
 	}
@@ -250,6 +267,7 @@ public class WallEntryModelImpl extends BaseModelImpl<WallEntry>
 		return _originalUserId;
 	}
 
+	@Override
 	public String getUserName() {
 		if (_userName == null) {
 			return StringPool.BLANK;
@@ -259,28 +277,34 @@ public class WallEntryModelImpl extends BaseModelImpl<WallEntry>
 		}
 	}
 
+	@Override
 	public void setUserName(String userName) {
 		_userName = userName;
 	}
 
+	@Override
 	public Date getCreateDate() {
 		return _createDate;
 	}
 
+	@Override
 	public void setCreateDate(Date createDate) {
 		_columnBitmask = -1L;
 
 		_createDate = createDate;
 	}
 
+	@Override
 	public Date getModifiedDate() {
 		return _modifiedDate;
 	}
 
+	@Override
 	public void setModifiedDate(Date modifiedDate) {
 		_modifiedDate = modifiedDate;
 	}
 
+	@Override
 	public String getComments() {
 		if (_comments == null) {
 			return StringPool.BLANK;
@@ -290,6 +314,7 @@ public class WallEntryModelImpl extends BaseModelImpl<WallEntry>
 		}
 	}
 
+	@Override
 	public void setComments(String comments) {
 		_comments = comments;
 	}
@@ -299,29 +324,26 @@ public class WallEntryModelImpl extends BaseModelImpl<WallEntry>
 	}
 
 	@Override
-	public WallEntry toEscapedModel() {
-		if (_escapedModelProxy == null) {
-			_escapedModelProxy = (WallEntry)ProxyUtil.newProxyInstance(_classLoader,
-					_escapedModelProxyInterfaces,
-					new AutoEscapeBeanHandler(this));
-		}
-
-		return _escapedModelProxy;
-	}
-
-	@Override
 	public ExpandoBridge getExpandoBridge() {
-		if (_expandoBridge == null) {
-			_expandoBridge = ExpandoBridgeFactoryUtil.getExpandoBridge(getCompanyId(),
-					WallEntry.class.getName(), getPrimaryKey());
-		}
-
-		return _expandoBridge;
+		return ExpandoBridgeFactoryUtil.getExpandoBridge(getCompanyId(),
+			WallEntry.class.getName(), getPrimaryKey());
 	}
 
 	@Override
 	public void setExpandoBridgeAttributes(ServiceContext serviceContext) {
-		getExpandoBridge().setAttributes(serviceContext);
+		ExpandoBridge expandoBridge = getExpandoBridge();
+
+		expandoBridge.setAttributes(serviceContext);
+	}
+
+	@Override
+	public WallEntry toEscapedModel() {
+		if (_escapedModel == null) {
+			_escapedModel = (WallEntry)ProxyUtil.newProxyInstance(_classLoader,
+					_escapedModelInterfaces, new AutoEscapeBeanHandler(this));
+		}
+
+		return _escapedModel;
 	}
 
 	@Override
@@ -342,6 +364,7 @@ public class WallEntryModelImpl extends BaseModelImpl<WallEntry>
 		return wallEntryImpl;
 	}
 
+	@Override
 	public int compareTo(WallEntry wallEntry) {
 		int value = 0;
 
@@ -358,18 +381,15 @@ public class WallEntryModelImpl extends BaseModelImpl<WallEntry>
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof WallEntry)) {
 			return false;
 		}
 
-		WallEntry wallEntry = null;
-
-		try {
-			wallEntry = (WallEntry)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		WallEntry wallEntry = (WallEntry)obj;
 
 		long primaryKey = wallEntry.getPrimaryKey();
 
@@ -475,6 +495,7 @@ public class WallEntryModelImpl extends BaseModelImpl<WallEntry>
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
 		StringBundler sb = new StringBundler(28);
 
@@ -521,7 +542,7 @@ public class WallEntryModelImpl extends BaseModelImpl<WallEntry>
 	}
 
 	private static ClassLoader _classLoader = WallEntry.class.getClassLoader();
-	private static Class<?>[] _escapedModelProxyInterfaces = new Class[] {
+	private static Class<?>[] _escapedModelInterfaces = new Class[] {
 			WallEntry.class
 		};
 	private long _wallEntryId;
@@ -537,7 +558,6 @@ public class WallEntryModelImpl extends BaseModelImpl<WallEntry>
 	private Date _createDate;
 	private Date _modifiedDate;
 	private String _comments;
-	private transient ExpandoBridge _expandoBridge;
 	private long _columnBitmask;
-	private WallEntry _escapedModelProxy;
+	private WallEntry _escapedModel;
 }

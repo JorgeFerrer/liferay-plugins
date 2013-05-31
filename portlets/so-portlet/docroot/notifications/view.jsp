@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This file is part of Liferay Social Office. Liferay Social Office is free
  * software: you can redistribute it and/or modify it under the terms of the GNU
@@ -19,11 +19,10 @@
 
 <%@ include file="/init.jsp" %>
 
-<liferay-portlet:actionURL name="deleteUserNotificationEvents" portletName="<%= PortletKeys.SO_NOTIFICATION %>" var="deleteURL" windowState="<%= LiferayWindowState.NORMAL.toString() %>">
-	<portlet:param name="redirect" value="<%= currentURL %>" />
-</liferay-portlet:actionURL>
+<liferay-portlet:actionURL name="deleteUserNotificationEvents" portletName="<%= PortletKeys.SO_NOTIFICATION %>" var="deleteURL" windowState="<%= LiferayWindowState.NORMAL.toString() %>" />
 
 <aui:form action="<%= deleteURL %>" method="get" name="fm" onSubmit='<%= "event.preventDefault(); " + renderResponse.getNamespace() + "deleteNotifications();" %>'>
+	<aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
 	<aui:input name="userNotificationEventUuids" type="hidden" />
 
 	<aui:fieldset>
@@ -39,12 +38,12 @@
 				>
 
 					<%
-					List<UserNotificationEvent> userNotificationEvents = UserNotificationEventLocalServiceUtil.getUserNotificationEvents(themeDisplay.getUserId(), searchContainer.getStart(), searchContainer.getEnd());
+					List<UserNotificationEvent> notificationEvents = UserNotificationEventLocalServiceUtil.getUserNotificationEvents(themeDisplay.getUserId(), searchContainer.getStart(), searchContainer.getEnd());
 					int notificationEventsCount = UserNotificationEventLocalServiceUtil.getUserNotificationEventsCount(themeDisplay.getUserId());
 					%>
 
 					<liferay-ui:search-container-results
-						results="<%= userNotificationEvents %>"
+						results="<%= notificationEvents %>"
 						total="<%= notificationEventsCount %>"
 					/>
 
@@ -62,7 +61,7 @@
 
 						long userId = notificationEventJSONObject.getLong("userId");
 
-						String userFullName = PortalUtil.getUserName(userId, StringPool.BLANK);
+						String userFullName = HtmlUtil.escape(PortalUtil.getUserName(userId, StringPool.BLANK));
 
 						String userDisplayURL = StringPool.BLANK;
 						String userPortaitURL = StringPool.BLANK;
@@ -79,10 +78,10 @@
 
 						<liferay-ui:search-container-column-text name="notifications" valign="top">
 							<c:choose>
-								<c:when test='<%= portletId.equals(PortletKeys.ANNOUNCEMENTS) %>'>
+								<c:when test="<%= portletId.equals(PortletKeys.ANNOUNCEMENTS) %>">
 									<%@ include file="/notifications/view_announcement.jspf" %>
 								</c:when>
-								<c:when test='<%= portletId.equals(PortletKeys.SO_INVITE_MEMBERS) %>'>
+								<c:when test="<%= portletId.equals(PortletKeys.SO_INVITE_MEMBERS) %>">
 									<%@ include file="/notifications/view_member_request.jspf" %>
 								</c:when>
 								<c:when test='<%= portletId.equals("1_WAR_contactsportlet") %>'>

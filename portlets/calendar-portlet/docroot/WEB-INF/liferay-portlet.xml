@@ -5,10 +5,30 @@
 	<portlet>
 		<portlet-name>1</portlet-name>
 		<icon>/icon.png</icon>
-		<custom-attributes-display>com.liferay.calendar.CalendarEventCustomAttributesDisplay</custom-attributes-display>
-		<custom-attributes-display>com.liferay.calendar.CalendarResourceCustomAttributesDisplay</custom-attributes-display>
+		<configuration-action-class>com.liferay.calendar.action.ConfigurationActionImpl</configuration-action-class>
+		<scheduler-entry>
+			<scheduler-event-listener-class>com.liferay.calendar.messaging.CheckBookingsMessageListener</scheduler-event-listener-class>
+			<trigger>
+				<simple>
+					<property-key>calendar.notification.check.interval</property-key>
+					<time-unit>minute</time-unit>
+				</simple>
+			</trigger>
+		</scheduler-entry>
+		<friendly-url-mapper-class>com.liferay.portal.kernel.portlet.DefaultFriendlyURLMapper</friendly-url-mapper-class>
+		<friendly-url-mapping>calendar</friendly-url-mapping>
+		<friendly-url-routes>com/liferay/calendar/calendar-friendly-url-routes.xml</friendly-url-routes>
+		<portlet-data-handler-class>com.liferay.calendar.lar.CalendarPortletDataHandler</portlet-data-handler-class>
+		<social-activity-interpreter-class>com.liferay.calendar.social.CalendarActivityInterpreter</social-activity-interpreter-class>
+		<asset-renderer-factory>com.liferay.calendar.asset.CalendarBookingAssetRendererFactory</asset-renderer-factory>
+		<custom-attributes-display>com.liferay.calendar.CalendarCustomAttributesDisplay</custom-attributes-display>
+		<preferences-unique-per-layout>false</preferences-unique-per-layout>
+		<preferences-owned-by-group>true</preferences-owned-by-group>
 		<header-portlet-css>/css/main.css</header-portlet-css>
+		<header-portlet-javascript>/js/components.js</header-portlet-javascript>
+		<header-portlet-javascript>/js/javascript.js</header-portlet-javascript>
 		<css-class-wrapper>calendar-portlet</css-class-wrapper>
+		<add-default-resource>true</add-default-resource>
 	</portlet>
 	<role-mapper>
 		<role-name>administrator</role-name>

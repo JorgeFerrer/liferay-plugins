@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -15,6 +15,7 @@
 package com.liferay.wsrp.util;
 
 import com.liferay.portal.kernel.util.AutoResetThreadLocal;
+import com.liferay.portal.kernel.util.TransientValue;
 import com.liferay.portal.model.User;
 import com.liferay.portal.service.UserLocalServiceUtil;
 import com.liferay.wsrp.model.WSRPConsumer;
@@ -51,7 +52,7 @@ public class WSRPConsumerManagerFactory {
 
 		return _getWSRPConsumerManager(
 			wsrpConsumer.getUrl(), wsrpConsumer.getRegistrationContext(),
-			wsrpConsumer.getForwardCookies());
+			wsrpConsumer.getForwardCookies(), wsrpConsumer.getForwardHeaders());
 	}
 
 	public static void setSession(HttpSession session) {
@@ -64,7 +65,8 @@ public class WSRPConsumerManagerFactory {
 
 			new WSRPConsumerManager(
 				wsrpConsumer.getUrl(), wsrpConsumer.getRegistrationContext(),
-				wsrpConsumer.getForwardCookies(), userToken);
+				wsrpConsumer.getForwardCookies(),
+				wsrpConsumer.getForwardHeaders(), userToken);
 
 			return true;
 		}
@@ -97,26 +99,32 @@ public class WSRPConsumerManagerFactory {
 
 	private static WSRPConsumerManager _getWSRPConsumerManager(
 			String url, RegistrationContext registrationContext,
-			String forwardCookies)
+			String forwardCookies, String forwardHeaders)
 		throws Exception {
 
 		HttpSession session = getSession();
 
-		Map<String, WSRPConsumerManager> wsrpConsumerManagers =
-			_wsrpConsumerManagers;
+		Map<String, WSRPConsumerManager> wsrpConsumerManagers = null;
 
 		if (session != null) {
-			wsrpConsumerManagers =
-				(Map<String, WSRPConsumerManager>)
+			TransientValue<Map<String, WSRPConsumerManager>> transientValue =
+				(TransientValue<Map<String, WSRPConsumerManager>>)
 					session.getAttribute(WebKeys.WSRP_CONSUMER_MANAGERS);
 
-			if (wsrpConsumerManagers == null) {
-				wsrpConsumerManagers =
-					new ConcurrentHashMap<String, WSRPConsumerManager>();
+			if (transientValue == null) {
+				transientValue =
+					new TransientValue<Map<String, WSRPConsumerManager>>(
+						new ConcurrentHashMap<String, WSRPConsumerManager>());
 
 				session.setAttribute(
-					WebKeys.WSRP_CONSUMER_MANAGERS, wsrpConsumerManagers);
+					WebKeys.WSRP_CONSUMER_MANAGERS, transientValue);
 			}
+
+			wsrpConsumerManagers = transientValue.getValue();
+		}
+
+		if (wsrpConsumerManagers == null) {
+			wsrpConsumerManagers = _wsrpConsumerManagers;
 		}
 
 		WSRPConsumerManager wsrpConsumerManager = wsrpConsumerManagers.get(url);
@@ -125,7 +133,8 @@ public class WSRPConsumerManagerFactory {
 			String userToken = _getUserToken();
 
 			wsrpConsumerManager = new WSRPConsumerManager(
-				url, registrationContext, forwardCookies, userToken);
+				url, registrationContext, forwardCookies, forwardHeaders,
+				userToken);
 
 			wsrpConsumerManagers.put(url, wsrpConsumerManager);
 		}

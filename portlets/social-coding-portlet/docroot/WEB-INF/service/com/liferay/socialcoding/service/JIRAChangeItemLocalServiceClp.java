@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -99,25 +99,20 @@ public class JIRAChangeItemLocalServiceClp implements JIRAChangeItemLocalService
 				"com.liferay.socialcoding.model.JIRAChangeItem"
 			};
 
-		_methodName15 = "updateJIRAChangeItem";
+		_methodName15 = "getBeanIdentifier";
 
-		_methodParameterTypes15 = new String[] {
-				"com.liferay.socialcoding.model.JIRAChangeItem", "boolean"
-			};
+		_methodParameterTypes15 = new String[] {  };
 
-		_methodName16 = "getBeanIdentifier";
+		_methodName16 = "setBeanIdentifier";
 
-		_methodParameterTypes16 = new String[] {  };
+		_methodParameterTypes16 = new String[] { "java.lang.String" };
 
-		_methodName17 = "setBeanIdentifier";
+		_methodName18 = "getJIRAChangeItems";
 
-		_methodParameterTypes17 = new String[] { "java.lang.String" };
-
-		_methodName19 = "getJIRAChangeItems";
-
-		_methodParameterTypes19 = new String[] { "long" };
+		_methodParameterTypes18 = new String[] { "long" };
 	}
 
+	@Override
 	public com.liferay.socialcoding.model.JIRAChangeItem addJIRAChangeItem(
 		com.liferay.socialcoding.model.JIRAChangeItem jiraChangeItem)
 		throws com.liferay.portal.kernel.exception.SystemException {
@@ -147,6 +142,7 @@ public class JIRAChangeItemLocalServiceClp implements JIRAChangeItemLocalService
 		return (com.liferay.socialcoding.model.JIRAChangeItem)ClpSerializer.translateOutput(returnObj);
 	}
 
+	@Override
 	public com.liferay.socialcoding.model.JIRAChangeItem createJIRAChangeItem(
 		long jiraChangeItemId) {
 		Object returnObj = null;
@@ -170,6 +166,7 @@ public class JIRAChangeItemLocalServiceClp implements JIRAChangeItemLocalService
 		return (com.liferay.socialcoding.model.JIRAChangeItem)ClpSerializer.translateOutput(returnObj);
 	}
 
+	@Override
 	public com.liferay.socialcoding.model.JIRAChangeItem deleteJIRAChangeItem(
 		long jiraChangeItemId)
 		throws com.liferay.portal.kernel.exception.PortalException,
@@ -203,6 +200,7 @@ public class JIRAChangeItemLocalServiceClp implements JIRAChangeItemLocalService
 		return (com.liferay.socialcoding.model.JIRAChangeItem)ClpSerializer.translateOutput(returnObj);
 	}
 
+	@Override
 	public com.liferay.socialcoding.model.JIRAChangeItem deleteJIRAChangeItem(
 		com.liferay.socialcoding.model.JIRAChangeItem jiraChangeItem)
 		throws com.liferay.portal.kernel.exception.SystemException {
@@ -232,6 +230,7 @@ public class JIRAChangeItemLocalServiceClp implements JIRAChangeItemLocalService
 		return (com.liferay.socialcoding.model.JIRAChangeItem)ClpSerializer.translateOutput(returnObj);
 	}
 
+	@Override
 	public com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery() {
 		Object returnObj = null;
 
@@ -254,6 +253,7 @@ public class JIRAChangeItemLocalServiceClp implements JIRAChangeItemLocalService
 		return (com.liferay.portal.kernel.dao.orm.DynamicQuery)ClpSerializer.translateOutput(returnObj);
 	}
 
+	@Override
 	@SuppressWarnings("rawtypes")
 	public java.util.List dynamicQuery(
 		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery)
@@ -284,6 +284,7 @@ public class JIRAChangeItemLocalServiceClp implements JIRAChangeItemLocalService
 		return (java.util.List)ClpSerializer.translateOutput(returnObj);
 	}
 
+	@Override
 	@SuppressWarnings("rawtypes")
 	public java.util.List dynamicQuery(
 		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery, int start,
@@ -320,6 +321,7 @@ public class JIRAChangeItemLocalServiceClp implements JIRAChangeItemLocalService
 		return (java.util.List)ClpSerializer.translateOutput(returnObj);
 	}
 
+	@Override
 	@SuppressWarnings("rawtypes")
 	public java.util.List dynamicQuery(
 		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery, int start,
@@ -360,6 +362,7 @@ public class JIRAChangeItemLocalServiceClp implements JIRAChangeItemLocalService
 		return (java.util.List)ClpSerializer.translateOutput(returnObj);
 	}
 
+	@Override
 	public long dynamicQueryCount(
 		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery)
 		throws com.liferay.portal.kernel.exception.SystemException {
@@ -389,6 +392,7 @@ public class JIRAChangeItemLocalServiceClp implements JIRAChangeItemLocalService
 		return ((Long)returnObj).longValue();
 	}
 
+	@Override
 	public com.liferay.socialcoding.model.JIRAChangeItem fetchJIRAChangeItem(
 		long jiraChangeItemId)
 		throws com.liferay.portal.kernel.exception.SystemException {
@@ -417,6 +421,7 @@ public class JIRAChangeItemLocalServiceClp implements JIRAChangeItemLocalService
 		return (com.liferay.socialcoding.model.JIRAChangeItem)ClpSerializer.translateOutput(returnObj);
 	}
 
+	@Override
 	public com.liferay.socialcoding.model.JIRAChangeItem getJIRAChangeItem(
 		long jiraChangeItemId)
 		throws com.liferay.portal.kernel.exception.PortalException,
@@ -450,6 +455,7 @@ public class JIRAChangeItemLocalServiceClp implements JIRAChangeItemLocalService
 		return (com.liferay.socialcoding.model.JIRAChangeItem)ClpSerializer.translateOutput(returnObj);
 	}
 
+	@Override
 	public com.liferay.portal.model.PersistedModel getPersistedModel(
 		java.io.Serializable primaryKeyObj)
 		throws com.liferay.portal.kernel.exception.PortalException,
@@ -484,6 +490,7 @@ public class JIRAChangeItemLocalServiceClp implements JIRAChangeItemLocalService
 		return (com.liferay.portal.model.PersistedModel)ClpSerializer.translateOutput(returnObj);
 	}
 
+	@Override
 	public java.util.List<com.liferay.socialcoding.model.JIRAChangeItem> getJIRAChangeItems(
 		int start, int end)
 		throws com.liferay.portal.kernel.exception.SystemException {
@@ -512,6 +519,7 @@ public class JIRAChangeItemLocalServiceClp implements JIRAChangeItemLocalService
 		return (java.util.List<com.liferay.socialcoding.model.JIRAChangeItem>)ClpSerializer.translateOutput(returnObj);
 	}
 
+	@Override
 	public int getJIRAChangeItemsCount()
 		throws com.liferay.portal.kernel.exception.SystemException {
 		Object returnObj = null;
@@ -539,6 +547,7 @@ public class JIRAChangeItemLocalServiceClp implements JIRAChangeItemLocalService
 		return ((Integer)returnObj).intValue();
 	}
 
+	@Override
 	public com.liferay.socialcoding.model.JIRAChangeItem updateJIRAChangeItem(
 		com.liferay.socialcoding.model.JIRAChangeItem jiraChangeItem)
 		throws com.liferay.portal.kernel.exception.SystemException {
@@ -568,46 +577,13 @@ public class JIRAChangeItemLocalServiceClp implements JIRAChangeItemLocalService
 		return (com.liferay.socialcoding.model.JIRAChangeItem)ClpSerializer.translateOutput(returnObj);
 	}
 
-	public com.liferay.socialcoding.model.JIRAChangeItem updateJIRAChangeItem(
-		com.liferay.socialcoding.model.JIRAChangeItem jiraChangeItem,
-		boolean merge)
-		throws com.liferay.portal.kernel.exception.SystemException {
-		Object returnObj = null;
-
-		try {
-			returnObj = _invokableLocalService.invokeMethod(_methodName15,
-					_methodParameterTypes15,
-					new Object[] {
-						ClpSerializer.translateInput(jiraChangeItem),
-						
-					merge
-					});
-		}
-		catch (Throwable t) {
-			t = ClpSerializer.translateThrowable(t);
-
-			if (t instanceof com.liferay.portal.kernel.exception.SystemException) {
-				throw (com.liferay.portal.kernel.exception.SystemException)t;
-			}
-
-			if (t instanceof RuntimeException) {
-				throw (RuntimeException)t;
-			}
-			else {
-				throw new RuntimeException(t.getClass().getName() +
-					" is not a valid exception");
-			}
-		}
-
-		return (com.liferay.socialcoding.model.JIRAChangeItem)ClpSerializer.translateOutput(returnObj);
-	}
-
+	@Override
 	public java.lang.String getBeanIdentifier() {
 		Object returnObj = null;
 
 		try {
-			returnObj = _invokableLocalService.invokeMethod(_methodName16,
-					_methodParameterTypes16, new Object[] {  });
+			returnObj = _invokableLocalService.invokeMethod(_methodName15,
+					_methodParameterTypes15, new Object[] {  });
 		}
 		catch (Throwable t) {
 			t = ClpSerializer.translateThrowable(t);
@@ -624,10 +600,11 @@ public class JIRAChangeItemLocalServiceClp implements JIRAChangeItemLocalService
 		return (java.lang.String)ClpSerializer.translateOutput(returnObj);
 	}
 
+	@Override
 	public void setBeanIdentifier(java.lang.String beanIdentifier) {
 		try {
-			_invokableLocalService.invokeMethod(_methodName17,
-				_methodParameterTypes17,
+			_invokableLocalService.invokeMethod(_methodName16,
+				_methodParameterTypes16,
 				new Object[] { ClpSerializer.translateInput(beanIdentifier) });
 		}
 		catch (Throwable t) {
@@ -643,20 +620,22 @@ public class JIRAChangeItemLocalServiceClp implements JIRAChangeItemLocalService
 		}
 	}
 
+	@Override
 	public java.lang.Object invokeMethod(java.lang.String name,
 		java.lang.String[] parameterTypes, java.lang.Object[] arguments)
 		throws java.lang.Throwable {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public java.util.List<com.liferay.socialcoding.model.JIRAChangeItem> getJIRAChangeItems(
 		long jiraChangeGroupId)
 		throws com.liferay.portal.kernel.exception.SystemException {
 		Object returnObj = null;
 
 		try {
-			returnObj = _invokableLocalService.invokeMethod(_methodName19,
-					_methodParameterTypes19, new Object[] { jiraChangeGroupId });
+			returnObj = _invokableLocalService.invokeMethod(_methodName18,
+					_methodParameterTypes18, new Object[] { jiraChangeGroupId });
 		}
 		catch (Throwable t) {
 			t = ClpSerializer.translateThrowable(t);
@@ -712,8 +691,6 @@ public class JIRAChangeItemLocalServiceClp implements JIRAChangeItemLocalService
 	private String[] _methodParameterTypes15;
 	private String _methodName16;
 	private String[] _methodParameterTypes16;
-	private String _methodName17;
-	private String[] _methodParameterTypes17;
-	private String _methodName19;
-	private String[] _methodParameterTypes19;
+	private String _methodName18;
+	private String[] _methodParameterTypes18;
 }
