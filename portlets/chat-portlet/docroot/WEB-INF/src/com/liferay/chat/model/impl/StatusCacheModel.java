@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -20,7 +20,10 @@ import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.model.CacheModel;
 
-import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 /**
  * The cache model class for representing Status in entity cache.
@@ -29,7 +32,7 @@ import java.io.Serializable;
  * @see Status
  * @generated
  */
-public class StatusCacheModel implements CacheModel<Status>, Serializable {
+public class StatusCacheModel implements CacheModel<Status>, Externalizable {
 	@Override
 	public String toString() {
 		StringBundler sb = new StringBundler(17);
@@ -44,8 +47,8 @@ public class StatusCacheModel implements CacheModel<Status>, Serializable {
 		sb.append(online);
 		sb.append(", awake=");
 		sb.append(awake);
-		sb.append(", activePanelId=");
-		sb.append(activePanelId);
+		sb.append(", activePanelIds=");
+		sb.append(activePanelIds);
 		sb.append(", message=");
 		sb.append(message);
 		sb.append(", playSound=");
@@ -55,6 +58,7 @@ public class StatusCacheModel implements CacheModel<Status>, Serializable {
 		return sb.toString();
 	}
 
+	@Override
 	public Status toEntityModel() {
 		StatusImpl statusImpl = new StatusImpl();
 
@@ -64,11 +68,11 @@ public class StatusCacheModel implements CacheModel<Status>, Serializable {
 		statusImpl.setOnline(online);
 		statusImpl.setAwake(awake);
 
-		if (activePanelId == null) {
-			statusImpl.setActivePanelId(StringPool.BLANK);
+		if (activePanelIds == null) {
+			statusImpl.setActivePanelIds(StringPool.BLANK);
 		}
 		else {
-			statusImpl.setActivePanelId(activePanelId);
+			statusImpl.setActivePanelIds(activePanelIds);
 		}
 
 		if (message == null) {
@@ -85,12 +89,50 @@ public class StatusCacheModel implements CacheModel<Status>, Serializable {
 		return statusImpl;
 	}
 
+	@Override
+	public void readExternal(ObjectInput objectInput) throws IOException {
+		statusId = objectInput.readLong();
+		userId = objectInput.readLong();
+		modifiedDate = objectInput.readLong();
+		online = objectInput.readBoolean();
+		awake = objectInput.readBoolean();
+		activePanelIds = objectInput.readUTF();
+		message = objectInput.readUTF();
+		playSound = objectInput.readBoolean();
+	}
+
+	@Override
+	public void writeExternal(ObjectOutput objectOutput)
+		throws IOException {
+		objectOutput.writeLong(statusId);
+		objectOutput.writeLong(userId);
+		objectOutput.writeLong(modifiedDate);
+		objectOutput.writeBoolean(online);
+		objectOutput.writeBoolean(awake);
+
+		if (activePanelIds == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(activePanelIds);
+		}
+
+		if (message == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(message);
+		}
+
+		objectOutput.writeBoolean(playSound);
+	}
+
 	public long statusId;
 	public long userId;
 	public long modifiedDate;
 	public boolean online;
 	public boolean awake;
-	public String activePanelId;
+	public String activePanelIds;
 	public String message;
 	public boolean playSound;
 }

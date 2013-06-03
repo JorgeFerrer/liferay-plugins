@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.xml.SAXReaderUtil;
 import com.liferay.portal.workflow.kaleo.definition.Action;
 import com.liferay.portal.workflow.kaleo.definition.ActionAware;
 import com.liferay.portal.workflow.kaleo.definition.AddressRecipient;
+import com.liferay.portal.workflow.kaleo.definition.AssigneesRecipient;
 import com.liferay.portal.workflow.kaleo.definition.Assignment;
 import com.liferay.portal.workflow.kaleo.definition.Condition;
 import com.liferay.portal.workflow.kaleo.definition.Definition;
@@ -144,12 +145,16 @@ public class XMLWorkflowModelParser implements WorkflowModelParser {
 			String description = actionElement.elementText("description");
 			String executionType = actionElement.elementText("execution-type");
 			String script = actionElement.elementText("script");
-			String language = actionElement.elementText("script-language");
+			String scriptLanguage = actionElement.elementText(
+				"script-language");
+			String scriptRequiredContexts = actionElement.elementText(
+				"script-required-contexts");
 			int priority = GetterUtil.getInteger(
 				actionElement.elementText("priority"));
 
 			Action action = new Action(
-				name, description, executionType, script, language, priority);
+				name, description, executionType, script, scriptLanguage,
+				scriptRequiredContexts, priority);
 
 			actions.add(action);
 		}
@@ -236,9 +241,12 @@ public class XMLWorkflowModelParser implements WorkflowModelParser {
 			String script = scriptedAssignmentElement.elementText("script");
 			String scriptLanguage = scriptedAssignmentElement.elementText(
 				"script-language");
+			String scriptRequiredContexts =
+				scriptedAssignmentElement.elementText(
+					"script-required-contexts");
 
 			ScriptAssignment scriptAssignment = new ScriptAssignment(
-				script, scriptLanguage);
+				script, scriptLanguage, scriptRequiredContexts);
 
 			assignments.add(scriptAssignment);
 		}
@@ -268,9 +276,11 @@ public class XMLWorkflowModelParser implements WorkflowModelParser {
 		String description = conditionElement.elementText("description");
 		String script = conditionElement.elementText("script");
 		String scriptLanguage = conditionElement.elementText("script-language");
+		String scriptRequiredContexts = conditionElement.elementText(
+			"script-required-contexts");
 
 		Condition condition = new Condition(
-			name, description, script, scriptLanguage);
+			name, description, script, scriptLanguage, scriptRequiredContexts);
 
 		String metadata = conditionElement.elementText("metadata");
 
@@ -401,30 +411,44 @@ public class XMLWorkflowModelParser implements WorkflowModelParser {
 			notification.addRecipients(addressRecipient);
 		}
 
-		List<Element> roleReceipientElements = recipientsElement.elements(
-			"role");
+		Element assigneesRecipientElement = recipientsElement.element(
+			"assignees");
 
-		for (Element roleAssignmentElement : roleReceipientElements) {
-			long roleId = GetterUtil.getLong(
-				roleAssignmentElement.elementText("role-id"));
-			String roleType = roleAssignmentElement.elementText("role-type");
-			String name = roleAssignmentElement.elementText("name");
+		if (assigneesRecipientElement != null) {
+			AssigneesRecipient assigneesRecipient = new AssigneesRecipient();
 
-			RoleRecipient roleRecipient = null;
+			notification.addRecipients(assigneesRecipient);
+		}
 
-			if (roleId > 0) {
-				roleRecipient = new RoleRecipient(roleId, roleType);
+		Element rolesElement = recipientsElement.element("roles");
+
+		if (rolesElement != null) {
+			List<Element> roleReceipientElements = rolesElement.elements(
+				"role");
+
+			for (Element roleReceipientElement : roleReceipientElements) {
+				long roleId = GetterUtil.getLong(
+					roleReceipientElement.elementText("role-id"));
+				String roleType = roleReceipientElement.elementText(
+					"role-type");
+				String name = roleReceipientElement.elementText("name");
+
+				RoleRecipient roleRecipient = null;
+
+				if (roleId > 0) {
+					roleRecipient = new RoleRecipient(roleId, roleType);
+				}
+				else {
+					roleRecipient = new RoleRecipient(name, roleType);
+
+					boolean autoCreate = GetterUtil.getBoolean(
+						roleReceipientElement.elementText("auto-create"), true);
+
+					roleRecipient.setAutoCreate(autoCreate);
+				}
+
+				notification.addRecipients(roleRecipient);
 			}
-			else {
-				roleRecipient = new RoleRecipient(name, roleType);
-
-				boolean autoCreate = GetterUtil.getBoolean(
-					roleAssignmentElement.elementText("auto-create"), true);
-
-				roleRecipient.setAutoCreate(autoCreate);
-			}
-
-			notification.addRecipients(roleRecipient);
 		}
 
 		List<Element> userRecipientElements = recipientsElement.elements(
@@ -634,7 +658,11 @@ public class XMLWorkflowModelParser implements WorkflowModelParser {
 				transition.setTimers(timer);
 			}
 
-			sourceNode.addTransition(transition);
+			sourceNode.addOutgoingTransition(transition);
+
+			if (Validator.isNotNull(targetNode)) {
+				targetNode.addIncomingTransition(transition);
+			}
 		}
 	}
 

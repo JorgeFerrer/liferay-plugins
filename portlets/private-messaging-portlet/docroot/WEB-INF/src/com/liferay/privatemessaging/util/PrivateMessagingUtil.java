@@ -1,19 +1,23 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2.1 of the License, or (at your option)
- * any later version.
+ * This file is part of Liferay Social Office. Liferay Social Office is free
+ * software: you can redistribute it and/or modify it under the terms of the GNU
+ * Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
+ * Liferay Social Office is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * Liferay Social Office. If not, see http://www.gnu.org/licenses/agpl-3.0.html.
  */
 
 package com.liferay.privatemessaging.util;
 
+import com.liferay.portal.NoSuchRoleException;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -25,13 +29,16 @@ import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.model.Group;
+import com.liferay.portal.model.Role;
 import com.liferay.portal.model.User;
 import com.liferay.portal.service.GroupLocalServiceUtil;
+import com.liferay.portal.service.RoleLocalServiceUtil;
 import com.liferay.portal.service.UserLocalServiceUtil;
 import com.liferay.portal.util.comparator.UserFirstNameComparator;
 import com.liferay.portlet.messageboards.model.MBMessage;
 import com.liferay.portlet.messageboards.service.MBMessageLocalServiceUtil;
 import com.liferay.portlet.messageboards.util.comparator.MessageCreateDateComparator;
+import com.liferay.portlet.sites.util.SitesUtil;
 import com.liferay.portlet.social.model.SocialRelationConstants;
 import com.liferay.privatemessaging.NoSuchUserThreadException;
 import com.liferay.privatemessaging.model.UserThread;
@@ -59,18 +66,16 @@ public class PrivateMessagingUtil {
 			new LinkedHashMap<String, Object>();
 
 		if (type.equals("site")) {
-			List<Group> usersGroups = GroupLocalServiceUtil.getUserGroups(
+			params.put("inherit", Boolean.TRUE);
+
+			List<Group> groups = GroupLocalServiceUtil.getUserGroups(
 				userId, true);
 
-			long[] usersGroupsIds = new long[usersGroups.size()];
-
-			for (int i = 0; i < usersGroups.size(); i++) {
-				Group group = usersGroups.get(i);
-
-				usersGroupsIds[i] = group.getGroupId();
-			}
-
-			params.put("usersGroups", usersGroupsIds);
+			params.put(
+				"usersGroups",
+				SitesUtil.filterGroups(
+					groups,
+					PortletPropsValues.AUTOCOMPLETE_RECIPIENT_SITE_EXCLUDES));
 		}
 		else if (!type.equals("all")) {
 			params.put(
@@ -78,6 +83,17 @@ public class PrivateMessagingUtil {
 				new Long[] {
 					userId, new Long(SocialRelationConstants.TYPE_BI_CONNECTION)
 				});
+		}
+
+		try {
+			Role role = RoleLocalServiceUtil.getRole(
+				user.getCompanyId(), RoleConstants.SOCIAL_OFFICE_USER);
+
+			if (role != null) {
+				params.put("usersRoles", new Long(role.getRoleId()));
+			}
+		}
+		catch (NoSuchRoleException nsre) {
 		}
 
 		int total = UserLocalServiceUtil.searchCount(
@@ -229,7 +245,14 @@ public class PrivateMessagingUtil {
 				continue;
 			}
 
-			User user = UserLocalServiceUtil.getUser(mbMessage.getUserId());
+			User user = UserLocalServiceUtil.fetchUser(mbMessage.getUserId());
+
+			if (user == null) {
+				user = UserLocalServiceUtil.createUser(mbMessage.getUserId());
+
+				user.setFirstName(mbMessage.getUserName());
+				user.setStatus(WorkflowConstants.STATUS_INACTIVE);
+			}
 
 			if (!users.contains(user)) {
 				users.add(user);
@@ -246,7 +269,14 @@ public class PrivateMessagingUtil {
 				continue;
 			}
 
-			User user = UserLocalServiceUtil.getUser(userThread.getUserId());
+			User user = UserLocalServiceUtil.fetchUser(userThread.getUserId());
+
+			if (user == null) {
+				user = UserLocalServiceUtil.createUser(userThread.getUserId());
+
+				user.setFirstName(userThread.getUserName());
+				user.setStatus(WorkflowConstants.STATUS_INACTIVE);
+			}
 
 			if (!users.contains(user)) {
 				users.add(user);

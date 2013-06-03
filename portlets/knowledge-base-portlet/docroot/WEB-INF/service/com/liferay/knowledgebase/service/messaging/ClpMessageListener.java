@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -18,6 +18,7 @@ import com.liferay.knowledgebase.service.ClpSerializer;
 import com.liferay.knowledgebase.service.KBArticleLocalServiceUtil;
 import com.liferay.knowledgebase.service.KBArticleServiceUtil;
 import com.liferay.knowledgebase.service.KBCommentLocalServiceUtil;
+import com.liferay.knowledgebase.service.KBCommentServiceUtil;
 import com.liferay.knowledgebase.service.KBTemplateLocalServiceUtil;
 import com.liferay.knowledgebase.service.KBTemplateServiceUtil;
 
@@ -44,6 +45,7 @@ public class ClpMessageListener extends BaseMessageListener {
 			KBArticleServiceUtil.clearService();
 			KBCommentLocalServiceUtil.clearService();
 
+			KBCommentServiceUtil.clearService();
 			KBTemplateLocalServiceUtil.clearService();
 
 			KBTemplateServiceUtil.clearService();

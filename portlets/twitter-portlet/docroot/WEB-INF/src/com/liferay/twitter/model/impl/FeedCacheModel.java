@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -20,7 +20,10 @@ import com.liferay.portal.model.CacheModel;
 
 import com.liferay.twitter.model.Feed;
 
-import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 import java.util.Date;
 
@@ -31,7 +34,7 @@ import java.util.Date;
  * @see Feed
  * @generated
  */
-public class FeedCacheModel implements CacheModel<Feed>, Serializable {
+public class FeedCacheModel implements CacheModel<Feed>, Externalizable {
 	@Override
 	public String toString() {
 		StringBundler sb = new StringBundler(19);
@@ -59,6 +62,7 @@ public class FeedCacheModel implements CacheModel<Feed>, Serializable {
 		return sb.toString();
 	}
 
+	@Override
 	public Feed toEntityModel() {
 		FeedImpl feedImpl = new FeedImpl();
 
@@ -101,6 +105,47 @@ public class FeedCacheModel implements CacheModel<Feed>, Serializable {
 		feedImpl.resetOriginalValues();
 
 		return feedImpl;
+	}
+
+	@Override
+	public void readExternal(ObjectInput objectInput) throws IOException {
+		feedId = objectInput.readLong();
+		companyId = objectInput.readLong();
+		userId = objectInput.readLong();
+		userName = objectInput.readUTF();
+		createDate = objectInput.readLong();
+		modifiedDate = objectInput.readLong();
+		twitterUserId = objectInput.readLong();
+		twitterScreenName = objectInput.readUTF();
+		lastStatusId = objectInput.readLong();
+	}
+
+	@Override
+	public void writeExternal(ObjectOutput objectOutput)
+		throws IOException {
+		objectOutput.writeLong(feedId);
+		objectOutput.writeLong(companyId);
+		objectOutput.writeLong(userId);
+
+		if (userName == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(userName);
+		}
+
+		objectOutput.writeLong(createDate);
+		objectOutput.writeLong(modifiedDate);
+		objectOutput.writeLong(twitterUserId);
+
+		if (twitterScreenName == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(twitterScreenName);
+		}
+
+		objectOutput.writeLong(lastStatusId);
 	}
 
 	public long feedId;

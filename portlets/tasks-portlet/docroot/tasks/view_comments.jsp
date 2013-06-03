@@ -1,16 +1,19 @@
 <%--
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2.1 of the License, or (at your option)
- * any later version.
+ * This file is part of Liferay Social Office. Liferay Social Office is free
+ * software: you can redistribute it and/or modify it under the terms of the GNU
+ * Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
+ * Liferay Social Office is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * Liferay Social Office. If not, see http://www.gnu.org/licenses/agpl-3.0.html.
  */
 --%>
 
@@ -51,10 +54,10 @@ List<MBMessage> messages = treeWalker.getMessages();
 
 				<c:choose>
 					<c:when test="<%= Validator.isNotNull(messageUser.getDisplayURL(themeDisplay)) %>">
-						<span class="user-name"><a href="<%= messageUser.getDisplayURL(themeDisplay) %>"><%= message.getUserName() %></a></span>
+						<span class="user-name"><a href="<%= messageUser.getDisplayURL(themeDisplay) %>"><%= HtmlUtil.escape(message.getUserName()) %></a></span>
 					</c:when>
 					<c:otherwise>
-						<span class="user-name"><%= message.getUserName() %></span>
+						<span class="user-name"><%= HtmlUtil.escape(message.getUserName()) %></span>
 					</c:otherwise>
 				</c:choose>
 
@@ -77,7 +80,8 @@ List<MBMessage> messages = treeWalker.getMessages();
 
 </div>
 
-<form action="<portlet:actionURL name="updateMessage"><portlet:param name="mvcPath" value="/tasks/view_task.jsp" /></portlet:actionURL>" method="post" name="<portlet:namespace />fm2">
+<form action='<portlet:actionURL name="updateMessage" />' method="post" name="<portlet:namespace />fm2">
+<input name="<portlet:namespace />mvcPath" type="hidden" value="/tasks/view_task.jsp" />
 <input name="<portlet:namespace />redirect" type="hidden" value="<%= HtmlUtil.escape(currentURL) %>" />
 <input name="<portlet:namespace /><%= Constants.CMD %>" type="hidden" value="" />
 <input name="<portlet:namespace />className" type="hidden" value="<%= TasksEntry.class.getName() %>" />
@@ -98,7 +102,7 @@ List<MBMessage> messages = treeWalker.getMessages();
 
 		<input disabled id="<portlet:namespace />postButton" type="button" value="<liferay-ui:message key="post" />" onClick="<portlet:namespace />postReply();" />
 
-		<input type="button" value="<liferay-ui:message key="cancel" />" onClick="document.<portlet:namespace />fm2.<portlet:namespace />messageId.value = '';document.<portlet:namespace />fm2.<portlet:namespace />body.value = '';Liferay.Tasks.toggleCommentForm();" />
+		<input onClick="document.<portlet:namespace />fm2.<portlet:namespace />messageId.value = '';document.<portlet:namespace />fm2.<portlet:namespace />body.value = '';Liferay.Tasks.toggleCommentForm();" type="button" value="<liferay-ui:message key="cancel" />" />
 	</div>
 </div>
 

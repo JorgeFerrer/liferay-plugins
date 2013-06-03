@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -16,16 +16,18 @@ package com.liferay.twitter.model;
 
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.model.BaseModel;
 import com.liferay.portal.model.impl.BaseModelImpl;
 import com.liferay.portal.util.PortalUtil;
 
+import com.liferay.twitter.service.ClpSerializer;
 import com.liferay.twitter.service.FeedLocalServiceUtil;
 
 import java.io.Serializable;
 
-import java.lang.reflect.Proxy;
+import java.lang.reflect.Method;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -38,30 +40,37 @@ public class FeedClp extends BaseModelImpl<Feed> implements Feed {
 	public FeedClp() {
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return Feed.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return Feed.class.getName();
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _feedId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setFeedId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
-		return new Long(_feedId);
+		return _feedId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
 
+	@Override
 	public Map<String, Object> getModelAttributes() {
 		Map<String, Object> attributes = new HashMap<String, Object>();
 
@@ -78,6 +87,7 @@ public class FeedClp extends BaseModelImpl<Feed> implements Feed {
 		return attributes;
 	}
 
+	@Override
 	public void setModelAttributes(Map<String, Object> attributes) {
 		Long feedId = (Long)attributes.get("feedId");
 
@@ -134,93 +144,233 @@ public class FeedClp extends BaseModelImpl<Feed> implements Feed {
 		}
 	}
 
+	@Override
 	public long getFeedId() {
 		return _feedId;
 	}
 
+	@Override
 	public void setFeedId(long feedId) {
 		_feedId = feedId;
+
+		if (_feedRemoteModel != null) {
+			try {
+				Class<?> clazz = _feedRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setFeedId", long.class);
+
+				method.invoke(_feedRemoteModel, feedId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getCompanyId() {
 		return _companyId;
 	}
 
+	@Override
 	public void setCompanyId(long companyId) {
 		_companyId = companyId;
+
+		if (_feedRemoteModel != null) {
+			try {
+				Class<?> clazz = _feedRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setCompanyId", long.class);
+
+				method.invoke(_feedRemoteModel, companyId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getUserId() {
 		return _userId;
 	}
 
+	@Override
 	public void setUserId(long userId) {
 		_userId = userId;
+
+		if (_feedRemoteModel != null) {
+			try {
+				Class<?> clazz = _feedRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setUserId", long.class);
+
+				method.invoke(_feedRemoteModel, userId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getUserUuid() throws SystemException {
 		return PortalUtil.getUserValue(getUserId(), "uuid", _userUuid);
 	}
 
+	@Override
 	public void setUserUuid(String userUuid) {
 		_userUuid = userUuid;
 	}
 
+	@Override
 	public String getUserName() {
 		return _userName;
 	}
 
+	@Override
 	public void setUserName(String userName) {
 		_userName = userName;
+
+		if (_feedRemoteModel != null) {
+			try {
+				Class<?> clazz = _feedRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setUserName", String.class);
+
+				method.invoke(_feedRemoteModel, userName);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public Date getCreateDate() {
 		return _createDate;
 	}
 
+	@Override
 	public void setCreateDate(Date createDate) {
 		_createDate = createDate;
+
+		if (_feedRemoteModel != null) {
+			try {
+				Class<?> clazz = _feedRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setCreateDate", Date.class);
+
+				method.invoke(_feedRemoteModel, createDate);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public Date getModifiedDate() {
 		return _modifiedDate;
 	}
 
+	@Override
 	public void setModifiedDate(Date modifiedDate) {
 		_modifiedDate = modifiedDate;
+
+		if (_feedRemoteModel != null) {
+			try {
+				Class<?> clazz = _feedRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setModifiedDate", Date.class);
+
+				method.invoke(_feedRemoteModel, modifiedDate);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getTwitterUserId() {
 		return _twitterUserId;
 	}
 
+	@Override
 	public void setTwitterUserId(long twitterUserId) {
 		_twitterUserId = twitterUserId;
+
+		if (_feedRemoteModel != null) {
+			try {
+				Class<?> clazz = _feedRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setTwitterUserId", long.class);
+
+				method.invoke(_feedRemoteModel, twitterUserId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getTwitterUserUuid() throws SystemException {
 		return PortalUtil.getUserValue(getTwitterUserId(), "uuid",
 			_twitterUserUuid);
 	}
 
+	@Override
 	public void setTwitterUserUuid(String twitterUserUuid) {
 		_twitterUserUuid = twitterUserUuid;
 	}
 
+	@Override
 	public String getTwitterScreenName() {
 		return _twitterScreenName;
 	}
 
+	@Override
 	public void setTwitterScreenName(String twitterScreenName) {
 		_twitterScreenName = twitterScreenName;
+
+		if (_feedRemoteModel != null) {
+			try {
+				Class<?> clazz = _feedRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setTwitterScreenName",
+						String.class);
+
+				method.invoke(_feedRemoteModel, twitterScreenName);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getLastStatusId() {
 		return _lastStatusId;
 	}
 
+	@Override
 	public void setLastStatusId(long lastStatusId) {
 		_lastStatusId = lastStatusId;
+
+		if (_feedRemoteModel != null) {
+			try {
+				Class<?> clazz = _feedRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setLastStatusId", long.class);
+
+				method.invoke(_feedRemoteModel, lastStatusId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public BaseModel<?> getFeedRemoteModel() {
@@ -231,6 +381,48 @@ public class FeedClp extends BaseModelImpl<Feed> implements Feed {
 		_feedRemoteModel = feedRemoteModel;
 	}
 
+	public Object invokeOnRemoteModel(String methodName,
+		Class<?>[] parameterTypes, Object[] parameterValues)
+		throws Exception {
+		Object[] remoteParameterValues = new Object[parameterValues.length];
+
+		for (int i = 0; i < parameterValues.length; i++) {
+			if (parameterValues[i] != null) {
+				remoteParameterValues[i] = ClpSerializer.translateInput(parameterValues[i]);
+			}
+		}
+
+		Class<?> remoteModelClass = _feedRemoteModel.getClass();
+
+		ClassLoader remoteModelClassLoader = remoteModelClass.getClassLoader();
+
+		Class<?>[] remoteParameterTypes = new Class[parameterTypes.length];
+
+		for (int i = 0; i < parameterTypes.length; i++) {
+			if (parameterTypes[i].isPrimitive()) {
+				remoteParameterTypes[i] = parameterTypes[i];
+			}
+			else {
+				String parameterTypeName = parameterTypes[i].getName();
+
+				remoteParameterTypes[i] = remoteModelClassLoader.loadClass(parameterTypeName);
+			}
+		}
+
+		Method method = remoteModelClass.getMethod(methodName,
+				remoteParameterTypes);
+
+		Object returnValue = method.invoke(_feedRemoteModel,
+				remoteParameterValues);
+
+		if (returnValue != null) {
+			returnValue = ClpSerializer.translateOutput(returnValue);
+		}
+
+		return returnValue;
+	}
+
+	@Override
 	public void persist() throws SystemException {
 		if (this.isNew()) {
 			FeedLocalServiceUtil.addFeed(this);
@@ -242,7 +434,7 @@ public class FeedClp extends BaseModelImpl<Feed> implements Feed {
 
 	@Override
 	public Feed toEscapedModel() {
-		return (Feed)Proxy.newProxyInstance(Feed.class.getClassLoader(),
+		return (Feed)ProxyUtil.newProxyInstance(Feed.class.getClassLoader(),
 			new Class[] { Feed.class }, new AutoEscapeBeanHandler(this));
 	}
 
@@ -263,6 +455,7 @@ public class FeedClp extends BaseModelImpl<Feed> implements Feed {
 		return clone;
 	}
 
+	@Override
 	public int compareTo(Feed feed) {
 		long primaryKey = feed.getPrimaryKey();
 
@@ -279,18 +472,15 @@ public class FeedClp extends BaseModelImpl<Feed> implements Feed {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof FeedClp)) {
 			return false;
 		}
 
-		FeedClp feed = null;
-
-		try {
-			feed = (FeedClp)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		FeedClp feed = (FeedClp)obj;
 
 		long primaryKey = feed.getPrimaryKey();
 
@@ -334,6 +524,7 @@ public class FeedClp extends BaseModelImpl<Feed> implements Feed {
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
 		StringBundler sb = new StringBundler(31);
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -33,14 +33,17 @@ public class EntryWrapper implements Entry, ModelWrapper<Entry> {
 		_entry = entry;
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return Entry.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return Entry.class.getName();
 	}
 
+	@Override
 	public Map<String, Object> getModelAttributes() {
 		Map<String, Object> attributes = new HashMap<String, Object>();
 
@@ -49,10 +52,12 @@ public class EntryWrapper implements Entry, ModelWrapper<Entry> {
 		attributes.put("fromUserId", getFromUserId());
 		attributes.put("toUserId", getToUserId());
 		attributes.put("content", getContent());
+		attributes.put("flag", getFlag());
 
 		return attributes;
 	}
 
+	@Override
 	public void setModelAttributes(Map<String, Object> attributes) {
 		Long entryId = (Long)attributes.get("entryId");
 
@@ -83,6 +88,12 @@ public class EntryWrapper implements Entry, ModelWrapper<Entry> {
 		if (content != null) {
 			setContent(content);
 		}
+
+		Integer flag = (Integer)attributes.get("flag");
+
+		if (flag != null) {
+			setFlag(flag);
+		}
 	}
 
 	/**
@@ -90,6 +101,7 @@ public class EntryWrapper implements Entry, ModelWrapper<Entry> {
 	*
 	* @return the primary key of this entry
 	*/
+	@Override
 	public long getPrimaryKey() {
 		return _entry.getPrimaryKey();
 	}
@@ -99,6 +111,7 @@ public class EntryWrapper implements Entry, ModelWrapper<Entry> {
 	*
 	* @param primaryKey the primary key of this entry
 	*/
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		_entry.setPrimaryKey(primaryKey);
 	}
@@ -108,6 +121,7 @@ public class EntryWrapper implements Entry, ModelWrapper<Entry> {
 	*
 	* @return the entry ID of this entry
 	*/
+	@Override
 	public long getEntryId() {
 		return _entry.getEntryId();
 	}
@@ -117,6 +131,7 @@ public class EntryWrapper implements Entry, ModelWrapper<Entry> {
 	*
 	* @param entryId the entry ID of this entry
 	*/
+	@Override
 	public void setEntryId(long entryId) {
 		_entry.setEntryId(entryId);
 	}
@@ -126,6 +141,7 @@ public class EntryWrapper implements Entry, ModelWrapper<Entry> {
 	*
 	* @return the create date of this entry
 	*/
+	@Override
 	public long getCreateDate() {
 		return _entry.getCreateDate();
 	}
@@ -135,6 +151,7 @@ public class EntryWrapper implements Entry, ModelWrapper<Entry> {
 	*
 	* @param createDate the create date of this entry
 	*/
+	@Override
 	public void setCreateDate(long createDate) {
 		_entry.setCreateDate(createDate);
 	}
@@ -144,6 +161,7 @@ public class EntryWrapper implements Entry, ModelWrapper<Entry> {
 	*
 	* @return the from user ID of this entry
 	*/
+	@Override
 	public long getFromUserId() {
 		return _entry.getFromUserId();
 	}
@@ -153,6 +171,7 @@ public class EntryWrapper implements Entry, ModelWrapper<Entry> {
 	*
 	* @param fromUserId the from user ID of this entry
 	*/
+	@Override
 	public void setFromUserId(long fromUserId) {
 		_entry.setFromUserId(fromUserId);
 	}
@@ -163,6 +182,7 @@ public class EntryWrapper implements Entry, ModelWrapper<Entry> {
 	* @return the from user uuid of this entry
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	public java.lang.String getFromUserUuid()
 		throws com.liferay.portal.kernel.exception.SystemException {
 		return _entry.getFromUserUuid();
@@ -173,6 +193,7 @@ public class EntryWrapper implements Entry, ModelWrapper<Entry> {
 	*
 	* @param fromUserUuid the from user uuid of this entry
 	*/
+	@Override
 	public void setFromUserUuid(java.lang.String fromUserUuid) {
 		_entry.setFromUserUuid(fromUserUuid);
 	}
@@ -182,6 +203,7 @@ public class EntryWrapper implements Entry, ModelWrapper<Entry> {
 	*
 	* @return the to user ID of this entry
 	*/
+	@Override
 	public long getToUserId() {
 		return _entry.getToUserId();
 	}
@@ -191,6 +213,7 @@ public class EntryWrapper implements Entry, ModelWrapper<Entry> {
 	*
 	* @param toUserId the to user ID of this entry
 	*/
+	@Override
 	public void setToUserId(long toUserId) {
 		_entry.setToUserId(toUserId);
 	}
@@ -201,6 +224,7 @@ public class EntryWrapper implements Entry, ModelWrapper<Entry> {
 	* @return the to user uuid of this entry
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	public java.lang.String getToUserUuid()
 		throws com.liferay.portal.kernel.exception.SystemException {
 		return _entry.getToUserUuid();
@@ -211,6 +235,7 @@ public class EntryWrapper implements Entry, ModelWrapper<Entry> {
 	*
 	* @param toUserUuid the to user uuid of this entry
 	*/
+	@Override
 	public void setToUserUuid(java.lang.String toUserUuid) {
 		_entry.setToUserUuid(toUserUuid);
 	}
@@ -220,6 +245,7 @@ public class EntryWrapper implements Entry, ModelWrapper<Entry> {
 	*
 	* @return the content of this entry
 	*/
+	@Override
 	public java.lang.String getContent() {
 		return _entry.getContent();
 	}
@@ -229,42 +255,84 @@ public class EntryWrapper implements Entry, ModelWrapper<Entry> {
 	*
 	* @param content the content of this entry
 	*/
+	@Override
 	public void setContent(java.lang.String content) {
 		_entry.setContent(content);
 	}
 
+	/**
+	* Returns the flag of this entry.
+	*
+	* @return the flag of this entry
+	*/
+	@Override
+	public int getFlag() {
+		return _entry.getFlag();
+	}
+
+	/**
+	* Sets the flag of this entry.
+	*
+	* @param flag the flag of this entry
+	*/
+	@Override
+	public void setFlag(int flag) {
+		_entry.setFlag(flag);
+	}
+
+	@Override
 	public boolean isNew() {
 		return _entry.isNew();
 	}
 
+	@Override
 	public void setNew(boolean n) {
 		_entry.setNew(n);
 	}
 
+	@Override
 	public boolean isCachedModel() {
 		return _entry.isCachedModel();
 	}
 
+	@Override
 	public void setCachedModel(boolean cachedModel) {
 		_entry.setCachedModel(cachedModel);
 	}
 
+	@Override
 	public boolean isEscapedModel() {
 		return _entry.isEscapedModel();
 	}
 
+	@Override
 	public java.io.Serializable getPrimaryKeyObj() {
 		return _entry.getPrimaryKeyObj();
 	}
 
+	@Override
 	public void setPrimaryKeyObj(java.io.Serializable primaryKeyObj) {
 		_entry.setPrimaryKeyObj(primaryKeyObj);
 	}
 
+	@Override
 	public com.liferay.portlet.expando.model.ExpandoBridge getExpandoBridge() {
 		return _entry.getExpandoBridge();
 	}
 
+	@Override
+	public void setExpandoBridgeAttributes(
+		com.liferay.portal.model.BaseModel<?> baseModel) {
+		_entry.setExpandoBridgeAttributes(baseModel);
+	}
+
+	@Override
+	public void setExpandoBridgeAttributes(
+		com.liferay.portlet.expando.model.ExpandoBridge expandoBridge) {
+		_entry.setExpandoBridgeAttributes(expandoBridge);
+	}
+
+	@Override
 	public void setExpandoBridgeAttributes(
 		com.liferay.portal.service.ServiceContext serviceContext) {
 		_entry.setExpandoBridgeAttributes(serviceContext);
@@ -275,6 +343,7 @@ public class EntryWrapper implements Entry, ModelWrapper<Entry> {
 		return new EntryWrapper((Entry)_entry.clone());
 	}
 
+	@Override
 	public int compareTo(com.liferay.chat.model.Entry entry) {
 		return _entry.compareTo(entry);
 	}
@@ -284,12 +353,19 @@ public class EntryWrapper implements Entry, ModelWrapper<Entry> {
 		return _entry.hashCode();
 	}
 
+	@Override
 	public com.liferay.portal.model.CacheModel<com.liferay.chat.model.Entry> toCacheModel() {
 		return _entry.toCacheModel();
 	}
 
+	@Override
 	public com.liferay.chat.model.Entry toEscapedModel() {
 		return new EntryWrapper(_entry.toEscapedModel());
+	}
+
+	@Override
+	public com.liferay.chat.model.Entry toUnescapedModel() {
+		return new EntryWrapper(_entry.toUnescapedModel());
 	}
 
 	@Override
@@ -297,26 +373,30 @@ public class EntryWrapper implements Entry, ModelWrapper<Entry> {
 		return _entry.toString();
 	}
 
+	@Override
 	public java.lang.String toXmlString() {
 		return _entry.toXmlString();
 	}
 
+	@Override
 	public void persist()
 		throws com.liferay.portal.kernel.exception.SystemException {
 		_entry.persist();
 	}
 
 	/**
-	 * @deprecated Renamed to {@link #getWrappedModel}
+	 * @deprecated As of 6.1.0, replaced by {@link #getWrappedModel}
 	 */
 	public Entry getWrappedEntry() {
 		return _entry;
 	}
 
+	@Override
 	public Entry getWrappedModel() {
 		return _entry;
 	}
 
+	@Override
 	public void resetOriginalValues() {
 		_entry.resetOriginalValues();
 	}

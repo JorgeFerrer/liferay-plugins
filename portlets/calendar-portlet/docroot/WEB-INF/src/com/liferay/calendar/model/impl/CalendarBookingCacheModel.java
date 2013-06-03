@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -20,7 +20,10 @@ import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.model.CacheModel;
 
-import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 import java.util.Date;
 
@@ -32,7 +35,7 @@ import java.util.Date;
  * @generated
  */
 public class CalendarBookingCacheModel implements CacheModel<CalendarBooking>,
-	Serializable {
+	Externalizable {
 	@Override
 	public String toString() {
 		StringBundler sb = new StringBundler(55);
@@ -53,36 +56,36 @@ public class CalendarBookingCacheModel implements CacheModel<CalendarBooking>,
 		sb.append(createDate);
 		sb.append(", modifiedDate=");
 		sb.append(modifiedDate);
-		sb.append(", calendarEventId=");
-		sb.append(calendarEventId);
+		sb.append(", resourceBlockId=");
+		sb.append(resourceBlockId);
+		sb.append(", calendarId=");
+		sb.append(calendarId);
 		sb.append(", calendarResourceId=");
 		sb.append(calendarResourceId);
-		sb.append(", classNameId=");
-		sb.append(classNameId);
-		sb.append(", classPK=");
-		sb.append(classPK);
+		sb.append(", parentCalendarBookingId=");
+		sb.append(parentCalendarBookingId);
 		sb.append(", title=");
 		sb.append(title);
-		sb.append(", name=");
-		sb.append(name);
 		sb.append(", description=");
 		sb.append(description);
 		sb.append(", location=");
 		sb.append(location);
-		sb.append(", startDate=");
-		sb.append(startDate);
-		sb.append(", endDate=");
-		sb.append(endDate);
-		sb.append(", durationHour=");
-		sb.append(durationHour);
-		sb.append(", durationMinute=");
-		sb.append(durationMinute);
+		sb.append(", startTime=");
+		sb.append(startTime);
+		sb.append(", endTime=");
+		sb.append(endTime);
+		sb.append(", allDay=");
+		sb.append(allDay);
 		sb.append(", recurrence=");
 		sb.append(recurrence);
-		sb.append(", type=");
-		sb.append(type);
-		sb.append(", required=");
-		sb.append(required);
+		sb.append(", firstReminder=");
+		sb.append(firstReminder);
+		sb.append(", firstReminderType=");
+		sb.append(firstReminderType);
+		sb.append(", secondReminder=");
+		sb.append(secondReminder);
+		sb.append(", secondReminderType=");
+		sb.append(secondReminderType);
 		sb.append(", status=");
 		sb.append(status);
 		sb.append(", statusByUserId=");
@@ -96,6 +99,7 @@ public class CalendarBookingCacheModel implements CacheModel<CalendarBooking>,
 		return sb.toString();
 	}
 
+	@Override
 	public CalendarBooking toEntityModel() {
 		CalendarBookingImpl calendarBookingImpl = new CalendarBookingImpl();
 
@@ -132,23 +136,16 @@ public class CalendarBookingCacheModel implements CacheModel<CalendarBooking>,
 			calendarBookingImpl.setModifiedDate(new Date(modifiedDate));
 		}
 
-		calendarBookingImpl.setCalendarEventId(calendarEventId);
+		calendarBookingImpl.setResourceBlockId(resourceBlockId);
+		calendarBookingImpl.setCalendarId(calendarId);
 		calendarBookingImpl.setCalendarResourceId(calendarResourceId);
-		calendarBookingImpl.setClassNameId(classNameId);
-		calendarBookingImpl.setClassPK(classPK);
+		calendarBookingImpl.setParentCalendarBookingId(parentCalendarBookingId);
 
 		if (title == null) {
 			calendarBookingImpl.setTitle(StringPool.BLANK);
 		}
 		else {
 			calendarBookingImpl.setTitle(title);
-		}
-
-		if (name == null) {
-			calendarBookingImpl.setName(StringPool.BLANK);
-		}
-		else {
-			calendarBookingImpl.setName(name);
 		}
 
 		if (description == null) {
@@ -165,22 +162,9 @@ public class CalendarBookingCacheModel implements CacheModel<CalendarBooking>,
 			calendarBookingImpl.setLocation(location);
 		}
 
-		if (startDate == Long.MIN_VALUE) {
-			calendarBookingImpl.setStartDate(null);
-		}
-		else {
-			calendarBookingImpl.setStartDate(new Date(startDate));
-		}
-
-		if (endDate == Long.MIN_VALUE) {
-			calendarBookingImpl.setEndDate(null);
-		}
-		else {
-			calendarBookingImpl.setEndDate(new Date(endDate));
-		}
-
-		calendarBookingImpl.setDurationHour(durationHour);
-		calendarBookingImpl.setDurationMinute(durationMinute);
+		calendarBookingImpl.setStartTime(startTime);
+		calendarBookingImpl.setEndTime(endTime);
+		calendarBookingImpl.setAllDay(allDay);
 
 		if (recurrence == null) {
 			calendarBookingImpl.setRecurrence(StringPool.BLANK);
@@ -189,14 +173,24 @@ public class CalendarBookingCacheModel implements CacheModel<CalendarBooking>,
 			calendarBookingImpl.setRecurrence(recurrence);
 		}
 
-		if (type == null) {
-			calendarBookingImpl.setType(StringPool.BLANK);
+		calendarBookingImpl.setFirstReminder(firstReminder);
+
+		if (firstReminderType == null) {
+			calendarBookingImpl.setFirstReminderType(StringPool.BLANK);
 		}
 		else {
-			calendarBookingImpl.setType(type);
+			calendarBookingImpl.setFirstReminderType(firstReminderType);
 		}
 
-		calendarBookingImpl.setRequired(required);
+		calendarBookingImpl.setSecondReminder(secondReminder);
+
+		if (secondReminderType == null) {
+			calendarBookingImpl.setSecondReminderType(StringPool.BLANK);
+		}
+		else {
+			calendarBookingImpl.setSecondReminderType(secondReminderType);
+		}
+
 		calendarBookingImpl.setStatus(status);
 		calendarBookingImpl.setStatusByUserId(statusByUserId);
 
@@ -219,6 +213,129 @@ public class CalendarBookingCacheModel implements CacheModel<CalendarBooking>,
 		return calendarBookingImpl;
 	}
 
+	@Override
+	public void readExternal(ObjectInput objectInput) throws IOException {
+		uuid = objectInput.readUTF();
+		calendarBookingId = objectInput.readLong();
+		groupId = objectInput.readLong();
+		companyId = objectInput.readLong();
+		userId = objectInput.readLong();
+		userName = objectInput.readUTF();
+		createDate = objectInput.readLong();
+		modifiedDate = objectInput.readLong();
+		resourceBlockId = objectInput.readLong();
+		calendarId = objectInput.readLong();
+		calendarResourceId = objectInput.readLong();
+		parentCalendarBookingId = objectInput.readLong();
+		title = objectInput.readUTF();
+		description = objectInput.readUTF();
+		location = objectInput.readUTF();
+		startTime = objectInput.readLong();
+		endTime = objectInput.readLong();
+		allDay = objectInput.readBoolean();
+		recurrence = objectInput.readUTF();
+		firstReminder = objectInput.readLong();
+		firstReminderType = objectInput.readUTF();
+		secondReminder = objectInput.readLong();
+		secondReminderType = objectInput.readUTF();
+		status = objectInput.readInt();
+		statusByUserId = objectInput.readLong();
+		statusByUserName = objectInput.readUTF();
+		statusDate = objectInput.readLong();
+	}
+
+	@Override
+	public void writeExternal(ObjectOutput objectOutput)
+		throws IOException {
+		if (uuid == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(uuid);
+		}
+
+		objectOutput.writeLong(calendarBookingId);
+		objectOutput.writeLong(groupId);
+		objectOutput.writeLong(companyId);
+		objectOutput.writeLong(userId);
+
+		if (userName == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(userName);
+		}
+
+		objectOutput.writeLong(createDate);
+		objectOutput.writeLong(modifiedDate);
+		objectOutput.writeLong(resourceBlockId);
+		objectOutput.writeLong(calendarId);
+		objectOutput.writeLong(calendarResourceId);
+		objectOutput.writeLong(parentCalendarBookingId);
+
+		if (title == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(title);
+		}
+
+		if (description == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(description);
+		}
+
+		if (location == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(location);
+		}
+
+		objectOutput.writeLong(startTime);
+		objectOutput.writeLong(endTime);
+		objectOutput.writeBoolean(allDay);
+
+		if (recurrence == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(recurrence);
+		}
+
+		objectOutput.writeLong(firstReminder);
+
+		if (firstReminderType == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(firstReminderType);
+		}
+
+		objectOutput.writeLong(secondReminder);
+
+		if (secondReminderType == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(secondReminderType);
+		}
+
+		objectOutput.writeInt(status);
+		objectOutput.writeLong(statusByUserId);
+
+		if (statusByUserName == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(statusByUserName);
+		}
+
+		objectOutput.writeLong(statusDate);
+	}
+
 	public String uuid;
 	public long calendarBookingId;
 	public long groupId;
@@ -227,21 +344,21 @@ public class CalendarBookingCacheModel implements CacheModel<CalendarBooking>,
 	public String userName;
 	public long createDate;
 	public long modifiedDate;
-	public long calendarEventId;
+	public long resourceBlockId;
+	public long calendarId;
 	public long calendarResourceId;
-	public long classNameId;
-	public long classPK;
+	public long parentCalendarBookingId;
 	public String title;
-	public String name;
 	public String description;
 	public String location;
-	public long startDate;
-	public long endDate;
-	public int durationHour;
-	public int durationMinute;
+	public long startTime;
+	public long endTime;
+	public boolean allDay;
 	public String recurrence;
-	public String type;
-	public boolean required;
+	public long firstReminder;
+	public String firstReminderType;
+	public long secondReminder;
+	public String secondReminderType;
 	public int status;
 	public long statusByUserId;
 	public String statusByUserName;

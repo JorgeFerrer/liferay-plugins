@@ -1,16 +1,19 @@
 <%--
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2.1 of the License, or (at your option)
- * any later version.
+ * This file is part of Liferay Social Office. Liferay Social Office is free
+ * software: you can redistribute it and/or modify it under the terms of the GNU
+ * Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
+ * Liferay Social Office is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * Liferay Social Office. If not, see http://www.gnu.org/licenses/agpl-3.0.html.
  */
 --%>
 
@@ -42,7 +45,7 @@ else if (SocialRelationLocalServiceUtil.hasRelation(themeDisplay.getUserId(), us
 				cssClass="action remove-connection"
 				image="../social/remove_coworker"
 				label="<%= true %>"
-				message="remove-connection"
+				message="disconnect"
 				method="get"
 				url="<%= removeConnectionURL %>"
 			/>
@@ -66,7 +69,7 @@ else if (SocialRelationLocalServiceUtil.hasRelation(themeDisplay.getUserId(), us
 				cssClass="action add-connection"
 				image="../social/add_coworker"
 				label="<%= true %>"
-				message="add-connection"
+				message="connect"
 				method="get"
 				url="<%= addConnectionURL %>"
 			/>
@@ -144,6 +147,22 @@ else if (SocialRelationLocalServiceUtil.hasRelation(themeDisplay.getUserId(), us
 	</c:when>
 </c:choose>
 
+<c:if test="<%= user2.getUserId() != themeDisplay.getUserId() %>">
+
+	<%
+	String messageTaglibOnClick = liferayPortletResponse.getNamespace() + "sendMessage();";
+	%>
+
+	<liferay-ui:icon
+		cssClass="send-message"
+		image="../mail/compose"
+		label="<%= true %>"
+		message="message"
+		onClick="<%= messageTaglibOnClick %>"
+		url="javascript:;"
+	/>
+</c:if>
+
 <portlet:resourceURL id="exportVCard" var="exportURL">
 	<portlet:param name="userId" value="<%= String.valueOf(user2.getUserId()) %>" />
 </portlet:resourceURL>
@@ -154,6 +173,35 @@ else if (SocialRelationLocalServiceUtil.hasRelation(themeDisplay.getUserId(), us
 	message="vcard"
 	url="<%= exportURL %>"
 />
+
+<aui:script>
+	function <portlet:namespace />sendMessage() {
+		var A = AUI();
+
+		<portlet:renderURL var="redirectURL" windowState="<%= LiferayWindowState.NORMAL.toString() %>" />
+
+		var uri = '<liferay-portlet:renderURL portletName="1_WAR_privatemessagingportlet" windowState="<%= LiferayWindowState.EXCLUSIVE.toString() %>"><portlet:param name="mvcPath" value="/new_message.jsp" /><portlet:param name="redirect" value="<%= redirectURL %>" /></liferay-portlet:renderURL>';
+
+		new A.Dialog(
+			{
+				align: Liferay.Util.Window.ALIGN_CENTER,
+				cssClass: 'private-messaging-portlet',
+				destroyOnClose: true,
+				modal: true,
+				title: '<%= UnicodeLanguageUtil.get(pageContext, "new-message") %>',
+				width: 600
+			}
+		).plug(
+			A.Plugin.IO,
+			{
+				data: {
+					userIds: <%= user2.getUserId() %>
+				},
+				uri: uri
+			}
+		).render();
+	}
+</aui:script>
 
 <aui:script use="aui-base,aui-dialog,aui-dialog-iframe">
 	<liferay-portlet:renderURL var="viewSummaryURL" windowState="<%= LiferayWindowState.EXCLUSIVE.toString() %>">

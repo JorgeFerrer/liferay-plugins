@@ -1,16 +1,19 @@
 <%--
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2.1 of the License, or (at your option)
- * any later version.
+ * This file is part of Liferay Social Office. Liferay Social Office is free
+ * software: you can redistribute it and/or modify it under the terms of the GNU
+ * Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
+ * Liferay Social Office is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * Liferay Social Office. If not, see http://www.gnu.org/licenses/agpl-3.0.html.
  */
 --%>
 
@@ -28,6 +31,7 @@
 <%@ page import="com.liferay.portal.NoSuchGroupException" %><%@
 page import="com.liferay.portal.kernel.bean.BeanParamUtil" %><%@
 page import="com.liferay.portal.kernel.dao.orm.QueryUtil" %><%@
+page import="com.liferay.portal.kernel.language.LanguageUtil" %><%@
 page import="com.liferay.portal.kernel.portlet.LiferayWindowState" %><%@
 page import="com.liferay.portal.kernel.util.CalendarFactoryUtil" %><%@
 page import="com.liferay.portal.kernel.util.Constants" %><%@
@@ -46,7 +50,7 @@ page import="com.liferay.portal.security.permission.ActionKeys" %><%@
 page import="com.liferay.portal.service.GroupLocalServiceUtil" %><%@
 page import="com.liferay.portal.service.UserLocalServiceUtil" %><%@
 page import="com.liferay.portal.util.PortalUtil" %><%@
-page import="com.liferay.portal.util.comparator.ContactFirstNameComparator" %><%@
+page import="com.liferay.portal.util.comparator.UserFirstNameComparator" %><%@
 page import="com.liferay.portlet.PortletURLFactoryUtil" %><%@
 page import="com.liferay.portlet.asset.NoSuchTagException" %><%@
 page import="com.liferay.portlet.asset.model.AssetTag" %><%@
@@ -60,13 +64,13 @@ page import="com.liferay.portlet.messageboards.model.MBTreeWalker" %><%@
 page import="com.liferay.portlet.messageboards.service.MBMessageLocalServiceUtil" %><%@
 page import="com.liferay.portlet.messageboards.util.comparator.MessageCreateDateComparator" %><%@
 page import="com.liferay.portlet.social.model.SocialRelationConstants" %><%@
-page import="com.liferay.tasks.NoSuchTasksEntryException" %><%@
 page import="com.liferay.tasks.model.TasksEntry" %><%@
 page import="com.liferay.tasks.model.TasksEntryConstants" %><%@
 page import="com.liferay.tasks.service.TasksEntryLocalServiceUtil" %><%@
 page import="com.liferay.tasks.service.permission.TasksEntryPermission" %><%@
 page import="com.liferay.tasks.service.permission.TasksPermission" %><%@
-page import="com.liferay.tasks.util.PortletKeys" %>
+page import="com.liferay.tasks.util.PortletKeys" %><%@
+page import="com.liferay.tasks.util.WebKeys" %>
 
 <%@ page import="java.text.Format" %>
 

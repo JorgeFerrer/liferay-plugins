@@ -1,16 +1,19 @@
 <%--
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free
- * Software Foundation; either version 2.1 of the License, or (at your option)
- * any later version.
+ * This file is part of Liferay Social Office. Liferay Social Office is free
+ * software: you can redistribute it and/or modify it under the terms of the GNU
+ * Affero General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
- * details.
+ * Liferay Social Office is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * Liferay Social Office. If not, see http://www.gnu.org/licenses/agpl-3.0.html.
  */
 --%>
 
@@ -70,7 +73,7 @@ request.setAttribute("view_user.jsp-user", user2);
 
 				<aui:layout cssClass="contacts-action">
 					<c:choose>
-						<c:when test="<%= portletName.equals(PortletKeys.CONTACTS_CENTER) || portletName.equals(PortletKeys.MEMBERS) %>">
+						<c:when test="<%= portletId.equals(PortletKeys.CONTACTS_CENTER) || portletId.equals(PortletKeys.MEMBERS) %>">
 
 							<%
 							boolean blocked = false;
@@ -113,7 +116,7 @@ request.setAttribute("view_user.jsp-user", user2);
 								cssClass='<%= showBlockIcon ? "block" : "block aui-helper-hidden" %>'
 								image="../social/block"
 								label="<%= true %>"
-								message="block"
+								message="blocked"
 							/>
 						</c:when>
 						<c:otherwise>
@@ -240,7 +243,7 @@ request.setAttribute("view_user.jsp-user", user2);
 												<liferay-portlet:actionURL portletName="<%= PortletKeys.SITE_REDIRECTOR %>" var="siteURL" windowState="<%= LiferayWindowState.NORMAL.toString() %>">
 													<portlet:param name="struts_action" value="/my_sites/view" />
 													<portlet:param name="groupId" value="<%= String.valueOf(curGroup.getGroupId()) %>" />
-													<portlet:param name="privateLayout" value="<%= Boolean.FALSE.toString() %>" />
+													<portlet:param name="privateLayout" value="<%= String.valueOf(!curGroup.hasPublicLayouts()) %>" />
 												</liferay-portlet:actionURL>
 
 												<li class="user-information-sites"><a href="<%= siteURL %>"><%= HtmlUtil.escape(curGroup.getDescriptiveName(locale)) %></a></li>
@@ -252,7 +255,7 @@ request.setAttribute("view_user.jsp-user", user2);
 										</c:when>
 										<c:otherwise>
 											<div class="empty">
-												<liferay-ui:message arguments="<%= PortalUtil.getUserName(user2.getUserId(), group.getDescriptiveName(locale)) %>" key="x-does-not-belong-to-any-sites" />
+												<liferay-ui:message arguments="<%= HtmlUtil.escape(PortalUtil.getUserName(user2.getUserId(), group.getDescriptiveName(locale))) %>" key="x-does-not-belong-to-any-sites" />
 											</div>
 										</c:otherwise>
 									</c:choose>
@@ -270,7 +273,7 @@ request.setAttribute("view_user.jsp-user", user2);
 
 								<c:choose>
 									<c:when test="<%= !assetTags.isEmpty() %>">
-										<div class="field-group" data-sectionId="categorization" data-title="<%= UnicodeLanguageUtil.get(pageContext, "tags") %>">
+										<div class="field-group" data-sectionId="categorization" data-title="<%= LanguageUtil.get(pageContext, "tags") %>">
 											<ul class="user-tags">
 
 												<%
@@ -303,7 +306,7 @@ request.setAttribute("view_user.jsp-user", user2);
 										Group group = themeDisplay.getScopeGroup();
 										%>
 
-										<liferay-ui:message arguments="<%= PortalUtil.getUserName(user2.getUserId(), group.getDescriptiveName(locale)) %>" key="x-does-not-have-any-tags" />
+										<liferay-ui:message arguments="<%= HtmlUtil.escape(PortalUtil.getUserName(user2.getUserId(), group.getDescriptiveName(locale))) %>" key="x-does-not-have-any-tags" />
 									</c:otherwise>
 								</c:choose>
 							</c:if>

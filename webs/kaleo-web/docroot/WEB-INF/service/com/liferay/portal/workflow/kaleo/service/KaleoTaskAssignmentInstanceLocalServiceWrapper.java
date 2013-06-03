@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -17,9 +17,7 @@ package com.liferay.portal.workflow.kaleo.service;
 import com.liferay.portal.service.ServiceWrapper;
 
 /**
- * <p>
- * This class is a wrapper for {@link KaleoTaskAssignmentInstanceLocalService}.
- * </p>
+ * Provides a wrapper for {@link KaleoTaskAssignmentInstanceLocalService}.
  *
  * @author    Brian Wing Shun Chan
  * @see       KaleoTaskAssignmentInstanceLocalService
@@ -40,6 +38,7 @@ public class KaleoTaskAssignmentInstanceLocalServiceWrapper
 	* @return the kaleo task assignment instance that was added
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	public com.liferay.portal.workflow.kaleo.model.KaleoTaskAssignmentInstance addKaleoTaskAssignmentInstance(
 		com.liferay.portal.workflow.kaleo.model.KaleoTaskAssignmentInstance kaleoTaskAssignmentInstance)
 		throws com.liferay.portal.kernel.exception.SystemException {
@@ -52,6 +51,7 @@ public class KaleoTaskAssignmentInstanceLocalServiceWrapper
 	* @param kaleoTaskAssignmentInstanceId the primary key for the new kaleo task assignment instance
 	* @return the new kaleo task assignment instance
 	*/
+	@Override
 	public com.liferay.portal.workflow.kaleo.model.KaleoTaskAssignmentInstance createKaleoTaskAssignmentInstance(
 		long kaleoTaskAssignmentInstanceId) {
 		return _kaleoTaskAssignmentInstanceLocalService.createKaleoTaskAssignmentInstance(kaleoTaskAssignmentInstanceId);
@@ -65,6 +65,7 @@ public class KaleoTaskAssignmentInstanceLocalServiceWrapper
 	* @throws PortalException if a kaleo task assignment instance with the primary key could not be found
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	public com.liferay.portal.workflow.kaleo.model.KaleoTaskAssignmentInstance deleteKaleoTaskAssignmentInstance(
 		long kaleoTaskAssignmentInstanceId)
 		throws com.liferay.portal.kernel.exception.PortalException,
@@ -79,12 +80,14 @@ public class KaleoTaskAssignmentInstanceLocalServiceWrapper
 	* @return the kaleo task assignment instance that was removed
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	public com.liferay.portal.workflow.kaleo.model.KaleoTaskAssignmentInstance deleteKaleoTaskAssignmentInstance(
 		com.liferay.portal.workflow.kaleo.model.KaleoTaskAssignmentInstance kaleoTaskAssignmentInstance)
 		throws com.liferay.portal.kernel.exception.SystemException {
 		return _kaleoTaskAssignmentInstanceLocalService.deleteKaleoTaskAssignmentInstance(kaleoTaskAssignmentInstance);
 	}
 
+	@Override
 	public com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery() {
 		return _kaleoTaskAssignmentInstanceLocalService.dynamicQuery();
 	}
@@ -96,6 +99,7 @@ public class KaleoTaskAssignmentInstanceLocalServiceWrapper
 	* @return the matching rows
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	@SuppressWarnings("rawtypes")
 	public java.util.List dynamicQuery(
 		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery)
@@ -107,7 +111,7 @@ public class KaleoTaskAssignmentInstanceLocalServiceWrapper
 	* Performs a dynamic query on the database and returns a range of the matching rows.
 	*
 	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.portal.workflow.kaleo.model.impl.KaleoTaskAssignmentInstanceModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	* </p>
 	*
 	* @param dynamicQuery the dynamic query
@@ -116,6 +120,7 @@ public class KaleoTaskAssignmentInstanceLocalServiceWrapper
 	* @return the range of matching rows
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	@SuppressWarnings("rawtypes")
 	public java.util.List dynamicQuery(
 		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery, int start,
@@ -128,7 +133,7 @@ public class KaleoTaskAssignmentInstanceLocalServiceWrapper
 	* Performs a dynamic query on the database and returns an ordered range of the matching rows.
 	*
 	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.portal.workflow.kaleo.model.impl.KaleoTaskAssignmentInstanceModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	* </p>
 	*
 	* @param dynamicQuery the dynamic query
@@ -138,6 +143,7 @@ public class KaleoTaskAssignmentInstanceLocalServiceWrapper
 	* @return the ordered range of matching rows
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	@SuppressWarnings("rawtypes")
 	public java.util.List dynamicQuery(
 		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery, int start,
@@ -155,12 +161,14 @@ public class KaleoTaskAssignmentInstanceLocalServiceWrapper
 	* @return the number of rows that match the dynamic query
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	public long dynamicQueryCount(
 		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery)
 		throws com.liferay.portal.kernel.exception.SystemException {
 		return _kaleoTaskAssignmentInstanceLocalService.dynamicQueryCount(dynamicQuery);
 	}
 
+	@Override
 	public com.liferay.portal.workflow.kaleo.model.KaleoTaskAssignmentInstance fetchKaleoTaskAssignmentInstance(
 		long kaleoTaskAssignmentInstanceId)
 		throws com.liferay.portal.kernel.exception.SystemException {
@@ -175,6 +183,7 @@ public class KaleoTaskAssignmentInstanceLocalServiceWrapper
 	* @throws PortalException if a kaleo task assignment instance with the primary key could not be found
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	public com.liferay.portal.workflow.kaleo.model.KaleoTaskAssignmentInstance getKaleoTaskAssignmentInstance(
 		long kaleoTaskAssignmentInstanceId)
 		throws com.liferay.portal.kernel.exception.PortalException,
@@ -182,6 +191,7 @@ public class KaleoTaskAssignmentInstanceLocalServiceWrapper
 		return _kaleoTaskAssignmentInstanceLocalService.getKaleoTaskAssignmentInstance(kaleoTaskAssignmentInstanceId);
 	}
 
+	@Override
 	public com.liferay.portal.model.PersistedModel getPersistedModel(
 		java.io.Serializable primaryKeyObj)
 		throws com.liferay.portal.kernel.exception.PortalException,
@@ -193,7 +203,7 @@ public class KaleoTaskAssignmentInstanceLocalServiceWrapper
 	* Returns a range of all the kaleo task assignment instances.
 	*
 	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.portal.workflow.kaleo.model.impl.KaleoTaskAssignmentInstanceModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	* </p>
 	*
 	* @param start the lower bound of the range of kaleo task assignment instances
@@ -201,6 +211,7 @@ public class KaleoTaskAssignmentInstanceLocalServiceWrapper
 	* @return the range of kaleo task assignment instances
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	public java.util.List<com.liferay.portal.workflow.kaleo.model.KaleoTaskAssignmentInstance> getKaleoTaskAssignmentInstances(
 		int start, int end)
 		throws com.liferay.portal.kernel.exception.SystemException {
@@ -214,6 +225,7 @@ public class KaleoTaskAssignmentInstanceLocalServiceWrapper
 	* @return the number of kaleo task assignment instances
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	public int getKaleoTaskAssignmentInstancesCount()
 		throws com.liferay.portal.kernel.exception.SystemException {
 		return _kaleoTaskAssignmentInstanceLocalService.getKaleoTaskAssignmentInstancesCount();
@@ -226,6 +238,7 @@ public class KaleoTaskAssignmentInstanceLocalServiceWrapper
 	* @return the kaleo task assignment instance that was updated
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	public com.liferay.portal.workflow.kaleo.model.KaleoTaskAssignmentInstance updateKaleoTaskAssignmentInstance(
 		com.liferay.portal.workflow.kaleo.model.KaleoTaskAssignmentInstance kaleoTaskAssignmentInstance)
 		throws com.liferay.portal.kernel.exception.SystemException {
@@ -233,26 +246,11 @@ public class KaleoTaskAssignmentInstanceLocalServiceWrapper
 	}
 
 	/**
-	* Updates the kaleo task assignment instance in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
-	*
-	* @param kaleoTaskAssignmentInstance the kaleo task assignment instance
-	* @param merge whether to merge the kaleo task assignment instance with the current session. See {@link com.liferay.portal.service.persistence.BatchSession#update(com.liferay.portal.kernel.dao.orm.Session, com.liferay.portal.model.BaseModel, boolean)} for an explanation.
-	* @return the kaleo task assignment instance that was updated
-	* @throws SystemException if a system exception occurred
-	*/
-	public com.liferay.portal.workflow.kaleo.model.KaleoTaskAssignmentInstance updateKaleoTaskAssignmentInstance(
-		com.liferay.portal.workflow.kaleo.model.KaleoTaskAssignmentInstance kaleoTaskAssignmentInstance,
-		boolean merge)
-		throws com.liferay.portal.kernel.exception.SystemException {
-		return _kaleoTaskAssignmentInstanceLocalService.updateKaleoTaskAssignmentInstance(kaleoTaskAssignmentInstance,
-			merge);
-	}
-
-	/**
 	* Returns the Spring bean ID for this bean.
 	*
 	* @return the Spring bean ID for this bean
 	*/
+	@Override
 	public java.lang.String getBeanIdentifier() {
 		return _kaleoTaskAssignmentInstanceLocalService.getBeanIdentifier();
 	}
@@ -262,10 +260,12 @@ public class KaleoTaskAssignmentInstanceLocalServiceWrapper
 	*
 	* @param beanIdentifier the Spring bean ID for this bean
 	*/
+	@Override
 	public void setBeanIdentifier(java.lang.String beanIdentifier) {
 		_kaleoTaskAssignmentInstanceLocalService.setBeanIdentifier(beanIdentifier);
 	}
 
+	@Override
 	public java.lang.Object invokeMethod(java.lang.String name,
 		java.lang.String[] parameterTypes, java.lang.Object[] arguments)
 		throws java.lang.Throwable {
@@ -273,6 +273,7 @@ public class KaleoTaskAssignmentInstanceLocalServiceWrapper
 			parameterTypes, arguments);
 	}
 
+	@Override
 	public com.liferay.portal.workflow.kaleo.model.KaleoTaskAssignmentInstance addKaleoTaskAssignmentInstance(
 		long groupId,
 		com.liferay.portal.workflow.kaleo.model.KaleoTaskInstanceToken kaleoTaskInstanceToken,
@@ -285,6 +286,7 @@ public class KaleoTaskAssignmentInstanceLocalServiceWrapper
 			serviceContext);
 	}
 
+	@Override
 	public java.util.List<com.liferay.portal.workflow.kaleo.model.KaleoTaskAssignmentInstance> addTaskAssignmentInstances(
 		com.liferay.portal.workflow.kaleo.model.KaleoTaskInstanceToken kaleoTaskInstanceToken,
 		java.util.Collection<com.liferay.portal.workflow.kaleo.model.KaleoTaskAssignment> kaleoTaskAssignments,
@@ -296,6 +298,7 @@ public class KaleoTaskAssignmentInstanceLocalServiceWrapper
 			kaleoTaskAssignments, workflowContext, serviceContext);
 	}
 
+	@Override
 	public com.liferay.portal.workflow.kaleo.model.KaleoTaskAssignmentInstance assignKaleoTaskAssignmentInstance(
 		com.liferay.portal.workflow.kaleo.model.KaleoTaskInstanceToken kaleoTaskInstanceToken,
 		java.lang.String assigneeClassName, long assigneeClassPK,
@@ -306,6 +309,7 @@ public class KaleoTaskAssignmentInstanceLocalServiceWrapper
 			assigneeClassName, assigneeClassPK, serviceContext);
 	}
 
+	@Override
 	public com.liferay.portal.workflow.kaleo.model.KaleoTaskAssignmentInstance completeKaleoTaskInstanceToken(
 		long kaleoTaskInstanceTokenId,
 		com.liferay.portal.service.ServiceContext serviceContext)
@@ -315,29 +319,34 @@ public class KaleoTaskAssignmentInstanceLocalServiceWrapper
 			serviceContext);
 	}
 
+	@Override
 	public void deleteCompanyKaleoTaskAssignmentInstances(long companyId)
 		throws com.liferay.portal.kernel.exception.SystemException {
 		_kaleoTaskAssignmentInstanceLocalService.deleteCompanyKaleoTaskAssignmentInstances(companyId);
 	}
 
+	@Override
 	public void deleteKaleoDefinitionKaleoTaskAssignmentInstances(
 		long kaleoDefintionId)
 		throws com.liferay.portal.kernel.exception.SystemException {
 		_kaleoTaskAssignmentInstanceLocalService.deleteKaleoDefinitionKaleoTaskAssignmentInstances(kaleoDefintionId);
 	}
 
+	@Override
 	public void deleteKaleoInstanceKaleoTaskAssignmentInstances(
 		long kaleoInstanceId)
 		throws com.liferay.portal.kernel.exception.SystemException {
 		_kaleoTaskAssignmentInstanceLocalService.deleteKaleoInstanceKaleoTaskAssignmentInstances(kaleoInstanceId);
 	}
 
+	@Override
 	public void deleteKaleoTaskAssignmentInstances(
 		com.liferay.portal.workflow.kaleo.model.KaleoTaskInstanceToken kaleoTaskInstanceToken)
 		throws com.liferay.portal.kernel.exception.SystemException {
 		_kaleoTaskAssignmentInstanceLocalService.deleteKaleoTaskAssignmentInstances(kaleoTaskInstanceToken);
 	}
 
+	@Override
 	public java.util.List<com.liferay.portal.workflow.kaleo.model.KaleoTaskAssignmentInstance> getKaleoTaskAssignmentInstances(
 		long kaleoTaskInstanceTokenId)
 		throws com.liferay.portal.kernel.exception.SystemException {
@@ -345,24 +354,26 @@ public class KaleoTaskAssignmentInstanceLocalServiceWrapper
 	}
 
 	/**
-	 * @deprecated Renamed to {@link #getWrappedService}
+	 * @deprecated As of 6.1.0, replaced by {@link #getWrappedService}
 	 */
 	public KaleoTaskAssignmentInstanceLocalService getWrappedKaleoTaskAssignmentInstanceLocalService() {
 		return _kaleoTaskAssignmentInstanceLocalService;
 	}
 
 	/**
-	 * @deprecated Renamed to {@link #setWrappedService}
+	 * @deprecated As of 6.1.0, replaced by {@link #setWrappedService}
 	 */
 	public void setWrappedKaleoTaskAssignmentInstanceLocalService(
 		KaleoTaskAssignmentInstanceLocalService kaleoTaskAssignmentInstanceLocalService) {
 		_kaleoTaskAssignmentInstanceLocalService = kaleoTaskAssignmentInstanceLocalService;
 	}
 
+	@Override
 	public KaleoTaskAssignmentInstanceLocalService getWrappedService() {
 		return _kaleoTaskAssignmentInstanceLocalService;
 	}
 
+	@Override
 	public void setWrappedService(
 		KaleoTaskAssignmentInstanceLocalService kaleoTaskAssignmentInstanceLocalService) {
 		_kaleoTaskAssignmentInstanceLocalService = kaleoTaskAssignmentInstanceLocalService;

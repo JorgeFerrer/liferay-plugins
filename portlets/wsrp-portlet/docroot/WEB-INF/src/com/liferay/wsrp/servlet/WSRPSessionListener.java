@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -34,9 +34,11 @@ import oasis.names.tc.wsrp.v2.types.SessionContext;
  */
 public class WSRPSessionListener implements HttpSessionListener {
 
+	@Override
 	public void sessionCreated(HttpSessionEvent httpSessionEvent) {
 	}
 
+	@Override
 	public void sessionDestroyed(HttpSessionEvent httpSessionEvent) {
 		HttpSession session = httpSessionEvent.getSession();
 

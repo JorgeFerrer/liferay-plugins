@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -77,6 +77,8 @@ public class AppModelImpl extends BaseModelImpl<App> implements AppModel {
 		};
 	public static final String TABLE_SQL_CREATE = "create table Marketplace_App (uuid_ VARCHAR(75) null,appId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,remoteAppId LONG,version VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table Marketplace_App";
+	public static final String ORDER_BY_JPQL = " ORDER BY app.appId ASC";
+	public static final String ORDER_BY_SQL = " ORDER BY Marketplace_App.appId ASC";
 	public static final String DATA_SOURCE = "liferayDataSource";
 	public static final String SESSION_FACTORY = "liferaySessionFactory";
 	public static final String TX_MANAGER = "liferayTransactionManager";
@@ -92,6 +94,7 @@ public class AppModelImpl extends BaseModelImpl<App> implements AppModel {
 	public static long COMPANYID_COLUMN_BITMASK = 1L;
 	public static long REMOTEAPPID_COLUMN_BITMASK = 2L;
 	public static long UUID_COLUMN_BITMASK = 4L;
+	public static long APPID_COLUMN_BITMASK = 8L;
 
 	/**
 	 * Converts the soap model instance into a normal model instance.
@@ -100,6 +103,10 @@ public class AppModelImpl extends BaseModelImpl<App> implements AppModel {
 	 * @return the normal model instance
 	 */
 	public static App toModel(AppSoap soapModel) {
+		if (soapModel == null) {
+			return null;
+		}
+
 		App model = new AppImpl();
 
 		model.setUuid(soapModel.getUuid());
@@ -122,6 +129,10 @@ public class AppModelImpl extends BaseModelImpl<App> implements AppModel {
 	 * @return the normal model instances
 	 */
 	public static List<App> toModels(AppSoap[] soapModels) {
+		if (soapModels == null) {
+			return null;
+		}
+
 		List<App> models = new ArrayList<App>(soapModels.length);
 
 		for (AppSoap soapModel : soapModels) {
@@ -137,26 +148,32 @@ public class AppModelImpl extends BaseModelImpl<App> implements AppModel {
 	public AppModelImpl() {
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _appId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setAppId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
-		return new Long(_appId);
+		return _appId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return App.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return App.class.getName();
 	}
@@ -235,6 +252,7 @@ public class AppModelImpl extends BaseModelImpl<App> implements AppModel {
 		}
 	}
 
+	@Override
 	@JSON
 	public String getUuid() {
 		if (_uuid == null) {
@@ -245,6 +263,7 @@ public class AppModelImpl extends BaseModelImpl<App> implements AppModel {
 		}
 	}
 
+	@Override
 	public void setUuid(String uuid) {
 		if (_originalUuid == null) {
 			_originalUuid = _uuid;
@@ -257,20 +276,24 @@ public class AppModelImpl extends BaseModelImpl<App> implements AppModel {
 		return GetterUtil.getString(_originalUuid);
 	}
 
+	@Override
 	@JSON
 	public long getAppId() {
 		return _appId;
 	}
 
+	@Override
 	public void setAppId(long appId) {
 		_appId = appId;
 	}
 
+	@Override
 	@JSON
 	public long getCompanyId() {
 		return _companyId;
 	}
 
+	@Override
 	public void setCompanyId(long companyId) {
 		_columnBitmask |= COMPANYID_COLUMN_BITMASK;
 
@@ -287,23 +310,28 @@ public class AppModelImpl extends BaseModelImpl<App> implements AppModel {
 		return _originalCompanyId;
 	}
 
+	@Override
 	@JSON
 	public long getUserId() {
 		return _userId;
 	}
 
+	@Override
 	public void setUserId(long userId) {
 		_userId = userId;
 	}
 
+	@Override
 	public String getUserUuid() throws SystemException {
 		return PortalUtil.getUserValue(getUserId(), "uuid", _userUuid);
 	}
 
+	@Override
 	public void setUserUuid(String userUuid) {
 		_userUuid = userUuid;
 	}
 
+	@Override
 	@JSON
 	public String getUserName() {
 		if (_userName == null) {
@@ -314,33 +342,40 @@ public class AppModelImpl extends BaseModelImpl<App> implements AppModel {
 		}
 	}
 
+	@Override
 	public void setUserName(String userName) {
 		_userName = userName;
 	}
 
+	@Override
 	@JSON
 	public Date getCreateDate() {
 		return _createDate;
 	}
 
+	@Override
 	public void setCreateDate(Date createDate) {
 		_createDate = createDate;
 	}
 
+	@Override
 	@JSON
 	public Date getModifiedDate() {
 		return _modifiedDate;
 	}
 
+	@Override
 	public void setModifiedDate(Date modifiedDate) {
 		_modifiedDate = modifiedDate;
 	}
 
+	@Override
 	@JSON
 	public long getRemoteAppId() {
 		return _remoteAppId;
 	}
 
+	@Override
 	public void setRemoteAppId(long remoteAppId) {
 		_columnBitmask |= REMOTEAPPID_COLUMN_BITMASK;
 
@@ -357,6 +392,7 @@ public class AppModelImpl extends BaseModelImpl<App> implements AppModel {
 		return _originalRemoteAppId;
 	}
 
+	@Override
 	@JSON
 	public String getVersion() {
 		if (_version == null) {
@@ -367,6 +403,7 @@ public class AppModelImpl extends BaseModelImpl<App> implements AppModel {
 		}
 	}
 
+	@Override
 	public void setVersion(String version) {
 		_version = version;
 	}
@@ -376,29 +413,26 @@ public class AppModelImpl extends BaseModelImpl<App> implements AppModel {
 	}
 
 	@Override
-	public App toEscapedModel() {
-		if (_escapedModelProxy == null) {
-			_escapedModelProxy = (App)ProxyUtil.newProxyInstance(_classLoader,
-					_escapedModelProxyInterfaces,
-					new AutoEscapeBeanHandler(this));
-		}
-
-		return _escapedModelProxy;
-	}
-
-	@Override
 	public ExpandoBridge getExpandoBridge() {
-		if (_expandoBridge == null) {
-			_expandoBridge = ExpandoBridgeFactoryUtil.getExpandoBridge(getCompanyId(),
-					App.class.getName(), getPrimaryKey());
-		}
-
-		return _expandoBridge;
+		return ExpandoBridgeFactoryUtil.getExpandoBridge(getCompanyId(),
+			App.class.getName(), getPrimaryKey());
 	}
 
 	@Override
 	public void setExpandoBridgeAttributes(ServiceContext serviceContext) {
-		getExpandoBridge().setAttributes(serviceContext);
+		ExpandoBridge expandoBridge = getExpandoBridge();
+
+		expandoBridge.setAttributes(serviceContext);
+	}
+
+	@Override
+	public App toEscapedModel() {
+		if (_escapedModel == null) {
+			_escapedModel = (App)ProxyUtil.newProxyInstance(_classLoader,
+					_escapedModelInterfaces, new AutoEscapeBeanHandler(this));
+		}
+
+		return _escapedModel;
 	}
 
 	@Override
@@ -420,6 +454,7 @@ public class AppModelImpl extends BaseModelImpl<App> implements AppModel {
 		return appImpl;
 	}
 
+	@Override
 	public int compareTo(App app) {
 		long primaryKey = app.getPrimaryKey();
 
@@ -436,18 +471,15 @@ public class AppModelImpl extends BaseModelImpl<App> implements AppModel {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof App)) {
 			return false;
 		}
 
-		App app = null;
-
-		try {
-			app = (App)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		App app = (App)obj;
 
 		long primaryKey = app.getPrimaryKey();
 
@@ -565,6 +597,7 @@ public class AppModelImpl extends BaseModelImpl<App> implements AppModel {
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
 		StringBundler sb = new StringBundler(31);
 
@@ -615,9 +648,7 @@ public class AppModelImpl extends BaseModelImpl<App> implements AppModel {
 	}
 
 	private static ClassLoader _classLoader = App.class.getClassLoader();
-	private static Class<?>[] _escapedModelProxyInterfaces = new Class[] {
-			App.class
-		};
+	private static Class<?>[] _escapedModelInterfaces = new Class[] { App.class };
 	private String _uuid;
 	private String _originalUuid;
 	private long _appId;
@@ -633,7 +664,6 @@ public class AppModelImpl extends BaseModelImpl<App> implements AppModel {
 	private long _originalRemoteAppId;
 	private boolean _setOriginalRemoteAppId;
 	private String _version;
-	private transient ExpandoBridge _expandoBridge;
 	private long _columnBitmask;
-	private App _escapedModelProxy;
+	private App _escapedModel;
 }

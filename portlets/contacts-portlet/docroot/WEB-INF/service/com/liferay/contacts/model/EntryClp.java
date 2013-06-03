@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,10 +14,12 @@
 
 package com.liferay.contacts.model;
 
+import com.liferay.contacts.service.ClpSerializer;
 import com.liferay.contacts.service.EntryLocalServiceUtil;
 
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.model.BaseModel;
 import com.liferay.portal.model.impl.BaseModelImpl;
@@ -25,7 +27,7 @@ import com.liferay.portal.util.PortalUtil;
 
 import java.io.Serializable;
 
-import java.lang.reflect.Proxy;
+import java.lang.reflect.Method;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -38,30 +40,37 @@ public class EntryClp extends BaseModelImpl<Entry> implements Entry {
 	public EntryClp() {
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return Entry.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return Entry.class.getName();
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _entryId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setEntryId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
-		return new Long(_entryId);
+		return _entryId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
 
+	@Override
 	public Map<String, Object> getModelAttributes() {
 		Map<String, Object> attributes = new HashMap<String, Object>();
 
@@ -79,6 +88,7 @@ public class EntryClp extends BaseModelImpl<Entry> implements Entry {
 		return attributes;
 	}
 
+	@Override
 	public void setModelAttributes(Map<String, Object> attributes) {
 		Long entryId = (Long)attributes.get("entryId");
 
@@ -141,92 +151,244 @@ public class EntryClp extends BaseModelImpl<Entry> implements Entry {
 		}
 	}
 
+	@Override
 	public long getEntryId() {
 		return _entryId;
 	}
 
+	@Override
 	public void setEntryId(long entryId) {
 		_entryId = entryId;
+
+		if (_entryRemoteModel != null) {
+			try {
+				Class<?> clazz = _entryRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setEntryId", long.class);
+
+				method.invoke(_entryRemoteModel, entryId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getGroupId() {
 		return _groupId;
 	}
 
+	@Override
 	public void setGroupId(long groupId) {
 		_groupId = groupId;
+
+		if (_entryRemoteModel != null) {
+			try {
+				Class<?> clazz = _entryRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setGroupId", long.class);
+
+				method.invoke(_entryRemoteModel, groupId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getCompanyId() {
 		return _companyId;
 	}
 
+	@Override
 	public void setCompanyId(long companyId) {
 		_companyId = companyId;
+
+		if (_entryRemoteModel != null) {
+			try {
+				Class<?> clazz = _entryRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setCompanyId", long.class);
+
+				method.invoke(_entryRemoteModel, companyId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getUserId() {
 		return _userId;
 	}
 
+	@Override
 	public void setUserId(long userId) {
 		_userId = userId;
+
+		if (_entryRemoteModel != null) {
+			try {
+				Class<?> clazz = _entryRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setUserId", long.class);
+
+				method.invoke(_entryRemoteModel, userId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getUserUuid() throws SystemException {
 		return PortalUtil.getUserValue(getUserId(), "uuid", _userUuid);
 	}
 
+	@Override
 	public void setUserUuid(String userUuid) {
 		_userUuid = userUuid;
 	}
 
+	@Override
 	public String getUserName() {
 		return _userName;
 	}
 
+	@Override
 	public void setUserName(String userName) {
 		_userName = userName;
+
+		if (_entryRemoteModel != null) {
+			try {
+				Class<?> clazz = _entryRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setUserName", String.class);
+
+				method.invoke(_entryRemoteModel, userName);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public Date getCreateDate() {
 		return _createDate;
 	}
 
+	@Override
 	public void setCreateDate(Date createDate) {
 		_createDate = createDate;
+
+		if (_entryRemoteModel != null) {
+			try {
+				Class<?> clazz = _entryRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setCreateDate", Date.class);
+
+				method.invoke(_entryRemoteModel, createDate);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public Date getModifiedDate() {
 		return _modifiedDate;
 	}
 
+	@Override
 	public void setModifiedDate(Date modifiedDate) {
 		_modifiedDate = modifiedDate;
+
+		if (_entryRemoteModel != null) {
+			try {
+				Class<?> clazz = _entryRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setModifiedDate", Date.class);
+
+				method.invoke(_entryRemoteModel, modifiedDate);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getFullName() {
 		return _fullName;
 	}
 
+	@Override
 	public void setFullName(String fullName) {
 		_fullName = fullName;
+
+		if (_entryRemoteModel != null) {
+			try {
+				Class<?> clazz = _entryRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setFullName", String.class);
+
+				method.invoke(_entryRemoteModel, fullName);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getEmailAddress() {
 		return _emailAddress;
 	}
 
+	@Override
 	public void setEmailAddress(String emailAddress) {
 		_emailAddress = emailAddress;
+
+		if (_entryRemoteModel != null) {
+			try {
+				Class<?> clazz = _entryRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setEmailAddress", String.class);
+
+				method.invoke(_entryRemoteModel, emailAddress);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getComments() {
 		return _comments;
 	}
 
+	@Override
 	public void setComments(String comments) {
 		_comments = comments;
+
+		if (_entryRemoteModel != null) {
+			try {
+				Class<?> clazz = _entryRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setComments", String.class);
+
+				method.invoke(_entryRemoteModel, comments);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public BaseModel<?> getEntryRemoteModel() {
@@ -237,6 +399,48 @@ public class EntryClp extends BaseModelImpl<Entry> implements Entry {
 		_entryRemoteModel = entryRemoteModel;
 	}
 
+	public Object invokeOnRemoteModel(String methodName,
+		Class<?>[] parameterTypes, Object[] parameterValues)
+		throws Exception {
+		Object[] remoteParameterValues = new Object[parameterValues.length];
+
+		for (int i = 0; i < parameterValues.length; i++) {
+			if (parameterValues[i] != null) {
+				remoteParameterValues[i] = ClpSerializer.translateInput(parameterValues[i]);
+			}
+		}
+
+		Class<?> remoteModelClass = _entryRemoteModel.getClass();
+
+		ClassLoader remoteModelClassLoader = remoteModelClass.getClassLoader();
+
+		Class<?>[] remoteParameterTypes = new Class[parameterTypes.length];
+
+		for (int i = 0; i < parameterTypes.length; i++) {
+			if (parameterTypes[i].isPrimitive()) {
+				remoteParameterTypes[i] = parameterTypes[i];
+			}
+			else {
+				String parameterTypeName = parameterTypes[i].getName();
+
+				remoteParameterTypes[i] = remoteModelClassLoader.loadClass(parameterTypeName);
+			}
+		}
+
+		Method method = remoteModelClass.getMethod(methodName,
+				remoteParameterTypes);
+
+		Object returnValue = method.invoke(_entryRemoteModel,
+				remoteParameterValues);
+
+		if (returnValue != null) {
+			returnValue = ClpSerializer.translateOutput(returnValue);
+		}
+
+		return returnValue;
+	}
+
+	@Override
 	public void persist() throws SystemException {
 		if (this.isNew()) {
 			EntryLocalServiceUtil.addEntry(this);
@@ -248,7 +452,7 @@ public class EntryClp extends BaseModelImpl<Entry> implements Entry {
 
 	@Override
 	public Entry toEscapedModel() {
-		return (Entry)Proxy.newProxyInstance(Entry.class.getClassLoader(),
+		return (Entry)ProxyUtil.newProxyInstance(Entry.class.getClassLoader(),
 			new Class[] { Entry.class }, new AutoEscapeBeanHandler(this));
 	}
 
@@ -270,11 +474,11 @@ public class EntryClp extends BaseModelImpl<Entry> implements Entry {
 		return clone;
 	}
 
+	@Override
 	public int compareTo(Entry entry) {
 		int value = 0;
 
-		value = getFullName().toLowerCase()
-					.compareTo(entry.getFullName().toLowerCase());
+		value = getFullName().compareToIgnoreCase(entry.getFullName());
 
 		if (value != 0) {
 			return value;
@@ -285,18 +489,15 @@ public class EntryClp extends BaseModelImpl<Entry> implements Entry {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof EntryClp)) {
 			return false;
 		}
 
-		EntryClp entry = null;
-
-		try {
-			entry = (EntryClp)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		EntryClp entry = (EntryClp)obj;
 
 		long primaryKey = entry.getPrimaryKey();
 
@@ -342,6 +543,7 @@ public class EntryClp extends BaseModelImpl<Entry> implements Entry {
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
 		StringBundler sb = new StringBundler(34);
 

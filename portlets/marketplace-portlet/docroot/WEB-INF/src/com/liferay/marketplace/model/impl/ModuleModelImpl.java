@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -65,6 +65,8 @@ public class ModuleModelImpl extends BaseModelImpl<Module>
 		};
 	public static final String TABLE_SQL_CREATE = "create table Marketplace_Module (uuid_ VARCHAR(75) null,moduleId LONG not null primary key,appId LONG,contextName VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table Marketplace_Module";
+	public static final String ORDER_BY_JPQL = " ORDER BY module.moduleId ASC";
+	public static final String ORDER_BY_SQL = " ORDER BY Marketplace_Module.moduleId ASC";
 	public static final String DATA_SOURCE = "liferayDataSource";
 	public static final String SESSION_FACTORY = "liferaySessionFactory";
 	public static final String TX_MANAGER = "liferayTransactionManager";
@@ -80,32 +82,39 @@ public class ModuleModelImpl extends BaseModelImpl<Module>
 	public static long APPID_COLUMN_BITMASK = 1L;
 	public static long CONTEXTNAME_COLUMN_BITMASK = 2L;
 	public static long UUID_COLUMN_BITMASK = 4L;
+	public static long MODULEID_COLUMN_BITMASK = 8L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(com.liferay.util.service.ServiceProps.get(
 				"lock.expiration.time.com.liferay.marketplace.model.Module"));
 
 	public ModuleModelImpl() {
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _moduleId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setModuleId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
-		return new Long(_moduleId);
+		return _moduleId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return Module.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return Module.class.getName();
 	}
@@ -149,6 +158,7 @@ public class ModuleModelImpl extends BaseModelImpl<Module>
 		}
 	}
 
+	@Override
 	public String getUuid() {
 		if (_uuid == null) {
 			return StringPool.BLANK;
@@ -158,6 +168,7 @@ public class ModuleModelImpl extends BaseModelImpl<Module>
 		}
 	}
 
+	@Override
 	public void setUuid(String uuid) {
 		if (_originalUuid == null) {
 			_originalUuid = _uuid;
@@ -170,18 +181,22 @@ public class ModuleModelImpl extends BaseModelImpl<Module>
 		return GetterUtil.getString(_originalUuid);
 	}
 
+	@Override
 	public long getModuleId() {
 		return _moduleId;
 	}
 
+	@Override
 	public void setModuleId(long moduleId) {
 		_moduleId = moduleId;
 	}
 
+	@Override
 	public long getAppId() {
 		return _appId;
 	}
 
+	@Override
 	public void setAppId(long appId) {
 		_columnBitmask |= APPID_COLUMN_BITMASK;
 
@@ -198,6 +213,7 @@ public class ModuleModelImpl extends BaseModelImpl<Module>
 		return _originalAppId;
 	}
 
+	@Override
 	public String getContextName() {
 		if (_contextName == null) {
 			return StringPool.BLANK;
@@ -207,6 +223,7 @@ public class ModuleModelImpl extends BaseModelImpl<Module>
 		}
 	}
 
+	@Override
 	public void setContextName(String contextName) {
 		_columnBitmask |= CONTEXTNAME_COLUMN_BITMASK;
 
@@ -226,29 +243,26 @@ public class ModuleModelImpl extends BaseModelImpl<Module>
 	}
 
 	@Override
-	public Module toEscapedModel() {
-		if (_escapedModelProxy == null) {
-			_escapedModelProxy = (Module)ProxyUtil.newProxyInstance(_classLoader,
-					_escapedModelProxyInterfaces,
-					new AutoEscapeBeanHandler(this));
-		}
-
-		return _escapedModelProxy;
-	}
-
-	@Override
 	public ExpandoBridge getExpandoBridge() {
-		if (_expandoBridge == null) {
-			_expandoBridge = ExpandoBridgeFactoryUtil.getExpandoBridge(0,
-					Module.class.getName(), getPrimaryKey());
-		}
-
-		return _expandoBridge;
+		return ExpandoBridgeFactoryUtil.getExpandoBridge(0,
+			Module.class.getName(), getPrimaryKey());
 	}
 
 	@Override
 	public void setExpandoBridgeAttributes(ServiceContext serviceContext) {
-		getExpandoBridge().setAttributes(serviceContext);
+		ExpandoBridge expandoBridge = getExpandoBridge();
+
+		expandoBridge.setAttributes(serviceContext);
+	}
+
+	@Override
+	public Module toEscapedModel() {
+		if (_escapedModel == null) {
+			_escapedModel = (Module)ProxyUtil.newProxyInstance(_classLoader,
+					_escapedModelInterfaces, new AutoEscapeBeanHandler(this));
+		}
+
+		return _escapedModel;
 	}
 
 	@Override
@@ -265,6 +279,7 @@ public class ModuleModelImpl extends BaseModelImpl<Module>
 		return moduleImpl;
 	}
 
+	@Override
 	public int compareTo(Module module) {
 		long primaryKey = module.getPrimaryKey();
 
@@ -281,18 +296,15 @@ public class ModuleModelImpl extends BaseModelImpl<Module>
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof Module)) {
 			return false;
 		}
 
-		Module module = null;
-
-		try {
-			module = (Module)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		Module module = (Module)obj;
 
 		long primaryKey = module.getPrimaryKey();
 
@@ -368,6 +380,7 @@ public class ModuleModelImpl extends BaseModelImpl<Module>
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
 		StringBundler sb = new StringBundler(16);
 
@@ -398,9 +411,7 @@ public class ModuleModelImpl extends BaseModelImpl<Module>
 	}
 
 	private static ClassLoader _classLoader = Module.class.getClassLoader();
-	private static Class<?>[] _escapedModelProxyInterfaces = new Class[] {
-			Module.class
-		};
+	private static Class<?>[] _escapedModelInterfaces = new Class[] { Module.class };
 	private String _uuid;
 	private String _originalUuid;
 	private long _moduleId;
@@ -409,7 +420,6 @@ public class ModuleModelImpl extends BaseModelImpl<Module>
 	private boolean _setOriginalAppId;
 	private String _contextName;
 	private String _originalContextName;
-	private transient ExpandoBridge _expandoBridge;
 	private long _columnBitmask;
-	private Module _escapedModelProxy;
+	private Module _escapedModel;
 }

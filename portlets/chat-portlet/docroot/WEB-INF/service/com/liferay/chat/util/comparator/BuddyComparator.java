@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -31,6 +31,7 @@ public class BuddyComparator implements Comparator<Object[]> {
 		_asc = asc;
 	}
 
+	@Override
 	public int compare(Object[] buddy1, Object[] buddy2) {
 		long userId1 = (Long)buddy1[0];
 		String firstName1 = (String)buddy1[2];

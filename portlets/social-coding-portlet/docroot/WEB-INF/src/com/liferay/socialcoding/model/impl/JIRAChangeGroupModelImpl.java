@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -83,32 +83,39 @@ public class JIRAChangeGroupModelImpl extends BaseModelImpl<JIRAChangeGroup>
 			true);
 	public static long JIRAISSUEID_COLUMN_BITMASK = 1L;
 	public static long JIRAUSERID_COLUMN_BITMASK = 2L;
+	public static long CREATEDATE_COLUMN_BITMASK = 4L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(com.liferay.util.service.ServiceProps.get(
 				"lock.expiration.time.com.liferay.socialcoding.model.JIRAChangeGroup"));
 
 	public JIRAChangeGroupModelImpl() {
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _jiraChangeGroupId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setJiraChangeGroupId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
-		return new Long(_jiraChangeGroupId);
+		return _jiraChangeGroupId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return JIRAChangeGroup.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return JIRAChangeGroup.class.getName();
 	}
@@ -152,14 +159,17 @@ public class JIRAChangeGroupModelImpl extends BaseModelImpl<JIRAChangeGroup>
 		}
 	}
 
+	@Override
 	public long getJiraChangeGroupId() {
 		return _jiraChangeGroupId;
 	}
 
+	@Override
 	public void setJiraChangeGroupId(long jiraChangeGroupId) {
 		_jiraChangeGroupId = jiraChangeGroupId;
 	}
 
+	@Override
 	public String getJiraUserId() {
 		if (_jiraUserId == null) {
 			return StringPool.BLANK;
@@ -169,6 +179,7 @@ public class JIRAChangeGroupModelImpl extends BaseModelImpl<JIRAChangeGroup>
 		}
 	}
 
+	@Override
 	public void setJiraUserId(String jiraUserId) {
 		_columnBitmask |= JIRAUSERID_COLUMN_BITMASK;
 
@@ -183,20 +194,24 @@ public class JIRAChangeGroupModelImpl extends BaseModelImpl<JIRAChangeGroup>
 		return GetterUtil.getString(_originalJiraUserId);
 	}
 
+	@Override
 	public Date getCreateDate() {
 		return _createDate;
 	}
 
+	@Override
 	public void setCreateDate(Date createDate) {
 		_columnBitmask = -1L;
 
 		_createDate = createDate;
 	}
 
+	@Override
 	public long getJiraIssueId() {
 		return _jiraIssueId;
 	}
 
+	@Override
 	public void setJiraIssueId(long jiraIssueId) {
 		_columnBitmask |= JIRAISSUEID_COLUMN_BITMASK;
 
@@ -218,29 +233,26 @@ public class JIRAChangeGroupModelImpl extends BaseModelImpl<JIRAChangeGroup>
 	}
 
 	@Override
-	public JIRAChangeGroup toEscapedModel() {
-		if (_escapedModelProxy == null) {
-			_escapedModelProxy = (JIRAChangeGroup)ProxyUtil.newProxyInstance(_classLoader,
-					_escapedModelProxyInterfaces,
-					new AutoEscapeBeanHandler(this));
-		}
-
-		return _escapedModelProxy;
-	}
-
-	@Override
 	public ExpandoBridge getExpandoBridge() {
-		if (_expandoBridge == null) {
-			_expandoBridge = ExpandoBridgeFactoryUtil.getExpandoBridge(0,
-					JIRAChangeGroup.class.getName(), getPrimaryKey());
-		}
-
-		return _expandoBridge;
+		return ExpandoBridgeFactoryUtil.getExpandoBridge(0,
+			JIRAChangeGroup.class.getName(), getPrimaryKey());
 	}
 
 	@Override
 	public void setExpandoBridgeAttributes(ServiceContext serviceContext) {
-		getExpandoBridge().setAttributes(serviceContext);
+		ExpandoBridge expandoBridge = getExpandoBridge();
+
+		expandoBridge.setAttributes(serviceContext);
+	}
+
+	@Override
+	public JIRAChangeGroup toEscapedModel() {
+		if (_escapedModel == null) {
+			_escapedModel = (JIRAChangeGroup)ProxyUtil.newProxyInstance(_classLoader,
+					_escapedModelInterfaces, new AutoEscapeBeanHandler(this));
+		}
+
+		return _escapedModel;
 	}
 
 	@Override
@@ -257,6 +269,7 @@ public class JIRAChangeGroupModelImpl extends BaseModelImpl<JIRAChangeGroup>
 		return jiraChangeGroupImpl;
 	}
 
+	@Override
 	public int compareTo(JIRAChangeGroup jiraChangeGroup) {
 		int value = 0;
 
@@ -274,18 +287,15 @@ public class JIRAChangeGroupModelImpl extends BaseModelImpl<JIRAChangeGroup>
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof JIRAChangeGroup)) {
 			return false;
 		}
 
-		JIRAChangeGroup jiraChangeGroup = null;
-
-		try {
-			jiraChangeGroup = (JIRAChangeGroup)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		JIRAChangeGroup jiraChangeGroup = (JIRAChangeGroup)obj;
 
 		long primaryKey = jiraChangeGroup.getPrimaryKey();
 
@@ -360,6 +370,7 @@ public class JIRAChangeGroupModelImpl extends BaseModelImpl<JIRAChangeGroup>
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
 		StringBundler sb = new StringBundler(16);
 
@@ -390,7 +401,7 @@ public class JIRAChangeGroupModelImpl extends BaseModelImpl<JIRAChangeGroup>
 	}
 
 	private static ClassLoader _classLoader = JIRAChangeGroup.class.getClassLoader();
-	private static Class<?>[] _escapedModelProxyInterfaces = new Class[] {
+	private static Class<?>[] _escapedModelInterfaces = new Class[] {
 			JIRAChangeGroup.class
 		};
 	private long _jiraChangeGroupId;
@@ -400,7 +411,6 @@ public class JIRAChangeGroupModelImpl extends BaseModelImpl<JIRAChangeGroup>
 	private long _jiraIssueId;
 	private long _originalJiraIssueId;
 	private boolean _setOriginalJiraIssueId;
-	private transient ExpandoBridge _expandoBridge;
 	private long _columnBitmask;
-	private JIRAChangeGroup _escapedModelProxy;
+	private JIRAChangeGroup _escapedModel;
 }

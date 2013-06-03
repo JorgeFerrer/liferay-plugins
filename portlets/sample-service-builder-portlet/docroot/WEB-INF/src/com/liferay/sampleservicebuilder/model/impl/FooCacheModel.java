@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -20,7 +20,10 @@ import com.liferay.portal.model.CacheModel;
 
 import com.liferay.sampleservicebuilder.model.Foo;
 
-import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 import java.util.Date;
 
@@ -31,7 +34,7 @@ import java.util.Date;
  * @see Foo
  * @generated
  */
-public class FooCacheModel implements CacheModel<Foo>, Serializable {
+public class FooCacheModel implements CacheModel<Foo>, Externalizable {
 	@Override
 	public String toString() {
 		StringBundler sb = new StringBundler(27);
@@ -67,6 +70,7 @@ public class FooCacheModel implements CacheModel<Foo>, Serializable {
 		return sb.toString();
 	}
 
+	@Override
 	public Foo toEntityModel() {
 		FooImpl fooImpl = new FooImpl();
 
@@ -130,6 +134,67 @@ public class FooCacheModel implements CacheModel<Foo>, Serializable {
 		fooImpl.resetOriginalValues();
 
 		return fooImpl;
+	}
+
+	@Override
+	public void readExternal(ObjectInput objectInput) throws IOException {
+		uuid = objectInput.readUTF();
+		fooId = objectInput.readLong();
+		groupId = objectInput.readLong();
+		companyId = objectInput.readLong();
+		userId = objectInput.readLong();
+		userName = objectInput.readUTF();
+		createDate = objectInput.readLong();
+		modifiedDate = objectInput.readLong();
+		field1 = objectInput.readUTF();
+		field2 = objectInput.readBoolean();
+		field3 = objectInput.readInt();
+		field4 = objectInput.readLong();
+		field5 = objectInput.readUTF();
+	}
+
+	@Override
+	public void writeExternal(ObjectOutput objectOutput)
+		throws IOException {
+		if (uuid == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(uuid);
+		}
+
+		objectOutput.writeLong(fooId);
+		objectOutput.writeLong(groupId);
+		objectOutput.writeLong(companyId);
+		objectOutput.writeLong(userId);
+
+		if (userName == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(userName);
+		}
+
+		objectOutput.writeLong(createDate);
+		objectOutput.writeLong(modifiedDate);
+
+		if (field1 == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(field1);
+		}
+
+		objectOutput.writeBoolean(field2);
+		objectOutput.writeInt(field3);
+		objectOutput.writeLong(field4);
+
+		if (field5 == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(field5);
+		}
 	}
 
 	public String uuid;

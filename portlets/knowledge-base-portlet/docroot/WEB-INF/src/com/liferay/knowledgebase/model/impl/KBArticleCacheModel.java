@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -20,7 +20,10 @@ import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.model.CacheModel;
 
-import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 import java.util.Date;
 
@@ -31,7 +34,8 @@ import java.util.Date;
  * @see KBArticle
  * @generated
  */
-public class KBArticleCacheModel implements CacheModel<KBArticle>, Serializable {
+public class KBArticleCacheModel implements CacheModel<KBArticle>,
+	Externalizable {
 	@Override
 	public String toString() {
 		StringBundler sb = new StringBundler(49);
@@ -89,6 +93,7 @@ public class KBArticleCacheModel implements CacheModel<KBArticle>, Serializable 
 		return sb.toString();
 	}
 
+	@Override
 	public KBArticle toEntityModel() {
 		KBArticleImpl kbArticleImpl = new KBArticleImpl();
 
@@ -183,6 +188,109 @@ public class KBArticleCacheModel implements CacheModel<KBArticle>, Serializable 
 		kbArticleImpl.resetOriginalValues();
 
 		return kbArticleImpl;
+	}
+
+	@Override
+	public void readExternal(ObjectInput objectInput) throws IOException {
+		uuid = objectInput.readUTF();
+		kbArticleId = objectInput.readLong();
+		resourcePrimKey = objectInput.readLong();
+		groupId = objectInput.readLong();
+		companyId = objectInput.readLong();
+		userId = objectInput.readLong();
+		userName = objectInput.readUTF();
+		createDate = objectInput.readLong();
+		modifiedDate = objectInput.readLong();
+		rootResourcePrimKey = objectInput.readLong();
+		parentResourcePrimKey = objectInput.readLong();
+		version = objectInput.readInt();
+		title = objectInput.readUTF();
+		content = objectInput.readUTF();
+		description = objectInput.readUTF();
+		priority = objectInput.readDouble();
+		sections = objectInput.readUTF();
+		viewCount = objectInput.readInt();
+		latest = objectInput.readBoolean();
+		main = objectInput.readBoolean();
+		status = objectInput.readInt();
+		statusByUserId = objectInput.readLong();
+		statusByUserName = objectInput.readUTF();
+		statusDate = objectInput.readLong();
+	}
+
+	@Override
+	public void writeExternal(ObjectOutput objectOutput)
+		throws IOException {
+		if (uuid == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(uuid);
+		}
+
+		objectOutput.writeLong(kbArticleId);
+		objectOutput.writeLong(resourcePrimKey);
+		objectOutput.writeLong(groupId);
+		objectOutput.writeLong(companyId);
+		objectOutput.writeLong(userId);
+
+		if (userName == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(userName);
+		}
+
+		objectOutput.writeLong(createDate);
+		objectOutput.writeLong(modifiedDate);
+		objectOutput.writeLong(rootResourcePrimKey);
+		objectOutput.writeLong(parentResourcePrimKey);
+		objectOutput.writeInt(version);
+
+		if (title == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(title);
+		}
+
+		if (content == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(content);
+		}
+
+		if (description == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(description);
+		}
+
+		objectOutput.writeDouble(priority);
+
+		if (sections == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(sections);
+		}
+
+		objectOutput.writeInt(viewCount);
+		objectOutput.writeBoolean(latest);
+		objectOutput.writeBoolean(main);
+		objectOutput.writeInt(status);
+		objectOutput.writeLong(statusByUserId);
+
+		if (statusByUserName == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(statusByUserName);
+		}
+
+		objectOutput.writeLong(statusDate);
 	}
 
 	public String uuid;

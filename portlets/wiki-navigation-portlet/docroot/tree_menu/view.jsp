@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -53,7 +53,7 @@ private String _buildTreeMenuHTML(List<MenuItem> menuItems, String curTitle, boo
 		String label = menuItem.getLabel();
 		String url = menuItem.getURL();
 
-		sb.append("<li>");
+		sb.append("<li class=\"aui-tree-node\">");
 
 		if (Validator.isNotNull(url)) {
 			if (label.equals(curTitle)) {

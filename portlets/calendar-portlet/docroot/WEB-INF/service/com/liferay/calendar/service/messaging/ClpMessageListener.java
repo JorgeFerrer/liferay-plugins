@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -16,10 +16,13 @@ package com.liferay.calendar.service.messaging;
 
 import com.liferay.calendar.service.CalendarBookingLocalServiceUtil;
 import com.liferay.calendar.service.CalendarBookingServiceUtil;
-import com.liferay.calendar.service.CalendarEventLocalServiceUtil;
-import com.liferay.calendar.service.CalendarEventServiceUtil;
+import com.liferay.calendar.service.CalendarImporterLocalServiceUtil;
+import com.liferay.calendar.service.CalendarLocalServiceUtil;
+import com.liferay.calendar.service.CalendarNotificationTemplateLocalServiceUtil;
+import com.liferay.calendar.service.CalendarNotificationTemplateServiceUtil;
 import com.liferay.calendar.service.CalendarResourceLocalServiceUtil;
 import com.liferay.calendar.service.CalendarResourceServiceUtil;
+import com.liferay.calendar.service.CalendarServiceUtil;
 import com.liferay.calendar.service.ClpSerializer;
 
 import com.liferay.portal.kernel.messaging.BaseMessageListener;
@@ -40,12 +43,17 @@ public class ClpMessageListener extends BaseMessageListener {
 
 		if (command.equals("undeploy") &&
 				servletContextName.equals(getServletContextName())) {
+			CalendarLocalServiceUtil.clearService();
+
+			CalendarServiceUtil.clearService();
 			CalendarBookingLocalServiceUtil.clearService();
 
 			CalendarBookingServiceUtil.clearService();
-			CalendarEventLocalServiceUtil.clearService();
+			CalendarImporterLocalServiceUtil.clearService();
 
-			CalendarEventServiceUtil.clearService();
+			CalendarNotificationTemplateLocalServiceUtil.clearService();
+
+			CalendarNotificationTemplateServiceUtil.clearService();
 			CalendarResourceLocalServiceUtil.clearService();
 
 			CalendarResourceServiceUtil.clearService();

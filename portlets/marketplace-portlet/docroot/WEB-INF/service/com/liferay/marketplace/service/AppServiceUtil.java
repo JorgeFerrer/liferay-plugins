@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -19,11 +19,12 @@ import com.liferay.portal.kernel.util.ReferenceRegistry;
 import com.liferay.portal.service.InvokableService;
 
 /**
- * The utility for the app remote service. This utility wraps {@link com.liferay.marketplace.service.impl.AppServiceImpl} and is the primary access point for service operations in application layer code running on a remote server.
- *
- * <p>
- * This is a remote service. Methods of this service are expected to have security checks based on the propagated JAAS credentials because this service can be accessed remotely.
- * </p>
+ * Provides the remote service utility for App. This utility wraps
+ * {@link com.liferay.marketplace.service.impl.AppServiceImpl} and is the
+ * primary access point for service operations in application layer code running
+ * on a remote server. Methods of this service are expected to have security
+ * checks based on the propagated JAAS credentials because this service can be
+ * accessed remotely.
  *
  * @author Ryan Park
  * @see AppService
@@ -63,10 +64,10 @@ public class AppServiceUtil {
 	}
 
 	public static com.liferay.marketplace.model.App addApp(long remoteAppId,
-		java.lang.String version, java.io.InputStream inputStream)
+		java.lang.String version, java.io.File file)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
-		return getService().addApp(remoteAppId, version, inputStream);
+		return getService().addApp(remoteAppId, version, file);
 	}
 
 	public static com.liferay.marketplace.model.App deleteApp(long appId)
@@ -88,10 +89,10 @@ public class AppServiceUtil {
 	}
 
 	public static com.liferay.marketplace.model.App updateApp(long appId,
-		java.lang.String version, java.io.InputStream inputStream)
+		java.lang.String version, java.io.File file)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
-		return getService().updateApp(appId, version, inputStream);
+		return getService().updateApp(appId, version, file);
 	}
 
 	public static void clearService() {
@@ -117,7 +118,7 @@ public class AppServiceUtil {
 	}
 
 	/**
-	 * @deprecated
+	 * @deprecated As of 6.2.0
 	 */
 	public void setService(AppService service) {
 	}

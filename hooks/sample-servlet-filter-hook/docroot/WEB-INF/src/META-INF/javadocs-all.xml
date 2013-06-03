@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+
+<javadocs>
+	<javadoc>
+		<name>SampleFilter</name>
+		<type>com.liferay.sampleservletfilter.hook.filter.SampleFilter</type>
+		<author><![CDATA[Mika Koivisto]]></author>
+		<method>
+			<name>destroy</name>
+		</method>
+		<method>
+			<name>doFilter</name>
+			<param>
+				<name>servletRequest</name>
+				<type>javax.servlet.ServletRequest</type>
+				<comment><![CDATA[]]></comment>
+			</param>
+			<param>
+				<name>servletResponse</name>
+				<type>javax.servlet.ServletResponse</type>
+				<comment><![CDATA[]]></comment>
+			</param>
+			<param>
+				<name>filterChain</name>
+				<type>javax.servlet.FilterChain</type>
+				<comment><![CDATA[]]></comment>
+			</param>
+			<throws>
+				<name>IOException</name>
+				<type>java.io.IOException</type>
+				<comment><![CDATA[]]></comment>
+			</throws>
+			<throws>
+				<name>ServletException</name>
+				<type>javax.servlet.ServletException</type>
+				<comment><![CDATA[]]></comment>
+			</throws>
+		</method>
+		<method>
+			<name>init</name>
+			<param>
+				<name>filterConfig</name>
+				<type>javax.servlet.FilterConfig</type>
+				<comment><![CDATA[]]></comment>
+			</param>
+		</method>
+	</javadoc>
+</javadocs>

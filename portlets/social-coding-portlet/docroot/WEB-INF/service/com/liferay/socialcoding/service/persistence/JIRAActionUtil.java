@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -95,19 +95,508 @@ public class JIRAActionUtil {
 	}
 
 	/**
-	 * @see com.liferay.portal.service.persistence.BasePersistence#update(com.liferay.portal.model.BaseModel, boolean)
+	 * @see com.liferay.portal.service.persistence.BasePersistence#update(com.liferay.portal.model.BaseModel)
 	 */
-	public static JIRAAction update(JIRAAction jiraAction, boolean merge)
+	public static JIRAAction update(JIRAAction jiraAction)
 		throws SystemException {
-		return getPersistence().update(jiraAction, merge);
+		return getPersistence().update(jiraAction);
 	}
 
 	/**
-	 * @see com.liferay.portal.service.persistence.BasePersistence#update(com.liferay.portal.model.BaseModel, boolean, ServiceContext)
+	 * @see com.liferay.portal.service.persistence.BasePersistence#update(com.liferay.portal.model.BaseModel, ServiceContext)
 	 */
-	public static JIRAAction update(JIRAAction jiraAction, boolean merge,
+	public static JIRAAction update(JIRAAction jiraAction,
 		ServiceContext serviceContext) throws SystemException {
-		return getPersistence().update(jiraAction, merge, serviceContext);
+		return getPersistence().update(jiraAction, serviceContext);
+	}
+
+	/**
+	* Returns all the j i r a actions where jiraUserId = &#63;.
+	*
+	* @param jiraUserId the jira user ID
+	* @return the matching j i r a actions
+	* @throws SystemException if a system exception occurred
+	*/
+	public static java.util.List<com.liferay.socialcoding.model.JIRAAction> findByJiraUserId(
+		java.lang.String jiraUserId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getPersistence().findByJiraUserId(jiraUserId);
+	}
+
+	/**
+	* Returns a range of all the j i r a actions where jiraUserId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.socialcoding.model.impl.JIRAActionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param jiraUserId the jira user ID
+	* @param start the lower bound of the range of j i r a actions
+	* @param end the upper bound of the range of j i r a actions (not inclusive)
+	* @return the range of matching j i r a actions
+	* @throws SystemException if a system exception occurred
+	*/
+	public static java.util.List<com.liferay.socialcoding.model.JIRAAction> findByJiraUserId(
+		java.lang.String jiraUserId, int start, int end)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getPersistence().findByJiraUserId(jiraUserId, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the j i r a actions where jiraUserId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.socialcoding.model.impl.JIRAActionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param jiraUserId the jira user ID
+	* @param start the lower bound of the range of j i r a actions
+	* @param end the upper bound of the range of j i r a actions (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching j i r a actions
+	* @throws SystemException if a system exception occurred
+	*/
+	public static java.util.List<com.liferay.socialcoding.model.JIRAAction> findByJiraUserId(
+		java.lang.String jiraUserId, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getPersistence()
+				   .findByJiraUserId(jiraUserId, start, end, orderByComparator);
+	}
+
+	/**
+	* Returns the first j i r a action in the ordered set where jiraUserId = &#63;.
+	*
+	* @param jiraUserId the jira user ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching j i r a action
+	* @throws com.liferay.socialcoding.NoSuchJIRAActionException if a matching j i r a action could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static com.liferay.socialcoding.model.JIRAAction findByJiraUserId_First(
+		java.lang.String jiraUserId,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException,
+			com.liferay.socialcoding.NoSuchJIRAActionException {
+		return getPersistence()
+				   .findByJiraUserId_First(jiraUserId, orderByComparator);
+	}
+
+	/**
+	* Returns the first j i r a action in the ordered set where jiraUserId = &#63;.
+	*
+	* @param jiraUserId the jira user ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching j i r a action, or <code>null</code> if a matching j i r a action could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static com.liferay.socialcoding.model.JIRAAction fetchByJiraUserId_First(
+		java.lang.String jiraUserId,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getPersistence()
+				   .fetchByJiraUserId_First(jiraUserId, orderByComparator);
+	}
+
+	/**
+	* Returns the last j i r a action in the ordered set where jiraUserId = &#63;.
+	*
+	* @param jiraUserId the jira user ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching j i r a action
+	* @throws com.liferay.socialcoding.NoSuchJIRAActionException if a matching j i r a action could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static com.liferay.socialcoding.model.JIRAAction findByJiraUserId_Last(
+		java.lang.String jiraUserId,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException,
+			com.liferay.socialcoding.NoSuchJIRAActionException {
+		return getPersistence()
+				   .findByJiraUserId_Last(jiraUserId, orderByComparator);
+	}
+
+	/**
+	* Returns the last j i r a action in the ordered set where jiraUserId = &#63;.
+	*
+	* @param jiraUserId the jira user ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching j i r a action, or <code>null</code> if a matching j i r a action could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static com.liferay.socialcoding.model.JIRAAction fetchByJiraUserId_Last(
+		java.lang.String jiraUserId,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getPersistence()
+				   .fetchByJiraUserId_Last(jiraUserId, orderByComparator);
+	}
+
+	/**
+	* Returns the j i r a actions before and after the current j i r a action in the ordered set where jiraUserId = &#63;.
+	*
+	* @param jiraActionId the primary key of the current j i r a action
+	* @param jiraUserId the jira user ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next j i r a action
+	* @throws com.liferay.socialcoding.NoSuchJIRAActionException if a j i r a action with the primary key could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static com.liferay.socialcoding.model.JIRAAction[] findByJiraUserId_PrevAndNext(
+		long jiraActionId, java.lang.String jiraUserId,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException,
+			com.liferay.socialcoding.NoSuchJIRAActionException {
+		return getPersistence()
+				   .findByJiraUserId_PrevAndNext(jiraActionId, jiraUserId,
+			orderByComparator);
+	}
+
+	/**
+	* Removes all the j i r a actions where jiraUserId = &#63; from the database.
+	*
+	* @param jiraUserId the jira user ID
+	* @throws SystemException if a system exception occurred
+	*/
+	public static void removeByJiraUserId(java.lang.String jiraUserId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		getPersistence().removeByJiraUserId(jiraUserId);
+	}
+
+	/**
+	* Returns the number of j i r a actions where jiraUserId = &#63;.
+	*
+	* @param jiraUserId the jira user ID
+	* @return the number of matching j i r a actions
+	* @throws SystemException if a system exception occurred
+	*/
+	public static int countByJiraUserId(java.lang.String jiraUserId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getPersistence().countByJiraUserId(jiraUserId);
+	}
+
+	/**
+	* Returns all the j i r a actions where jiraIssueId = &#63;.
+	*
+	* @param jiraIssueId the jira issue ID
+	* @return the matching j i r a actions
+	* @throws SystemException if a system exception occurred
+	*/
+	public static java.util.List<com.liferay.socialcoding.model.JIRAAction> findByJiraIssueId(
+		long jiraIssueId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getPersistence().findByJiraIssueId(jiraIssueId);
+	}
+
+	/**
+	* Returns a range of all the j i r a actions where jiraIssueId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.socialcoding.model.impl.JIRAActionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param jiraIssueId the jira issue ID
+	* @param start the lower bound of the range of j i r a actions
+	* @param end the upper bound of the range of j i r a actions (not inclusive)
+	* @return the range of matching j i r a actions
+	* @throws SystemException if a system exception occurred
+	*/
+	public static java.util.List<com.liferay.socialcoding.model.JIRAAction> findByJiraIssueId(
+		long jiraIssueId, int start, int end)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getPersistence().findByJiraIssueId(jiraIssueId, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the j i r a actions where jiraIssueId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.socialcoding.model.impl.JIRAActionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param jiraIssueId the jira issue ID
+	* @param start the lower bound of the range of j i r a actions
+	* @param end the upper bound of the range of j i r a actions (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching j i r a actions
+	* @throws SystemException if a system exception occurred
+	*/
+	public static java.util.List<com.liferay.socialcoding.model.JIRAAction> findByJiraIssueId(
+		long jiraIssueId, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getPersistence()
+				   .findByJiraIssueId(jiraIssueId, start, end, orderByComparator);
+	}
+
+	/**
+	* Returns the first j i r a action in the ordered set where jiraIssueId = &#63;.
+	*
+	* @param jiraIssueId the jira issue ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching j i r a action
+	* @throws com.liferay.socialcoding.NoSuchJIRAActionException if a matching j i r a action could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static com.liferay.socialcoding.model.JIRAAction findByJiraIssueId_First(
+		long jiraIssueId,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException,
+			com.liferay.socialcoding.NoSuchJIRAActionException {
+		return getPersistence()
+				   .findByJiraIssueId_First(jiraIssueId, orderByComparator);
+	}
+
+	/**
+	* Returns the first j i r a action in the ordered set where jiraIssueId = &#63;.
+	*
+	* @param jiraIssueId the jira issue ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching j i r a action, or <code>null</code> if a matching j i r a action could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static com.liferay.socialcoding.model.JIRAAction fetchByJiraIssueId_First(
+		long jiraIssueId,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getPersistence()
+				   .fetchByJiraIssueId_First(jiraIssueId, orderByComparator);
+	}
+
+	/**
+	* Returns the last j i r a action in the ordered set where jiraIssueId = &#63;.
+	*
+	* @param jiraIssueId the jira issue ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching j i r a action
+	* @throws com.liferay.socialcoding.NoSuchJIRAActionException if a matching j i r a action could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static com.liferay.socialcoding.model.JIRAAction findByJiraIssueId_Last(
+		long jiraIssueId,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException,
+			com.liferay.socialcoding.NoSuchJIRAActionException {
+		return getPersistence()
+				   .findByJiraIssueId_Last(jiraIssueId, orderByComparator);
+	}
+
+	/**
+	* Returns the last j i r a action in the ordered set where jiraIssueId = &#63;.
+	*
+	* @param jiraIssueId the jira issue ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching j i r a action, or <code>null</code> if a matching j i r a action could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static com.liferay.socialcoding.model.JIRAAction fetchByJiraIssueId_Last(
+		long jiraIssueId,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getPersistence()
+				   .fetchByJiraIssueId_Last(jiraIssueId, orderByComparator);
+	}
+
+	/**
+	* Returns the j i r a actions before and after the current j i r a action in the ordered set where jiraIssueId = &#63;.
+	*
+	* @param jiraActionId the primary key of the current j i r a action
+	* @param jiraIssueId the jira issue ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next j i r a action
+	* @throws com.liferay.socialcoding.NoSuchJIRAActionException if a j i r a action with the primary key could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static com.liferay.socialcoding.model.JIRAAction[] findByJiraIssueId_PrevAndNext(
+		long jiraActionId, long jiraIssueId,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException,
+			com.liferay.socialcoding.NoSuchJIRAActionException {
+		return getPersistence()
+				   .findByJiraIssueId_PrevAndNext(jiraActionId, jiraIssueId,
+			orderByComparator);
+	}
+
+	/**
+	* Removes all the j i r a actions where jiraIssueId = &#63; from the database.
+	*
+	* @param jiraIssueId the jira issue ID
+	* @throws SystemException if a system exception occurred
+	*/
+	public static void removeByJiraIssueId(long jiraIssueId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		getPersistence().removeByJiraIssueId(jiraIssueId);
+	}
+
+	/**
+	* Returns the number of j i r a actions where jiraIssueId = &#63;.
+	*
+	* @param jiraIssueId the jira issue ID
+	* @return the number of matching j i r a actions
+	* @throws SystemException if a system exception occurred
+	*/
+	public static int countByJiraIssueId(long jiraIssueId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getPersistence().countByJiraIssueId(jiraIssueId);
+	}
+
+	/**
+	* Returns all the j i r a actions where type = &#63;.
+	*
+	* @param type the type
+	* @return the matching j i r a actions
+	* @throws SystemException if a system exception occurred
+	*/
+	public static java.util.List<com.liferay.socialcoding.model.JIRAAction> findByType(
+		java.lang.String type)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getPersistence().findByType(type);
+	}
+
+	/**
+	* Returns a range of all the j i r a actions where type = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.socialcoding.model.impl.JIRAActionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param type the type
+	* @param start the lower bound of the range of j i r a actions
+	* @param end the upper bound of the range of j i r a actions (not inclusive)
+	* @return the range of matching j i r a actions
+	* @throws SystemException if a system exception occurred
+	*/
+	public static java.util.List<com.liferay.socialcoding.model.JIRAAction> findByType(
+		java.lang.String type, int start, int end)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getPersistence().findByType(type, start, end);
+	}
+
+	/**
+	* Returns an ordered range of all the j i r a actions where type = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.socialcoding.model.impl.JIRAActionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param type the type
+	* @param start the lower bound of the range of j i r a actions
+	* @param end the upper bound of the range of j i r a actions (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching j i r a actions
+	* @throws SystemException if a system exception occurred
+	*/
+	public static java.util.List<com.liferay.socialcoding.model.JIRAAction> findByType(
+		java.lang.String type, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getPersistence().findByType(type, start, end, orderByComparator);
+	}
+
+	/**
+	* Returns the first j i r a action in the ordered set where type = &#63;.
+	*
+	* @param type the type
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching j i r a action
+	* @throws com.liferay.socialcoding.NoSuchJIRAActionException if a matching j i r a action could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static com.liferay.socialcoding.model.JIRAAction findByType_First(
+		java.lang.String type,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException,
+			com.liferay.socialcoding.NoSuchJIRAActionException {
+		return getPersistence().findByType_First(type, orderByComparator);
+	}
+
+	/**
+	* Returns the first j i r a action in the ordered set where type = &#63;.
+	*
+	* @param type the type
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the first matching j i r a action, or <code>null</code> if a matching j i r a action could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static com.liferay.socialcoding.model.JIRAAction fetchByType_First(
+		java.lang.String type,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getPersistence().fetchByType_First(type, orderByComparator);
+	}
+
+	/**
+	* Returns the last j i r a action in the ordered set where type = &#63;.
+	*
+	* @param type the type
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching j i r a action
+	* @throws com.liferay.socialcoding.NoSuchJIRAActionException if a matching j i r a action could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static com.liferay.socialcoding.model.JIRAAction findByType_Last(
+		java.lang.String type,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException,
+			com.liferay.socialcoding.NoSuchJIRAActionException {
+		return getPersistence().findByType_Last(type, orderByComparator);
+	}
+
+	/**
+	* Returns the last j i r a action in the ordered set where type = &#63;.
+	*
+	* @param type the type
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the last matching j i r a action, or <code>null</code> if a matching j i r a action could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static com.liferay.socialcoding.model.JIRAAction fetchByType_Last(
+		java.lang.String type,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getPersistence().fetchByType_Last(type, orderByComparator);
+	}
+
+	/**
+	* Returns the j i r a actions before and after the current j i r a action in the ordered set where type = &#63;.
+	*
+	* @param jiraActionId the primary key of the current j i r a action
+	* @param type the type
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next j i r a action
+	* @throws com.liferay.socialcoding.NoSuchJIRAActionException if a j i r a action with the primary key could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static com.liferay.socialcoding.model.JIRAAction[] findByType_PrevAndNext(
+		long jiraActionId, java.lang.String type,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException,
+			com.liferay.socialcoding.NoSuchJIRAActionException {
+		return getPersistence()
+				   .findByType_PrevAndNext(jiraActionId, type, orderByComparator);
+	}
+
+	/**
+	* Removes all the j i r a actions where type = &#63; from the database.
+	*
+	* @param type the type
+	* @throws SystemException if a system exception occurred
+	*/
+	public static void removeByType(java.lang.String type)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		getPersistence().removeByType(type);
+	}
+
+	/**
+	* Returns the number of j i r a actions where type = &#63;.
+	*
+	* @param type the type
+	* @return the number of matching j i r a actions
+	* @throws SystemException if a system exception occurred
+	*/
+	public static int countByType(java.lang.String type)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getPersistence().countByType(type);
 	}
 
 	/**
@@ -157,9 +646,9 @@ public class JIRAActionUtil {
 	}
 
 	public static com.liferay.socialcoding.model.JIRAAction updateImpl(
-		com.liferay.socialcoding.model.JIRAAction jiraAction, boolean merge)
+		com.liferay.socialcoding.model.JIRAAction jiraAction)
 		throws com.liferay.portal.kernel.exception.SystemException {
-		return getPersistence().updateImpl(jiraAction, merge);
+		return getPersistence().updateImpl(jiraAction);
 	}
 
 	/**
@@ -191,368 +680,6 @@ public class JIRAActionUtil {
 	}
 
 	/**
-	* Returns all the j i r a actions where jiraUserId = &#63;.
-	*
-	* @param jiraUserId the jira user ID
-	* @return the matching j i r a actions
-	* @throws SystemException if a system exception occurred
-	*/
-	public static java.util.List<com.liferay.socialcoding.model.JIRAAction> findByJiraUserId(
-		java.lang.String jiraUserId)
-		throws com.liferay.portal.kernel.exception.SystemException {
-		return getPersistence().findByJiraUserId(jiraUserId);
-	}
-
-	/**
-	* Returns a range of all the j i r a actions where jiraUserId = &#63;.
-	*
-	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
-	* </p>
-	*
-	* @param jiraUserId the jira user ID
-	* @param start the lower bound of the range of j i r a actions
-	* @param end the upper bound of the range of j i r a actions (not inclusive)
-	* @return the range of matching j i r a actions
-	* @throws SystemException if a system exception occurred
-	*/
-	public static java.util.List<com.liferay.socialcoding.model.JIRAAction> findByJiraUserId(
-		java.lang.String jiraUserId, int start, int end)
-		throws com.liferay.portal.kernel.exception.SystemException {
-		return getPersistence().findByJiraUserId(jiraUserId, start, end);
-	}
-
-	/**
-	* Returns an ordered range of all the j i r a actions where jiraUserId = &#63;.
-	*
-	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
-	* </p>
-	*
-	* @param jiraUserId the jira user ID
-	* @param start the lower bound of the range of j i r a actions
-	* @param end the upper bound of the range of j i r a actions (not inclusive)
-	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	* @return the ordered range of matching j i r a actions
-	* @throws SystemException if a system exception occurred
-	*/
-	public static java.util.List<com.liferay.socialcoding.model.JIRAAction> findByJiraUserId(
-		java.lang.String jiraUserId, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException {
-		return getPersistence()
-				   .findByJiraUserId(jiraUserId, start, end, orderByComparator);
-	}
-
-	/**
-	* Returns the first j i r a action in the ordered set where jiraUserId = &#63;.
-	*
-	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
-	* </p>
-	*
-	* @param jiraUserId the jira user ID
-	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	* @return the first matching j i r a action
-	* @throws com.liferay.socialcoding.NoSuchJIRAActionException if a matching j i r a action could not be found
-	* @throws SystemException if a system exception occurred
-	*/
-	public static com.liferay.socialcoding.model.JIRAAction findByJiraUserId_First(
-		java.lang.String jiraUserId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.socialcoding.NoSuchJIRAActionException {
-		return getPersistence()
-				   .findByJiraUserId_First(jiraUserId, orderByComparator);
-	}
-
-	/**
-	* Returns the last j i r a action in the ordered set where jiraUserId = &#63;.
-	*
-	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
-	* </p>
-	*
-	* @param jiraUserId the jira user ID
-	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	* @return the last matching j i r a action
-	* @throws com.liferay.socialcoding.NoSuchJIRAActionException if a matching j i r a action could not be found
-	* @throws SystemException if a system exception occurred
-	*/
-	public static com.liferay.socialcoding.model.JIRAAction findByJiraUserId_Last(
-		java.lang.String jiraUserId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.socialcoding.NoSuchJIRAActionException {
-		return getPersistence()
-				   .findByJiraUserId_Last(jiraUserId, orderByComparator);
-	}
-
-	/**
-	* Returns the j i r a actions before and after the current j i r a action in the ordered set where jiraUserId = &#63;.
-	*
-	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
-	* </p>
-	*
-	* @param jiraActionId the primary key of the current j i r a action
-	* @param jiraUserId the jira user ID
-	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	* @return the previous, current, and next j i r a action
-	* @throws com.liferay.socialcoding.NoSuchJIRAActionException if a j i r a action with the primary key could not be found
-	* @throws SystemException if a system exception occurred
-	*/
-	public static com.liferay.socialcoding.model.JIRAAction[] findByJiraUserId_PrevAndNext(
-		long jiraActionId, java.lang.String jiraUserId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.socialcoding.NoSuchJIRAActionException {
-		return getPersistence()
-				   .findByJiraUserId_PrevAndNext(jiraActionId, jiraUserId,
-			orderByComparator);
-	}
-
-	/**
-	* Returns all the j i r a actions where jiraIssueId = &#63;.
-	*
-	* @param jiraIssueId the jira issue ID
-	* @return the matching j i r a actions
-	* @throws SystemException if a system exception occurred
-	*/
-	public static java.util.List<com.liferay.socialcoding.model.JIRAAction> findByJiraIssueId(
-		long jiraIssueId)
-		throws com.liferay.portal.kernel.exception.SystemException {
-		return getPersistence().findByJiraIssueId(jiraIssueId);
-	}
-
-	/**
-	* Returns a range of all the j i r a actions where jiraIssueId = &#63;.
-	*
-	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
-	* </p>
-	*
-	* @param jiraIssueId the jira issue ID
-	* @param start the lower bound of the range of j i r a actions
-	* @param end the upper bound of the range of j i r a actions (not inclusive)
-	* @return the range of matching j i r a actions
-	* @throws SystemException if a system exception occurred
-	*/
-	public static java.util.List<com.liferay.socialcoding.model.JIRAAction> findByJiraIssueId(
-		long jiraIssueId, int start, int end)
-		throws com.liferay.portal.kernel.exception.SystemException {
-		return getPersistence().findByJiraIssueId(jiraIssueId, start, end);
-	}
-
-	/**
-	* Returns an ordered range of all the j i r a actions where jiraIssueId = &#63;.
-	*
-	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
-	* </p>
-	*
-	* @param jiraIssueId the jira issue ID
-	* @param start the lower bound of the range of j i r a actions
-	* @param end the upper bound of the range of j i r a actions (not inclusive)
-	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	* @return the ordered range of matching j i r a actions
-	* @throws SystemException if a system exception occurred
-	*/
-	public static java.util.List<com.liferay.socialcoding.model.JIRAAction> findByJiraIssueId(
-		long jiraIssueId, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException {
-		return getPersistence()
-				   .findByJiraIssueId(jiraIssueId, start, end, orderByComparator);
-	}
-
-	/**
-	* Returns the first j i r a action in the ordered set where jiraIssueId = &#63;.
-	*
-	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
-	* </p>
-	*
-	* @param jiraIssueId the jira issue ID
-	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	* @return the first matching j i r a action
-	* @throws com.liferay.socialcoding.NoSuchJIRAActionException if a matching j i r a action could not be found
-	* @throws SystemException if a system exception occurred
-	*/
-	public static com.liferay.socialcoding.model.JIRAAction findByJiraIssueId_First(
-		long jiraIssueId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.socialcoding.NoSuchJIRAActionException {
-		return getPersistence()
-				   .findByJiraIssueId_First(jiraIssueId, orderByComparator);
-	}
-
-	/**
-	* Returns the last j i r a action in the ordered set where jiraIssueId = &#63;.
-	*
-	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
-	* </p>
-	*
-	* @param jiraIssueId the jira issue ID
-	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	* @return the last matching j i r a action
-	* @throws com.liferay.socialcoding.NoSuchJIRAActionException if a matching j i r a action could not be found
-	* @throws SystemException if a system exception occurred
-	*/
-	public static com.liferay.socialcoding.model.JIRAAction findByJiraIssueId_Last(
-		long jiraIssueId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.socialcoding.NoSuchJIRAActionException {
-		return getPersistence()
-				   .findByJiraIssueId_Last(jiraIssueId, orderByComparator);
-	}
-
-	/**
-	* Returns the j i r a actions before and after the current j i r a action in the ordered set where jiraIssueId = &#63;.
-	*
-	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
-	* </p>
-	*
-	* @param jiraActionId the primary key of the current j i r a action
-	* @param jiraIssueId the jira issue ID
-	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	* @return the previous, current, and next j i r a action
-	* @throws com.liferay.socialcoding.NoSuchJIRAActionException if a j i r a action with the primary key could not be found
-	* @throws SystemException if a system exception occurred
-	*/
-	public static com.liferay.socialcoding.model.JIRAAction[] findByJiraIssueId_PrevAndNext(
-		long jiraActionId, long jiraIssueId,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.socialcoding.NoSuchJIRAActionException {
-		return getPersistence()
-				   .findByJiraIssueId_PrevAndNext(jiraActionId, jiraIssueId,
-			orderByComparator);
-	}
-
-	/**
-	* Returns all the j i r a actions where type = &#63;.
-	*
-	* @param type the type
-	* @return the matching j i r a actions
-	* @throws SystemException if a system exception occurred
-	*/
-	public static java.util.List<com.liferay.socialcoding.model.JIRAAction> findByType(
-		java.lang.String type)
-		throws com.liferay.portal.kernel.exception.SystemException {
-		return getPersistence().findByType(type);
-	}
-
-	/**
-	* Returns a range of all the j i r a actions where type = &#63;.
-	*
-	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
-	* </p>
-	*
-	* @param type the type
-	* @param start the lower bound of the range of j i r a actions
-	* @param end the upper bound of the range of j i r a actions (not inclusive)
-	* @return the range of matching j i r a actions
-	* @throws SystemException if a system exception occurred
-	*/
-	public static java.util.List<com.liferay.socialcoding.model.JIRAAction> findByType(
-		java.lang.String type, int start, int end)
-		throws com.liferay.portal.kernel.exception.SystemException {
-		return getPersistence().findByType(type, start, end);
-	}
-
-	/**
-	* Returns an ordered range of all the j i r a actions where type = &#63;.
-	*
-	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
-	* </p>
-	*
-	* @param type the type
-	* @param start the lower bound of the range of j i r a actions
-	* @param end the upper bound of the range of j i r a actions (not inclusive)
-	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	* @return the ordered range of matching j i r a actions
-	* @throws SystemException if a system exception occurred
-	*/
-	public static java.util.List<com.liferay.socialcoding.model.JIRAAction> findByType(
-		java.lang.String type, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException {
-		return getPersistence().findByType(type, start, end, orderByComparator);
-	}
-
-	/**
-	* Returns the first j i r a action in the ordered set where type = &#63;.
-	*
-	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
-	* </p>
-	*
-	* @param type the type
-	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	* @return the first matching j i r a action
-	* @throws com.liferay.socialcoding.NoSuchJIRAActionException if a matching j i r a action could not be found
-	* @throws SystemException if a system exception occurred
-	*/
-	public static com.liferay.socialcoding.model.JIRAAction findByType_First(
-		java.lang.String type,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.socialcoding.NoSuchJIRAActionException {
-		return getPersistence().findByType_First(type, orderByComparator);
-	}
-
-	/**
-	* Returns the last j i r a action in the ordered set where type = &#63;.
-	*
-	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
-	* </p>
-	*
-	* @param type the type
-	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	* @return the last matching j i r a action
-	* @throws com.liferay.socialcoding.NoSuchJIRAActionException if a matching j i r a action could not be found
-	* @throws SystemException if a system exception occurred
-	*/
-	public static com.liferay.socialcoding.model.JIRAAction findByType_Last(
-		java.lang.String type,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.socialcoding.NoSuchJIRAActionException {
-		return getPersistence().findByType_Last(type, orderByComparator);
-	}
-
-	/**
-	* Returns the j i r a actions before and after the current j i r a action in the ordered set where type = &#63;.
-	*
-	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
-	* </p>
-	*
-	* @param jiraActionId the primary key of the current j i r a action
-	* @param type the type
-	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	* @return the previous, current, and next j i r a action
-	* @throws com.liferay.socialcoding.NoSuchJIRAActionException if a j i r a action with the primary key could not be found
-	* @throws SystemException if a system exception occurred
-	*/
-	public static com.liferay.socialcoding.model.JIRAAction[] findByType_PrevAndNext(
-		long jiraActionId, java.lang.String type,
-		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-		throws com.liferay.portal.kernel.exception.SystemException,
-			com.liferay.socialcoding.NoSuchJIRAActionException {
-		return getPersistence()
-				   .findByType_PrevAndNext(jiraActionId, type, orderByComparator);
-	}
-
-	/**
 	* Returns all the j i r a actions.
 	*
 	* @return the j i r a actions
@@ -567,7 +694,7 @@ public class JIRAActionUtil {
 	* Returns a range of all the j i r a actions.
 	*
 	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.socialcoding.model.impl.JIRAActionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	* </p>
 	*
 	* @param start the lower bound of the range of j i r a actions
@@ -585,7 +712,7 @@ public class JIRAActionUtil {
 	* Returns an ordered range of all the j i r a actions.
 	*
 	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.socialcoding.model.impl.JIRAActionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	* </p>
 	*
 	* @param start the lower bound of the range of j i r a actions
@@ -602,39 +729,6 @@ public class JIRAActionUtil {
 	}
 
 	/**
-	* Removes all the j i r a actions where jiraUserId = &#63; from the database.
-	*
-	* @param jiraUserId the jira user ID
-	* @throws SystemException if a system exception occurred
-	*/
-	public static void removeByJiraUserId(java.lang.String jiraUserId)
-		throws com.liferay.portal.kernel.exception.SystemException {
-		getPersistence().removeByJiraUserId(jiraUserId);
-	}
-
-	/**
-	* Removes all the j i r a actions where jiraIssueId = &#63; from the database.
-	*
-	* @param jiraIssueId the jira issue ID
-	* @throws SystemException if a system exception occurred
-	*/
-	public static void removeByJiraIssueId(long jiraIssueId)
-		throws com.liferay.portal.kernel.exception.SystemException {
-		getPersistence().removeByJiraIssueId(jiraIssueId);
-	}
-
-	/**
-	* Removes all the j i r a actions where type = &#63; from the database.
-	*
-	* @param type the type
-	* @throws SystemException if a system exception occurred
-	*/
-	public static void removeByType(java.lang.String type)
-		throws com.liferay.portal.kernel.exception.SystemException {
-		getPersistence().removeByType(type);
-	}
-
-	/**
 	* Removes all the j i r a actions from the database.
 	*
 	* @throws SystemException if a system exception occurred
@@ -642,42 +736,6 @@ public class JIRAActionUtil {
 	public static void removeAll()
 		throws com.liferay.portal.kernel.exception.SystemException {
 		getPersistence().removeAll();
-	}
-
-	/**
-	* Returns the number of j i r a actions where jiraUserId = &#63;.
-	*
-	* @param jiraUserId the jira user ID
-	* @return the number of matching j i r a actions
-	* @throws SystemException if a system exception occurred
-	*/
-	public static int countByJiraUserId(java.lang.String jiraUserId)
-		throws com.liferay.portal.kernel.exception.SystemException {
-		return getPersistence().countByJiraUserId(jiraUserId);
-	}
-
-	/**
-	* Returns the number of j i r a actions where jiraIssueId = &#63;.
-	*
-	* @param jiraIssueId the jira issue ID
-	* @return the number of matching j i r a actions
-	* @throws SystemException if a system exception occurred
-	*/
-	public static int countByJiraIssueId(long jiraIssueId)
-		throws com.liferay.portal.kernel.exception.SystemException {
-		return getPersistence().countByJiraIssueId(jiraIssueId);
-	}
-
-	/**
-	* Returns the number of j i r a actions where type = &#63;.
-	*
-	* @param type the type
-	* @return the number of matching j i r a actions
-	* @throws SystemException if a system exception occurred
-	*/
-	public static int countByType(java.lang.String type)
-		throws com.liferay.portal.kernel.exception.SystemException {
-		return getPersistence().countByType(type);
 	}
 
 	/**
@@ -704,7 +762,7 @@ public class JIRAActionUtil {
 	}
 
 	/**
-	 * @deprecated
+	 * @deprecated As of 6.2.0
 	 */
 	public void setPersistence(JIRAActionPersistence persistence) {
 	}

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -19,7 +19,10 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.model.CacheModel;
 import com.liferay.portal.workflow.kaleo.model.KaleoTaskInstanceToken;
 
-import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 import java.util.Date;
 
@@ -31,7 +34,7 @@ import java.util.Date;
  * @generated
  */
 public class KaleoTaskInstanceTokenCacheModel implements CacheModel<KaleoTaskInstanceToken>,
-	Serializable {
+	Externalizable {
 	@Override
 	public String toString() {
 		StringBundler sb = new StringBundler(39);
@@ -79,6 +82,7 @@ public class KaleoTaskInstanceTokenCacheModel implements CacheModel<KaleoTaskIns
 		return sb.toString();
 	}
 
+	@Override
 	public KaleoTaskInstanceToken toEntityModel() {
 		KaleoTaskInstanceTokenImpl kaleoTaskInstanceTokenImpl = new KaleoTaskInstanceTokenImpl();
 
@@ -156,6 +160,79 @@ public class KaleoTaskInstanceTokenCacheModel implements CacheModel<KaleoTaskIns
 		kaleoTaskInstanceTokenImpl.resetOriginalValues();
 
 		return kaleoTaskInstanceTokenImpl;
+	}
+
+	@Override
+	public void readExternal(ObjectInput objectInput) throws IOException {
+		kaleoTaskInstanceTokenId = objectInput.readLong();
+		groupId = objectInput.readLong();
+		companyId = objectInput.readLong();
+		userId = objectInput.readLong();
+		userName = objectInput.readUTF();
+		createDate = objectInput.readLong();
+		modifiedDate = objectInput.readLong();
+		kaleoDefinitionId = objectInput.readLong();
+		kaleoInstanceId = objectInput.readLong();
+		kaleoInstanceTokenId = objectInput.readLong();
+		kaleoTaskId = objectInput.readLong();
+		kaleoTaskName = objectInput.readUTF();
+		className = objectInput.readUTF();
+		classPK = objectInput.readLong();
+		completionUserId = objectInput.readLong();
+		completed = objectInput.readBoolean();
+		completionDate = objectInput.readLong();
+		dueDate = objectInput.readLong();
+		workflowContext = objectInput.readUTF();
+	}
+
+	@Override
+	public void writeExternal(ObjectOutput objectOutput)
+		throws IOException {
+		objectOutput.writeLong(kaleoTaskInstanceTokenId);
+		objectOutput.writeLong(groupId);
+		objectOutput.writeLong(companyId);
+		objectOutput.writeLong(userId);
+
+		if (userName == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(userName);
+		}
+
+		objectOutput.writeLong(createDate);
+		objectOutput.writeLong(modifiedDate);
+		objectOutput.writeLong(kaleoDefinitionId);
+		objectOutput.writeLong(kaleoInstanceId);
+		objectOutput.writeLong(kaleoInstanceTokenId);
+		objectOutput.writeLong(kaleoTaskId);
+
+		if (kaleoTaskName == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(kaleoTaskName);
+		}
+
+		if (className == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(className);
+		}
+
+		objectOutput.writeLong(classPK);
+		objectOutput.writeLong(completionUserId);
+		objectOutput.writeBoolean(completed);
+		objectOutput.writeLong(completionDate);
+		objectOutput.writeLong(dueDate);
+
+		if (workflowContext == null) {
+			objectOutput.writeUTF(StringPool.BLANK);
+		}
+		else {
+			objectOutput.writeUTF(workflowContext);
+		}
 	}
 
 	public long kaleoTaskInstanceTokenId;

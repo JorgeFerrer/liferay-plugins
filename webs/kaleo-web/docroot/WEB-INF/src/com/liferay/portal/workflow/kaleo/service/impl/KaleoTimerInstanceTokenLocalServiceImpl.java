@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,21 +14,16 @@
 
 package com.liferay.portal.workflow.kaleo.service.impl;
 
-import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.messaging.DestinationNames;
 import com.liferay.portal.kernel.messaging.Message;
-import com.liferay.portal.kernel.messaging.MessageBusUtil;
 import com.liferay.portal.kernel.scheduler.CronText;
 import com.liferay.portal.kernel.scheduler.CronTrigger;
-import com.liferay.portal.kernel.scheduler.SchedulerEngine;
-import com.liferay.portal.kernel.scheduler.SchedulerEngineUtil;
+import com.liferay.portal.kernel.scheduler.SchedulerEngineHelperUtil;
 import com.liferay.portal.kernel.scheduler.StorageType;
 import com.liferay.portal.kernel.scheduler.Trigger;
-import com.liferay.portal.kernel.scheduler.messaging.SchedulerEventMessageListenerWrapper;
 import com.liferay.portal.kernel.staging.StagingUtil;
 import com.liferay.portal.kernel.util.CalendarFactoryUtil;
 import com.liferay.portal.model.User;
@@ -41,7 +36,6 @@ import com.liferay.portal.workflow.kaleo.model.KaleoTimer;
 import com.liferay.portal.workflow.kaleo.model.KaleoTimerInstanceToken;
 import com.liferay.portal.workflow.kaleo.runtime.calendar.DefaultDueDateCalculator;
 import com.liferay.portal.workflow.kaleo.runtime.calendar.DueDateCalculator;
-import com.liferay.portal.workflow.kaleo.runtime.timer.messaging.TimerMessageListener;
 import com.liferay.portal.workflow.kaleo.service.base.KaleoTimerInstanceTokenLocalServiceBaseImpl;
 import com.liferay.portal.workflow.kaleo.util.SchedulerUtil;
 import com.liferay.portal.workflow.kaleo.util.WorkflowContextUtil;
@@ -110,8 +104,7 @@ public class KaleoTimerInstanceTokenLocalServiceImpl
 		kaleoTimerInstanceToken.setWorkflowContext(
 			WorkflowContextUtil.convert(workflowContext));
 
-		kaleoTimerInstanceTokenPersistence.update(
-			kaleoTimerInstanceToken, false);
+		kaleoTimerInstanceTokenPersistence.update(kaleoTimerInstanceToken);
 
 		scheduleTimer(kaleoTimerInstanceToken, kaleoTimer);
 
@@ -161,8 +154,7 @@ public class KaleoTimerInstanceTokenLocalServiceImpl
 		kaleoTimerInstanceToken.setCompleted(true);
 		kaleoTimerInstanceToken.setCompletionDate(new Date());
 
-		kaleoTimerInstanceTokenPersistence.update(
-			kaleoTimerInstanceToken, false);
+		kaleoTimerInstanceTokenPersistence.update(kaleoTimerInstanceToken);
 
 		deleteScheduledTimer(kaleoTimerInstanceToken);
 
@@ -267,7 +259,7 @@ public class KaleoTimerInstanceTokenLocalServiceImpl
 
 		String groupName = getSchedulerGroupName(kaleoTimerInstanceToken);
 
-		SchedulerEngineUtil.delete(groupName, StorageType.PERSISTED);
+		SchedulerEngineHelperUtil.delete(groupName, StorageType.PERSISTED);
 	}
 
 	protected String getSchedulerGroupName(
@@ -275,24 +267,6 @@ public class KaleoTimerInstanceTokenLocalServiceImpl
 
 		return SchedulerUtil.getGroupName(
 			kaleoTimerInstanceToken.getKaleoTimerInstanceTokenId());
-	}
-
-	protected SchedulerEventMessageListenerWrapper registerMessageListener(
-		String groupName) {
-
-		SchedulerEventMessageListenerWrapper schedulerEventListenerWrapper =
-			new SchedulerEventMessageListenerWrapper();
-
-		schedulerEventListenerWrapper.setGroupName(groupName);
-		schedulerEventListenerWrapper.setJobName(groupName);
-		schedulerEventListenerWrapper.setMessageListener(timerMessageListener);
-
-		schedulerEventListenerWrapper.afterPropertiesSet();
-
-		MessageBusUtil.registerMessageListener(
-			DestinationNames.SCHEDULER_DISPATCH, schedulerEventListenerWrapper);
-
-		return schedulerEventListenerWrapper;
 	}
 
 	protected void scheduleTimer(
@@ -303,9 +277,6 @@ public class KaleoTimerInstanceTokenLocalServiceImpl
 		deleteScheduledTimer(kaleoTimerInstanceToken);
 
 		String groupName = getSchedulerGroupName(kaleoTimerInstanceToken);
-
-		SchedulerEventMessageListenerWrapper schedulerEventListenerWrapper =
-			registerMessageListener(groupName);
 
 		DelayDuration delayDuration = new DelayDuration(
 			kaleoTimer.getDuration(),
@@ -343,19 +314,13 @@ public class KaleoTimerInstanceTokenLocalServiceImpl
 		Message message = new Message();
 
 		message.put(
-			SchedulerEngine.MESSAGE_LISTENER_UUID,
-			schedulerEventListenerWrapper.getMessageListenerUUID());
-		message.put(
 			"kaleoTimerInstanceTokenId",
 			kaleoTimerInstanceToken.getKaleoTimerInstanceTokenId());
 
-		SchedulerEngineUtil.schedule(
+		SchedulerEngineHelperUtil.schedule(
 			trigger, StorageType.PERSISTED, null,
-			DestinationNames.SCHEDULER_DISPATCH, message, 0);
+			SchedulerUtil.WORKFLOW_TIMER_DESTINATION_NAME, message, 0);
 	}
-
-	@BeanReference(type = TimerMessageListener.class)
-	protected TimerMessageListener timerMessageListener;
 
 	private static Log _log = LogFactoryUtil.getLog(
 		KaleoTimerInstanceTokenLocalServiceImpl.class);

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -35,7 +35,10 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.security.permission.ActionKeys;
+import com.liferay.portal.service.permission.PortletPermissionUtil;
 import com.liferay.portal.theme.ThemeDisplay;
+import com.liferay.portal.util.PortalUtil;
 import com.liferay.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portlet.expando.model.ExpandoRow;
 import com.liferay.portlet.expando.service.ExpandoRowLocalServiceUtil;
@@ -75,6 +78,12 @@ public class WebFormPortlet extends MVCPortlet {
 
 		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
+
+		String portletId = PortalUtil.getPortletId(actionRequest);
+
+		PortletPermissionUtil.check(
+			themeDisplay.getPermissionChecker(), themeDisplay.getPlid(),
+			portletId, ActionKeys.CONFIGURATION);
 
 		PortletPreferences preferences =
 			PortletPreferencesFactoryUtil.getPortletSetup(actionRequest);
@@ -157,8 +166,7 @@ public class WebFormPortlet extends MVCPortlet {
 		}
 		catch (Exception e) {
 			SessionErrors.add(
-				actionRequest, "validation-script-error",
-				e.getMessage().trim());
+				actionRequest, "validationScriptError", e.getMessage().trim());
 
 			return;
 		}
@@ -238,6 +246,12 @@ public class WebFormPortlet extends MVCPortlet {
 
 		ThemeDisplay themeDisplay = (ThemeDisplay)resourceRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
+
+		String portletId = PortalUtil.getPortletId(resourceRequest);
+
+		PortletPermissionUtil.check(
+			themeDisplay.getPermissionChecker(), themeDisplay.getPlid(),
+			portletId, ActionKeys.CONFIGURATION);
 
 		PortletPreferences preferences =
 			PortletPreferencesFactoryUtil.getPortletSetup(resourceRequest);

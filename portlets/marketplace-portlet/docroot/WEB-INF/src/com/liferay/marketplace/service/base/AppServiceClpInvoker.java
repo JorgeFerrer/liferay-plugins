@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -34,7 +34,7 @@ public class AppServiceClpInvoker {
 		_methodName28 = "addApp";
 
 		_methodParameterTypes28 = new String[] {
-				"long", "java.lang.String", "java.io.InputStream"
+				"long", "java.lang.String", "java.io.File"
 			};
 
 		_methodName29 = "deleteApp";
@@ -52,7 +52,7 @@ public class AppServiceClpInvoker {
 		_methodName32 = "updateApp";
 
 		_methodParameterTypes32 = new String[] {
-				"long", "java.lang.String", "java.io.InputStream"
+				"long", "java.lang.String", "java.io.File"
 			};
 	}
 
@@ -66,13 +66,14 @@ public class AppServiceClpInvoker {
 		if (_methodName23.equals(name) &&
 				Arrays.deepEquals(_methodParameterTypes23, parameterTypes)) {
 			AppServiceUtil.setBeanIdentifier((java.lang.String)arguments[0]);
+
+			return null;
 		}
 
 		if (_methodName28.equals(name) &&
 				Arrays.deepEquals(_methodParameterTypes28, parameterTypes)) {
 			return AppServiceUtil.addApp(((Long)arguments[0]).longValue(),
-				(java.lang.String)arguments[1],
-				(java.io.InputStream)arguments[2]);
+				(java.lang.String)arguments[1], (java.io.File)arguments[2]);
 		}
 
 		if (_methodName29.equals(name) &&
@@ -83,18 +84,21 @@ public class AppServiceClpInvoker {
 		if (_methodName30.equals(name) &&
 				Arrays.deepEquals(_methodParameterTypes30, parameterTypes)) {
 			AppServiceUtil.installApp(((Long)arguments[0]).longValue());
+
+			return null;
 		}
 
 		if (_methodName31.equals(name) &&
 				Arrays.deepEquals(_methodParameterTypes31, parameterTypes)) {
 			AppServiceUtil.uninstallApp(((Long)arguments[0]).longValue());
+
+			return null;
 		}
 
 		if (_methodName32.equals(name) &&
 				Arrays.deepEquals(_methodParameterTypes32, parameterTypes)) {
 			return AppServiceUtil.updateApp(((Long)arguments[0]).longValue(),
-				(java.lang.String)arguments[1],
-				(java.io.InputStream)arguments[2]);
+				(java.lang.String)arguments[1], (java.io.File)arguments[2]);
 		}
 
 		throw new UnsupportedOperationException();

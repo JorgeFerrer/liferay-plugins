@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -62,6 +62,8 @@ public class GadgetServiceClpInvoker {
 		if (_methodName27.equals(name) &&
 				Arrays.deepEquals(_methodParameterTypes27, parameterTypes)) {
 			GadgetServiceUtil.setBeanIdentifier((java.lang.String)arguments[0]);
+
+			return null;
 		}
 
 		if (_methodName32.equals(name) &&
@@ -75,6 +77,8 @@ public class GadgetServiceClpInvoker {
 				Arrays.deepEquals(_methodParameterTypes33, parameterTypes)) {
 			GadgetServiceUtil.deleteGadget(((Long)arguments[0]).longValue(),
 				(com.liferay.portal.service.ServiceContext)arguments[1]);
+
+			return null;
 		}
 
 		if (_methodName34.equals(name) &&
@@ -82,6 +86,8 @@ public class GadgetServiceClpInvoker {
 			GadgetServiceUtil.updateGadget(((Long)arguments[0]).longValue(),
 				(java.lang.String)arguments[1],
 				(com.liferay.portal.service.ServiceContext)arguments[2]);
+
+			return null;
 		}
 
 		throw new UnsupportedOperationException();

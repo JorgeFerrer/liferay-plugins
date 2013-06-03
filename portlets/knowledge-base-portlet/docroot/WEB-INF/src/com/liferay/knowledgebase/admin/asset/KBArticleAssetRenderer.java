@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -43,22 +43,27 @@ public class KBArticleAssetRenderer extends BaseAssetRenderer {
 		_kbArticle = kbArticle;
 	}
 
-	public String getAssetRendererFactoryClassName() {
-		return KBArticleAssetRendererFactory.CLASS_NAME;
+	@Override
+	public String getClassName() {
+		return KBArticle.class.getName();
 	}
 
+	@Override
 	public long getClassPK() {
 		return _kbArticle.getClassPK();
 	}
 
+	@Override
 	public long getGroupId() {
 		return _kbArticle.getGroupId();
 	}
 
+	@Override
 	public String getSummary(Locale locale) {
 		return HtmlUtil.stripHtml(_kbArticle.getContent());
 	}
 
+	@Override
 	public String getTitle(Locale locale) {
 		return _kbArticle.getTitle();
 	}
@@ -95,10 +100,17 @@ public class KBArticleAssetRenderer extends BaseAssetRenderer {
 			_kbArticle.getStatus(), themeDisplay.getPortalURL(), false);
 	}
 
+	@Override
 	public long getUserId() {
 		return _kbArticle.getUserId();
 	}
 
+	@Override
+	public String getUserName() {
+		return _kbArticle.getUserName();
+	}
+
+	@Override
 	public String getUuid() {
 		return _kbArticle.getUuid();
 	}
@@ -120,6 +132,7 @@ public class KBArticleAssetRenderer extends BaseAssetRenderer {
 		return true;
 	}
 
+	@Override
 	public String render(
 		RenderRequest renderRequest, RenderResponse renderResponse,
 		String template) {

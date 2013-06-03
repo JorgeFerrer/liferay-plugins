@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -72,7 +72,7 @@ MailManager mailManager = MailManager.getInstance(request);
 				<aui:a cssClass="message-link" data-folderId="<%= folderId %>" data-keywords="<%= keywords %>" data-messageNumber="<%= messageNumber - 1 %>" data-orderByField="<%= orderByField %>" data-orderByType="<%= orderByType %>" href="javascript:;">&lt; <liferay-ui:message key="newer" /></aui:a>
 			</c:if>
 
-			<liferay-ui:message arguments='<%= new Object[] {messageNumber, messageCount} %>' key="x-of-x" />
+			<liferay-ui:message arguments="<%= new Object[] {messageNumber, messageCount} %>" key="x-of-x" />
 
 			<c:if test="<%= messageNumber < messageCount %>">
 				<aui:a cssClass="message-link" data-folderId="<%= folderId %>" data-keywords="<%= keywords %>" data-messageNumber="<%= messageNumber + 1 %>" data-orderByField="<%= orderByField %>" data-orderByType="<%= orderByType %>" href="javascript:;"><liferay-ui:message key="older" /> &gt;</aui:a>
@@ -92,7 +92,7 @@ MailManager mailManager = MailManager.getInstance(request);
 	<div class="message-header">
 		<table>
 		<tr>
-			<td class="message-hearder-label">
+			<td class="message-header-label">
 				<liferay-ui:message key="from" />
 			</td>
 			<td>
@@ -100,7 +100,7 @@ MailManager mailManager = MailManager.getInstance(request);
 			</td>
 		</tr>
 		<tr>
-			<td class="message-hearder-label">
+			<td class="message-header-label">
 				<liferay-ui:message key="to" />
 			</td>
 			<td>
@@ -110,7 +110,7 @@ MailManager mailManager = MailManager.getInstance(request);
 
 		<c:if test="<%= Validator.isNotNull(message.getCc()) %>">
 			<tr>
-				<td class="message-hearder-label">
+				<td class="message-header-label">
 					<liferay-ui:message key="cc" />
 				</td>
 				<td>
@@ -120,7 +120,7 @@ MailManager mailManager = MailManager.getInstance(request);
 		</c:if>
 
 		<tr>
-			<td class="message-hearder-label">
+			<td class="message-header-label">
 				<liferay-ui:message key="date" />
 			</td>
 			<td>

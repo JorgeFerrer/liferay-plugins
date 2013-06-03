@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -17,8 +17,7 @@ package com.liferay.socialnetworking.model.impl;
 /**
  * @author Brian Wing Shun Chan
  */
-public class MeetupsEntryImpl
-	extends MeetupsEntryBaseImpl {
+public class MeetupsEntryImpl extends MeetupsEntryBaseImpl {
 
 	public MeetupsEntryImpl() {
 	}
