@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -35,20 +35,24 @@ public class AkismetDataWrapper implements AkismetData,
 		_akismetData = akismetData;
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return AkismetData.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return AkismetData.class.getName();
 	}
 
+	@Override
 	public Map<String, Object> getModelAttributes() {
 		Map<String, Object> attributes = new HashMap<String, Object>();
 
 		attributes.put("akismetDataId", getAkismetDataId());
 		attributes.put("modifiedDate", getModifiedDate());
-		attributes.put("mbMessageId", getMbMessageId());
+		attributes.put("classNameId", getClassNameId());
+		attributes.put("classPK", getClassPK());
 		attributes.put("type", getType());
 		attributes.put("permalink", getPermalink());
 		attributes.put("referrer", getReferrer());
@@ -59,6 +63,7 @@ public class AkismetDataWrapper implements AkismetData,
 		return attributes;
 	}
 
+	@Override
 	public void setModelAttributes(Map<String, Object> attributes) {
 		Long akismetDataId = (Long)attributes.get("akismetDataId");
 
@@ -72,10 +77,16 @@ public class AkismetDataWrapper implements AkismetData,
 			setModifiedDate(modifiedDate);
 		}
 
-		Long mbMessageId = (Long)attributes.get("mbMessageId");
+		Long classNameId = (Long)attributes.get("classNameId");
 
-		if (mbMessageId != null) {
-			setMbMessageId(mbMessageId);
+		if (classNameId != null) {
+			setClassNameId(classNameId);
+		}
+
+		Long classPK = (Long)attributes.get("classPK");
+
+		if (classPK != null) {
+			setClassPK(classPK);
 		}
 
 		String type = (String)attributes.get("type");
@@ -120,6 +131,7 @@ public class AkismetDataWrapper implements AkismetData,
 	*
 	* @return the primary key of this akismet data
 	*/
+	@Override
 	public long getPrimaryKey() {
 		return _akismetData.getPrimaryKey();
 	}
@@ -129,6 +141,7 @@ public class AkismetDataWrapper implements AkismetData,
 	*
 	* @param primaryKey the primary key of this akismet data
 	*/
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		_akismetData.setPrimaryKey(primaryKey);
 	}
@@ -138,6 +151,7 @@ public class AkismetDataWrapper implements AkismetData,
 	*
 	* @return the akismet data ID of this akismet data
 	*/
+	@Override
 	public long getAkismetDataId() {
 		return _akismetData.getAkismetDataId();
 	}
@@ -147,6 +161,7 @@ public class AkismetDataWrapper implements AkismetData,
 	*
 	* @param akismetDataId the akismet data ID of this akismet data
 	*/
+	@Override
 	public void setAkismetDataId(long akismetDataId) {
 		_akismetData.setAkismetDataId(akismetDataId);
 	}
@@ -156,6 +171,7 @@ public class AkismetDataWrapper implements AkismetData,
 	*
 	* @return the modified date of this akismet data
 	*/
+	@Override
 	public java.util.Date getModifiedDate() {
 		return _akismetData.getModifiedDate();
 	}
@@ -165,26 +181,64 @@ public class AkismetDataWrapper implements AkismetData,
 	*
 	* @param modifiedDate the modified date of this akismet data
 	*/
+	@Override
 	public void setModifiedDate(java.util.Date modifiedDate) {
 		_akismetData.setModifiedDate(modifiedDate);
 	}
 
 	/**
-	* Returns the mb message ID of this akismet data.
+	* Returns the fully qualified class name of this akismet data.
 	*
-	* @return the mb message ID of this akismet data
+	* @return the fully qualified class name of this akismet data
 	*/
-	public long getMbMessageId() {
-		return _akismetData.getMbMessageId();
+	@Override
+	public java.lang.String getClassName() {
+		return _akismetData.getClassName();
+	}
+
+	@Override
+	public void setClassName(java.lang.String className) {
+		_akismetData.setClassName(className);
 	}
 
 	/**
-	* Sets the mb message ID of this akismet data.
+	* Returns the class name ID of this akismet data.
 	*
-	* @param mbMessageId the mb message ID of this akismet data
+	* @return the class name ID of this akismet data
 	*/
-	public void setMbMessageId(long mbMessageId) {
-		_akismetData.setMbMessageId(mbMessageId);
+	@Override
+	public long getClassNameId() {
+		return _akismetData.getClassNameId();
+	}
+
+	/**
+	* Sets the class name ID of this akismet data.
+	*
+	* @param classNameId the class name ID of this akismet data
+	*/
+	@Override
+	public void setClassNameId(long classNameId) {
+		_akismetData.setClassNameId(classNameId);
+	}
+
+	/**
+	* Returns the class p k of this akismet data.
+	*
+	* @return the class p k of this akismet data
+	*/
+	@Override
+	public long getClassPK() {
+		return _akismetData.getClassPK();
+	}
+
+	/**
+	* Sets the class p k of this akismet data.
+	*
+	* @param classPK the class p k of this akismet data
+	*/
+	@Override
+	public void setClassPK(long classPK) {
+		_akismetData.setClassPK(classPK);
 	}
 
 	/**
@@ -192,6 +246,7 @@ public class AkismetDataWrapper implements AkismetData,
 	*
 	* @return the type of this akismet data
 	*/
+	@Override
 	public java.lang.String getType() {
 		return _akismetData.getType();
 	}
@@ -201,6 +256,7 @@ public class AkismetDataWrapper implements AkismetData,
 	*
 	* @param type the type of this akismet data
 	*/
+	@Override
 	public void setType(java.lang.String type) {
 		_akismetData.setType(type);
 	}
@@ -210,6 +266,7 @@ public class AkismetDataWrapper implements AkismetData,
 	*
 	* @return the permalink of this akismet data
 	*/
+	@Override
 	public java.lang.String getPermalink() {
 		return _akismetData.getPermalink();
 	}
@@ -219,6 +276,7 @@ public class AkismetDataWrapper implements AkismetData,
 	*
 	* @param permalink the permalink of this akismet data
 	*/
+	@Override
 	public void setPermalink(java.lang.String permalink) {
 		_akismetData.setPermalink(permalink);
 	}
@@ -228,6 +286,7 @@ public class AkismetDataWrapper implements AkismetData,
 	*
 	* @return the referrer of this akismet data
 	*/
+	@Override
 	public java.lang.String getReferrer() {
 		return _akismetData.getReferrer();
 	}
@@ -237,6 +296,7 @@ public class AkismetDataWrapper implements AkismetData,
 	*
 	* @param referrer the referrer of this akismet data
 	*/
+	@Override
 	public void setReferrer(java.lang.String referrer) {
 		_akismetData.setReferrer(referrer);
 	}
@@ -246,6 +306,7 @@ public class AkismetDataWrapper implements AkismetData,
 	*
 	* @return the user agent of this akismet data
 	*/
+	@Override
 	public java.lang.String getUserAgent() {
 		return _akismetData.getUserAgent();
 	}
@@ -255,6 +316,7 @@ public class AkismetDataWrapper implements AkismetData,
 	*
 	* @param userAgent the user agent of this akismet data
 	*/
+	@Override
 	public void setUserAgent(java.lang.String userAgent) {
 		_akismetData.setUserAgent(userAgent);
 	}
@@ -264,6 +326,7 @@ public class AkismetDataWrapper implements AkismetData,
 	*
 	* @return the user i p of this akismet data
 	*/
+	@Override
 	public java.lang.String getUserIP() {
 		return _akismetData.getUserIP();
 	}
@@ -273,6 +336,7 @@ public class AkismetDataWrapper implements AkismetData,
 	*
 	* @param userIP the user i p of this akismet data
 	*/
+	@Override
 	public void setUserIP(java.lang.String userIP) {
 		_akismetData.setUserIP(userIP);
 	}
@@ -282,6 +346,7 @@ public class AkismetDataWrapper implements AkismetData,
 	*
 	* @return the user u r l of this akismet data
 	*/
+	@Override
 	public java.lang.String getUserURL() {
 		return _akismetData.getUserURL();
 	}
@@ -291,42 +356,64 @@ public class AkismetDataWrapper implements AkismetData,
 	*
 	* @param userURL the user u r l of this akismet data
 	*/
+	@Override
 	public void setUserURL(java.lang.String userURL) {
 		_akismetData.setUserURL(userURL);
 	}
 
+	@Override
 	public boolean isNew() {
 		return _akismetData.isNew();
 	}
 
+	@Override
 	public void setNew(boolean n) {
 		_akismetData.setNew(n);
 	}
 
+	@Override
 	public boolean isCachedModel() {
 		return _akismetData.isCachedModel();
 	}
 
+	@Override
 	public void setCachedModel(boolean cachedModel) {
 		_akismetData.setCachedModel(cachedModel);
 	}
 
+	@Override
 	public boolean isEscapedModel() {
 		return _akismetData.isEscapedModel();
 	}
 
+	@Override
 	public java.io.Serializable getPrimaryKeyObj() {
 		return _akismetData.getPrimaryKeyObj();
 	}
 
+	@Override
 	public void setPrimaryKeyObj(java.io.Serializable primaryKeyObj) {
 		_akismetData.setPrimaryKeyObj(primaryKeyObj);
 	}
 
+	@Override
 	public com.liferay.portlet.expando.model.ExpandoBridge getExpandoBridge() {
 		return _akismetData.getExpandoBridge();
 	}
 
+	@Override
+	public void setExpandoBridgeAttributes(
+		com.liferay.portal.model.BaseModel<?> baseModel) {
+		_akismetData.setExpandoBridgeAttributes(baseModel);
+	}
+
+	@Override
+	public void setExpandoBridgeAttributes(
+		com.liferay.portlet.expando.model.ExpandoBridge expandoBridge) {
+		_akismetData.setExpandoBridgeAttributes(expandoBridge);
+	}
+
+	@Override
 	public void setExpandoBridgeAttributes(
 		com.liferay.portal.service.ServiceContext serviceContext) {
 		_akismetData.setExpandoBridgeAttributes(serviceContext);
@@ -337,6 +424,7 @@ public class AkismetDataWrapper implements AkismetData,
 		return new AkismetDataWrapper((AkismetData)_akismetData.clone());
 	}
 
+	@Override
 	public int compareTo(com.liferay.akismet.model.AkismetData akismetData) {
 		return _akismetData.compareTo(akismetData);
 	}
@@ -346,14 +434,17 @@ public class AkismetDataWrapper implements AkismetData,
 		return _akismetData.hashCode();
 	}
 
+	@Override
 	public com.liferay.portal.model.CacheModel<com.liferay.akismet.model.AkismetData> toCacheModel() {
 		return _akismetData.toCacheModel();
 	}
 
+	@Override
 	public com.liferay.akismet.model.AkismetData toEscapedModel() {
 		return new AkismetDataWrapper(_akismetData.toEscapedModel());
 	}
 
+	@Override
 	public com.liferay.akismet.model.AkismetData toUnescapedModel() {
 		return new AkismetDataWrapper(_akismetData.toUnescapedModel());
 	}
@@ -363,26 +454,30 @@ public class AkismetDataWrapper implements AkismetData,
 		return _akismetData.toString();
 	}
 
+	@Override
 	public java.lang.String toXmlString() {
 		return _akismetData.toXmlString();
 	}
 
+	@Override
 	public void persist()
 		throws com.liferay.portal.kernel.exception.SystemException {
 		_akismetData.persist();
 	}
 
 	/**
-	 * @deprecated Renamed to {@link #getWrappedModel}
+	 * @deprecated As of 6.1.0, replaced by {@link #getWrappedModel}
 	 */
 	public AkismetData getWrappedAkismetData() {
 		return _akismetData;
 	}
 
+	@Override
 	public AkismetData getWrappedModel() {
 		return _akismetData;
 	}
 
+	@Override
 	public void resetOriginalValues() {
 		_akismetData.resetOriginalValues();
 	}

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -17,9 +17,7 @@ package com.liferay.opensocial.service;
 import com.liferay.portal.service.ServiceWrapper;
 
 /**
- * <p>
- * This class is a wrapper for {@link GadgetService}.
- * </p>
+ * Provides a wrapper for {@link GadgetService}.
  *
  * @author    Brian Wing Shun Chan
  * @see       GadgetService
@@ -36,6 +34,7 @@ public class GadgetServiceWrapper implements GadgetService,
 	*
 	* @return the Spring bean ID for this bean
 	*/
+	@Override
 	public java.lang.String getBeanIdentifier() {
 		return _gadgetService.getBeanIdentifier();
 	}
@@ -45,16 +44,19 @@ public class GadgetServiceWrapper implements GadgetService,
 	*
 	* @param beanIdentifier the Spring bean ID for this bean
 	*/
+	@Override
 	public void setBeanIdentifier(java.lang.String beanIdentifier) {
 		_gadgetService.setBeanIdentifier(beanIdentifier);
 	}
 
+	@Override
 	public java.lang.Object invokeMethod(java.lang.String name,
 		java.lang.String[] parameterTypes, java.lang.Object[] arguments)
 		throws java.lang.Throwable {
 		return _gadgetService.invokeMethod(name, parameterTypes, arguments);
 	}
 
+	@Override
 	public com.liferay.opensocial.model.Gadget addGadget(long companyId,
 		java.lang.String url, java.lang.String portletCategoryNames,
 		com.liferay.portal.service.ServiceContext serviceContext)
@@ -64,6 +66,7 @@ public class GadgetServiceWrapper implements GadgetService,
 			serviceContext);
 	}
 
+	@Override
 	public void deleteGadget(long gadgetId,
 		com.liferay.portal.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException,
@@ -71,6 +74,7 @@ public class GadgetServiceWrapper implements GadgetService,
 		_gadgetService.deleteGadget(gadgetId, serviceContext);
 	}
 
+	@Override
 	public void updateGadget(long gadgetId,
 		java.lang.String portletCategoryNames,
 		com.liferay.portal.service.ServiceContext serviceContext)
@@ -81,23 +85,25 @@ public class GadgetServiceWrapper implements GadgetService,
 	}
 
 	/**
-	 * @deprecated Renamed to {@link #getWrappedService}
+	 * @deprecated As of 6.1.0, replaced by {@link #getWrappedService}
 	 */
 	public GadgetService getWrappedGadgetService() {
 		return _gadgetService;
 	}
 
 	/**
-	 * @deprecated Renamed to {@link #setWrappedService}
+	 * @deprecated As of 6.1.0, replaced by {@link #setWrappedService}
 	 */
 	public void setWrappedGadgetService(GadgetService gadgetService) {
 		_gadgetService = gadgetService;
 	}
 
+	@Override
 	public GadgetService getWrappedService() {
 		return _gadgetService;
 	}
 
+	@Override
 	public void setWrappedService(GadgetService gadgetService) {
 		_gadgetService = gadgetService;
 	}

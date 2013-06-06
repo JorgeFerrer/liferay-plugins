@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -19,11 +19,12 @@ import com.liferay.portal.kernel.util.ReferenceRegistry;
 import com.liferay.portal.service.InvokableLocalService;
 
 /**
- * The utility for the calendar resource local service. This utility wraps {@link com.liferay.calendar.service.impl.CalendarResourceLocalServiceImpl} and is the primary access point for service operations in application layer code running on the local server.
- *
- * <p>
- * This is a local service. Methods of this service will not have security checks based on the propagated JAAS credentials because this service can only be accessed from within the same VM.
- * </p>
+ * Provides the local service utility for CalendarResource. This utility wraps
+ * {@link com.liferay.calendar.service.impl.CalendarResourceLocalServiceImpl} and is the
+ * primary access point for service operations in application layer code running
+ * on the local server. Methods of this service will not have security checks
+ * based on the propagated JAAS credentials because this service can only be
+ * accessed from within the same VM.
  *
  * @author Eduardo Lundgren
  * @see CalendarResourceLocalService
@@ -196,12 +197,12 @@ public class CalendarResourceLocalServiceUtil {
 	}
 
 	/**
-	* Returns the calendar resource with the UUID in the group.
+	* Returns the calendar resource matching the UUID and group.
 	*
-	* @param uuid the UUID of calendar resource
-	* @param groupId the group id of the calendar resource
-	* @return the calendar resource
-	* @throws PortalException if a calendar resource with the UUID in the group could not be found
+	* @param uuid the calendar resource's UUID
+	* @param groupId the primary key of the group
+	* @return the matching calendar resource
+	* @throws PortalException if a matching calendar resource could not be found
 	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.calendar.model.CalendarResource getCalendarResourceByUuidAndGroupId(
@@ -282,14 +283,12 @@ public class CalendarResourceLocalServiceUtil {
 		java.lang.String classUuid, java.lang.String code,
 		java.util.Map<java.util.Locale, java.lang.String> nameMap,
 		java.util.Map<java.util.Locale, java.lang.String> descriptionMap,
-		java.lang.String type, boolean active,
-		com.liferay.portal.service.ServiceContext serviceContext)
+		boolean active, com.liferay.portal.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		return getService()
 				   .addCalendarResource(userId, groupId, className, classPK,
-			classUuid, code, nameMap, descriptionMap, type, active,
-			serviceContext);
+			classUuid, code, nameMap, descriptionMap, active, serviceContext);
 	}
 
 	public static void deleteCalendarResources(long groupId)
@@ -313,14 +312,13 @@ public class CalendarResourceLocalServiceUtil {
 	public static java.util.List<com.liferay.calendar.model.CalendarResource> search(
 		long companyId, long[] groupIds, long[] classNameIds,
 		java.lang.String code, java.lang.String name,
-		java.lang.String description, java.lang.String type, boolean active,
-		boolean andOperator, int start, int end,
+		java.lang.String description, boolean active, boolean andOperator,
+		int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
 		throws com.liferay.portal.kernel.exception.SystemException {
 		return getService()
 				   .search(companyId, groupIds, classNameIds, code, name,
-			description, type, active, andOperator, start, end,
-			orderByComparator);
+			description, active, andOperator, start, end, orderByComparator);
 	}
 
 	public static java.util.List<com.liferay.calendar.model.CalendarResource> searchByKeywords(
@@ -344,25 +342,33 @@ public class CalendarResourceLocalServiceUtil {
 
 	public static int searchCount(long companyId, long[] groupIds,
 		long[] classNameIds, java.lang.String code, java.lang.String name,
-		java.lang.String description, java.lang.String type, boolean active,
-		boolean andOperator)
+		java.lang.String description, boolean active, boolean andOperator)
 		throws com.liferay.portal.kernel.exception.SystemException {
 		return getService()
 				   .searchCount(companyId, groupIds, classNameIds, code, name,
-			description, type, active, andOperator);
+			description, active, andOperator);
+	}
+
+	public static void updateAsset(long userId,
+		com.liferay.calendar.model.CalendarResource calendarResource,
+		long[] assetCategoryIds, java.lang.String[] assetTagNames)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		getService()
+			.updateAsset(userId, calendarResource, assetCategoryIds,
+			assetTagNames);
 	}
 
 	public static com.liferay.calendar.model.CalendarResource updateCalendarResource(
 		long calendarResourceId,
 		java.util.Map<java.util.Locale, java.lang.String> nameMap,
 		java.util.Map<java.util.Locale, java.lang.String> descriptionMap,
-		java.lang.String type, boolean active,
-		com.liferay.portal.service.ServiceContext serviceContext)
+		boolean active, com.liferay.portal.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		return getService()
 				   .updateCalendarResource(calendarResourceId, nameMap,
-			descriptionMap, type, active, serviceContext);
+			descriptionMap, active, serviceContext);
 	}
 
 	public static void clearService() {
@@ -389,7 +395,7 @@ public class CalendarResourceLocalServiceUtil {
 	}
 
 	/**
-	 * @deprecated
+	 * @deprecated As of 6.2.0
 	 */
 	public void setService(CalendarResourceLocalService service) {
 	}

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,20 +14,28 @@
 
 package com.liferay.calendar.portlet;
 
+import com.liferay.calendar.CalendarBookingDurationException;
+import com.liferay.calendar.CalendarNameException;
 import com.liferay.calendar.CalendarResourceCodeException;
+import com.liferay.calendar.CalendarResourceNameException;
 import com.liferay.calendar.DuplicateCalendarResourceException;
 import com.liferay.calendar.NoSuchResourceException;
 import com.liferay.calendar.model.Calendar;
 import com.liferay.calendar.model.CalendarBooking;
 import com.liferay.calendar.model.CalendarBookingConstants;
+import com.liferay.calendar.model.CalendarNotificationTemplate;
+import com.liferay.calendar.model.CalendarNotificationTemplateConstants;
 import com.liferay.calendar.model.CalendarResource;
 import com.liferay.calendar.notification.NotificationTemplateContextFactory;
+import com.liferay.calendar.notification.NotificationTemplateType;
+import com.liferay.calendar.notification.NotificationType;
 import com.liferay.calendar.recurrence.Frequency;
 import com.liferay.calendar.recurrence.Recurrence;
 import com.liferay.calendar.recurrence.RecurrenceSerializer;
 import com.liferay.calendar.recurrence.Weekday;
 import com.liferay.calendar.service.CalendarBookingServiceUtil;
 import com.liferay.calendar.service.CalendarLocalServiceUtil;
+import com.liferay.calendar.service.CalendarNotificationTemplateServiceUtil;
 import com.liferay.calendar.service.CalendarResourceServiceUtil;
 import com.liferay.calendar.service.CalendarServiceUtil;
 import com.liferay.calendar.service.permission.CalendarPermission;
@@ -38,6 +46,7 @@ import com.liferay.calendar.util.CalendarDataHandlerFactory;
 import com.liferay.calendar.util.CalendarResourceUtil;
 import com.liferay.calendar.util.CalendarUtil;
 import com.liferay.calendar.util.JCalendarUtil;
+import com.liferay.calendar.util.RSSUtil;
 import com.liferay.calendar.util.WebKeys;
 import com.liferay.calendar.util.comparator.CalendarResourceNameComparator;
 import com.liferay.calendar.workflow.CalendarBookingWorkflowConstants;
@@ -52,27 +61,33 @@ import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.upload.UploadPortletRequest;
 import com.liferay.portal.kernel.util.CalendarFactoryUtil;
 import com.liferay.portal.kernel.util.CharPool;
+import com.liferay.portal.kernel.util.Constants;
+import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.FileUtil;
-import com.liferay.portal.kernel.util.HttpUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocalizationUtil;
 import com.liferay.portal.kernel.util.MimeTypesUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
+import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import com.liferay.portal.model.Group;
 import com.liferay.portal.model.User;
 import com.liferay.portal.security.auth.PrincipalException;
 import com.liferay.portal.security.permission.PermissionChecker;
-import com.liferay.portal.service.GroupServiceUtil;
+import com.liferay.portal.service.GroupLocalServiceUtil;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.service.ServiceContextFactory;
+import com.liferay.portal.service.SubscriptionLocalServiceUtil;
 import com.liferay.portal.service.UserLocalServiceUtil;
 import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portal.util.PortalUtil;
 import com.liferay.portal.util.comparator.UserFirstNameComparator;
+import com.liferay.portlet.messageboards.model.MBMessage;
+import com.liferay.portlet.messageboards.service.MBMessageServiceUtil;
 import com.liferay.util.bridges.mvc.MVCPortlet;
 import com.liferay.util.dao.orm.CustomSQLUtil;
 
@@ -80,6 +95,8 @@ import java.io.File;
 import java.io.IOException;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -100,6 +117,7 @@ import javax.portlet.ResourceResponse;
  * @author Fabio Pezzutto
  * @author Andrea Di Giorgi
  * @author Marcellus Tavares
+ * @author Bruno Basto
  */
 public class CalendarPortlet extends MVCPortlet {
 
@@ -162,6 +180,9 @@ public class CalendarPortlet extends MVCPortlet {
 			if (resourceID.equals("calendarBookingInvitees")) {
 				serveCalendarBookingInvitees(resourceRequest, resourceResponse);
 			}
+			else if (resourceID.equals("calendarBookingsRSS")) {
+				serveCalendarBookingsRSS(resourceRequest, resourceResponse);
+			}
 			else if (resourceID.equals("calendarRenderingRules")) {
 				serveCalendarRenderingRules(resourceRequest, resourceResponse);
 			}
@@ -197,7 +218,11 @@ public class CalendarPortlet extends MVCPortlet {
 			LocalizationUtil.getLocalizationMap(actionRequest, "description");
 		int color = ParamUtil.getInteger(actionRequest, "color");
 		boolean defaultCalendar = ParamUtil.getBoolean(
-			actionRequest, "defaultCalendar", false);
+			actionRequest, "defaultCalendar");
+		boolean enableComments = ParamUtil.getBoolean(
+			actionRequest, "enableComments");
+		boolean enableRatings = ParamUtil.getBoolean(
+			actionRequest, "enableRatings");
 
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 			Calendar.class.getName(), actionRequest);
@@ -209,12 +234,13 @@ public class CalendarPortlet extends MVCPortlet {
 
 			CalendarServiceUtil.addCalendar(
 				calendarResource.getGroupId(), calendarResourceId, nameMap,
-				descriptionMap, color, defaultCalendar, serviceContext);
+				descriptionMap, color, defaultCalendar, enableComments,
+				enableRatings, serviceContext);
 		}
 		else {
 			CalendarServiceUtil.updateCalendar(
 				calendarId, nameMap, descriptionMap, color, defaultCalendar,
-				serviceContext);
+				enableComments, enableRatings, serviceContext);
 		}
 	}
 
@@ -233,11 +259,11 @@ public class CalendarPortlet extends MVCPortlet {
 		Map<Locale, String> descriptionMap =
 			LocalizationUtil.getLocalizationMap(actionRequest, "description");
 		String location = ParamUtil.getString(actionRequest, "location");
-		java.util.Calendar startDateJCalendar = getJCalendar(
-			actionRequest, "startDate");
-		java.util.Calendar endDateJCalendar = getJCalendar(
-			actionRequest, "endDate");
-		long oldStartDate = ParamUtil.getLong(actionRequest, "oldStartDate");
+		java.util.Calendar startTimeJCalendar = getJCalendar(
+			actionRequest, "startTime");
+		java.util.Calendar endTimeJCalendar = getJCalendar(
+			actionRequest, "endTime");
+		long oldStartTime = ParamUtil.getLong(actionRequest, "oldStartTime");
 		boolean allDay = ParamUtil.getBoolean(actionRequest, "allDay");
 		String recurrence = getRecurrence(actionRequest);
 		long[] reminders = getReminders(actionRequest);
@@ -247,18 +273,17 @@ public class CalendarPortlet extends MVCPortlet {
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 			CalendarBooking.class.getName(), actionRequest);
 
-		if (calendarBookingId <= 0) {
-			CalendarBooking calendarBooking =
-				CalendarBookingServiceUtil.addCalendarBooking(
-					calendarId, childCalendarIds,
-					CalendarBookingConstants.PARENT_CALENDAR_BOOKING_ID_DEFAULT,
-					titleMap, descriptionMap, location,
-					startDateJCalendar.getTimeInMillis(),
-					endDateJCalendar.getTimeInMillis(), allDay, recurrence,
-					reminders[0], remindersType[0], reminders[1],
-					remindersType[1], serviceContext);
+		CalendarBooking calendarBooking = null;
 
-			calendarBookingId = calendarBooking.getCalendarBookingId();
+		if (calendarBookingId <= 0) {
+			calendarBooking = CalendarBookingServiceUtil.addCalendarBooking(
+				calendarId, childCalendarIds,
+				CalendarBookingConstants.PARENT_CALENDAR_BOOKING_ID_DEFAULT,
+				titleMap, descriptionMap, location,
+				startTimeJCalendar.getTimeInMillis(),
+				endTimeJCalendar.getTimeInMillis(), allDay, recurrence,
+				reminders[0], remindersType[0], reminders[1], remindersType[1],
+				serviceContext);
 		}
 		else {
 			boolean updateCalendarBookingInstance = ParamUtil.getBoolean(
@@ -268,52 +293,73 @@ public class CalendarPortlet extends MVCPortlet {
 				boolean allFollowing = ParamUtil.getBoolean(
 					actionRequest, "allFollowing");
 
-				CalendarBookingServiceUtil.updateCalendarBookingInstance(
-					calendarBookingId, calendarId, childCalendarIds, titleMap,
-					descriptionMap, location,
-					startDateJCalendar.getTimeInMillis(),
-					endDateJCalendar.getTimeInMillis(), allDay, recurrence,
-					allFollowing, reminders[0], remindersType[0], reminders[1],
-					remindersType[1], status, serviceContext);
+				calendarBooking =
+					CalendarBookingServiceUtil.updateCalendarBookingInstance(
+						calendarBookingId, calendarId, childCalendarIds,
+						titleMap, descriptionMap, location,
+						startTimeJCalendar.getTimeInMillis(),
+						endTimeJCalendar.getTimeInMillis(), allDay, recurrence,
+						allFollowing, reminders[0], remindersType[0],
+						reminders[1], remindersType[1], status, serviceContext);
 			}
 			else {
-				CalendarBooking calendarBooking =
-					CalendarBookingServiceUtil.getCalendarBooking(
-						calendarBookingId);
+				calendarBooking = CalendarBookingServiceUtil.getCalendarBooking(
+					calendarBookingId);
 
 				long duration =
-					(endDateJCalendar.getTimeInMillis() -
-						startDateJCalendar.getTimeInMillis());
+					(endTimeJCalendar.getTimeInMillis() -
+						startTimeJCalendar.getTimeInMillis());
 				long offset =
-					(startDateJCalendar.getTimeInMillis() - oldStartDate);
+					(startTimeJCalendar.getTimeInMillis() - oldStartTime);
 
 				CalendarBookingServiceUtil.updateCalendarBooking(
 					calendarBookingId, calendarId, childCalendarIds, titleMap,
 					descriptionMap, location,
-					(calendarBooking.getStartDate() + offset),
-					(calendarBooking.getStartDate() + offset + duration),
+					(calendarBooking.getStartTime() + offset),
+					(calendarBooking.getStartTime() + offset + duration),
 					allDay, recurrence, reminders[0], remindersType[0],
 					reminders[1], remindersType[1], status, serviceContext);
 			}
 		}
 
-		String redirect = ParamUtil.getString(actionRequest, "redirect");
+		actionRequest.setAttribute(WebKeys.CALENDAR_BOOKING, calendarBooking);
+	}
 
-		redirect = HttpUtil.setParameter(
-			redirect, actionResponse.getNamespace() + "calendarBookingId",
-			calendarBookingId);
-		redirect = HttpUtil.setParameter(
-			redirect, actionResponse.getNamespace() + "calendarId", calendarId);
-		redirect = HttpUtil.removeParameter(
-			redirect, actionResponse.getNamespace() + "startDate");
-		redirect = HttpUtil.removeParameter(
-			redirect, actionResponse.getNamespace() + "endDate");
-		redirect = HttpUtil.removeParameter(
-			redirect, actionResponse.getNamespace() + "allDay");
-		redirect = HttpUtil.removeParameter(
-			redirect, actionResponse.getNamespace() + "repeat");
+	public void updateCalendarNotificationTemplate(
+			ActionRequest actionRequest, ActionResponse actionResponse)
+		throws Exception {
 
-		actionRequest.setAttribute(WebKeys.REDIRECT, redirect);
+		long calendarNotificationTemplateId = ParamUtil.getLong(
+			actionRequest, "calendarNotificationTemplateId");
+
+		long calendarId = ParamUtil.getLong(actionRequest, "calendarId");
+		NotificationType notificationType = NotificationType.parse(
+			ParamUtil.getString(actionRequest, "notificationType"));
+		NotificationTemplateType notificationTemplateType =
+			NotificationTemplateType.parse(
+				ParamUtil.getString(actionRequest, "notificationTemplateType"));
+		String subject = ParamUtil.getString(actionRequest, "subject");
+		String body = ParamUtil.getString(actionRequest, "body");
+
+		ServiceContext serviceContext = ServiceContextFactory.getInstance(
+			CalendarNotificationTemplate.class.getName(), actionRequest);
+
+		if (calendarNotificationTemplateId <= 0) {
+			CalendarNotificationTemplateServiceUtil.
+				addCalendarNotificationTemplate(
+					calendarId, notificationType,
+					getNotificationTypeSettings(
+						actionRequest, notificationType),
+					notificationTemplateType, subject, body, serviceContext);
+		}
+		else {
+			CalendarNotificationTemplateServiceUtil.
+				updateCalendarNotificationTemplate(
+					calendarNotificationTemplateId,
+					getNotificationTypeSettings(
+						actionRequest, notificationType),
+					subject, body, serviceContext);
+		}
 	}
 
 	public void updateCalendarResource(
@@ -330,7 +376,6 @@ public class CalendarPortlet extends MVCPortlet {
 			actionRequest, "name");
 		Map<Locale, String> descriptionMap =
 			LocalizationUtil.getLocalizationMap(actionRequest, "description");
-		String type = ParamUtil.getString(actionRequest, "type");
 		boolean active = ParamUtil.getBoolean(actionRequest, "active");
 
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
@@ -339,18 +384,38 @@ public class CalendarPortlet extends MVCPortlet {
 		if (calendarResourceId <= 0) {
 			CalendarResourceServiceUtil.addCalendarResource(
 				serviceContext.getScopeGroupId(), null, 0,
-				PortalUUIDUtil.generate(), code, nameMap, descriptionMap, type,
+				PortalUUIDUtil.generate(), code, nameMap, descriptionMap,
 				active, serviceContext);
 		}
 		else {
 			CalendarResourceServiceUtil.updateCalendarResource(
-				calendarResourceId, nameMap, descriptionMap, type, active,
+				calendarResourceId, nameMap, descriptionMap, active,
 				serviceContext);
 
 			if (defaultCalendarId > 0) {
 				CalendarLocalServiceUtil.updateCalendar(
 					defaultCalendarId, true);
 			}
+		}
+	}
+
+	public void updateDiscussion(
+			ActionRequest actionRequest, ActionResponse actionResponse)
+		throws Exception {
+
+		String cmd = ParamUtil.getString(actionRequest, Constants.CMD);
+
+		if (cmd.equals(Constants.ADD) || cmd.equals(Constants.UPDATE)) {
+			updateMessage(actionRequest);
+		}
+		else if (cmd.equals(Constants.DELETE)) {
+			deleteMessage(actionRequest);
+		}
+		else if (cmd.equals(Constants.SUBSCRIBE_TO_COMMENTS)) {
+			subscribeToComments(actionRequest, true);
+		}
+		else if (cmd.equals(Constants.UNSUBSCRIBE_FROM_COMMENTS)) {
+			subscribeToComments(actionRequest, false);
 		}
 	}
 
@@ -392,6 +457,25 @@ public class CalendarPortlet extends MVCPortlet {
 		}
 	}
 
+	protected void deleteMessage(ActionRequest actionRequest) throws Exception {
+		long groupId = PortalUtil.getScopeGroupId(actionRequest);
+
+		String className = ParamUtil.getString(actionRequest, "className");
+		long classPK = ParamUtil.getLong(actionRequest, "classPK");
+		String permissionClassName = ParamUtil.getString(
+			actionRequest, "permissionClassName");
+		long permissionClassPK = ParamUtil.getLong(
+			actionRequest, "permissionClassPK");
+		long permissionOwnerId = ParamUtil.getLong(
+			actionRequest, "permissionOwnerId");
+
+		long messageId = ParamUtil.getLong(actionRequest, "messageId");
+
+		MBMessageServiceUtil.deleteDiscussionMessage(
+			groupId, className, classPK, permissionClassName, permissionClassPK,
+			permissionOwnerId, messageId);
+	}
+
 	protected void getCalendar(PortletRequest portletRequest) throws Exception {
 		long calendarId = ParamUtil.getLong(portletRequest, "calendarId");
 
@@ -406,6 +490,10 @@ public class CalendarPortlet extends MVCPortlet {
 
 	protected void getCalendarBooking(PortletRequest portletRequest)
 		throws Exception {
+
+		if (portletRequest.getAttribute(WebKeys.CALENDAR_BOOKING) != null) {
+			return;
+		}
 
 		long calendarBookingId = ParamUtil.getLong(
 			portletRequest, "calendarBookingId");
@@ -432,9 +520,8 @@ public class CalendarPortlet extends MVCPortlet {
 		CalendarResource calendarResource = null;
 
 		if (calendarResourceId > 0) {
-			calendarResource =
-				CalendarResourceServiceUtil.getCalendarResource(
-					calendarResourceId);
+			calendarResource = CalendarResourceServiceUtil.getCalendarResource(
+				calendarResourceId);
 		}
 		else if ((classNameId > 0) && (classPK > 0)) {
 			calendarResource = CalendarResourceUtil.getCalendarResource(
@@ -462,6 +549,28 @@ public class CalendarPortlet extends MVCPortlet {
 
 		return JCalendarUtil.getJCalendar(
 			year, month, day, hour, minute, 0, 0, getTimeZone(portletRequest));
+	}
+
+	protected String getNotificationTypeSettings(
+		ActionRequest actionRequest, NotificationType notificationType) {
+
+		UnicodeProperties notificationTypeSettingsProperties =
+			new UnicodeProperties(true);
+
+		if (notificationType == NotificationType.EMAIL) {
+			String fromAddress = ParamUtil.getString(
+				actionRequest, "fromAddress");
+			String fromName = ParamUtil.getString(actionRequest, "fromName");
+
+			notificationTypeSettingsProperties.put(
+				CalendarNotificationTemplateConstants.PROPERTY_FROM_ADDRESS,
+				fromAddress);
+			notificationTypeSettingsProperties.put(
+				CalendarNotificationTemplateConstants.PROPERTY_FROM_NAME,
+				fromName);
+		}
+
+		return notificationTypeSettingsProperties.toString();
 	}
 
 	protected String getRecurrence(ActionRequest actionRequest) {
@@ -584,7 +693,10 @@ public class CalendarPortlet extends MVCPortlet {
 
 	@Override
 	protected boolean isSessionErrorException(Throwable cause) {
-		if (cause instanceof CalendarResourceCodeException ||
+		if (cause instanceof CalendarBookingDurationException ||
+			cause instanceof CalendarNameException ||
+			cause instanceof CalendarResourceCodeException ||
+			cause instanceof CalendarResourceNameException ||
 			cause instanceof DuplicateCalendarResourceException ||
 			cause instanceof PrincipalException) {
 
@@ -598,6 +710,9 @@ public class CalendarPortlet extends MVCPortlet {
 		ResourceRequest resourceRequest, ResourceResponse resourceResponse)
 			throws Exception {
 
+		ThemeDisplay themeDisplay = (ThemeDisplay)resourceRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
 		long parentCalendarBookingId = ParamUtil.getLong(
 			resourceRequest, "parentCalendarBookingId");
 
@@ -607,16 +722,63 @@ public class CalendarPortlet extends MVCPortlet {
 			CalendarBookingServiceUtil.getChildCalendarBookings(
 				parentCalendarBookingId);
 
-		for (CalendarBooking calendarBooking : childCalendarBookings) {
-			CalendarResource calendarResource =
-				calendarBooking.getCalendarResource();
+		Collection<CalendarResource> calendarResources =
+			CalendarUtil.getCalendarResources(childCalendarBookings);
 
-			addCalendarJSONObject(
-				resourceRequest, jsonArray, calendarResource.getClassNameId(),
-				calendarResource.getClassPK());
+		for (CalendarResource calendarResource : calendarResources) {
+			JSONObject jsonObject = CalendarUtil.toCalendarResourceJSONObject(
+				themeDisplay, calendarResource);
+
+			jsonArray.put(jsonObject);
 		}
 
 		writeJSON(resourceRequest, resourceResponse, jsonArray);
+	}
+
+	protected void serveCalendarBookingsRSS(
+			ResourceRequest resourceRequest, ResourceResponse resourceResponse)
+		throws Exception {
+
+		if (!PortalUtil.isRSSFeedsEnabled()) {
+			PortalUtil.sendRSSFeedsDisabledError(
+				resourceRequest, resourceResponse);
+
+			return;
+		}
+
+		ThemeDisplay themeDisplay = (ThemeDisplay)resourceRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
+		long calendarId = ParamUtil.getLong(resourceRequest, "calendarId");
+
+		PortletPreferences portletPreferences =
+			resourceRequest.getPreferences();
+
+		long timeInterval = GetterUtil.getLong(
+			portletPreferences.getValue("rssTimeInterval", StringPool.BLANK),
+			RSSUtil.TIME_INTERVAL_DEFAULT);
+
+		long startTime = System.currentTimeMillis();
+
+		long endTime = startTime + timeInterval;
+
+		int max = GetterUtil.getInteger(
+			portletPreferences.getValue("rssDelta", StringPool.BLANK),
+			SearchContainer.DEFAULT_DELTA);
+		String rssFeedType = portletPreferences.getValue(
+			"rssFeedType", RSSUtil.FORMAT_DEFAULT);
+		String type = RSSUtil.getFormatType(rssFeedType);
+		double version = RSSUtil.getFeedTypeVersion(rssFeedType);
+		String displayStyle = portletPreferences.getValue(
+			"rssDisplayStyle", RSSUtil.DISPLAY_STYLE_DEFAULT);
+
+		String rss = CalendarBookingServiceUtil.getCalendarBookingsRSS(
+			calendarId, startTime, endTime, max, type, version, displayStyle,
+			themeDisplay);
+
+		PortletResponseUtil.sendFile(
+			resourceRequest, resourceResponse, null, rss.getBytes(),
+			ContentTypes.TEXT_XML_UTF8);
 	}
 
 	protected void serveCalendarRenderingRules(
@@ -633,13 +795,13 @@ public class CalendarPortlet extends MVCPortlet {
 			CalendarBookingWorkflowConstants.STATUS_MAYBE,
 			CalendarBookingWorkflowConstants.STATUS_PENDING
 		};
-		long startDate = ParamUtil.getLong(resourceRequest, "startDate");
-		long endDate = ParamUtil.getLong(resourceRequest, "endDate");
+		long startTime = ParamUtil.getLong(resourceRequest, "startTime");
+		long endTime = ParamUtil.getLong(resourceRequest, "endTime");
 		String ruleName = ParamUtil.getString(resourceRequest, "ruleName");
 
 		if (calendarIds.length > 0) {
 			JSONObject jsonObject = CalendarUtil.getCalendarRenderingRules(
-				themeDisplay, calendarIds, statuses, startDate, endDate,
+				themeDisplay, calendarIds, statuses, startTime, endTime,
 				ruleName);
 
 			writeJSON(resourceRequest, resourceResponse, jsonObject);
@@ -678,13 +840,16 @@ public class CalendarPortlet extends MVCPortlet {
 
 		long groupClassNameId = PortalUtil.getClassNameId(Group.class);
 
-		String[] params = {"usersGroups:" + themeDisplay.getUserId() + ":long"};
-
 		String name = StringUtil.merge(
 			CustomSQLUtil.keywords(keywords), StringPool.BLANK);
 
-		List<Group> groups = GroupServiceUtil.search(
-			themeDisplay.getCompanyId(), name, null, params, 0,
+		LinkedHashMap<String, Object> params =
+			new LinkedHashMap<String, Object>();
+
+		params.put("usersGroups", themeDisplay.getUserId());
+
+		List<Group> groups = GroupLocalServiceUtil.search(
+			themeDisplay.getCompanyId(), name, null, params, true, 0,
 			SearchContainer.DEFAULT_DELTA);
 
 		for (Group group : groups) {
@@ -766,6 +931,80 @@ public class CalendarPortlet extends MVCPortlet {
 		}
 
 		writeJSON(resourceRequest, resourceResponse, jsonObject);
+	}
+
+	protected void subscribeToComments(
+			ActionRequest actionRequest, boolean subscribe)
+		throws Exception {
+
+		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
+		String className = ParamUtil.getString(actionRequest, "className");
+		long classPK = ParamUtil.getLong(actionRequest, "classPK");
+
+		if (subscribe) {
+			SubscriptionLocalServiceUtil.addSubscription(
+				themeDisplay.getUserId(), themeDisplay.getScopeGroupId(),
+				className, classPK);
+		}
+		else {
+			SubscriptionLocalServiceUtil.deleteSubscription(
+				themeDisplay.getUserId(), className, classPK);
+		}
+	}
+
+	protected MBMessage updateMessage(ActionRequest actionRequest)
+		throws Exception {
+
+		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
+		String className = ParamUtil.getString(actionRequest, "className");
+		long classPK = ParamUtil.getLong(actionRequest, "classPK");
+		String permissionClassName = ParamUtil.getString(
+			actionRequest, "permissionClassName");
+		long permissionClassPK = ParamUtil.getLong(
+			actionRequest, "permissionClassPK");
+		long permissionOwnerId = ParamUtil.getLong(
+			actionRequest, "permissionOwnerId");
+
+		long messageId = ParamUtil.getLong(actionRequest, "messageId");
+
+		long threadId = ParamUtil.getLong(actionRequest, "threadId");
+		long parentMessageId = ParamUtil.getLong(
+			actionRequest, "parentMessageId");
+		String subject = ParamUtil.getString(actionRequest, "subject");
+		String body = ParamUtil.getString(actionRequest, "body");
+
+		ServiceContext serviceContext = ServiceContextFactory.getInstance(
+			MBMessage.class.getName(), actionRequest);
+
+		MBMessage message = null;
+
+		if (messageId <= 0) {
+			message = MBMessageServiceUtil.addDiscussionMessage(
+				serviceContext.getScopeGroupId(), className, classPK,
+				permissionClassName, permissionClassPK, permissionOwnerId,
+				threadId, parentMessageId, subject, body, serviceContext);
+		}
+		else {
+			message = MBMessageServiceUtil.updateDiscussionMessage(
+				className, classPK, permissionClassName, permissionClassPK,
+				permissionOwnerId, messageId, subject, body, serviceContext);
+		}
+
+		// Subscription
+
+		boolean subscribe = ParamUtil.getBoolean(actionRequest, "subscribe");
+
+		if (subscribe) {
+			SubscriptionLocalServiceUtil.addSubscription(
+				themeDisplay.getUserId(), themeDisplay.getScopeGroupId(),
+				className, classPK);
+		}
+
+		return message;
 	}
 
 }

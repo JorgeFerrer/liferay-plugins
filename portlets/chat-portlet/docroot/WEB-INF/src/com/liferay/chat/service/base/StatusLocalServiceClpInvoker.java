@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -108,7 +108,9 @@ public class StatusLocalServiceClpInvoker {
 
 		_methodName46 = "getGroupStatuses";
 
-		_methodParameterTypes46 = new String[] { "long", "long", "int", "int" };
+		_methodParameterTypes46 = new String[] {
+				"long", "long", "java.lang.String[][]", "int", "int"
+			};
 
 		_methodName47 = "getSocialStatuses";
 
@@ -240,8 +242,9 @@ public class StatusLocalServiceClpInvoker {
 				Arrays.deepEquals(_methodParameterTypes46, parameterTypes)) {
 			return StatusLocalServiceUtil.getGroupStatuses(((Long)arguments[0]).longValue(),
 				((Long)arguments[1]).longValue(),
-				((Integer)arguments[2]).intValue(),
-				((Integer)arguments[3]).intValue());
+				(java.lang.String[])arguments[2],
+				((Integer)arguments[3]).intValue(),
+				((Integer)arguments[4]).intValue());
 		}
 
 		if (_methodName47.equals(name) &&

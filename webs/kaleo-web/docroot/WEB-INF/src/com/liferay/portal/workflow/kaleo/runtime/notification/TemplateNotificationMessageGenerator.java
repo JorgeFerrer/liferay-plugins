@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -16,7 +16,6 @@ package com.liferay.portal.workflow.kaleo.runtime.notification;
 
 import com.liferay.portal.kernel.template.StringTemplateResource;
 import com.liferay.portal.kernel.template.Template;
-import com.liferay.portal.kernel.template.TemplateContextType;
 import com.liferay.portal.kernel.template.TemplateManagerUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowTaskAssignee;
@@ -64,7 +63,7 @@ public class TemplateNotificationMessageGenerator
 			Template template = TemplateManagerUtil.getTemplate(
 				templateManagerName,
 				new StringTemplateResource(templateId, notificationTemplate),
-				TemplateContextType.RESTRICTED);
+				false);
 
 			populateContextVariables(template, executionContext);
 

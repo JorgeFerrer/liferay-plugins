@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -19,8 +19,6 @@ import com.liferay.opensocial.model.Gadget;
 import com.liferay.opensocial.model.impl.GadgetImpl;
 import com.liferay.opensocial.model.impl.GadgetModelImpl;
 
-import com.liferay.portal.NoSuchModelException;
-import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.cache.CacheRegistryUtil;
 import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
 import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
@@ -38,6 +36,7 @@ import com.liferay.portal.kernel.util.InstanceFactory;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -47,7 +46,6 @@ import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import com.liferay.portal.model.CacheModel;
 import com.liferay.portal.model.ModelListener;
 import com.liferay.portal.security.permission.InlineSQLHelperUtil;
-import com.liferay.portal.service.persistence.UserPersistence;
 import com.liferay.portal.service.persistence.impl.BasePersistenceImpl;
 
 import java.io.Serializable;
@@ -55,6 +53,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * The persistence implementation for the gadget service.
@@ -116,6 +115,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @return the matching gadgets
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Gadget> findByUuid(String uuid) throws SystemException {
 		return findByUuid(uuid, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
@@ -133,6 +133,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @return the range of matching gadgets
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Gadget> findByUuid(String uuid, int start, int end)
 		throws SystemException {
 		return findByUuid(uuid, start, end, null);
@@ -152,6 +153,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @return the ordered range of matching gadgets
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Gadget> findByUuid(String uuid, int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -195,16 +197,18 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 
 			query.append(_SQL_SELECT_GADGET_WHERE);
 
+			boolean bindUuid = false;
+
 			if (uuid == null) {
 				query.append(_FINDER_COLUMN_UUID_UUID_1);
 			}
+			else if (uuid.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_UUID_UUID_3);
+			}
 			else {
-				if (uuid.equals(StringPool.BLANK)) {
-					query.append(_FINDER_COLUMN_UUID_UUID_3);
-				}
-				else {
-					query.append(_FINDER_COLUMN_UUID_UUID_2);
-				}
+				bindUuid = true;
+
+				query.append(_FINDER_COLUMN_UUID_UUID_2);
 			}
 
 			if (orderByComparator != null) {
@@ -227,7 +231,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 
 				QueryPos qPos = QueryPos.getInstance(q);
 
-				if (uuid != null) {
+				if (bindUuid) {
 					qPos.add(uuid);
 				}
 
@@ -270,6 +274,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @throws com.liferay.opensocial.NoSuchGadgetException if a matching gadget could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Gadget findByUuid_First(String uuid,
 		OrderByComparator orderByComparator)
 		throws NoSuchGadgetException, SystemException {
@@ -299,6 +304,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @return the first matching gadget, or <code>null</code> if a matching gadget could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Gadget fetchByUuid_First(String uuid,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<Gadget> list = findByUuid(uuid, 0, 1, orderByComparator);
@@ -319,6 +325,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @throws com.liferay.opensocial.NoSuchGadgetException if a matching gadget could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Gadget findByUuid_Last(String uuid,
 		OrderByComparator orderByComparator)
 		throws NoSuchGadgetException, SystemException {
@@ -348,6 +355,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @return the last matching gadget, or <code>null</code> if a matching gadget could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Gadget fetchByUuid_Last(String uuid,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByUuid(uuid);
@@ -371,6 +379,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @throws com.liferay.opensocial.NoSuchGadgetException if a gadget with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Gadget[] findByUuid_PrevAndNext(long gadgetId, String uuid,
 		OrderByComparator orderByComparator)
 		throws NoSuchGadgetException, SystemException {
@@ -415,16 +424,18 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 
 		query.append(_SQL_SELECT_GADGET_WHERE);
 
+		boolean bindUuid = false;
+
 		if (uuid == null) {
 			query.append(_FINDER_COLUMN_UUID_UUID_1);
 		}
+		else if (uuid.equals(StringPool.BLANK)) {
+			query.append(_FINDER_COLUMN_UUID_UUID_3);
+		}
 		else {
-			if (uuid.equals(StringPool.BLANK)) {
-				query.append(_FINDER_COLUMN_UUID_UUID_3);
-			}
-			else {
-				query.append(_FINDER_COLUMN_UUID_UUID_2);
-			}
+			bindUuid = true;
+
+			query.append(_FINDER_COLUMN_UUID_UUID_2);
 		}
 
 		if (orderByComparator != null) {
@@ -495,7 +506,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 
 		QueryPos qPos = QueryPos.getInstance(q);
 
-		if (uuid != null) {
+		if (bindUuid) {
 			qPos.add(uuid);
 		}
 
@@ -524,6 +535,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @return the matching gadgets that the user has permission to view
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Gadget> filterFindByUuid(String uuid) throws SystemException {
 		return filterFindByUuid(uuid, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
@@ -541,6 +553,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @return the range of matching gadgets that the user has permission to view
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Gadget> filterFindByUuid(String uuid, int start, int end)
 		throws SystemException {
 		return filterFindByUuid(uuid, start, end, null);
@@ -560,6 +573,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @return the ordered range of matching gadgets that the user has permission to view
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Gadget> filterFindByUuid(String uuid, int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		if (!InlineSQLHelperUtil.isEnabled()) {
@@ -583,16 +597,18 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 			query.append(_FILTER_SQL_SELECT_GADGET_NO_INLINE_DISTINCT_WHERE_1);
 		}
 
+		boolean bindUuid = false;
+
 		if (uuid == null) {
-			query.append(_FINDER_COLUMN_UUID_UUID_1);
+			query.append(_FINDER_COLUMN_UUID_UUID_1_SQL);
+		}
+		else if (uuid.equals(StringPool.BLANK)) {
+			query.append(_FINDER_COLUMN_UUID_UUID_3_SQL);
 		}
 		else {
-			if (uuid.equals(StringPool.BLANK)) {
-				query.append(_FINDER_COLUMN_UUID_UUID_3);
-			}
-			else {
-				query.append(_FINDER_COLUMN_UUID_UUID_2);
-			}
+			bindUuid = true;
+
+			query.append(_FINDER_COLUMN_UUID_UUID_2_SQL);
 		}
 
 		if (!getDB().isSupportsInlineDistinct()) {
@@ -602,11 +618,11 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 		if (orderByComparator != null) {
 			if (getDB().isSupportsInlineDistinct()) {
 				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
-					orderByComparator);
+					orderByComparator, true);
 			}
 			else {
 				appendOrderByComparator(query, _ORDER_BY_ENTITY_TABLE,
-					orderByComparator);
+					orderByComparator, true);
 			}
 		}
 		else {
@@ -637,7 +653,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 
 			QueryPos qPos = QueryPos.getInstance(q);
 
-			if (uuid != null) {
+			if (bindUuid) {
 				qPos.add(uuid);
 			}
 
@@ -661,6 +677,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @throws com.liferay.opensocial.NoSuchGadgetException if a gadget with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Gadget[] filterFindByUuid_PrevAndNext(long gadgetId, String uuid,
 		OrderByComparator orderByComparator)
 		throws NoSuchGadgetException, SystemException {
@@ -715,16 +732,18 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 			query.append(_FILTER_SQL_SELECT_GADGET_NO_INLINE_DISTINCT_WHERE_1);
 		}
 
+		boolean bindUuid = false;
+
 		if (uuid == null) {
-			query.append(_FINDER_COLUMN_UUID_UUID_1);
+			query.append(_FINDER_COLUMN_UUID_UUID_1_SQL);
+		}
+		else if (uuid.equals(StringPool.BLANK)) {
+			query.append(_FINDER_COLUMN_UUID_UUID_3_SQL);
 		}
 		else {
-			if (uuid.equals(StringPool.BLANK)) {
-				query.append(_FINDER_COLUMN_UUID_UUID_3);
-			}
-			else {
-				query.append(_FINDER_COLUMN_UUID_UUID_2);
-			}
+			bindUuid = true;
+
+			query.append(_FINDER_COLUMN_UUID_UUID_2_SQL);
 		}
 
 		if (!getDB().isSupportsInlineDistinct()) {
@@ -824,7 +843,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 
 		QueryPos qPos = QueryPos.getInstance(q);
 
-		if (uuid != null) {
+		if (bindUuid) {
 			qPos.add(uuid);
 		}
 
@@ -852,6 +871,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @param uuid the uuid
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByUuid(String uuid) throws SystemException {
 		for (Gadget gadget : findByUuid(uuid, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
@@ -866,6 +886,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @return the number of matching gadgets
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByUuid(String uuid) throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_UUID;
 
@@ -879,16 +900,18 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 
 			query.append(_SQL_COUNT_GADGET_WHERE);
 
+			boolean bindUuid = false;
+
 			if (uuid == null) {
 				query.append(_FINDER_COLUMN_UUID_UUID_1);
 			}
+			else if (uuid.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_UUID_UUID_3);
+			}
 			else {
-				if (uuid.equals(StringPool.BLANK)) {
-					query.append(_FINDER_COLUMN_UUID_UUID_3);
-				}
-				else {
-					query.append(_FINDER_COLUMN_UUID_UUID_2);
-				}
+				bindUuid = true;
+
+				query.append(_FINDER_COLUMN_UUID_UUID_2);
 			}
 
 			String sql = query.toString();
@@ -902,7 +925,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 
 				QueryPos qPos = QueryPos.getInstance(q);
 
-				if (uuid != null) {
+				if (bindUuid) {
 					qPos.add(uuid);
 				}
 
@@ -930,6 +953,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @return the number of matching gadgets that the user has permission to view
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int filterCountByUuid(String uuid) throws SystemException {
 		if (!InlineSQLHelperUtil.isEnabled()) {
 			return countByUuid(uuid);
@@ -939,16 +963,18 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 
 		query.append(_FILTER_SQL_COUNT_GADGET_WHERE);
 
+		boolean bindUuid = false;
+
 		if (uuid == null) {
-			query.append(_FINDER_COLUMN_UUID_UUID_1);
+			query.append(_FINDER_COLUMN_UUID_UUID_1_SQL);
+		}
+		else if (uuid.equals(StringPool.BLANK)) {
+			query.append(_FINDER_COLUMN_UUID_UUID_3_SQL);
 		}
 		else {
-			if (uuid.equals(StringPool.BLANK)) {
-				query.append(_FINDER_COLUMN_UUID_UUID_3);
-			}
-			else {
-				query.append(_FINDER_COLUMN_UUID_UUID_2);
-			}
+			bindUuid = true;
+
+			query.append(_FINDER_COLUMN_UUID_UUID_2_SQL);
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
@@ -966,7 +992,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 
 			QueryPos qPos = QueryPos.getInstance(q);
 
-			if (uuid != null) {
+			if (bindUuid) {
 				qPos.add(uuid);
 			}
 
@@ -984,7 +1010,10 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 
 	private static final String _FINDER_COLUMN_UUID_UUID_1 = "gadget.uuid IS NULL";
 	private static final String _FINDER_COLUMN_UUID_UUID_2 = "gadget.uuid = ?";
-	private static final String _FINDER_COLUMN_UUID_UUID_3 = "(gadget.uuid IS NULL OR gadget.uuid = ?)";
+	private static final String _FINDER_COLUMN_UUID_UUID_3 = "(gadget.uuid IS NULL OR gadget.uuid = '')";
+	private static final String _FINDER_COLUMN_UUID_UUID_1_SQL = "gadget.uuid_ IS NULL";
+	private static final String _FINDER_COLUMN_UUID_UUID_2_SQL = "gadget.uuid_ = ?";
+	private static final String _FINDER_COLUMN_UUID_UUID_3_SQL = "(gadget.uuid_ IS NULL OR gadget.uuid_ = '')";
 	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_UUID_C = new FinderPath(GadgetModelImpl.ENTITY_CACHE_ENABLED,
 			GadgetModelImpl.FINDER_CACHE_ENABLED, GadgetImpl.class,
 			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByUuid_C",
@@ -1015,6 +1044,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @return the matching gadgets
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Gadget> findByUuid_C(String uuid, long companyId)
 		throws SystemException {
 		return findByUuid_C(uuid, companyId, QueryUtil.ALL_POS,
@@ -1035,6 +1065,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @return the range of matching gadgets
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Gadget> findByUuid_C(String uuid, long companyId, int start,
 		int end) throws SystemException {
 		return findByUuid_C(uuid, companyId, start, end, null);
@@ -1055,6 +1086,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @return the ordered range of matching gadgets
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Gadget> findByUuid_C(String uuid, long companyId, int start,
 		int end, OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -1103,16 +1135,18 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 
 			query.append(_SQL_SELECT_GADGET_WHERE);
 
+			boolean bindUuid = false;
+
 			if (uuid == null) {
 				query.append(_FINDER_COLUMN_UUID_C_UUID_1);
 			}
+			else if (uuid.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_UUID_C_UUID_3);
+			}
 			else {
-				if (uuid.equals(StringPool.BLANK)) {
-					query.append(_FINDER_COLUMN_UUID_C_UUID_3);
-				}
-				else {
-					query.append(_FINDER_COLUMN_UUID_C_UUID_2);
-				}
+				bindUuid = true;
+
+				query.append(_FINDER_COLUMN_UUID_C_UUID_2);
 			}
 
 			query.append(_FINDER_COLUMN_UUID_C_COMPANYID_2);
@@ -1137,7 +1171,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 
 				QueryPos qPos = QueryPos.getInstance(q);
 
-				if (uuid != null) {
+				if (bindUuid) {
 					qPos.add(uuid);
 				}
 
@@ -1183,6 +1217,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @throws com.liferay.opensocial.NoSuchGadgetException if a matching gadget could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Gadget findByUuid_C_First(String uuid, long companyId,
 		OrderByComparator orderByComparator)
 		throws NoSuchGadgetException, SystemException {
@@ -1216,6 +1251,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @return the first matching gadget, or <code>null</code> if a matching gadget could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Gadget fetchByUuid_C_First(String uuid, long companyId,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<Gadget> list = findByUuid_C(uuid, companyId, 0, 1,
@@ -1238,6 +1274,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @throws com.liferay.opensocial.NoSuchGadgetException if a matching gadget could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Gadget findByUuid_C_Last(String uuid, long companyId,
 		OrderByComparator orderByComparator)
 		throws NoSuchGadgetException, SystemException {
@@ -1271,6 +1308,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @return the last matching gadget, or <code>null</code> if a matching gadget could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Gadget fetchByUuid_C_Last(String uuid, long companyId,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByUuid_C(uuid, companyId);
@@ -1296,6 +1334,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @throws com.liferay.opensocial.NoSuchGadgetException if a gadget with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Gadget[] findByUuid_C_PrevAndNext(long gadgetId, String uuid,
 		long companyId, OrderByComparator orderByComparator)
 		throws NoSuchGadgetException, SystemException {
@@ -1341,16 +1380,18 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 
 		query.append(_SQL_SELECT_GADGET_WHERE);
 
+		boolean bindUuid = false;
+
 		if (uuid == null) {
 			query.append(_FINDER_COLUMN_UUID_C_UUID_1);
 		}
+		else if (uuid.equals(StringPool.BLANK)) {
+			query.append(_FINDER_COLUMN_UUID_C_UUID_3);
+		}
 		else {
-			if (uuid.equals(StringPool.BLANK)) {
-				query.append(_FINDER_COLUMN_UUID_C_UUID_3);
-			}
-			else {
-				query.append(_FINDER_COLUMN_UUID_C_UUID_2);
-			}
+			bindUuid = true;
+
+			query.append(_FINDER_COLUMN_UUID_C_UUID_2);
 		}
 
 		query.append(_FINDER_COLUMN_UUID_C_COMPANYID_2);
@@ -1423,7 +1464,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 
 		QueryPos qPos = QueryPos.getInstance(q);
 
-		if (uuid != null) {
+		if (bindUuid) {
 			qPos.add(uuid);
 		}
 
@@ -1455,6 +1496,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @return the matching gadgets that the user has permission to view
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Gadget> filterFindByUuid_C(String uuid, long companyId)
 		throws SystemException {
 		return filterFindByUuid_C(uuid, companyId, QueryUtil.ALL_POS,
@@ -1475,6 +1517,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @return the range of matching gadgets that the user has permission to view
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Gadget> filterFindByUuid_C(String uuid, long companyId,
 		int start, int end) throws SystemException {
 		return filterFindByUuid_C(uuid, companyId, start, end, null);
@@ -1495,6 +1538,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @return the ordered range of matching gadgets that the user has permission to view
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Gadget> filterFindByUuid_C(String uuid, long companyId,
 		int start, int end, OrderByComparator orderByComparator)
 		throws SystemException {
@@ -1519,16 +1563,18 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 			query.append(_FILTER_SQL_SELECT_GADGET_NO_INLINE_DISTINCT_WHERE_1);
 		}
 
+		boolean bindUuid = false;
+
 		if (uuid == null) {
-			query.append(_FINDER_COLUMN_UUID_C_UUID_1);
+			query.append(_FINDER_COLUMN_UUID_C_UUID_1_SQL);
+		}
+		else if (uuid.equals(StringPool.BLANK)) {
+			query.append(_FINDER_COLUMN_UUID_C_UUID_3_SQL);
 		}
 		else {
-			if (uuid.equals(StringPool.BLANK)) {
-				query.append(_FINDER_COLUMN_UUID_C_UUID_3);
-			}
-			else {
-				query.append(_FINDER_COLUMN_UUID_C_UUID_2);
-			}
+			bindUuid = true;
+
+			query.append(_FINDER_COLUMN_UUID_C_UUID_2_SQL);
 		}
 
 		query.append(_FINDER_COLUMN_UUID_C_COMPANYID_2);
@@ -1540,11 +1586,11 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 		if (orderByComparator != null) {
 			if (getDB().isSupportsInlineDistinct()) {
 				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
-					orderByComparator);
+					orderByComparator, true);
 			}
 			else {
 				appendOrderByComparator(query, _ORDER_BY_ENTITY_TABLE,
-					orderByComparator);
+					orderByComparator, true);
 			}
 		}
 		else {
@@ -1575,7 +1621,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 
 			QueryPos qPos = QueryPos.getInstance(q);
 
-			if (uuid != null) {
+			if (bindUuid) {
 				qPos.add(uuid);
 			}
 
@@ -1602,6 +1648,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @throws com.liferay.opensocial.NoSuchGadgetException if a gadget with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Gadget[] filterFindByUuid_C_PrevAndNext(long gadgetId, String uuid,
 		long companyId, OrderByComparator orderByComparator)
 		throws NoSuchGadgetException, SystemException {
@@ -1657,16 +1704,18 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 			query.append(_FILTER_SQL_SELECT_GADGET_NO_INLINE_DISTINCT_WHERE_1);
 		}
 
+		boolean bindUuid = false;
+
 		if (uuid == null) {
-			query.append(_FINDER_COLUMN_UUID_C_UUID_1);
+			query.append(_FINDER_COLUMN_UUID_C_UUID_1_SQL);
+		}
+		else if (uuid.equals(StringPool.BLANK)) {
+			query.append(_FINDER_COLUMN_UUID_C_UUID_3_SQL);
 		}
 		else {
-			if (uuid.equals(StringPool.BLANK)) {
-				query.append(_FINDER_COLUMN_UUID_C_UUID_3);
-			}
-			else {
-				query.append(_FINDER_COLUMN_UUID_C_UUID_2);
-			}
+			bindUuid = true;
+
+			query.append(_FINDER_COLUMN_UUID_C_UUID_2_SQL);
 		}
 
 		query.append(_FINDER_COLUMN_UUID_C_COMPANYID_2);
@@ -1768,7 +1817,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 
 		QueryPos qPos = QueryPos.getInstance(q);
 
-		if (uuid != null) {
+		if (bindUuid) {
 			qPos.add(uuid);
 		}
 
@@ -1799,6 +1848,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @param companyId the company ID
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByUuid_C(String uuid, long companyId)
 		throws SystemException {
 		for (Gadget gadget : findByUuid_C(uuid, companyId, QueryUtil.ALL_POS,
@@ -1815,6 +1865,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @return the number of matching gadgets
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByUuid_C(String uuid, long companyId)
 		throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_UUID_C;
@@ -1829,16 +1880,18 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 
 			query.append(_SQL_COUNT_GADGET_WHERE);
 
+			boolean bindUuid = false;
+
 			if (uuid == null) {
 				query.append(_FINDER_COLUMN_UUID_C_UUID_1);
 			}
+			else if (uuid.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_UUID_C_UUID_3);
+			}
 			else {
-				if (uuid.equals(StringPool.BLANK)) {
-					query.append(_FINDER_COLUMN_UUID_C_UUID_3);
-				}
-				else {
-					query.append(_FINDER_COLUMN_UUID_C_UUID_2);
-				}
+				bindUuid = true;
+
+				query.append(_FINDER_COLUMN_UUID_C_UUID_2);
 			}
 
 			query.append(_FINDER_COLUMN_UUID_C_COMPANYID_2);
@@ -1854,7 +1907,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 
 				QueryPos qPos = QueryPos.getInstance(q);
 
-				if (uuid != null) {
+				if (bindUuid) {
 					qPos.add(uuid);
 				}
 
@@ -1885,6 +1938,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @return the number of matching gadgets that the user has permission to view
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int filterCountByUuid_C(String uuid, long companyId)
 		throws SystemException {
 		if (!InlineSQLHelperUtil.isEnabled()) {
@@ -1895,16 +1949,18 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 
 		query.append(_FILTER_SQL_COUNT_GADGET_WHERE);
 
+		boolean bindUuid = false;
+
 		if (uuid == null) {
-			query.append(_FINDER_COLUMN_UUID_C_UUID_1);
+			query.append(_FINDER_COLUMN_UUID_C_UUID_1_SQL);
+		}
+		else if (uuid.equals(StringPool.BLANK)) {
+			query.append(_FINDER_COLUMN_UUID_C_UUID_3_SQL);
 		}
 		else {
-			if (uuid.equals(StringPool.BLANK)) {
-				query.append(_FINDER_COLUMN_UUID_C_UUID_3);
-			}
-			else {
-				query.append(_FINDER_COLUMN_UUID_C_UUID_2);
-			}
+			bindUuid = true;
+
+			query.append(_FINDER_COLUMN_UUID_C_UUID_2_SQL);
 		}
 
 		query.append(_FINDER_COLUMN_UUID_C_COMPANYID_2);
@@ -1924,7 +1980,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 
 			QueryPos qPos = QueryPos.getInstance(q);
 
-			if (uuid != null) {
+			if (bindUuid) {
 				qPos.add(uuid);
 			}
 
@@ -1944,7 +2000,10 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 
 	private static final String _FINDER_COLUMN_UUID_C_UUID_1 = "gadget.uuid IS NULL AND ";
 	private static final String _FINDER_COLUMN_UUID_C_UUID_2 = "gadget.uuid = ? AND ";
-	private static final String _FINDER_COLUMN_UUID_C_UUID_3 = "(gadget.uuid IS NULL OR gadget.uuid = ?) AND ";
+	private static final String _FINDER_COLUMN_UUID_C_UUID_3 = "(gadget.uuid IS NULL OR gadget.uuid = '') AND ";
+	private static final String _FINDER_COLUMN_UUID_C_UUID_1_SQL = "gadget.uuid_ IS NULL AND ";
+	private static final String _FINDER_COLUMN_UUID_C_UUID_2_SQL = "gadget.uuid_ = ? AND ";
+	private static final String _FINDER_COLUMN_UUID_C_UUID_3_SQL = "(gadget.uuid_ IS NULL OR gadget.uuid_ = '') AND ";
 	private static final String _FINDER_COLUMN_UUID_C_COMPANYID_2 = "gadget.companyId = ?";
 	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_COMPANYID =
 		new FinderPath(GadgetModelImpl.ENTITY_CACHE_ENABLED,
@@ -1975,6 +2034,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @return the matching gadgets
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Gadget> findByCompanyId(long companyId)
 		throws SystemException {
 		return findByCompanyId(companyId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
@@ -1994,6 +2054,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @return the range of matching gadgets
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Gadget> findByCompanyId(long companyId, int start, int end)
 		throws SystemException {
 		return findByCompanyId(companyId, start, end, null);
@@ -2013,6 +2074,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @return the ordered range of matching gadgets
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Gadget> findByCompanyId(long companyId, int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -2119,6 +2181,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @throws com.liferay.opensocial.NoSuchGadgetException if a matching gadget could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Gadget findByCompanyId_First(long companyId,
 		OrderByComparator orderByComparator)
 		throws NoSuchGadgetException, SystemException {
@@ -2148,6 +2211,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @return the first matching gadget, or <code>null</code> if a matching gadget could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Gadget fetchByCompanyId_First(long companyId,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<Gadget> list = findByCompanyId(companyId, 0, 1, orderByComparator);
@@ -2168,6 +2232,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @throws com.liferay.opensocial.NoSuchGadgetException if a matching gadget could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Gadget findByCompanyId_Last(long companyId,
 		OrderByComparator orderByComparator)
 		throws NoSuchGadgetException, SystemException {
@@ -2197,6 +2262,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @return the last matching gadget, or <code>null</code> if a matching gadget could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Gadget fetchByCompanyId_Last(long companyId,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByCompanyId(companyId);
@@ -2221,6 +2287,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @throws com.liferay.opensocial.NoSuchGadgetException if a gadget with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Gadget[] findByCompanyId_PrevAndNext(long gadgetId, long companyId,
 		OrderByComparator orderByComparator)
 		throws NoSuchGadgetException, SystemException {
@@ -2362,6 +2429,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @return the matching gadgets that the user has permission to view
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Gadget> filterFindByCompanyId(long companyId)
 		throws SystemException {
 		return filterFindByCompanyId(companyId, QueryUtil.ALL_POS,
@@ -2381,6 +2449,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @return the range of matching gadgets that the user has permission to view
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Gadget> filterFindByCompanyId(long companyId, int start, int end)
 		throws SystemException {
 		return filterFindByCompanyId(companyId, start, end, null);
@@ -2400,6 +2469,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @return the ordered range of matching gadgets that the user has permission to view
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Gadget> filterFindByCompanyId(long companyId, int start,
 		int end, OrderByComparator orderByComparator) throws SystemException {
 		if (!InlineSQLHelperUtil.isEnabled()) {
@@ -2432,11 +2502,11 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 		if (orderByComparator != null) {
 			if (getDB().isSupportsInlineDistinct()) {
 				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
-					orderByComparator);
+					orderByComparator, true);
 			}
 			else {
 				appendOrderByComparator(query, _ORDER_BY_ENTITY_TABLE,
-					orderByComparator);
+					orderByComparator, true);
 			}
 		}
 		else {
@@ -2489,6 +2559,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @throws com.liferay.opensocial.NoSuchGadgetException if a gadget with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Gadget[] filterFindByCompanyId_PrevAndNext(long gadgetId,
 		long companyId, OrderByComparator orderByComparator)
 		throws NoSuchGadgetException, SystemException {
@@ -2669,6 +2740,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @param companyId the company ID
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByCompanyId(long companyId) throws SystemException {
 		for (Gadget gadget : findByCompanyId(companyId, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
@@ -2683,6 +2755,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @return the number of matching gadgets
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByCompanyId(long companyId) throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_COMPANYID;
 
@@ -2735,6 +2808,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @return the number of matching gadgets that the user has permission to view
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int filterCountByCompanyId(long companyId) throws SystemException {
 		if (!InlineSQLHelperUtil.isEnabled()) {
 			return countByCompanyId(companyId);
@@ -2796,6 +2870,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @throws com.liferay.opensocial.NoSuchGadgetException if a matching gadget could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Gadget findByC_U(long companyId, String url)
 		throws NoSuchGadgetException, SystemException {
 		Gadget gadget = fetchByC_U(companyId, url);
@@ -2831,6 +2906,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @return the matching gadget, or <code>null</code> if a matching gadget could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Gadget fetchByC_U(long companyId, String url)
 		throws SystemException {
 		return fetchByC_U(companyId, url, true);
@@ -2845,6 +2921,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @return the matching gadget, or <code>null</code> if a matching gadget could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Gadget fetchByC_U(long companyId, String url,
 		boolean retrieveFromCache) throws SystemException {
 		Object[] finderArgs = new Object[] { companyId, url };
@@ -2872,16 +2949,18 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 
 			query.append(_FINDER_COLUMN_C_U_COMPANYID_2);
 
+			boolean bindUrl = false;
+
 			if (url == null) {
 				query.append(_FINDER_COLUMN_C_U_URL_1);
 			}
+			else if (url.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_C_U_URL_3);
+			}
 			else {
-				if (url.equals(StringPool.BLANK)) {
-					query.append(_FINDER_COLUMN_C_U_URL_3);
-				}
-				else {
-					query.append(_FINDER_COLUMN_C_U_URL_2);
-				}
+				bindUrl = true;
+
+				query.append(_FINDER_COLUMN_C_U_URL_2);
 			}
 
 			String sql = query.toString();
@@ -2897,7 +2976,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 
 				qPos.add(companyId);
 
-				if (url != null) {
+				if (bindUrl) {
 					qPos.add(url);
 				}
 
@@ -2949,6 +3028,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @return the gadget that was removed
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Gadget removeByC_U(long companyId, String url)
 		throws NoSuchGadgetException, SystemException {
 		Gadget gadget = findByC_U(companyId, url);
@@ -2964,6 +3044,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @return the number of matching gadgets
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByC_U(long companyId, String url) throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_C_U;
 
@@ -2979,16 +3060,18 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 
 			query.append(_FINDER_COLUMN_C_U_COMPANYID_2);
 
+			boolean bindUrl = false;
+
 			if (url == null) {
 				query.append(_FINDER_COLUMN_C_U_URL_1);
 			}
+			else if (url.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_C_U_URL_3);
+			}
 			else {
-				if (url.equals(StringPool.BLANK)) {
-					query.append(_FINDER_COLUMN_C_U_URL_3);
-				}
-				else {
-					query.append(_FINDER_COLUMN_C_U_URL_2);
-				}
+				bindUrl = true;
+
+				query.append(_FINDER_COLUMN_C_U_URL_2);
 			}
 
 			String sql = query.toString();
@@ -3004,7 +3087,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 
 				qPos.add(companyId);
 
-				if (url != null) {
+				if (bindUrl) {
 					qPos.add(url);
 				}
 
@@ -3028,20 +3111,20 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	private static final String _FINDER_COLUMN_C_U_COMPANYID_2 = "gadget.companyId = ? AND ";
 	private static final String _FINDER_COLUMN_C_U_URL_1 = "gadget.url IS NULL";
 	private static final String _FINDER_COLUMN_C_U_URL_2 = "gadget.url = ?";
-	private static final String _FINDER_COLUMN_C_U_URL_3 = "(gadget.url IS NULL OR gadget.url = ?)";
+	private static final String _FINDER_COLUMN_C_U_URL_3 = "(gadget.url IS NULL OR gadget.url = '')";
 
 	/**
 	 * Caches the gadget in the entity cache if it is enabled.
 	 *
 	 * @param gadget the gadget
 	 */
+	@Override
 	public void cacheResult(Gadget gadget) {
 		EntityCacheUtil.putResult(GadgetModelImpl.ENTITY_CACHE_ENABLED,
 			GadgetImpl.class, gadget.getPrimaryKey(), gadget);
 
 		FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_C_U,
-			new Object[] { Long.valueOf(gadget.getCompanyId()), gadget.getUrl() },
-			gadget);
+			new Object[] { gadget.getCompanyId(), gadget.getUrl() }, gadget);
 
 		gadget.resetOriginalValues();
 	}
@@ -3051,6 +3134,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 *
 	 * @param gadgets the gadgets
 	 */
+	@Override
 	public void cacheResult(List<Gadget> gadgets) {
 		for (Gadget gadget : gadgets) {
 			if (EntityCacheUtil.getResult(
@@ -3115,9 +3199,48 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 		}
 	}
 
+	protected void cacheUniqueFindersCache(Gadget gadget) {
+		if (gadget.isNew()) {
+			Object[] args = new Object[] { gadget.getCompanyId(), gadget.getUrl() };
+
+			FinderCacheUtil.putResult(FINDER_PATH_COUNT_BY_C_U, args,
+				Long.valueOf(1));
+			FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_C_U, args, gadget);
+		}
+		else {
+			GadgetModelImpl gadgetModelImpl = (GadgetModelImpl)gadget;
+
+			if ((gadgetModelImpl.getColumnBitmask() &
+					FINDER_PATH_FETCH_BY_C_U.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						gadget.getCompanyId(), gadget.getUrl()
+					};
+
+				FinderCacheUtil.putResult(FINDER_PATH_COUNT_BY_C_U, args,
+					Long.valueOf(1));
+				FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_C_U, args, gadget);
+			}
+		}
+	}
+
 	protected void clearUniqueFindersCache(Gadget gadget) {
-		FinderCacheUtil.removeResult(FINDER_PATH_FETCH_BY_C_U,
-			new Object[] { Long.valueOf(gadget.getCompanyId()), gadget.getUrl() });
+		GadgetModelImpl gadgetModelImpl = (GadgetModelImpl)gadget;
+
+		Object[] args = new Object[] { gadget.getCompanyId(), gadget.getUrl() };
+
+		FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_C_U, args);
+		FinderCacheUtil.removeResult(FINDER_PATH_FETCH_BY_C_U, args);
+
+		if ((gadgetModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_C_U.getColumnBitmask()) != 0) {
+			args = new Object[] {
+					gadgetModelImpl.getOriginalCompanyId(),
+					gadgetModelImpl.getOriginalUrl()
+				};
+
+			FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_C_U, args);
+			FinderCacheUtil.removeResult(FINDER_PATH_FETCH_BY_C_U, args);
+		}
 	}
 
 	/**
@@ -3126,6 +3249,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @param gadgetId the primary key for the new gadget
 	 * @return the new gadget
 	 */
+	@Override
 	public Gadget create(long gadgetId) {
 		Gadget gadget = new GadgetImpl();
 
@@ -3147,9 +3271,10 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @throws com.liferay.opensocial.NoSuchGadgetException if a gadget with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Gadget remove(long gadgetId)
 		throws NoSuchGadgetException, SystemException {
-		return remove(Long.valueOf(gadgetId));
+		return remove((Serializable)gadgetId);
 	}
 
 	/**
@@ -3286,7 +3411,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID_C.getColumnBitmask()) != 0) {
 				Object[] args = new Object[] {
 						gadgetModelImpl.getOriginalUuid(),
-						Long.valueOf(gadgetModelImpl.getOriginalCompanyId())
+						gadgetModelImpl.getOriginalCompanyId()
 					};
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_UUID_C, args);
@@ -3295,7 +3420,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 
 				args = new Object[] {
 						gadgetModelImpl.getUuid(),
-						Long.valueOf(gadgetModelImpl.getCompanyId())
+						gadgetModelImpl.getCompanyId()
 					};
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_UUID_C, args);
@@ -3306,7 +3431,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 			if ((gadgetModelImpl.getColumnBitmask() &
 					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_COMPANYID.getColumnBitmask()) != 0) {
 				Object[] args = new Object[] {
-						Long.valueOf(gadgetModelImpl.getOriginalCompanyId())
+						gadgetModelImpl.getOriginalCompanyId()
 					};
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_COMPANYID,
@@ -3314,7 +3439,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_COMPANYID,
 					args);
 
-				args = new Object[] { Long.valueOf(gadgetModelImpl.getCompanyId()) };
+				args = new Object[] { gadgetModelImpl.getCompanyId() };
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_COMPANYID,
 					args);
@@ -3326,35 +3451,8 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 		EntityCacheUtil.putResult(GadgetModelImpl.ENTITY_CACHE_ENABLED,
 			GadgetImpl.class, gadget.getPrimaryKey(), gadget);
 
-		if (isNew) {
-			FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_C_U,
-				new Object[] {
-					Long.valueOf(gadget.getCompanyId()),
-					
-				gadget.getUrl()
-				}, gadget);
-		}
-		else {
-			if ((gadgetModelImpl.getColumnBitmask() &
-					FINDER_PATH_FETCH_BY_C_U.getColumnBitmask()) != 0) {
-				Object[] args = new Object[] {
-						Long.valueOf(gadgetModelImpl.getOriginalCompanyId()),
-						
-						gadgetModelImpl.getOriginalUrl()
-					};
-
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_C_U, args);
-
-				FinderCacheUtil.removeResult(FINDER_PATH_FETCH_BY_C_U, args);
-
-				FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_C_U,
-					new Object[] {
-						Long.valueOf(gadget.getCompanyId()),
-						
-					gadget.getUrl()
-					}, gadget);
-			}
-		}
+		clearUniqueFindersCache(gadget);
+		cacheUniqueFindersCache(gadget);
 
 		return gadget;
 	}
@@ -3386,13 +3484,24 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 *
 	 * @param primaryKey the primary key of the gadget
 	 * @return the gadget
-	 * @throws com.liferay.portal.NoSuchModelException if a gadget with the primary key could not be found
+	 * @throws com.liferay.opensocial.NoSuchGadgetException if a gadget with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
 	public Gadget findByPrimaryKey(Serializable primaryKey)
-		throws NoSuchModelException, SystemException {
-		return findByPrimaryKey(((Long)primaryKey).longValue());
+		throws NoSuchGadgetException, SystemException {
+		Gadget gadget = fetchByPrimaryKey(primaryKey);
+
+		if (gadget == null) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
+			}
+
+			throw new NoSuchGadgetException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
+				primaryKey);
+		}
+
+		return gadget;
 	}
 
 	/**
@@ -3403,20 +3512,10 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @throws com.liferay.opensocial.NoSuchGadgetException if a gadget with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Gadget findByPrimaryKey(long gadgetId)
 		throws NoSuchGadgetException, SystemException {
-		Gadget gadget = fetchByPrimaryKey(gadgetId);
-
-		if (gadget == null) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + gadgetId);
-			}
-
-			throw new NoSuchGadgetException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
-				gadgetId);
-		}
-
-		return gadget;
+		return findByPrimaryKey((Serializable)gadgetId);
 	}
 
 	/**
@@ -3429,19 +3528,8 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	@Override
 	public Gadget fetchByPrimaryKey(Serializable primaryKey)
 		throws SystemException {
-		return fetchByPrimaryKey(((Long)primaryKey).longValue());
-	}
-
-	/**
-	 * Returns the gadget with the primary key or returns <code>null</code> if it could not be found.
-	 *
-	 * @param gadgetId the primary key of the gadget
-	 * @return the gadget, or <code>null</code> if a gadget with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	public Gadget fetchByPrimaryKey(long gadgetId) throws SystemException {
 		Gadget gadget = (Gadget)EntityCacheUtil.getResult(GadgetModelImpl.ENTITY_CACHE_ENABLED,
-				GadgetImpl.class, gadgetId);
+				GadgetImpl.class, primaryKey);
 
 		if (gadget == _nullGadget) {
 			return null;
@@ -3453,20 +3541,19 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 			try {
 				session = openSession();
 
-				gadget = (Gadget)session.get(GadgetImpl.class,
-						Long.valueOf(gadgetId));
+				gadget = (Gadget)session.get(GadgetImpl.class, primaryKey);
 
 				if (gadget != null) {
 					cacheResult(gadget);
 				}
 				else {
 					EntityCacheUtil.putResult(GadgetModelImpl.ENTITY_CACHE_ENABLED,
-						GadgetImpl.class, gadgetId, _nullGadget);
+						GadgetImpl.class, primaryKey, _nullGadget);
 				}
 			}
 			catch (Exception e) {
 				EntityCacheUtil.removeResult(GadgetModelImpl.ENTITY_CACHE_ENABLED,
-					GadgetImpl.class, gadgetId);
+					GadgetImpl.class, primaryKey);
 
 				throw processException(e);
 			}
@@ -3479,11 +3566,24 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	}
 
 	/**
+	 * Returns the gadget with the primary key or returns <code>null</code> if it could not be found.
+	 *
+	 * @param gadgetId the primary key of the gadget
+	 * @return the gadget, or <code>null</code> if a gadget with the primary key could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public Gadget fetchByPrimaryKey(long gadgetId) throws SystemException {
+		return fetchByPrimaryKey((Serializable)gadgetId);
+	}
+
+	/**
 	 * Returns all the gadgets.
 	 *
 	 * @return the gadgets
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Gadget> findAll() throws SystemException {
 		return findAll(QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
@@ -3500,6 +3600,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @return the range of gadgets
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Gadget> findAll(int start, int end) throws SystemException {
 		return findAll(start, end, null);
 	}
@@ -3517,6 +3618,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @return the ordered range of gadgets
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Gadget> findAll(int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -3602,6 +3704,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 *
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeAll() throws SystemException {
 		for (Gadget gadget : findAll()) {
 			remove(gadget);
@@ -3614,6 +3717,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	 * @return the number of gadgets
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countAll() throws SystemException {
 		Long count = (Long)FinderCacheUtil.getResult(FINDER_PATH_COUNT_ALL,
 				FINDER_ARGS_EMPTY, this);
@@ -3645,6 +3749,11 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 		return count.intValue();
 	}
 
+	@Override
+	protected Set<String> getBadColumnNames() {
+		return _badColumnNames;
+	}
+
 	/**
 	 * Initializes the gadget persistence.
 	 */
@@ -3659,7 +3768,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 
 				for (String listenerClassName : listenerClassNames) {
 					listenersList.add((ModelListener<Gadget>)InstanceFactory.newInstance(
-							listenerClassName));
+							getClassLoader(), listenerClassName));
 				}
 
 				listeners = listenersList.toArray(new ModelListener[listenersList.size()]);
@@ -3677,14 +3786,6 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 		FinderCacheUtil.removeCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 	}
 
-	@BeanReference(type = GadgetPersistence.class)
-	protected GadgetPersistence gadgetPersistence;
-	@BeanReference(type = OAuthConsumerPersistence.class)
-	protected OAuthConsumerPersistence oAuthConsumerPersistence;
-	@BeanReference(type = OAuthTokenPersistence.class)
-	protected OAuthTokenPersistence oAuthTokenPersistence;
-	@BeanReference(type = UserPersistence.class)
-	protected UserPersistence userPersistence;
 	private static final String _SQL_SELECT_GADGET = "SELECT gadget FROM Gadget gadget";
 	private static final String _SQL_SELECT_GADGET_WHERE = "SELECT gadget FROM Gadget gadget WHERE ";
 	private static final String _SQL_COUNT_GADGET = "SELECT COUNT(gadget) FROM Gadget gadget";
@@ -3705,6 +3806,9 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = GetterUtil.getBoolean(PropsUtil.get(
 				PropsKeys.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE));
 	private static Log _log = LogFactoryUtil.getLog(GadgetPersistenceImpl.class);
+	private static Set<String> _badColumnNames = SetUtil.fromArray(new String[] {
+				"uuid"
+			});
 	private static Gadget _nullGadget = new GadgetImpl() {
 			@Override
 			public Object clone() {
@@ -3718,6 +3822,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 		};
 
 	private static CacheModel<Gadget> _nullGadgetCacheModel = new CacheModel<Gadget>() {
+			@Override
 			public Gadget toEntityModel() {
 				return _nullGadget;
 			}

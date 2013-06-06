@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -65,11 +65,11 @@ public class StatusModelImpl extends BaseModelImpl<Status>
 			{ "modifiedDate", Types.BIGINT },
 			{ "online_", Types.BOOLEAN },
 			{ "awake", Types.BOOLEAN },
-			{ "activePanelId", Types.VARCHAR },
+			{ "activePanelIds", Types.VARCHAR },
 			{ "message", Types.VARCHAR },
 			{ "playSound", Types.BOOLEAN }
 		};
-	public static final String TABLE_SQL_CREATE = "create table Chat_Status (statusId LONG not null primary key,userId LONG,modifiedDate LONG,online_ BOOLEAN,awake BOOLEAN,activePanelId VARCHAR(75) null,message STRING null,playSound BOOLEAN)";
+	public static final String TABLE_SQL_CREATE = "create table Chat_Status (statusId LONG not null primary key,userId LONG,modifiedDate LONG,online_ BOOLEAN,awake BOOLEAN,activePanelIds STRING null,message STRING null,playSound BOOLEAN)";
 	public static final String TABLE_SQL_DROP = "drop table Chat_Status";
 	public static final String ORDER_BY_JPQL = " ORDER BY status.statusId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY Chat_Status.statusId ASC";
@@ -95,26 +95,32 @@ public class StatusModelImpl extends BaseModelImpl<Status>
 	public StatusModelImpl() {
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _statusId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setStatusId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
-		return new Long(_statusId);
+		return _statusId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return Status.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return Status.class.getName();
 	}
@@ -128,7 +134,7 @@ public class StatusModelImpl extends BaseModelImpl<Status>
 		attributes.put("modifiedDate", getModifiedDate());
 		attributes.put("online", getOnline());
 		attributes.put("awake", getAwake());
-		attributes.put("activePanelId", getActivePanelId());
+		attributes.put("activePanelIds", getActivePanelIds());
 		attributes.put("message", getMessage());
 		attributes.put("playSound", getPlaySound());
 
@@ -167,10 +173,10 @@ public class StatusModelImpl extends BaseModelImpl<Status>
 			setAwake(awake);
 		}
 
-		String activePanelId = (String)attributes.get("activePanelId");
+		String activePanelIds = (String)attributes.get("activePanelIds");
 
-		if (activePanelId != null) {
-			setActivePanelId(activePanelId);
+		if (activePanelIds != null) {
+			setActivePanelIds(activePanelIds);
 		}
 
 		String message = (String)attributes.get("message");
@@ -186,18 +192,22 @@ public class StatusModelImpl extends BaseModelImpl<Status>
 		}
 	}
 
+	@Override
 	public long getStatusId() {
 		return _statusId;
 	}
 
+	@Override
 	public void setStatusId(long statusId) {
 		_statusId = statusId;
 	}
 
+	@Override
 	public long getUserId() {
 		return _userId;
 	}
 
+	@Override
 	public void setUserId(long userId) {
 		_columnBitmask |= USERID_COLUMN_BITMASK;
 
@@ -210,10 +220,12 @@ public class StatusModelImpl extends BaseModelImpl<Status>
 		_userId = userId;
 	}
 
+	@Override
 	public String getUserUuid() throws SystemException {
 		return PortalUtil.getUserValue(getUserId(), "uuid", _userUuid);
 	}
 
+	@Override
 	public void setUserUuid(String userUuid) {
 		_userUuid = userUuid;
 	}
@@ -222,10 +234,12 @@ public class StatusModelImpl extends BaseModelImpl<Status>
 		return _originalUserId;
 	}
 
+	@Override
 	public long getModifiedDate() {
 		return _modifiedDate;
 	}
 
+	@Override
 	public void setModifiedDate(long modifiedDate) {
 		_columnBitmask |= MODIFIEDDATE_COLUMN_BITMASK;
 
@@ -242,14 +256,17 @@ public class StatusModelImpl extends BaseModelImpl<Status>
 		return _originalModifiedDate;
 	}
 
+	@Override
 	public boolean getOnline() {
 		return _online;
 	}
 
+	@Override
 	public boolean isOnline() {
 		return _online;
 	}
 
+	@Override
 	public void setOnline(boolean online) {
 		_columnBitmask |= ONLINE_COLUMN_BITMASK;
 
@@ -266,31 +283,37 @@ public class StatusModelImpl extends BaseModelImpl<Status>
 		return _originalOnline;
 	}
 
+	@Override
 	public boolean getAwake() {
 		return _awake;
 	}
 
+	@Override
 	public boolean isAwake() {
 		return _awake;
 	}
 
+	@Override
 	public void setAwake(boolean awake) {
 		_awake = awake;
 	}
 
-	public String getActivePanelId() {
-		if (_activePanelId == null) {
+	@Override
+	public String getActivePanelIds() {
+		if (_activePanelIds == null) {
 			return StringPool.BLANK;
 		}
 		else {
-			return _activePanelId;
+			return _activePanelIds;
 		}
 	}
 
-	public void setActivePanelId(String activePanelId) {
-		_activePanelId = activePanelId;
+	@Override
+	public void setActivePanelIds(String activePanelIds) {
+		_activePanelIds = activePanelIds;
 	}
 
+	@Override
 	public String getMessage() {
 		if (_message == null) {
 			return StringPool.BLANK;
@@ -300,18 +323,22 @@ public class StatusModelImpl extends BaseModelImpl<Status>
 		}
 	}
 
+	@Override
 	public void setMessage(String message) {
 		_message = message;
 	}
 
+	@Override
 	public boolean getPlaySound() {
 		return _playSound;
 	}
 
+	@Override
 	public boolean isPlaySound() {
 		return _playSound;
 	}
 
+	@Override
 	public void setPlaySound(boolean playSound) {
 		_playSound = playSound;
 	}
@@ -352,7 +379,7 @@ public class StatusModelImpl extends BaseModelImpl<Status>
 		statusImpl.setModifiedDate(getModifiedDate());
 		statusImpl.setOnline(getOnline());
 		statusImpl.setAwake(getAwake());
-		statusImpl.setActivePanelId(getActivePanelId());
+		statusImpl.setActivePanelIds(getActivePanelIds());
 		statusImpl.setMessage(getMessage());
 		statusImpl.setPlaySound(getPlaySound());
 
@@ -361,6 +388,7 @@ public class StatusModelImpl extends BaseModelImpl<Status>
 		return statusImpl;
 	}
 
+	@Override
 	public int compareTo(Status status) {
 		long primaryKey = status.getPrimaryKey();
 
@@ -377,18 +405,15 @@ public class StatusModelImpl extends BaseModelImpl<Status>
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof Status)) {
 			return false;
 		}
 
-		Status status = null;
-
-		try {
-			status = (Status)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		Status status = (Status)obj;
 
 		long primaryKey = status.getPrimaryKey();
 
@@ -438,12 +463,12 @@ public class StatusModelImpl extends BaseModelImpl<Status>
 
 		statusCacheModel.awake = getAwake();
 
-		statusCacheModel.activePanelId = getActivePanelId();
+		statusCacheModel.activePanelIds = getActivePanelIds();
 
-		String activePanelId = statusCacheModel.activePanelId;
+		String activePanelIds = statusCacheModel.activePanelIds;
 
-		if ((activePanelId != null) && (activePanelId.length() == 0)) {
-			statusCacheModel.activePanelId = null;
+		if ((activePanelIds != null) && (activePanelIds.length() == 0)) {
+			statusCacheModel.activePanelIds = null;
 		}
 
 		statusCacheModel.message = getMessage();
@@ -473,8 +498,8 @@ public class StatusModelImpl extends BaseModelImpl<Status>
 		sb.append(getOnline());
 		sb.append(", awake=");
 		sb.append(getAwake());
-		sb.append(", activePanelId=");
-		sb.append(getActivePanelId());
+		sb.append(", activePanelIds=");
+		sb.append(getActivePanelIds());
 		sb.append(", message=");
 		sb.append(getMessage());
 		sb.append(", playSound=");
@@ -484,6 +509,7 @@ public class StatusModelImpl extends BaseModelImpl<Status>
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
 		StringBundler sb = new StringBundler(28);
 
@@ -512,8 +538,8 @@ public class StatusModelImpl extends BaseModelImpl<Status>
 		sb.append(getAwake());
 		sb.append("]]></column-value></column>");
 		sb.append(
-			"<column><column-name>activePanelId</column-name><column-value><![CDATA[");
-		sb.append(getActivePanelId());
+			"<column><column-name>activePanelIds</column-name><column-value><![CDATA[");
+		sb.append(getActivePanelIds());
 		sb.append("]]></column-value></column>");
 		sb.append(
 			"<column><column-name>message</column-name><column-value><![CDATA[");
@@ -543,7 +569,7 @@ public class StatusModelImpl extends BaseModelImpl<Status>
 	private boolean _originalOnline;
 	private boolean _setOriginalOnline;
 	private boolean _awake;
-	private String _activePanelId;
+	private String _activePanelIds;
 	private String _message;
 	private boolean _playSound;
 	private long _columnBitmask;

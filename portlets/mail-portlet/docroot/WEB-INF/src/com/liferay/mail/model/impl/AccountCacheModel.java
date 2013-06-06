@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -96,6 +96,7 @@ public class AccountCacheModel implements CacheModel<Account>, Externalizable {
 		return sb.toString();
 	}
 
+	@Override
 	public Account toEntityModel() {
 		AccountImpl accountImpl = new AccountImpl();
 
@@ -208,6 +209,7 @@ public class AccountCacheModel implements CacheModel<Account>, Externalizable {
 		return accountImpl;
 	}
 
+	@Override
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		accountId = objectInput.readLong();
 		companyId = objectInput.readLong();
@@ -237,6 +239,7 @@ public class AccountCacheModel implements CacheModel<Account>, Externalizable {
 		defaultSender = objectInput.readBoolean();
 	}
 
+	@Override
 	public void writeExternal(ObjectOutput objectOutput)
 		throws IOException {
 		objectOutput.writeLong(accountId);

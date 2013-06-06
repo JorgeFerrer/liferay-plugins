@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -16,6 +16,7 @@ package com.liferay.calendar.service;
 
 import com.liferay.calendar.model.CalendarBookingClp;
 import com.liferay.calendar.model.CalendarClp;
+import com.liferay.calendar.model.CalendarNotificationTemplateClp;
 import com.liferay.calendar.model.CalendarResourceClp;
 
 import com.liferay.portal.kernel.exception.PortalException;
@@ -112,6 +113,11 @@ public class ClpSerializer {
 			return translateInputCalendarBooking(oldModel);
 		}
 
+		if (oldModelClassName.equals(
+					CalendarNotificationTemplateClp.class.getName())) {
+			return translateInputCalendarNotificationTemplate(oldModel);
+		}
+
 		if (oldModelClassName.equals(CalendarResourceClp.class.getName())) {
 			return translateInputCalendarResource(oldModel);
 		}
@@ -145,6 +151,17 @@ public class ClpSerializer {
 		CalendarBookingClp oldClpModel = (CalendarBookingClp)oldModel;
 
 		BaseModel<?> newModel = oldClpModel.getCalendarBookingRemoteModel();
+
+		newModel.setModelAttributes(oldClpModel.getModelAttributes());
+
+		return newModel;
+	}
+
+	public static Object translateInputCalendarNotificationTemplate(
+		BaseModel<?> oldModel) {
+		CalendarNotificationTemplateClp oldClpModel = (CalendarNotificationTemplateClp)oldModel;
+
+		BaseModel<?> newModel = oldClpModel.getCalendarNotificationTemplateRemoteModel();
 
 		newModel.setModelAttributes(oldClpModel.getModelAttributes());
 
@@ -186,6 +203,11 @@ public class ClpSerializer {
 		if (oldModelClassName.equals(
 					"com.liferay.calendar.model.impl.CalendarBookingImpl")) {
 			return translateOutputCalendarBooking(oldModel);
+		}
+
+		if (oldModelClassName.equals(
+					"com.liferay.calendar.model.impl.CalendarNotificationTemplateImpl")) {
+			return translateOutputCalendarNotificationTemplate(oldModel);
 		}
 
 		if (oldModelClassName.equals(
@@ -279,13 +301,13 @@ public class ClpSerializer {
 		}
 
 		if (className.equals(
-					"com.liferay.calendar.CalendarBookingEndDateException")) {
-			return new com.liferay.calendar.CalendarBookingEndDateException();
+					"com.liferay.calendar.CalendarBookingEndTimeException")) {
+			return new com.liferay.calendar.CalendarBookingEndTimeException();
 		}
 
 		if (className.equals(
-					"com.liferay.calendar.CalendarBookingStartDateException")) {
-			return new com.liferay.calendar.CalendarBookingStartDateException();
+					"com.liferay.calendar.CalendarBookingStartTimeException")) {
+			return new com.liferay.calendar.CalendarBookingStartTimeException();
 		}
 
 		if (className.equals(
@@ -303,8 +325,17 @@ public class ClpSerializer {
 		}
 
 		if (className.equals(
+					"com.liferay.calendar.CalendarResourceNameException")) {
+			return new com.liferay.calendar.CalendarResourceNameException();
+		}
+
+		if (className.equals(
 					"com.liferay.calendar.DuplicateCalendarResourceException")) {
 			return new com.liferay.calendar.DuplicateCalendarResourceException();
+		}
+
+		if (className.equals("com.liferay.calendar.RequiredCalendarException")) {
+			return new com.liferay.calendar.RequiredCalendarException();
 		}
 
 		if (className.equals("com.liferay.calendar.NoSuchCalendarException")) {
@@ -313,6 +344,11 @@ public class ClpSerializer {
 
 		if (className.equals("com.liferay.calendar.NoSuchBookingException")) {
 			return new com.liferay.calendar.NoSuchBookingException();
+		}
+
+		if (className.equals(
+					"com.liferay.calendar.NoSuchNotificationTemplateException")) {
+			return new com.liferay.calendar.NoSuchNotificationTemplateException();
 		}
 
 		if (className.equals("com.liferay.calendar.NoSuchResourceException")) {
@@ -338,6 +374,17 @@ public class ClpSerializer {
 		newModel.setModelAttributes(oldModel.getModelAttributes());
 
 		newModel.setCalendarBookingRemoteModel(oldModel);
+
+		return newModel;
+	}
+
+	public static Object translateOutputCalendarNotificationTemplate(
+		BaseModel<?> oldModel) {
+		CalendarNotificationTemplateClp newModel = new CalendarNotificationTemplateClp();
+
+		newModel.setModelAttributes(oldModel.getModelAttributes());
+
+		newModel.setCalendarNotificationTemplateRemoteModel(oldModel);
 
 		return newModel;
 	}

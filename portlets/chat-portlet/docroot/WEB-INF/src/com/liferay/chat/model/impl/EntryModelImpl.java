@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -63,9 +63,10 @@ public class EntryModelImpl extends BaseModelImpl<Entry> implements EntryModel {
 			{ "createDate", Types.BIGINT },
 			{ "fromUserId", Types.BIGINT },
 			{ "toUserId", Types.BIGINT },
-			{ "content", Types.VARCHAR }
+			{ "content", Types.VARCHAR },
+			{ "flag", Types.INTEGER }
 		};
-	public static final String TABLE_SQL_CREATE = "create table Chat_Entry (entryId LONG not null primary key,createDate LONG,fromUserId LONG,toUserId LONG,content VARCHAR(1000) null)";
+	public static final String TABLE_SQL_CREATE = "create table Chat_Entry (entryId LONG not null primary key,createDate LONG,fromUserId LONG,toUserId LONG,content VARCHAR(1000) null,flag INTEGER)";
 	public static final String TABLE_SQL_DROP = "drop table Chat_Entry";
 	public static final String ORDER_BY_JPQL = " ORDER BY entry.createDate DESC";
 	public static final String ORDER_BY_SQL = " ORDER BY Chat_Entry.createDate DESC";
@@ -91,26 +92,32 @@ public class EntryModelImpl extends BaseModelImpl<Entry> implements EntryModel {
 	public EntryModelImpl() {
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _entryId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setEntryId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
-		return new Long(_entryId);
+		return _entryId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return Entry.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return Entry.class.getName();
 	}
@@ -124,6 +131,7 @@ public class EntryModelImpl extends BaseModelImpl<Entry> implements EntryModel {
 		attributes.put("fromUserId", getFromUserId());
 		attributes.put("toUserId", getToUserId());
 		attributes.put("content", getContent());
+		attributes.put("flag", getFlag());
 
 		return attributes;
 	}
@@ -159,20 +167,30 @@ public class EntryModelImpl extends BaseModelImpl<Entry> implements EntryModel {
 		if (content != null) {
 			setContent(content);
 		}
+
+		Integer flag = (Integer)attributes.get("flag");
+
+		if (flag != null) {
+			setFlag(flag);
+		}
 	}
 
+	@Override
 	public long getEntryId() {
 		return _entryId;
 	}
 
+	@Override
 	public void setEntryId(long entryId) {
 		_entryId = entryId;
 	}
 
+	@Override
 	public long getCreateDate() {
 		return _createDate;
 	}
 
+	@Override
 	public void setCreateDate(long createDate) {
 		_columnBitmask = -1L;
 
@@ -189,10 +207,12 @@ public class EntryModelImpl extends BaseModelImpl<Entry> implements EntryModel {
 		return _originalCreateDate;
 	}
 
+	@Override
 	public long getFromUserId() {
 		return _fromUserId;
 	}
 
+	@Override
 	public void setFromUserId(long fromUserId) {
 		_columnBitmask |= FROMUSERID_COLUMN_BITMASK;
 
@@ -205,10 +225,12 @@ public class EntryModelImpl extends BaseModelImpl<Entry> implements EntryModel {
 		_fromUserId = fromUserId;
 	}
 
+	@Override
 	public String getFromUserUuid() throws SystemException {
 		return PortalUtil.getUserValue(getFromUserId(), "uuid", _fromUserUuid);
 	}
 
+	@Override
 	public void setFromUserUuid(String fromUserUuid) {
 		_fromUserUuid = fromUserUuid;
 	}
@@ -217,10 +239,12 @@ public class EntryModelImpl extends BaseModelImpl<Entry> implements EntryModel {
 		return _originalFromUserId;
 	}
 
+	@Override
 	public long getToUserId() {
 		return _toUserId;
 	}
 
+	@Override
 	public void setToUserId(long toUserId) {
 		_columnBitmask |= TOUSERID_COLUMN_BITMASK;
 
@@ -233,10 +257,12 @@ public class EntryModelImpl extends BaseModelImpl<Entry> implements EntryModel {
 		_toUserId = toUserId;
 	}
 
+	@Override
 	public String getToUserUuid() throws SystemException {
 		return PortalUtil.getUserValue(getToUserId(), "uuid", _toUserUuid);
 	}
 
+	@Override
 	public void setToUserUuid(String toUserUuid) {
 		_toUserUuid = toUserUuid;
 	}
@@ -245,6 +271,7 @@ public class EntryModelImpl extends BaseModelImpl<Entry> implements EntryModel {
 		return _originalToUserId;
 	}
 
+	@Override
 	public String getContent() {
 		if (_content == null) {
 			return StringPool.BLANK;
@@ -254,6 +281,7 @@ public class EntryModelImpl extends BaseModelImpl<Entry> implements EntryModel {
 		}
 	}
 
+	@Override
 	public void setContent(String content) {
 		_columnBitmask |= CONTENT_COLUMN_BITMASK;
 
@@ -266,6 +294,16 @@ public class EntryModelImpl extends BaseModelImpl<Entry> implements EntryModel {
 
 	public String getOriginalContent() {
 		return GetterUtil.getString(_originalContent);
+	}
+
+	@Override
+	public int getFlag() {
+		return _flag;
+	}
+
+	@Override
+	public void setFlag(int flag) {
+		_flag = flag;
 	}
 
 	public long getColumnBitmask() {
@@ -304,12 +342,14 @@ public class EntryModelImpl extends BaseModelImpl<Entry> implements EntryModel {
 		entryImpl.setFromUserId(getFromUserId());
 		entryImpl.setToUserId(getToUserId());
 		entryImpl.setContent(getContent());
+		entryImpl.setFlag(getFlag());
 
 		entryImpl.resetOriginalValues();
 
 		return entryImpl;
 	}
 
+	@Override
 	public int compareTo(Entry entry) {
 		int value = 0;
 
@@ -334,18 +374,15 @@ public class EntryModelImpl extends BaseModelImpl<Entry> implements EntryModel {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof Entry)) {
 			return false;
 		}
 
-		Entry entry = null;
-
-		try {
-			entry = (Entry)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		Entry entry = (Entry)obj;
 
 		long primaryKey = entry.getPrimaryKey();
 
@@ -403,12 +440,14 @@ public class EntryModelImpl extends BaseModelImpl<Entry> implements EntryModel {
 			entryCacheModel.content = null;
 		}
 
+		entryCacheModel.flag = getFlag();
+
 		return entryCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(11);
+		StringBundler sb = new StringBundler(13);
 
 		sb.append("{entryId=");
 		sb.append(getEntryId());
@@ -420,13 +459,16 @@ public class EntryModelImpl extends BaseModelImpl<Entry> implements EntryModel {
 		sb.append(getToUserId());
 		sb.append(", content=");
 		sb.append(getContent());
+		sb.append(", flag=");
+		sb.append(getFlag());
 		sb.append("}");
 
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(19);
+		StringBundler sb = new StringBundler(22);
 
 		sb.append("<model><model-name>");
 		sb.append("com.liferay.chat.model.Entry");
@@ -452,6 +494,10 @@ public class EntryModelImpl extends BaseModelImpl<Entry> implements EntryModel {
 			"<column><column-name>content</column-name><column-value><![CDATA[");
 		sb.append(getContent());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>flag</column-name><column-value><![CDATA[");
+		sb.append(getFlag());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -474,6 +520,7 @@ public class EntryModelImpl extends BaseModelImpl<Entry> implements EntryModel {
 	private boolean _setOriginalToUserId;
 	private String _content;
 	private String _originalContent;
+	private int _flag;
 	private long _columnBitmask;
 	private Entry _escapedModel;
 }

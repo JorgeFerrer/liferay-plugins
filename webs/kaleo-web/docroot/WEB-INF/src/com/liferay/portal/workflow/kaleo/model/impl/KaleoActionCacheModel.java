@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -80,6 +80,7 @@ public class KaleoActionCacheModel implements CacheModel<KaleoAction>,
 		return sb.toString();
 	}
 
+	@Override
 	public KaleoAction toEntityModel() {
 		KaleoActionImpl kaleoActionImpl = new KaleoActionImpl();
 
@@ -175,6 +176,7 @@ public class KaleoActionCacheModel implements CacheModel<KaleoAction>,
 		return kaleoActionImpl;
 	}
 
+	@Override
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		kaleoActionId = objectInput.readLong();
 		groupId = objectInput.readLong();
@@ -196,6 +198,7 @@ public class KaleoActionCacheModel implements CacheModel<KaleoAction>,
 		priority = objectInput.readInt();
 	}
 
+	@Override
 	public void writeExternal(ObjectOutput objectOutput)
 		throws IOException {
 		objectOutput.writeLong(kaleoActionId);

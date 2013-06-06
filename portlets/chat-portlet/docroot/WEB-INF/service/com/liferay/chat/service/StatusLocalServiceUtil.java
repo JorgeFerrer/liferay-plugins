@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -19,11 +19,12 @@ import com.liferay.portal.kernel.util.ReferenceRegistry;
 import com.liferay.portal.service.InvokableLocalService;
 
 /**
- * The utility for the status local service. This utility wraps {@link com.liferay.chat.service.impl.StatusLocalServiceImpl} and is the primary access point for service operations in application layer code running on the local server.
- *
- * <p>
- * This is a local service. Methods of this service will not have security checks based on the propagated JAAS credentials because this service can only be accessed from within the same VM.
- * </p>
+ * Provides the local service utility for Status. This utility wraps
+ * {@link com.liferay.chat.service.impl.StatusLocalServiceImpl} and is the
+ * primary access point for service operations in application layer code running
+ * on the local server. Methods of this service will not have security checks
+ * based on the propagated JAAS credentials because this service can only be
+ * accessed from within the same VM.
  *
  * @author Brian Wing Shun Chan
  * @see StatusLocalService
@@ -263,9 +264,12 @@ public class StatusLocalServiceUtil {
 	}
 
 	public static java.util.List<java.lang.Object[]> getGroupStatuses(
-		long userId, long modifiedDate, int start, int end)
+		long userId, long modifiedDate, java.lang.String[] groupNames,
+		int start, int end)
 		throws com.liferay.portal.kernel.exception.SystemException {
-		return getService().getGroupStatuses(userId, modifiedDate, start, end);
+		return getService()
+				   .getGroupStatuses(userId, modifiedDate, groupNames, start,
+			end);
 	}
 
 	public static java.util.List<java.lang.Object[]> getSocialStatuses(
@@ -288,11 +292,11 @@ public class StatusLocalServiceUtil {
 
 	public static com.liferay.chat.model.Status updateStatus(long userId,
 		long modifiedDate, int online, int awake,
-		java.lang.String activePanelId, java.lang.String message, int playSound)
+		java.lang.String activePanelIds, java.lang.String message, int playSound)
 		throws com.liferay.portal.kernel.exception.SystemException {
 		return getService()
 				   .updateStatus(userId, modifiedDate, online, awake,
-			activePanelId, message, playSound);
+			activePanelIds, message, playSound);
 	}
 
 	public static void clearService() {
@@ -319,7 +323,7 @@ public class StatusLocalServiceUtil {
 	}
 
 	/**
-	 * @deprecated
+	 * @deprecated As of 6.2.0
 	 */
 	public void setService(StatusLocalService service) {
 	}

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -21,9 +21,12 @@ import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.model.BaseModel;
 import com.liferay.portal.model.impl.BaseModelImpl;
 import com.liferay.portal.util.PortalUtil;
+import com.liferay.portal.workflow.kaleo.service.ClpSerializer;
 import com.liferay.portal.workflow.kaleo.service.KaleoNodeLocalServiceUtil;
 
 import java.io.Serializable;
+
+import java.lang.reflect.Method;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -36,26 +39,32 @@ public class KaleoNodeClp extends BaseModelImpl<KaleoNode> implements KaleoNode 
 	public KaleoNodeClp() {
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return KaleoNode.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return KaleoNode.class.getName();
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _kaleoNodeId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setKaleoNodeId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
-		return new Long(_kaleoNodeId);
+		return _kaleoNodeId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
@@ -169,149 +178,425 @@ public class KaleoNodeClp extends BaseModelImpl<KaleoNode> implements KaleoNode 
 		}
 	}
 
+	@Override
 	public long getKaleoNodeId() {
 		return _kaleoNodeId;
 	}
 
+	@Override
 	public void setKaleoNodeId(long kaleoNodeId) {
 		_kaleoNodeId = kaleoNodeId;
+
+		if (_kaleoNodeRemoteModel != null) {
+			try {
+				Class<?> clazz = _kaleoNodeRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setKaleoNodeId", long.class);
+
+				method.invoke(_kaleoNodeRemoteModel, kaleoNodeId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getGroupId() {
 		return _groupId;
 	}
 
+	@Override
 	public void setGroupId(long groupId) {
 		_groupId = groupId;
+
+		if (_kaleoNodeRemoteModel != null) {
+			try {
+				Class<?> clazz = _kaleoNodeRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setGroupId", long.class);
+
+				method.invoke(_kaleoNodeRemoteModel, groupId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getCompanyId() {
 		return _companyId;
 	}
 
+	@Override
 	public void setCompanyId(long companyId) {
 		_companyId = companyId;
+
+		if (_kaleoNodeRemoteModel != null) {
+			try {
+				Class<?> clazz = _kaleoNodeRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setCompanyId", long.class);
+
+				method.invoke(_kaleoNodeRemoteModel, companyId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getUserId() {
 		return _userId;
 	}
 
+	@Override
 	public void setUserId(long userId) {
 		_userId = userId;
+
+		if (_kaleoNodeRemoteModel != null) {
+			try {
+				Class<?> clazz = _kaleoNodeRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setUserId", long.class);
+
+				method.invoke(_kaleoNodeRemoteModel, userId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getUserUuid() throws SystemException {
 		return PortalUtil.getUserValue(getUserId(), "uuid", _userUuid);
 	}
 
+	@Override
 	public void setUserUuid(String userUuid) {
 		_userUuid = userUuid;
 	}
 
+	@Override
 	public String getUserName() {
 		return _userName;
 	}
 
+	@Override
 	public void setUserName(String userName) {
 		_userName = userName;
+
+		if (_kaleoNodeRemoteModel != null) {
+			try {
+				Class<?> clazz = _kaleoNodeRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setUserName", String.class);
+
+				method.invoke(_kaleoNodeRemoteModel, userName);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public Date getCreateDate() {
 		return _createDate;
 	}
 
+	@Override
 	public void setCreateDate(Date createDate) {
 		_createDate = createDate;
+
+		if (_kaleoNodeRemoteModel != null) {
+			try {
+				Class<?> clazz = _kaleoNodeRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setCreateDate", Date.class);
+
+				method.invoke(_kaleoNodeRemoteModel, createDate);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public Date getModifiedDate() {
 		return _modifiedDate;
 	}
 
+	@Override
 	public void setModifiedDate(Date modifiedDate) {
 		_modifiedDate = modifiedDate;
+
+		if (_kaleoNodeRemoteModel != null) {
+			try {
+				Class<?> clazz = _kaleoNodeRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setModifiedDate", Date.class);
+
+				method.invoke(_kaleoNodeRemoteModel, modifiedDate);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getKaleoDefinitionId() {
 		return _kaleoDefinitionId;
 	}
 
+	@Override
 	public void setKaleoDefinitionId(long kaleoDefinitionId) {
 		_kaleoDefinitionId = kaleoDefinitionId;
+
+		if (_kaleoNodeRemoteModel != null) {
+			try {
+				Class<?> clazz = _kaleoNodeRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setKaleoDefinitionId",
+						long.class);
+
+				method.invoke(_kaleoNodeRemoteModel, kaleoDefinitionId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getName() {
 		return _name;
 	}
 
+	@Override
 	public void setName(String name) {
 		_name = name;
+
+		if (_kaleoNodeRemoteModel != null) {
+			try {
+				Class<?> clazz = _kaleoNodeRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setName", String.class);
+
+				method.invoke(_kaleoNodeRemoteModel, name);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getMetadata() {
 		return _metadata;
 	}
 
+	@Override
 	public void setMetadata(String metadata) {
 		_metadata = metadata;
+
+		if (_kaleoNodeRemoteModel != null) {
+			try {
+				Class<?> clazz = _kaleoNodeRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setMetadata", String.class);
+
+				method.invoke(_kaleoNodeRemoteModel, metadata);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getDescription() {
 		return _description;
 	}
 
+	@Override
 	public void setDescription(String description) {
 		_description = description;
+
+		if (_kaleoNodeRemoteModel != null) {
+			try {
+				Class<?> clazz = _kaleoNodeRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setDescription", String.class);
+
+				method.invoke(_kaleoNodeRemoteModel, description);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getType() {
 		return _type;
 	}
 
+	@Override
 	public void setType(String type) {
 		_type = type;
+
+		if (_kaleoNodeRemoteModel != null) {
+			try {
+				Class<?> clazz = _kaleoNodeRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setType", String.class);
+
+				method.invoke(_kaleoNodeRemoteModel, type);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public boolean getInitial() {
 		return _initial;
 	}
 
+	@Override
 	public boolean isInitial() {
 		return _initial;
 	}
 
+	@Override
 	public void setInitial(boolean initial) {
 		_initial = initial;
+
+		if (_kaleoNodeRemoteModel != null) {
+			try {
+				Class<?> clazz = _kaleoNodeRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setInitial", boolean.class);
+
+				method.invoke(_kaleoNodeRemoteModel, initial);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public boolean getTerminal() {
 		return _terminal;
 	}
 
+	@Override
 	public boolean isTerminal() {
 		return _terminal;
 	}
 
+	@Override
 	public void setTerminal(boolean terminal) {
 		_terminal = terminal;
+
+		if (_kaleoNodeRemoteModel != null) {
+			try {
+				Class<?> clazz = _kaleoNodeRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setTerminal", boolean.class);
+
+				method.invoke(_kaleoNodeRemoteModel, terminal);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public com.liferay.portal.workflow.kaleo.model.KaleoTransition getKaleoTransition(
 		java.lang.String name) {
-		throw new UnsupportedOperationException();
+		try {
+			String methodName = "getKaleoTransition";
+
+			Class<?>[] parameterTypes = new Class<?>[] { java.lang.String.class };
+
+			Object[] parameterValues = new Object[] { name };
+
+			com.liferay.portal.workflow.kaleo.model.KaleoTransition returnObj = (com.liferay.portal.workflow.kaleo.model.KaleoTransition)invokeOnRemoteModel(methodName,
+					parameterTypes, parameterValues);
+
+			return returnObj;
+		}
+		catch (Exception e) {
+			throw new UnsupportedOperationException(e);
+		}
 	}
 
+	@Override
 	public com.liferay.portal.workflow.kaleo.model.KaleoTransition getDefaultKaleoTransition() {
-		throw new UnsupportedOperationException();
+		try {
+			String methodName = "getDefaultKaleoTransition";
+
+			Class<?>[] parameterTypes = new Class<?>[] {  };
+
+			Object[] parameterValues = new Object[] {  };
+
+			com.liferay.portal.workflow.kaleo.model.KaleoTransition returnObj = (com.liferay.portal.workflow.kaleo.model.KaleoTransition)invokeOnRemoteModel(methodName,
+					parameterTypes, parameterValues);
+
+			return returnObj;
+		}
+		catch (Exception e) {
+			throw new UnsupportedOperationException(e);
+		}
 	}
 
+	@Override
 	public boolean hasKaleoTransition() {
-		throw new UnsupportedOperationException();
+		try {
+			String methodName = "hasKaleoTransition";
+
+			Class<?>[] parameterTypes = new Class<?>[] {  };
+
+			Object[] parameterValues = new Object[] {  };
+
+			Boolean returnObj = (Boolean)invokeOnRemoteModel(methodName,
+					parameterTypes, parameterValues);
+
+			return returnObj;
+		}
+		catch (Exception e) {
+			throw new UnsupportedOperationException(e);
+		}
 	}
 
+	@Override
 	public java.util.List<com.liferay.portal.workflow.kaleo.model.KaleoTransition> getKaleoTransitions() {
-		throw new UnsupportedOperationException();
+		try {
+			String methodName = "getKaleoTransitions";
+
+			Class<?>[] parameterTypes = new Class<?>[] {  };
+
+			Object[] parameterValues = new Object[] {  };
+
+			java.util.List<com.liferay.portal.workflow.kaleo.model.KaleoTransition> returnObj =
+				(java.util.List<com.liferay.portal.workflow.kaleo.model.KaleoTransition>)invokeOnRemoteModel(methodName,
+					parameterTypes, parameterValues);
+
+			return returnObj;
+		}
+		catch (Exception e) {
+			throw new UnsupportedOperationException(e);
+		}
 	}
 
 	public BaseModel<?> getKaleoNodeRemoteModel() {
@@ -322,6 +607,48 @@ public class KaleoNodeClp extends BaseModelImpl<KaleoNode> implements KaleoNode 
 		_kaleoNodeRemoteModel = kaleoNodeRemoteModel;
 	}
 
+	public Object invokeOnRemoteModel(String methodName,
+		Class<?>[] parameterTypes, Object[] parameterValues)
+		throws Exception {
+		Object[] remoteParameterValues = new Object[parameterValues.length];
+
+		for (int i = 0; i < parameterValues.length; i++) {
+			if (parameterValues[i] != null) {
+				remoteParameterValues[i] = ClpSerializer.translateInput(parameterValues[i]);
+			}
+		}
+
+		Class<?> remoteModelClass = _kaleoNodeRemoteModel.getClass();
+
+		ClassLoader remoteModelClassLoader = remoteModelClass.getClassLoader();
+
+		Class<?>[] remoteParameterTypes = new Class[parameterTypes.length];
+
+		for (int i = 0; i < parameterTypes.length; i++) {
+			if (parameterTypes[i].isPrimitive()) {
+				remoteParameterTypes[i] = parameterTypes[i];
+			}
+			else {
+				String parameterTypeName = parameterTypes[i].getName();
+
+				remoteParameterTypes[i] = remoteModelClassLoader.loadClass(parameterTypeName);
+			}
+		}
+
+		Method method = remoteModelClass.getMethod(methodName,
+				remoteParameterTypes);
+
+		Object returnValue = method.invoke(_kaleoNodeRemoteModel,
+				remoteParameterValues);
+
+		if (returnValue != null) {
+			returnValue = ClpSerializer.translateOutput(returnValue);
+		}
+
+		return returnValue;
+	}
+
+	@Override
 	public void persist() throws SystemException {
 		if (this.isNew()) {
 			KaleoNodeLocalServiceUtil.addKaleoNode(this);
@@ -359,6 +686,7 @@ public class KaleoNodeClp extends BaseModelImpl<KaleoNode> implements KaleoNode 
 		return clone;
 	}
 
+	@Override
 	public int compareTo(KaleoNode kaleoNode) {
 		int value = 0;
 
@@ -381,18 +709,15 @@ public class KaleoNodeClp extends BaseModelImpl<KaleoNode> implements KaleoNode 
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof KaleoNodeClp)) {
 			return false;
 		}
 
-		KaleoNodeClp kaleoNode = null;
-
-		try {
-			kaleoNode = (KaleoNodeClp)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		KaleoNodeClp kaleoNode = (KaleoNodeClp)obj;
 
 		long primaryKey = kaleoNode.getPrimaryKey();
 
@@ -446,6 +771,7 @@ public class KaleoNodeClp extends BaseModelImpl<KaleoNode> implements KaleoNode 
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
 		StringBundler sb = new StringBundler(46);
 

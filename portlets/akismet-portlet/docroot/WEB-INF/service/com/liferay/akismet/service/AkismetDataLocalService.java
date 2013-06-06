@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -24,11 +24,10 @@ import com.liferay.portal.service.InvokableLocalService;
 import com.liferay.portal.service.PersistedModelLocalService;
 
 /**
- * The interface for the akismet data local service.
- *
- * <p>
- * This is a local service. Methods of this service will not have security checks based on the propagated JAAS credentials because this service can only be accessed from within the same VM.
- * </p>
+ * Provides the local service interface for AkismetData. Methods of this
+ * service will not have security checks based on the propagated JAAS
+ * credentials because this service can only be accessed from within the same
+ * VM.
  *
  * @author Brian Wing Shun Chan
  * @see AkismetDataLocalServiceUtil
@@ -173,6 +172,7 @@ public interface AkismetDataLocalService extends BaseLocalService,
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException;
 
+	@Override
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public com.liferay.portal.model.PersistedModel getPersistedModel(
 		java.io.Serializable primaryKeyObj)
@@ -231,6 +231,7 @@ public interface AkismetDataLocalService extends BaseLocalService,
 	*/
 	public void setBeanIdentifier(java.lang.String beanIdentifier);
 
+	@Override
 	public java.lang.Object invokeMethod(java.lang.String name,
 		java.lang.String[] parameterTypes, java.lang.Object[] arguments)
 		throws java.lang.Throwable;
@@ -238,18 +239,19 @@ public interface AkismetDataLocalService extends BaseLocalService,
 	public void deleteAkismetData(java.util.Date modifiedDate)
 		throws com.liferay.portal.kernel.exception.SystemException;
 
-	public void deleteMBMessageAkismetData(long mbMessageId)
+	public void deleteAkismetData(java.lang.String className, long classPK)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public com.liferay.akismet.model.AkismetData fetchMBMessageAkismetData(
-		long mbMessageId)
+	public com.liferay.akismet.model.AkismetData fetchAkismetData(
+		java.lang.String className, long classPK)
 		throws com.liferay.portal.kernel.exception.SystemException;
 
 	public com.liferay.akismet.model.AkismetData updateAkismetData(
-		long mbMessageId, java.lang.String type, java.lang.String permalink,
-		java.lang.String referrer, java.lang.String userAgent,
-		java.lang.String userIP, java.lang.String userURL)
+		java.lang.String className, long classPK, java.lang.String type,
+		java.lang.String permalink, java.lang.String referrer,
+		java.lang.String userAgent, java.lang.String userIP,
+		java.lang.String userURL)
 		throws com.liferay.portal.kernel.exception.SystemException;
 }

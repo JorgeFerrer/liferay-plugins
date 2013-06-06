@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -19,8 +19,6 @@ import com.liferay.mail.model.Message;
 import com.liferay.mail.model.impl.MessageImpl;
 import com.liferay.mail.model.impl.MessageModelImpl;
 
-import com.liferay.portal.NoSuchModelException;
-import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.cache.CacheRegistryUtil;
 import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
 import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
@@ -37,13 +35,13 @@ import com.liferay.portal.kernel.util.InstanceFactory;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnmodifiableList;
 import com.liferay.portal.model.CacheModel;
 import com.liferay.portal.model.ModelListener;
-import com.liferay.portal.service.persistence.UserPersistence;
 import com.liferay.portal.service.persistence.impl.BasePersistenceImpl;
 
 import java.io.Serializable;
@@ -51,6 +49,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * The persistence implementation for the message service.
@@ -114,6 +113,7 @@ public class MessagePersistenceImpl extends BasePersistenceImpl<Message>
 	 * @return the matching messages
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Message> findByCompanyId(long companyId)
 		throws SystemException {
 		return findByCompanyId(companyId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
@@ -133,6 +133,7 @@ public class MessagePersistenceImpl extends BasePersistenceImpl<Message>
 	 * @return the range of matching messages
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Message> findByCompanyId(long companyId, int start, int end)
 		throws SystemException {
 		return findByCompanyId(companyId, start, end, null);
@@ -152,6 +153,7 @@ public class MessagePersistenceImpl extends BasePersistenceImpl<Message>
 	 * @return the ordered range of matching messages
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Message> findByCompanyId(long companyId, int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -258,6 +260,7 @@ public class MessagePersistenceImpl extends BasePersistenceImpl<Message>
 	 * @throws com.liferay.mail.NoSuchMessageException if a matching message could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Message findByCompanyId_First(long companyId,
 		OrderByComparator orderByComparator)
 		throws NoSuchMessageException, SystemException {
@@ -287,6 +290,7 @@ public class MessagePersistenceImpl extends BasePersistenceImpl<Message>
 	 * @return the first matching message, or <code>null</code> if a matching message could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Message fetchByCompanyId_First(long companyId,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<Message> list = findByCompanyId(companyId, 0, 1, orderByComparator);
@@ -307,6 +311,7 @@ public class MessagePersistenceImpl extends BasePersistenceImpl<Message>
 	 * @throws com.liferay.mail.NoSuchMessageException if a matching message could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Message findByCompanyId_Last(long companyId,
 		OrderByComparator orderByComparator)
 		throws NoSuchMessageException, SystemException {
@@ -336,6 +341,7 @@ public class MessagePersistenceImpl extends BasePersistenceImpl<Message>
 	 * @return the last matching message, or <code>null</code> if a matching message could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Message fetchByCompanyId_Last(long companyId,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByCompanyId(companyId);
@@ -360,6 +366,7 @@ public class MessagePersistenceImpl extends BasePersistenceImpl<Message>
 	 * @throws com.liferay.mail.NoSuchMessageException if a message with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Message[] findByCompanyId_PrevAndNext(long messageId,
 		long companyId, OrderByComparator orderByComparator)
 		throws NoSuchMessageException, SystemException {
@@ -501,6 +508,7 @@ public class MessagePersistenceImpl extends BasePersistenceImpl<Message>
 	 * @param companyId the company ID
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByCompanyId(long companyId) throws SystemException {
 		for (Message message : findByCompanyId(companyId, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
@@ -515,6 +523,7 @@ public class MessagePersistenceImpl extends BasePersistenceImpl<Message>
 	 * @return the number of matching messages
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByCompanyId(long companyId) throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_COMPANYID;
 
@@ -589,6 +598,7 @@ public class MessagePersistenceImpl extends BasePersistenceImpl<Message>
 	 * @return the matching messages
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Message> findByFolderId(long folderId)
 		throws SystemException {
 		return findByFolderId(folderId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
@@ -608,6 +618,7 @@ public class MessagePersistenceImpl extends BasePersistenceImpl<Message>
 	 * @return the range of matching messages
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Message> findByFolderId(long folderId, int start, int end)
 		throws SystemException {
 		return findByFolderId(folderId, start, end, null);
@@ -627,6 +638,7 @@ public class MessagePersistenceImpl extends BasePersistenceImpl<Message>
 	 * @return the ordered range of matching messages
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Message> findByFolderId(long folderId, int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -733,6 +745,7 @@ public class MessagePersistenceImpl extends BasePersistenceImpl<Message>
 	 * @throws com.liferay.mail.NoSuchMessageException if a matching message could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Message findByFolderId_First(long folderId,
 		OrderByComparator orderByComparator)
 		throws NoSuchMessageException, SystemException {
@@ -762,6 +775,7 @@ public class MessagePersistenceImpl extends BasePersistenceImpl<Message>
 	 * @return the first matching message, or <code>null</code> if a matching message could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Message fetchByFolderId_First(long folderId,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<Message> list = findByFolderId(folderId, 0, 1, orderByComparator);
@@ -782,6 +796,7 @@ public class MessagePersistenceImpl extends BasePersistenceImpl<Message>
 	 * @throws com.liferay.mail.NoSuchMessageException if a matching message could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Message findByFolderId_Last(long folderId,
 		OrderByComparator orderByComparator)
 		throws NoSuchMessageException, SystemException {
@@ -811,6 +826,7 @@ public class MessagePersistenceImpl extends BasePersistenceImpl<Message>
 	 * @return the last matching message, or <code>null</code> if a matching message could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Message fetchByFolderId_Last(long folderId,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByFolderId(folderId);
@@ -835,6 +851,7 @@ public class MessagePersistenceImpl extends BasePersistenceImpl<Message>
 	 * @throws com.liferay.mail.NoSuchMessageException if a message with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Message[] findByFolderId_PrevAndNext(long messageId, long folderId,
 		OrderByComparator orderByComparator)
 		throws NoSuchMessageException, SystemException {
@@ -976,6 +993,7 @@ public class MessagePersistenceImpl extends BasePersistenceImpl<Message>
 	 * @param folderId the folder ID
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByFolderId(long folderId) throws SystemException {
 		for (Message message : findByFolderId(folderId, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
@@ -990,6 +1008,7 @@ public class MessagePersistenceImpl extends BasePersistenceImpl<Message>
 	 * @return the number of matching messages
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByFolderId(long folderId) throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_FOLDERID;
 
@@ -1056,6 +1075,7 @@ public class MessagePersistenceImpl extends BasePersistenceImpl<Message>
 	 * @throws com.liferay.mail.NoSuchMessageException if a matching message could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Message findByF_R(long folderId, long remoteMessageId)
 		throws NoSuchMessageException, SystemException {
 		Message message = fetchByF_R(folderId, remoteMessageId);
@@ -1091,6 +1111,7 @@ public class MessagePersistenceImpl extends BasePersistenceImpl<Message>
 	 * @return the matching message, or <code>null</code> if a matching message could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Message fetchByF_R(long folderId, long remoteMessageId)
 		throws SystemException {
 		return fetchByF_R(folderId, remoteMessageId, true);
@@ -1105,6 +1126,7 @@ public class MessagePersistenceImpl extends BasePersistenceImpl<Message>
 	 * @return the matching message, or <code>null</code> if a matching message could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Message fetchByF_R(long folderId, long remoteMessageId,
 		boolean retrieveFromCache) throws SystemException {
 		Object[] finderArgs = new Object[] { folderId, remoteMessageId };
@@ -1203,6 +1225,7 @@ public class MessagePersistenceImpl extends BasePersistenceImpl<Message>
 	 * @return the message that was removed
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Message removeByF_R(long folderId, long remoteMessageId)
 		throws NoSuchMessageException, SystemException {
 		Message message = findByF_R(folderId, remoteMessageId);
@@ -1218,6 +1241,7 @@ public class MessagePersistenceImpl extends BasePersistenceImpl<Message>
 	 * @return the number of matching messages
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByF_R(long folderId, long remoteMessageId)
 		throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_F_R;
@@ -1276,15 +1300,14 @@ public class MessagePersistenceImpl extends BasePersistenceImpl<Message>
 	 *
 	 * @param message the message
 	 */
+	@Override
 	public void cacheResult(Message message) {
 		EntityCacheUtil.putResult(MessageModelImpl.ENTITY_CACHE_ENABLED,
 			MessageImpl.class, message.getPrimaryKey(), message);
 
 		FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_F_R,
-			new Object[] {
-				Long.valueOf(message.getFolderId()),
-				Long.valueOf(message.getRemoteMessageId())
-			}, message);
+			new Object[] { message.getFolderId(), message.getRemoteMessageId() },
+			message);
 
 		message.resetOriginalValues();
 	}
@@ -1294,6 +1317,7 @@ public class MessagePersistenceImpl extends BasePersistenceImpl<Message>
 	 *
 	 * @param messages the messages
 	 */
+	@Override
 	public void cacheResult(List<Message> messages) {
 		for (Message message : messages) {
 			if (EntityCacheUtil.getResult(
@@ -1358,12 +1382,53 @@ public class MessagePersistenceImpl extends BasePersistenceImpl<Message>
 		}
 	}
 
+	protected void cacheUniqueFindersCache(Message message) {
+		if (message.isNew()) {
+			Object[] args = new Object[] {
+					message.getFolderId(), message.getRemoteMessageId()
+				};
+
+			FinderCacheUtil.putResult(FINDER_PATH_COUNT_BY_F_R, args,
+				Long.valueOf(1));
+			FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_F_R, args, message);
+		}
+		else {
+			MessageModelImpl messageModelImpl = (MessageModelImpl)message;
+
+			if ((messageModelImpl.getColumnBitmask() &
+					FINDER_PATH_FETCH_BY_F_R.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						message.getFolderId(), message.getRemoteMessageId()
+					};
+
+				FinderCacheUtil.putResult(FINDER_PATH_COUNT_BY_F_R, args,
+					Long.valueOf(1));
+				FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_F_R, args,
+					message);
+			}
+		}
+	}
+
 	protected void clearUniqueFindersCache(Message message) {
-		FinderCacheUtil.removeResult(FINDER_PATH_FETCH_BY_F_R,
-			new Object[] {
-				Long.valueOf(message.getFolderId()),
-				Long.valueOf(message.getRemoteMessageId())
-			});
+		MessageModelImpl messageModelImpl = (MessageModelImpl)message;
+
+		Object[] args = new Object[] {
+				message.getFolderId(), message.getRemoteMessageId()
+			};
+
+		FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_F_R, args);
+		FinderCacheUtil.removeResult(FINDER_PATH_FETCH_BY_F_R, args);
+
+		if ((messageModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_F_R.getColumnBitmask()) != 0) {
+			args = new Object[] {
+					messageModelImpl.getOriginalFolderId(),
+					messageModelImpl.getOriginalRemoteMessageId()
+				};
+
+			FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_F_R, args);
+			FinderCacheUtil.removeResult(FINDER_PATH_FETCH_BY_F_R, args);
+		}
 	}
 
 	/**
@@ -1372,6 +1437,7 @@ public class MessagePersistenceImpl extends BasePersistenceImpl<Message>
 	 * @param messageId the primary key for the new message
 	 * @return the new message
 	 */
+	@Override
 	public Message create(long messageId) {
 		Message message = new MessageImpl();
 
@@ -1389,9 +1455,10 @@ public class MessagePersistenceImpl extends BasePersistenceImpl<Message>
 	 * @throws com.liferay.mail.NoSuchMessageException if a message with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Message remove(long messageId)
 		throws NoSuchMessageException, SystemException {
-		return remove(Long.valueOf(messageId));
+		return remove((Serializable)messageId);
 	}
 
 	/**
@@ -1506,7 +1573,7 @@ public class MessagePersistenceImpl extends BasePersistenceImpl<Message>
 			if ((messageModelImpl.getColumnBitmask() &
 					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_COMPANYID.getColumnBitmask()) != 0) {
 				Object[] args = new Object[] {
-						Long.valueOf(messageModelImpl.getOriginalCompanyId())
+						messageModelImpl.getOriginalCompanyId()
 					};
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_COMPANYID,
@@ -1514,9 +1581,7 @@ public class MessagePersistenceImpl extends BasePersistenceImpl<Message>
 				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_COMPANYID,
 					args);
 
-				args = new Object[] {
-						Long.valueOf(messageModelImpl.getCompanyId())
-					};
+				args = new Object[] { messageModelImpl.getCompanyId() };
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_COMPANYID,
 					args);
@@ -1527,14 +1592,14 @@ public class MessagePersistenceImpl extends BasePersistenceImpl<Message>
 			if ((messageModelImpl.getColumnBitmask() &
 					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_FOLDERID.getColumnBitmask()) != 0) {
 				Object[] args = new Object[] {
-						Long.valueOf(messageModelImpl.getOriginalFolderId())
+						messageModelImpl.getOriginalFolderId()
 					};
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_FOLDERID, args);
 				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_FOLDERID,
 					args);
 
-				args = new Object[] { Long.valueOf(messageModelImpl.getFolderId()) };
+				args = new Object[] { messageModelImpl.getFolderId() };
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_FOLDERID, args);
 				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_FOLDERID,
@@ -1545,32 +1610,8 @@ public class MessagePersistenceImpl extends BasePersistenceImpl<Message>
 		EntityCacheUtil.putResult(MessageModelImpl.ENTITY_CACHE_ENABLED,
 			MessageImpl.class, message.getPrimaryKey(), message);
 
-		if (isNew) {
-			FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_F_R,
-				new Object[] {
-					Long.valueOf(message.getFolderId()),
-					Long.valueOf(message.getRemoteMessageId())
-				}, message);
-		}
-		else {
-			if ((messageModelImpl.getColumnBitmask() &
-					FINDER_PATH_FETCH_BY_F_R.getColumnBitmask()) != 0) {
-				Object[] args = new Object[] {
-						Long.valueOf(messageModelImpl.getOriginalFolderId()),
-						Long.valueOf(messageModelImpl.getOriginalRemoteMessageId())
-					};
-
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_F_R, args);
-
-				FinderCacheUtil.removeResult(FINDER_PATH_FETCH_BY_F_R, args);
-
-				FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_F_R,
-					new Object[] {
-						Long.valueOf(message.getFolderId()),
-						Long.valueOf(message.getRemoteMessageId())
-					}, message);
-			}
-		}
+		clearUniqueFindersCache(message);
+		cacheUniqueFindersCache(message);
 
 		return message;
 	}
@@ -1613,13 +1654,24 @@ public class MessagePersistenceImpl extends BasePersistenceImpl<Message>
 	 *
 	 * @param primaryKey the primary key of the message
 	 * @return the message
-	 * @throws com.liferay.portal.NoSuchModelException if a message with the primary key could not be found
+	 * @throws com.liferay.mail.NoSuchMessageException if a message with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
 	public Message findByPrimaryKey(Serializable primaryKey)
-		throws NoSuchModelException, SystemException {
-		return findByPrimaryKey(((Long)primaryKey).longValue());
+		throws NoSuchMessageException, SystemException {
+		Message message = fetchByPrimaryKey(primaryKey);
+
+		if (message == null) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
+			}
+
+			throw new NoSuchMessageException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
+				primaryKey);
+		}
+
+		return message;
 	}
 
 	/**
@@ -1630,20 +1682,10 @@ public class MessagePersistenceImpl extends BasePersistenceImpl<Message>
 	 * @throws com.liferay.mail.NoSuchMessageException if a message with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Message findByPrimaryKey(long messageId)
 		throws NoSuchMessageException, SystemException {
-		Message message = fetchByPrimaryKey(messageId);
-
-		if (message == null) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + messageId);
-			}
-
-			throw new NoSuchMessageException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
-				messageId);
-		}
-
-		return message;
+		return findByPrimaryKey((Serializable)messageId);
 	}
 
 	/**
@@ -1656,19 +1698,8 @@ public class MessagePersistenceImpl extends BasePersistenceImpl<Message>
 	@Override
 	public Message fetchByPrimaryKey(Serializable primaryKey)
 		throws SystemException {
-		return fetchByPrimaryKey(((Long)primaryKey).longValue());
-	}
-
-	/**
-	 * Returns the message with the primary key or returns <code>null</code> if it could not be found.
-	 *
-	 * @param messageId the primary key of the message
-	 * @return the message, or <code>null</code> if a message with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	public Message fetchByPrimaryKey(long messageId) throws SystemException {
 		Message message = (Message)EntityCacheUtil.getResult(MessageModelImpl.ENTITY_CACHE_ENABLED,
-				MessageImpl.class, messageId);
+				MessageImpl.class, primaryKey);
 
 		if (message == _nullMessage) {
 			return null;
@@ -1680,20 +1711,19 @@ public class MessagePersistenceImpl extends BasePersistenceImpl<Message>
 			try {
 				session = openSession();
 
-				message = (Message)session.get(MessageImpl.class,
-						Long.valueOf(messageId));
+				message = (Message)session.get(MessageImpl.class, primaryKey);
 
 				if (message != null) {
 					cacheResult(message);
 				}
 				else {
 					EntityCacheUtil.putResult(MessageModelImpl.ENTITY_CACHE_ENABLED,
-						MessageImpl.class, messageId, _nullMessage);
+						MessageImpl.class, primaryKey, _nullMessage);
 				}
 			}
 			catch (Exception e) {
 				EntityCacheUtil.removeResult(MessageModelImpl.ENTITY_CACHE_ENABLED,
-					MessageImpl.class, messageId);
+					MessageImpl.class, primaryKey);
 
 				throw processException(e);
 			}
@@ -1706,11 +1736,24 @@ public class MessagePersistenceImpl extends BasePersistenceImpl<Message>
 	}
 
 	/**
+	 * Returns the message with the primary key or returns <code>null</code> if it could not be found.
+	 *
+	 * @param messageId the primary key of the message
+	 * @return the message, or <code>null</code> if a message with the primary key could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public Message fetchByPrimaryKey(long messageId) throws SystemException {
+		return fetchByPrimaryKey((Serializable)messageId);
+	}
+
+	/**
 	 * Returns all the messages.
 	 *
 	 * @return the messages
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Message> findAll() throws SystemException {
 		return findAll(QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
@@ -1727,6 +1770,7 @@ public class MessagePersistenceImpl extends BasePersistenceImpl<Message>
 	 * @return the range of messages
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Message> findAll(int start, int end) throws SystemException {
 		return findAll(start, end, null);
 	}
@@ -1744,6 +1788,7 @@ public class MessagePersistenceImpl extends BasePersistenceImpl<Message>
 	 * @return the ordered range of messages
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Message> findAll(int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -1829,6 +1874,7 @@ public class MessagePersistenceImpl extends BasePersistenceImpl<Message>
 	 *
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeAll() throws SystemException {
 		for (Message message : findAll()) {
 			remove(message);
@@ -1841,6 +1887,7 @@ public class MessagePersistenceImpl extends BasePersistenceImpl<Message>
 	 * @return the number of messages
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countAll() throws SystemException {
 		Long count = (Long)FinderCacheUtil.getResult(FINDER_PATH_COUNT_ALL,
 				FINDER_ARGS_EMPTY, this);
@@ -1872,6 +1919,11 @@ public class MessagePersistenceImpl extends BasePersistenceImpl<Message>
 		return count.intValue();
 	}
 
+	@Override
+	protected Set<String> getBadColumnNames() {
+		return _badColumnNames;
+	}
+
 	/**
 	 * Initializes the message persistence.
 	 */
@@ -1886,7 +1938,7 @@ public class MessagePersistenceImpl extends BasePersistenceImpl<Message>
 
 				for (String listenerClassName : listenerClassNames) {
 					listenersList.add((ModelListener<Message>)InstanceFactory.newInstance(
-							listenerClassName));
+							getClassLoader(), listenerClassName));
 				}
 
 				listeners = listenersList.toArray(new ModelListener[listenersList.size()]);
@@ -1904,16 +1956,6 @@ public class MessagePersistenceImpl extends BasePersistenceImpl<Message>
 		FinderCacheUtil.removeCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 	}
 
-	@BeanReference(type = AccountPersistence.class)
-	protected AccountPersistence accountPersistence;
-	@BeanReference(type = AttachmentPersistence.class)
-	protected AttachmentPersistence attachmentPersistence;
-	@BeanReference(type = FolderPersistence.class)
-	protected FolderPersistence folderPersistence;
-	@BeanReference(type = MessagePersistence.class)
-	protected MessagePersistence messagePersistence;
-	@BeanReference(type = UserPersistence.class)
-	protected UserPersistence userPersistence;
 	private static final String _SQL_SELECT_MESSAGE = "SELECT message FROM Message message";
 	private static final String _SQL_SELECT_MESSAGE_WHERE = "SELECT message FROM Message message WHERE ";
 	private static final String _SQL_COUNT_MESSAGE = "SELECT COUNT(message) FROM Message message";
@@ -1924,6 +1966,9 @@ public class MessagePersistenceImpl extends BasePersistenceImpl<Message>
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = GetterUtil.getBoolean(PropsUtil.get(
 				PropsKeys.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE));
 	private static Log _log = LogFactoryUtil.getLog(MessagePersistenceImpl.class);
+	private static Set<String> _badColumnNames = SetUtil.fromArray(new String[] {
+				"to", "size"
+			});
 	private static Message _nullMessage = new MessageImpl() {
 			@Override
 			public Object clone() {
@@ -1937,6 +1982,7 @@ public class MessagePersistenceImpl extends BasePersistenceImpl<Message>
 		};
 
 	private static CacheModel<Message> _nullMessageCacheModel = new CacheModel<Message>() {
+			@Override
 			public Message toEntityModel() {
 				return _nullMessage;
 			}

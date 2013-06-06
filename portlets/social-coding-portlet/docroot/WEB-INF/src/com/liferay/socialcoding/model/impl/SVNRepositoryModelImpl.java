@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -85,26 +85,32 @@ public class SVNRepositoryModelImpl extends BaseModelImpl<SVNRepository>
 	public SVNRepositoryModelImpl() {
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _svnRepositoryId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setSvnRepositoryId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
-		return new Long(_svnRepositoryId);
+		return _svnRepositoryId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return SVNRepository.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return SVNRepository.class.getName();
 	}
@@ -141,14 +147,17 @@ public class SVNRepositoryModelImpl extends BaseModelImpl<SVNRepository>
 		}
 	}
 
+	@Override
 	public long getSvnRepositoryId() {
 		return _svnRepositoryId;
 	}
 
+	@Override
 	public void setSvnRepositoryId(long svnRepositoryId) {
 		_svnRepositoryId = svnRepositoryId;
 	}
 
+	@Override
 	public String getUrl() {
 		if (_url == null) {
 			return StringPool.BLANK;
@@ -158,6 +167,7 @@ public class SVNRepositoryModelImpl extends BaseModelImpl<SVNRepository>
 		}
 	}
 
+	@Override
 	public void setUrl(String url) {
 		_columnBitmask = -1L;
 
@@ -172,10 +182,12 @@ public class SVNRepositoryModelImpl extends BaseModelImpl<SVNRepository>
 		return GetterUtil.getString(_originalUrl);
 	}
 
+	@Override
 	public long getRevisionNumber() {
 		return _revisionNumber;
 	}
 
+	@Override
 	public void setRevisionNumber(long revisionNumber) {
 		_revisionNumber = revisionNumber;
 	}
@@ -220,6 +232,7 @@ public class SVNRepositoryModelImpl extends BaseModelImpl<SVNRepository>
 		return svnRepositoryImpl;
 	}
 
+	@Override
 	public int compareTo(SVNRepository svnRepository) {
 		int value = 0;
 
@@ -234,18 +247,15 @@ public class SVNRepositoryModelImpl extends BaseModelImpl<SVNRepository>
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof SVNRepository)) {
 			return false;
 		}
 
-		SVNRepository svnRepository = null;
-
-		try {
-			svnRepository = (SVNRepository)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		SVNRepository svnRepository = (SVNRepository)obj;
 
 		long primaryKey = svnRepository.getPrimaryKey();
 
@@ -305,6 +315,7 @@ public class SVNRepositoryModelImpl extends BaseModelImpl<SVNRepository>
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
 		StringBundler sb = new StringBundler(13);
 

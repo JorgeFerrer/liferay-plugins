@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -15,6 +15,7 @@
 package com.liferay.mail.model;
 
 import com.liferay.mail.service.AccountLocalServiceUtil;
+import com.liferay.mail.service.ClpSerializer;
 
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -25,6 +26,8 @@ import com.liferay.portal.model.impl.BaseModelImpl;
 import com.liferay.portal.util.PortalUtil;
 
 import java.io.Serializable;
+
+import java.lang.reflect.Method;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -37,26 +40,32 @@ public class AccountClp extends BaseModelImpl<Account> implements Account {
 	public AccountClp() {
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return Account.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return Account.class.getName();
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _accountId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setAccountId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
-		return new Long(_accountId);
+		return _accountId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
@@ -254,248 +263,677 @@ public class AccountClp extends BaseModelImpl<Account> implements Account {
 		}
 	}
 
+	@Override
 	public long getAccountId() {
 		return _accountId;
 	}
 
+	@Override
 	public void setAccountId(long accountId) {
 		_accountId = accountId;
+
+		if (_accountRemoteModel != null) {
+			try {
+				Class<?> clazz = _accountRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setAccountId", long.class);
+
+				method.invoke(_accountRemoteModel, accountId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getCompanyId() {
 		return _companyId;
 	}
 
+	@Override
 	public void setCompanyId(long companyId) {
 		_companyId = companyId;
+
+		if (_accountRemoteModel != null) {
+			try {
+				Class<?> clazz = _accountRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setCompanyId", long.class);
+
+				method.invoke(_accountRemoteModel, companyId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getUserId() {
 		return _userId;
 	}
 
+	@Override
 	public void setUserId(long userId) {
 		_userId = userId;
+
+		if (_accountRemoteModel != null) {
+			try {
+				Class<?> clazz = _accountRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setUserId", long.class);
+
+				method.invoke(_accountRemoteModel, userId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getUserUuid() throws SystemException {
 		return PortalUtil.getUserValue(getUserId(), "uuid", _userUuid);
 	}
 
+	@Override
 	public void setUserUuid(String userUuid) {
 		_userUuid = userUuid;
 	}
 
+	@Override
 	public String getUserName() {
 		return _userName;
 	}
 
+	@Override
 	public void setUserName(String userName) {
 		_userName = userName;
+
+		if (_accountRemoteModel != null) {
+			try {
+				Class<?> clazz = _accountRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setUserName", String.class);
+
+				method.invoke(_accountRemoteModel, userName);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public Date getCreateDate() {
 		return _createDate;
 	}
 
+	@Override
 	public void setCreateDate(Date createDate) {
 		_createDate = createDate;
+
+		if (_accountRemoteModel != null) {
+			try {
+				Class<?> clazz = _accountRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setCreateDate", Date.class);
+
+				method.invoke(_accountRemoteModel, createDate);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public Date getModifiedDate() {
 		return _modifiedDate;
 	}
 
+	@Override
 	public void setModifiedDate(Date modifiedDate) {
 		_modifiedDate = modifiedDate;
+
+		if (_accountRemoteModel != null) {
+			try {
+				Class<?> clazz = _accountRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setModifiedDate", Date.class);
+
+				method.invoke(_accountRemoteModel, modifiedDate);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getAddress() {
 		return _address;
 	}
 
+	@Override
 	public void setAddress(String address) {
 		_address = address;
+
+		if (_accountRemoteModel != null) {
+			try {
+				Class<?> clazz = _accountRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setAddress", String.class);
+
+				method.invoke(_accountRemoteModel, address);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getPersonalName() {
 		return _personalName;
 	}
 
+	@Override
 	public void setPersonalName(String personalName) {
 		_personalName = personalName;
+
+		if (_accountRemoteModel != null) {
+			try {
+				Class<?> clazz = _accountRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setPersonalName", String.class);
+
+				method.invoke(_accountRemoteModel, personalName);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getProtocol() {
 		return _protocol;
 	}
 
+	@Override
 	public void setProtocol(String protocol) {
 		_protocol = protocol;
+
+		if (_accountRemoteModel != null) {
+			try {
+				Class<?> clazz = _accountRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setProtocol", String.class);
+
+				method.invoke(_accountRemoteModel, protocol);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getIncomingHostName() {
 		return _incomingHostName;
 	}
 
+	@Override
 	public void setIncomingHostName(String incomingHostName) {
 		_incomingHostName = incomingHostName;
+
+		if (_accountRemoteModel != null) {
+			try {
+				Class<?> clazz = _accountRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setIncomingHostName",
+						String.class);
+
+				method.invoke(_accountRemoteModel, incomingHostName);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public int getIncomingPort() {
 		return _incomingPort;
 	}
 
+	@Override
 	public void setIncomingPort(int incomingPort) {
 		_incomingPort = incomingPort;
+
+		if (_accountRemoteModel != null) {
+			try {
+				Class<?> clazz = _accountRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setIncomingPort", int.class);
+
+				method.invoke(_accountRemoteModel, incomingPort);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public boolean getIncomingSecure() {
 		return _incomingSecure;
 	}
 
+	@Override
 	public boolean isIncomingSecure() {
 		return _incomingSecure;
 	}
 
+	@Override
 	public void setIncomingSecure(boolean incomingSecure) {
 		_incomingSecure = incomingSecure;
+
+		if (_accountRemoteModel != null) {
+			try {
+				Class<?> clazz = _accountRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setIncomingSecure",
+						boolean.class);
+
+				method.invoke(_accountRemoteModel, incomingSecure);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getOutgoingHostName() {
 		return _outgoingHostName;
 	}
 
+	@Override
 	public void setOutgoingHostName(String outgoingHostName) {
 		_outgoingHostName = outgoingHostName;
+
+		if (_accountRemoteModel != null) {
+			try {
+				Class<?> clazz = _accountRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setOutgoingHostName",
+						String.class);
+
+				method.invoke(_accountRemoteModel, outgoingHostName);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public int getOutgoingPort() {
 		return _outgoingPort;
 	}
 
+	@Override
 	public void setOutgoingPort(int outgoingPort) {
 		_outgoingPort = outgoingPort;
+
+		if (_accountRemoteModel != null) {
+			try {
+				Class<?> clazz = _accountRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setOutgoingPort", int.class);
+
+				method.invoke(_accountRemoteModel, outgoingPort);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public boolean getOutgoingSecure() {
 		return _outgoingSecure;
 	}
 
+	@Override
 	public boolean isOutgoingSecure() {
 		return _outgoingSecure;
 	}
 
+	@Override
 	public void setOutgoingSecure(boolean outgoingSecure) {
 		_outgoingSecure = outgoingSecure;
+
+		if (_accountRemoteModel != null) {
+			try {
+				Class<?> clazz = _accountRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setOutgoingSecure",
+						boolean.class);
+
+				method.invoke(_accountRemoteModel, outgoingSecure);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getLogin() {
 		return _login;
 	}
 
+	@Override
 	public void setLogin(String login) {
 		_login = login;
+
+		if (_accountRemoteModel != null) {
+			try {
+				Class<?> clazz = _accountRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setLogin", String.class);
+
+				method.invoke(_accountRemoteModel, login);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getPassword() {
 		return _password;
 	}
 
+	@Override
 	public void setPassword(String password) {
 		_password = password;
+
+		if (_accountRemoteModel != null) {
+			try {
+				Class<?> clazz = _accountRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setPassword", String.class);
+
+				method.invoke(_accountRemoteModel, password);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public boolean getSavePassword() {
 		return _savePassword;
 	}
 
+	@Override
 	public boolean isSavePassword() {
 		return _savePassword;
 	}
 
+	@Override
 	public void setSavePassword(boolean savePassword) {
 		_savePassword = savePassword;
+
+		if (_accountRemoteModel != null) {
+			try {
+				Class<?> clazz = _accountRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setSavePassword", boolean.class);
+
+				method.invoke(_accountRemoteModel, savePassword);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getSignature() {
 		return _signature;
 	}
 
+	@Override
 	public void setSignature(String signature) {
 		_signature = signature;
+
+		if (_accountRemoteModel != null) {
+			try {
+				Class<?> clazz = _accountRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setSignature", String.class);
+
+				method.invoke(_accountRemoteModel, signature);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public boolean getUseSignature() {
 		return _useSignature;
 	}
 
+	@Override
 	public boolean isUseSignature() {
 		return _useSignature;
 	}
 
+	@Override
 	public void setUseSignature(boolean useSignature) {
 		_useSignature = useSignature;
+
+		if (_accountRemoteModel != null) {
+			try {
+				Class<?> clazz = _accountRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setUseSignature", boolean.class);
+
+				method.invoke(_accountRemoteModel, useSignature);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getFolderPrefix() {
 		return _folderPrefix;
 	}
 
+	@Override
 	public void setFolderPrefix(String folderPrefix) {
 		_folderPrefix = folderPrefix;
+
+		if (_accountRemoteModel != null) {
+			try {
+				Class<?> clazz = _accountRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setFolderPrefix", String.class);
+
+				method.invoke(_accountRemoteModel, folderPrefix);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getInboxFolderId() {
 		return _inboxFolderId;
 	}
 
+	@Override
 	public void setInboxFolderId(long inboxFolderId) {
 		_inboxFolderId = inboxFolderId;
+
+		if (_accountRemoteModel != null) {
+			try {
+				Class<?> clazz = _accountRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setInboxFolderId", long.class);
+
+				method.invoke(_accountRemoteModel, inboxFolderId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getDraftFolderId() {
 		return _draftFolderId;
 	}
 
+	@Override
 	public void setDraftFolderId(long draftFolderId) {
 		_draftFolderId = draftFolderId;
+
+		if (_accountRemoteModel != null) {
+			try {
+				Class<?> clazz = _accountRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setDraftFolderId", long.class);
+
+				method.invoke(_accountRemoteModel, draftFolderId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getSentFolderId() {
 		return _sentFolderId;
 	}
 
+	@Override
 	public void setSentFolderId(long sentFolderId) {
 		_sentFolderId = sentFolderId;
+
+		if (_accountRemoteModel != null) {
+			try {
+				Class<?> clazz = _accountRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setSentFolderId", long.class);
+
+				method.invoke(_accountRemoteModel, sentFolderId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getTrashFolderId() {
 		return _trashFolderId;
 	}
 
+	@Override
 	public void setTrashFolderId(long trashFolderId) {
 		_trashFolderId = trashFolderId;
+
+		if (_accountRemoteModel != null) {
+			try {
+				Class<?> clazz = _accountRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setTrashFolderId", long.class);
+
+				method.invoke(_accountRemoteModel, trashFolderId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public boolean getDefaultSender() {
 		return _defaultSender;
 	}
 
+	@Override
 	public boolean isDefaultSender() {
 		return _defaultSender;
 	}
 
+	@Override
 	public void setDefaultSender(boolean defaultSender) {
 		_defaultSender = defaultSender;
+
+		if (_accountRemoteModel != null) {
+			try {
+				Class<?> clazz = _accountRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setDefaultSender",
+						boolean.class);
+
+				method.invoke(_accountRemoteModel, defaultSender);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public void setPasswordDecrypted(java.lang.String unencryptedPassword) {
-		throw new UnsupportedOperationException();
+		try {
+			String methodName = "setPasswordDecrypted";
+
+			Class<?>[] parameterTypes = new Class<?>[] { java.lang.String.class };
+
+			Object[] parameterValues = new Object[] { unencryptedPassword };
+
+			invokeOnRemoteModel(methodName, parameterTypes, parameterValues);
+		}
+		catch (Exception e) {
+			throw new UnsupportedOperationException(e);
+		}
 	}
 
+	@Override
 	public java.lang.String getPasswordDecrypted() {
-		throw new UnsupportedOperationException();
+		try {
+			String methodName = "getPasswordDecrypted";
+
+			Class<?>[] parameterTypes = new Class<?>[] {  };
+
+			Object[] parameterValues = new Object[] {  };
+
+			java.lang.String returnObj = (java.lang.String)invokeOnRemoteModel(methodName,
+					parameterTypes, parameterValues);
+
+			return returnObj;
+		}
+		catch (Exception e) {
+			throw new UnsupportedOperationException(e);
+		}
 	}
 
 	public BaseModel<?> getAccountRemoteModel() {
@@ -506,6 +944,48 @@ public class AccountClp extends BaseModelImpl<Account> implements Account {
 		_accountRemoteModel = accountRemoteModel;
 	}
 
+	public Object invokeOnRemoteModel(String methodName,
+		Class<?>[] parameterTypes, Object[] parameterValues)
+		throws Exception {
+		Object[] remoteParameterValues = new Object[parameterValues.length];
+
+		for (int i = 0; i < parameterValues.length; i++) {
+			if (parameterValues[i] != null) {
+				remoteParameterValues[i] = ClpSerializer.translateInput(parameterValues[i]);
+			}
+		}
+
+		Class<?> remoteModelClass = _accountRemoteModel.getClass();
+
+		ClassLoader remoteModelClassLoader = remoteModelClass.getClassLoader();
+
+		Class<?>[] remoteParameterTypes = new Class[parameterTypes.length];
+
+		for (int i = 0; i < parameterTypes.length; i++) {
+			if (parameterTypes[i].isPrimitive()) {
+				remoteParameterTypes[i] = parameterTypes[i];
+			}
+			else {
+				String parameterTypeName = parameterTypes[i].getName();
+
+				remoteParameterTypes[i] = remoteModelClassLoader.loadClass(parameterTypeName);
+			}
+		}
+
+		Method method = remoteModelClass.getMethod(methodName,
+				remoteParameterTypes);
+
+		Object returnValue = method.invoke(_accountRemoteModel,
+				remoteParameterValues);
+
+		if (returnValue != null) {
+			returnValue = ClpSerializer.translateOutput(returnValue);
+		}
+
+		return returnValue;
+	}
+
+	@Override
 	public void persist() throws SystemException {
 		if (this.isNew()) {
 			AccountLocalServiceUtil.addAccount(this);
@@ -555,6 +1035,7 @@ public class AccountClp extends BaseModelImpl<Account> implements Account {
 		return clone;
 	}
 
+	@Override
 	public int compareTo(Account account) {
 		int value = 0;
 
@@ -569,18 +1050,15 @@ public class AccountClp extends BaseModelImpl<Account> implements Account {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof AccountClp)) {
 			return false;
 		}
 
-		AccountClp account = null;
-
-		try {
-			account = (AccountClp)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		AccountClp account = (AccountClp)obj;
 
 		long primaryKey = account.getPrimaryKey();
 
@@ -658,6 +1136,7 @@ public class AccountClp extends BaseModelImpl<Account> implements Account {
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
 		StringBundler sb = new StringBundler(82);
 

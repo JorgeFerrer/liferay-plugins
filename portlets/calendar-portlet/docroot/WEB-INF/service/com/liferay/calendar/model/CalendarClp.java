@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -15,6 +15,7 @@
 package com.liferay.calendar.model;
 
 import com.liferay.calendar.service.CalendarLocalServiceUtil;
+import com.liferay.calendar.service.ClpSerializer;
 
 import com.liferay.portal.LocaleException;
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
@@ -31,6 +32,8 @@ import com.liferay.portal.util.PortalUtil;
 
 import java.io.Serializable;
 
+import java.lang.reflect.Method;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
@@ -43,26 +46,32 @@ public class CalendarClp extends BaseModelImpl<Calendar> implements Calendar {
 	public CalendarClp() {
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return Calendar.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return Calendar.class.getName();
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _calendarId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setCalendarId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
-		return new Long(_calendarId);
+		return _calendarId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
@@ -85,6 +94,8 @@ public class CalendarClp extends BaseModelImpl<Calendar> implements Calendar {
 		attributes.put("description", getDescription());
 		attributes.put("color", getColor());
 		attributes.put("defaultCalendar", getDefaultCalendar());
+		attributes.put("enableComments", getEnableComments());
+		attributes.put("enableRatings", getEnableRatings());
 
 		return attributes;
 	}
@@ -174,143 +185,332 @@ public class CalendarClp extends BaseModelImpl<Calendar> implements Calendar {
 		if (defaultCalendar != null) {
 			setDefaultCalendar(defaultCalendar);
 		}
+
+		Boolean enableComments = (Boolean)attributes.get("enableComments");
+
+		if (enableComments != null) {
+			setEnableComments(enableComments);
+		}
+
+		Boolean enableRatings = (Boolean)attributes.get("enableRatings");
+
+		if (enableRatings != null) {
+			setEnableRatings(enableRatings);
+		}
 	}
 
+	@Override
 	public String getUuid() {
 		return _uuid;
 	}
 
+	@Override
 	public void setUuid(String uuid) {
 		_uuid = uuid;
+
+		if (_calendarRemoteModel != null) {
+			try {
+				Class<?> clazz = _calendarRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setUuid", String.class);
+
+				method.invoke(_calendarRemoteModel, uuid);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getCalendarId() {
 		return _calendarId;
 	}
 
+	@Override
 	public void setCalendarId(long calendarId) {
 		_calendarId = calendarId;
+
+		if (_calendarRemoteModel != null) {
+			try {
+				Class<?> clazz = _calendarRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setCalendarId", long.class);
+
+				method.invoke(_calendarRemoteModel, calendarId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getGroupId() {
 		return _groupId;
 	}
 
+	@Override
 	public void setGroupId(long groupId) {
 		_groupId = groupId;
+
+		if (_calendarRemoteModel != null) {
+			try {
+				Class<?> clazz = _calendarRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setGroupId", long.class);
+
+				method.invoke(_calendarRemoteModel, groupId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getCompanyId() {
 		return _companyId;
 	}
 
+	@Override
 	public void setCompanyId(long companyId) {
 		_companyId = companyId;
+
+		if (_calendarRemoteModel != null) {
+			try {
+				Class<?> clazz = _calendarRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setCompanyId", long.class);
+
+				method.invoke(_calendarRemoteModel, companyId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getUserId() {
 		return _userId;
 	}
 
+	@Override
 	public void setUserId(long userId) {
 		_userId = userId;
+
+		if (_calendarRemoteModel != null) {
+			try {
+				Class<?> clazz = _calendarRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setUserId", long.class);
+
+				method.invoke(_calendarRemoteModel, userId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getUserUuid() throws SystemException {
 		return PortalUtil.getUserValue(getUserId(), "uuid", _userUuid);
 	}
 
+	@Override
 	public void setUserUuid(String userUuid) {
 		_userUuid = userUuid;
 	}
 
+	@Override
 	public String getUserName() {
 		return _userName;
 	}
 
+	@Override
 	public void setUserName(String userName) {
 		_userName = userName;
+
+		if (_calendarRemoteModel != null) {
+			try {
+				Class<?> clazz = _calendarRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setUserName", String.class);
+
+				method.invoke(_calendarRemoteModel, userName);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public Date getCreateDate() {
 		return _createDate;
 	}
 
+	@Override
 	public void setCreateDate(Date createDate) {
 		_createDate = createDate;
+
+		if (_calendarRemoteModel != null) {
+			try {
+				Class<?> clazz = _calendarRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setCreateDate", Date.class);
+
+				method.invoke(_calendarRemoteModel, createDate);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public Date getModifiedDate() {
 		return _modifiedDate;
 	}
 
+	@Override
 	public void setModifiedDate(Date modifiedDate) {
 		_modifiedDate = modifiedDate;
+
+		if (_calendarRemoteModel != null) {
+			try {
+				Class<?> clazz = _calendarRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setModifiedDate", Date.class);
+
+				method.invoke(_calendarRemoteModel, modifiedDate);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getResourceBlockId() {
 		return _resourceBlockId;
 	}
 
+	@Override
 	public void setResourceBlockId(long resourceBlockId) {
 		_resourceBlockId = resourceBlockId;
+
+		if (_calendarRemoteModel != null) {
+			try {
+				Class<?> clazz = _calendarRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setResourceBlockId", long.class);
+
+				method.invoke(_calendarRemoteModel, resourceBlockId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getCalendarResourceId() {
 		return _calendarResourceId;
 	}
 
+	@Override
 	public void setCalendarResourceId(long calendarResourceId) {
 		_calendarResourceId = calendarResourceId;
+
+		if (_calendarRemoteModel != null) {
+			try {
+				Class<?> clazz = _calendarRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setCalendarResourceId",
+						long.class);
+
+				method.invoke(_calendarRemoteModel, calendarResourceId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getName() {
 		return _name;
 	}
 
+	@Override
 	public String getName(Locale locale) {
 		String languageId = LocaleUtil.toLanguageId(locale);
 
 		return getName(languageId);
 	}
 
+	@Override
 	public String getName(Locale locale, boolean useDefault) {
 		String languageId = LocaleUtil.toLanguageId(locale);
 
 		return getName(languageId, useDefault);
 	}
 
+	@Override
 	public String getName(String languageId) {
 		return LocalizationUtil.getLocalization(getName(), languageId);
 	}
 
+	@Override
 	public String getName(String languageId, boolean useDefault) {
 		return LocalizationUtil.getLocalization(getName(), languageId,
 			useDefault);
 	}
 
+	@Override
 	public String getNameCurrentLanguageId() {
 		return _nameCurrentLanguageId;
 	}
 
+	@Override
 	public String getNameCurrentValue() {
 		Locale locale = getLocale(_nameCurrentLanguageId);
 
 		return getName(locale);
 	}
 
+	@Override
 	public Map<Locale, String> getNameMap() {
 		return LocalizationUtil.getLocalizationMap(getName());
 	}
 
+	@Override
 	public void setName(String name) {
 		_name = name;
+
+		if (_calendarRemoteModel != null) {
+			try {
+				Class<?> clazz = _calendarRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setName", String.class);
+
+				method.invoke(_calendarRemoteModel, name);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public void setName(String name, Locale locale) {
 		setName(name, locale, LocaleUtil.getDefault());
 	}
 
+	@Override
 	public void setName(String name, Locale locale, Locale defaultLocale) {
 		String languageId = LocaleUtil.toLanguageId(locale);
 		String defaultLanguageId = LocaleUtil.toLanguageId(defaultLocale);
@@ -325,14 +525,17 @@ public class CalendarClp extends BaseModelImpl<Calendar> implements Calendar {
 		}
 	}
 
+	@Override
 	public void setNameCurrentLanguageId(String languageId) {
 		_nameCurrentLanguageId = languageId;
 	}
 
+	@Override
 	public void setNameMap(Map<Locale, String> nameMap) {
 		setNameMap(nameMap, LocaleUtil.getDefault());
 	}
 
+	@Override
 	public void setNameMap(Map<Locale, String> nameMap, Locale defaultLocale) {
 		if (nameMap == null) {
 			return;
@@ -359,53 +562,77 @@ public class CalendarClp extends BaseModelImpl<Calendar> implements Calendar {
 		}
 	}
 
+	@Override
 	public String getDescription() {
 		return _description;
 	}
 
+	@Override
 	public String getDescription(Locale locale) {
 		String languageId = LocaleUtil.toLanguageId(locale);
 
 		return getDescription(languageId);
 	}
 
+	@Override
 	public String getDescription(Locale locale, boolean useDefault) {
 		String languageId = LocaleUtil.toLanguageId(locale);
 
 		return getDescription(languageId, useDefault);
 	}
 
+	@Override
 	public String getDescription(String languageId) {
 		return LocalizationUtil.getLocalization(getDescription(), languageId);
 	}
 
+	@Override
 	public String getDescription(String languageId, boolean useDefault) {
 		return LocalizationUtil.getLocalization(getDescription(), languageId,
 			useDefault);
 	}
 
+	@Override
 	public String getDescriptionCurrentLanguageId() {
 		return _descriptionCurrentLanguageId;
 	}
 
+	@Override
 	public String getDescriptionCurrentValue() {
 		Locale locale = getLocale(_descriptionCurrentLanguageId);
 
 		return getDescription(locale);
 	}
 
+	@Override
 	public Map<Locale, String> getDescriptionMap() {
 		return LocalizationUtil.getLocalizationMap(getDescription());
 	}
 
+	@Override
 	public void setDescription(String description) {
 		_description = description;
+
+		if (_calendarRemoteModel != null) {
+			try {
+				Class<?> clazz = _calendarRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setDescription", String.class);
+
+				method.invoke(_calendarRemoteModel, description);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public void setDescription(String description, Locale locale) {
 		setDescription(description, locale, LocaleUtil.getDefault());
 	}
 
+	@Override
 	public void setDescription(String description, Locale locale,
 		Locale defaultLocale) {
 		String languageId = LocaleUtil.toLanguageId(locale);
@@ -422,14 +649,17 @@ public class CalendarClp extends BaseModelImpl<Calendar> implements Calendar {
 		}
 	}
 
+	@Override
 	public void setDescriptionCurrentLanguageId(String languageId) {
 		_descriptionCurrentLanguageId = languageId;
 	}
 
+	@Override
 	public void setDescriptionMap(Map<Locale, String> descriptionMap) {
 		setDescriptionMap(descriptionMap, LocaleUtil.getDefault());
 	}
 
+	@Override
 	public void setDescriptionMap(Map<Locale, String> descriptionMap,
 		Locale defaultLocale) {
 		if (descriptionMap == null) {
@@ -458,28 +688,152 @@ public class CalendarClp extends BaseModelImpl<Calendar> implements Calendar {
 		}
 	}
 
+	@Override
 	public int getColor() {
 		return _color;
 	}
 
+	@Override
 	public void setColor(int color) {
 		_color = color;
+
+		if (_calendarRemoteModel != null) {
+			try {
+				Class<?> clazz = _calendarRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setColor", int.class);
+
+				method.invoke(_calendarRemoteModel, color);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public boolean getDefaultCalendar() {
 		return _defaultCalendar;
 	}
 
+	@Override
 	public boolean isDefaultCalendar() {
 		return _defaultCalendar;
 	}
 
+	@Override
 	public void setDefaultCalendar(boolean defaultCalendar) {
 		_defaultCalendar = defaultCalendar;
+
+		if (_calendarRemoteModel != null) {
+			try {
+				Class<?> clazz = _calendarRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setDefaultCalendar",
+						boolean.class);
+
+				method.invoke(_calendarRemoteModel, defaultCalendar);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
+	public boolean getEnableComments() {
+		return _enableComments;
+	}
+
+	@Override
+	public boolean isEnableComments() {
+		return _enableComments;
+	}
+
+	@Override
+	public void setEnableComments(boolean enableComments) {
+		_enableComments = enableComments;
+
+		if (_calendarRemoteModel != null) {
+			try {
+				Class<?> clazz = _calendarRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setEnableComments",
+						boolean.class);
+
+				method.invoke(_calendarRemoteModel, enableComments);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
+	}
+
+	@Override
+	public boolean getEnableRatings() {
+		return _enableRatings;
+	}
+
+	@Override
+	public boolean isEnableRatings() {
+		return _enableRatings;
+	}
+
+	@Override
+	public void setEnableRatings(boolean enableRatings) {
+		_enableRatings = enableRatings;
+
+		if (_calendarRemoteModel != null) {
+			try {
+				Class<?> clazz = _calendarRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setEnableRatings",
+						boolean.class);
+
+				method.invoke(_calendarRemoteModel, enableRatings);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
+	}
+
+	@Override
+	public long getResourceGroupId() {
+		try {
+			String methodName = "getResourceGroupId";
+
+			Class<?>[] parameterTypes = new Class<?>[] {  };
+
+			Object[] parameterValues = new Object[] {  };
+
+			Long returnObj = (Long)invokeOnRemoteModel(methodName,
+					parameterTypes, parameterValues);
+
+			return returnObj;
+		}
+		catch (Exception e) {
+			throw new UnsupportedOperationException(e);
+		}
+	}
+
+	@Override
 	public com.liferay.calendar.model.CalendarResource getCalendarResource() {
-		throw new UnsupportedOperationException();
+		try {
+			String methodName = "getCalendarResource";
+
+			Class<?>[] parameterTypes = new Class<?>[] {  };
+
+			Object[] parameterValues = new Object[] {  };
+
+			com.liferay.calendar.model.CalendarResource returnObj = (com.liferay.calendar.model.CalendarResource)invokeOnRemoteModel(methodName,
+					parameterTypes, parameterValues);
+
+			return returnObj;
+		}
+		catch (Exception e) {
+			throw new UnsupportedOperationException(e);
+		}
 	}
 
 	public BaseModel<?> getCalendarRemoteModel() {
@@ -490,6 +844,48 @@ public class CalendarClp extends BaseModelImpl<Calendar> implements Calendar {
 		_calendarRemoteModel = calendarRemoteModel;
 	}
 
+	public Object invokeOnRemoteModel(String methodName,
+		Class<?>[] parameterTypes, Object[] parameterValues)
+		throws Exception {
+		Object[] remoteParameterValues = new Object[parameterValues.length];
+
+		for (int i = 0; i < parameterValues.length; i++) {
+			if (parameterValues[i] != null) {
+				remoteParameterValues[i] = ClpSerializer.translateInput(parameterValues[i]);
+			}
+		}
+
+		Class<?> remoteModelClass = _calendarRemoteModel.getClass();
+
+		ClassLoader remoteModelClassLoader = remoteModelClass.getClassLoader();
+
+		Class<?>[] remoteParameterTypes = new Class[parameterTypes.length];
+
+		for (int i = 0; i < parameterTypes.length; i++) {
+			if (parameterTypes[i].isPrimitive()) {
+				remoteParameterTypes[i] = parameterTypes[i];
+			}
+			else {
+				String parameterTypeName = parameterTypes[i].getName();
+
+				remoteParameterTypes[i] = remoteModelClassLoader.loadClass(parameterTypeName);
+			}
+		}
+
+		Method method = remoteModelClass.getMethod(methodName,
+				remoteParameterTypes);
+
+		Object returnValue = method.invoke(_calendarRemoteModel,
+				remoteParameterValues);
+
+		if (returnValue != null) {
+			returnValue = ClpSerializer.translateOutput(returnValue);
+		}
+
+		return returnValue;
+	}
+
+	@Override
 	public void persist() throws SystemException {
 		if (this.isNew()) {
 			CalendarLocalServiceUtil.addCalendar(this);
@@ -499,6 +895,7 @@ public class CalendarClp extends BaseModelImpl<Calendar> implements Calendar {
 		}
 	}
 
+	@Override
 	@SuppressWarnings("unused")
 	public void prepareLocalizedFieldsForImport(Locale defaultImportLocale)
 		throws LocaleException {
@@ -532,10 +929,13 @@ public class CalendarClp extends BaseModelImpl<Calendar> implements Calendar {
 		clone.setDescription(getDescription());
 		clone.setColor(getColor());
 		clone.setDefaultCalendar(getDefaultCalendar());
+		clone.setEnableComments(getEnableComments());
+		clone.setEnableRatings(getEnableRatings());
 
 		return clone;
 	}
 
+	@Override
 	public int compareTo(Calendar calendar) {
 		int value = 0;
 
@@ -550,18 +950,15 @@ public class CalendarClp extends BaseModelImpl<Calendar> implements Calendar {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof CalendarClp)) {
 			return false;
 		}
 
-		CalendarClp calendar = null;
-
-		try {
-			calendar = (CalendarClp)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		CalendarClp calendar = (CalendarClp)obj;
 
 		long primaryKey = calendar.getPrimaryKey();
 
@@ -580,7 +977,7 @@ public class CalendarClp extends BaseModelImpl<Calendar> implements Calendar {
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(29);
+		StringBundler sb = new StringBundler(33);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -610,13 +1007,18 @@ public class CalendarClp extends BaseModelImpl<Calendar> implements Calendar {
 		sb.append(getColor());
 		sb.append(", defaultCalendar=");
 		sb.append(getDefaultCalendar());
+		sb.append(", enableComments=");
+		sb.append(getEnableComments());
+		sb.append(", enableRatings=");
+		sb.append(getEnableRatings());
 		sb.append("}");
 
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(46);
+		StringBundler sb = new StringBundler(52);
 
 		sb.append("<model><model-name>");
 		sb.append("com.liferay.calendar.model.Calendar");
@@ -678,6 +1080,14 @@ public class CalendarClp extends BaseModelImpl<Calendar> implements Calendar {
 			"<column><column-name>defaultCalendar</column-name><column-value><![CDATA[");
 		sb.append(getDefaultCalendar());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>enableComments</column-name><column-value><![CDATA[");
+		sb.append(getEnableComments());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>enableRatings</column-name><column-value><![CDATA[");
+		sb.append(getEnableRatings());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -701,5 +1111,7 @@ public class CalendarClp extends BaseModelImpl<Calendar> implements Calendar {
 	private String _descriptionCurrentLanguageId;
 	private int _color;
 	private boolean _defaultCalendar;
+	private boolean _enableComments;
+	private boolean _enableRatings;
 	private BaseModel<?> _calendarRemoteModel;
 }

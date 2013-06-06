@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -19,11 +19,12 @@ import com.liferay.portal.kernel.util.ReferenceRegistry;
 import com.liferay.portal.service.InvokableLocalService;
 
 /**
- * The utility for the k b comment local service. This utility wraps {@link com.liferay.knowledgebase.service.impl.KBCommentLocalServiceImpl} and is the primary access point for service operations in application layer code running on the local server.
- *
- * <p>
- * This is a local service. Methods of this service will not have security checks based on the propagated JAAS credentials because this service can only be accessed from within the same VM.
- * </p>
+ * Provides the local service utility for KBComment. This utility wraps
+ * {@link com.liferay.knowledgebase.service.impl.KBCommentLocalServiceImpl} and is the
+ * primary access point for service operations in application layer code running
+ * on the local server. Methods of this service will not have security checks
+ * based on the propagated JAAS credentials because this service can only be
+ * accessed from within the same VM.
  *
  * @author Brian Wing Shun Chan
  * @see KBCommentLocalService
@@ -82,11 +83,13 @@ public class KBCommentLocalServiceUtil {
 	*
 	* @param kbComment the k b comment
 	* @return the k b comment that was removed
+	* @throws PortalException
 	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.knowledgebase.model.KBComment deleteKBComment(
 		com.liferay.knowledgebase.model.KBComment kbComment)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
 		return getService().deleteKBComment(kbComment);
 	}
 
@@ -194,12 +197,12 @@ public class KBCommentLocalServiceUtil {
 	}
 
 	/**
-	* Returns the k b comment with the UUID in the group.
+	* Returns the k b comment matching the UUID and group.
 	*
-	* @param uuid the UUID of k b comment
-	* @param groupId the group id of the k b comment
-	* @return the k b comment
-	* @throws PortalException if a k b comment with the UUID in the group could not be found
+	* @param uuid the k b comment's UUID
+	* @param groupId the primary key of the group
+	* @return the matching k b comment
+	* @throws PortalException if a matching k b comment could not be found
 	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.knowledgebase.model.KBComment getKBCommentByUuidAndGroupId(
@@ -287,7 +290,8 @@ public class KBCommentLocalServiceUtil {
 	}
 
 	public static void deleteKBComments(java.lang.String className, long classPK)
-		throws com.liferay.portal.kernel.exception.SystemException {
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
 		getService().deleteKBComments(className, classPK);
 	}
 
@@ -348,7 +352,7 @@ public class KBCommentLocalServiceUtil {
 	}
 
 	/**
-	 * @deprecated
+	 * @deprecated As of 6.2.0
 	 */
 	public void setService(KBCommentLocalService service) {
 	}

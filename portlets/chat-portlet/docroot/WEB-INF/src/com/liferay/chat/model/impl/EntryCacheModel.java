@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -35,7 +35,7 @@ import java.io.ObjectOutput;
 public class EntryCacheModel implements CacheModel<Entry>, Externalizable {
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(11);
+		StringBundler sb = new StringBundler(13);
 
 		sb.append("{entryId=");
 		sb.append(entryId);
@@ -47,11 +47,14 @@ public class EntryCacheModel implements CacheModel<Entry>, Externalizable {
 		sb.append(toUserId);
 		sb.append(", content=");
 		sb.append(content);
+		sb.append(", flag=");
+		sb.append(flag);
 		sb.append("}");
 
 		return sb.toString();
 	}
 
+	@Override
 	public Entry toEntityModel() {
 		EntryImpl entryImpl = new EntryImpl();
 
@@ -67,19 +70,24 @@ public class EntryCacheModel implements CacheModel<Entry>, Externalizable {
 			entryImpl.setContent(content);
 		}
 
+		entryImpl.setFlag(flag);
+
 		entryImpl.resetOriginalValues();
 
 		return entryImpl;
 	}
 
+	@Override
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		entryId = objectInput.readLong();
 		createDate = objectInput.readLong();
 		fromUserId = objectInput.readLong();
 		toUserId = objectInput.readLong();
 		content = objectInput.readUTF();
+		flag = objectInput.readInt();
 	}
 
+	@Override
 	public void writeExternal(ObjectOutput objectOutput)
 		throws IOException {
 		objectOutput.writeLong(entryId);
@@ -93,6 +101,8 @@ public class EntryCacheModel implements CacheModel<Entry>, Externalizable {
 		else {
 			objectOutput.writeUTF(content);
 		}
+
+		objectOutput.writeInt(flag);
 	}
 
 	public long entryId;
@@ -100,4 +110,5 @@ public class EntryCacheModel implements CacheModel<Entry>, Externalizable {
 	public long fromUserId;
 	public long toUserId;
 	public String content;
+	public int flag;
 }

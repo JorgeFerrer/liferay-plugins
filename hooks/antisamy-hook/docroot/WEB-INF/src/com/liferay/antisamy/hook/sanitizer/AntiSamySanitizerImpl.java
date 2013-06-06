@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -20,7 +20,6 @@ import com.liferay.portal.kernel.sanitizer.Sanitizer;
 import com.liferay.portal.kernel.sanitizer.SanitizerException;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.StreamUtil;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.IOException;
@@ -40,6 +39,7 @@ import org.owasp.validator.html.PolicyException;
  */
 public class AntiSamySanitizerImpl implements Sanitizer {
 
+	@Override
 	public byte[] sanitize(
 		long companyId, long groupId, long userId, String className,
 		long classPK, String contentType, String[] modes, byte[] bytes,
@@ -52,6 +52,7 @@ public class AntiSamySanitizerImpl implements Sanitizer {
 		return bytes;
 	}
 
+	@Override
 	public void sanitize(
 			long companyId, long groupId, long userId, String className,
 			long classPK, String contentType, String[] modes,
@@ -71,10 +72,12 @@ public class AntiSamySanitizerImpl implements Sanitizer {
 		}
 	}
 
+	@Override
 	public String sanitize(
-		long companyId, long groupId, long userId, String className,
-		long classPK, String contentType, String[] modes, String s,
-		Map<String, Object> options) {
+			long companyId, long groupId, long userId, String className,
+			long classPK, String contentType, String[] modes, String s,
+			Map<String, Object> options)
+		throws SanitizerException {
 
 		if (_log.isDebugEnabled()) {
 			_log.debug("Sanitizing " + className + "#" + classPK);
@@ -104,12 +107,14 @@ public class AntiSamySanitizerImpl implements Sanitizer {
 		catch (Exception e) {
 			_log.error("Unable to sanitize input", e);
 
-			return StringPool.BLANK;
+			throw new SanitizerException(e);
 		}
 	}
 
 	private void _init() {
-		ClassLoader classLoader = getClass().getClassLoader();
+		Class<?> clazz = getClass();
+
+		ClassLoader classLoader = clazz.getClassLoader();
 
 		InputStream inputStream = classLoader.getResourceAsStream(
 			"sanitizer-configuration.xml");

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -19,8 +19,6 @@ import com.liferay.marketplace.model.App;
 import com.liferay.marketplace.model.impl.AppImpl;
 import com.liferay.marketplace.model.impl.AppModelImpl;
 
-import com.liferay.portal.NoSuchModelException;
-import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.cache.CacheRegistryUtil;
 import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
 import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
@@ -37,6 +35,7 @@ import com.liferay.portal.kernel.util.InstanceFactory;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -45,7 +44,6 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import com.liferay.portal.model.CacheModel;
 import com.liferay.portal.model.ModelListener;
-import com.liferay.portal.service.persistence.UserPersistence;
 import com.liferay.portal.service.persistence.impl.BasePersistenceImpl;
 
 import java.io.Serializable;
@@ -53,6 +51,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * The persistence implementation for the app service.
@@ -113,6 +112,7 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 	 * @return the matching apps
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<App> findByUuid(String uuid) throws SystemException {
 		return findByUuid(uuid, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
@@ -130,6 +130,7 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 	 * @return the range of matching apps
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<App> findByUuid(String uuid, int start, int end)
 		throws SystemException {
 		return findByUuid(uuid, start, end, null);
@@ -149,6 +150,7 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 	 * @return the ordered range of matching apps
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<App> findByUuid(String uuid, int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -192,16 +194,18 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 
 			query.append(_SQL_SELECT_APP_WHERE);
 
+			boolean bindUuid = false;
+
 			if (uuid == null) {
 				query.append(_FINDER_COLUMN_UUID_UUID_1);
 			}
+			else if (uuid.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_UUID_UUID_3);
+			}
 			else {
-				if (uuid.equals(StringPool.BLANK)) {
-					query.append(_FINDER_COLUMN_UUID_UUID_3);
-				}
-				else {
-					query.append(_FINDER_COLUMN_UUID_UUID_2);
-				}
+				bindUuid = true;
+
+				query.append(_FINDER_COLUMN_UUID_UUID_2);
 			}
 
 			if (orderByComparator != null) {
@@ -224,7 +228,7 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 
 				QueryPos qPos = QueryPos.getInstance(q);
 
-				if (uuid != null) {
+				if (bindUuid) {
 					qPos.add(uuid);
 				}
 
@@ -266,6 +270,7 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 	 * @throws com.liferay.marketplace.NoSuchAppException if a matching app could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public App findByUuid_First(String uuid, OrderByComparator orderByComparator)
 		throws NoSuchAppException, SystemException {
 		App app = fetchByUuid_First(uuid, orderByComparator);
@@ -294,6 +299,7 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 	 * @return the first matching app, or <code>null</code> if a matching app could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public App fetchByUuid_First(String uuid,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<App> list = findByUuid(uuid, 0, 1, orderByComparator);
@@ -314,6 +320,7 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 	 * @throws com.liferay.marketplace.NoSuchAppException if a matching app could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public App findByUuid_Last(String uuid, OrderByComparator orderByComparator)
 		throws NoSuchAppException, SystemException {
 		App app = fetchByUuid_Last(uuid, orderByComparator);
@@ -342,6 +349,7 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 	 * @return the last matching app, or <code>null</code> if a matching app could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public App fetchByUuid_Last(String uuid, OrderByComparator orderByComparator)
 		throws SystemException {
 		int count = countByUuid(uuid);
@@ -365,6 +373,7 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 	 * @throws com.liferay.marketplace.NoSuchAppException if a app with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public App[] findByUuid_PrevAndNext(long appId, String uuid,
 		OrderByComparator orderByComparator)
 		throws NoSuchAppException, SystemException {
@@ -409,16 +418,18 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 
 		query.append(_SQL_SELECT_APP_WHERE);
 
+		boolean bindUuid = false;
+
 		if (uuid == null) {
 			query.append(_FINDER_COLUMN_UUID_UUID_1);
 		}
+		else if (uuid.equals(StringPool.BLANK)) {
+			query.append(_FINDER_COLUMN_UUID_UUID_3);
+		}
 		else {
-			if (uuid.equals(StringPool.BLANK)) {
-				query.append(_FINDER_COLUMN_UUID_UUID_3);
-			}
-			else {
-				query.append(_FINDER_COLUMN_UUID_UUID_2);
-			}
+			bindUuid = true;
+
+			query.append(_FINDER_COLUMN_UUID_UUID_2);
 		}
 
 		if (orderByComparator != null) {
@@ -489,7 +500,7 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 
 		QueryPos qPos = QueryPos.getInstance(q);
 
-		if (uuid != null) {
+		if (bindUuid) {
 			qPos.add(uuid);
 		}
 
@@ -517,6 +528,7 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 	 * @param uuid the uuid
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByUuid(String uuid) throws SystemException {
 		for (App app : findByUuid(uuid, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 				null)) {
@@ -531,6 +543,7 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 	 * @return the number of matching apps
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByUuid(String uuid) throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_UUID;
 
@@ -544,16 +557,18 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 
 			query.append(_SQL_COUNT_APP_WHERE);
 
+			boolean bindUuid = false;
+
 			if (uuid == null) {
 				query.append(_FINDER_COLUMN_UUID_UUID_1);
 			}
+			else if (uuid.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_UUID_UUID_3);
+			}
 			else {
-				if (uuid.equals(StringPool.BLANK)) {
-					query.append(_FINDER_COLUMN_UUID_UUID_3);
-				}
-				else {
-					query.append(_FINDER_COLUMN_UUID_UUID_2);
-				}
+				bindUuid = true;
+
+				query.append(_FINDER_COLUMN_UUID_UUID_2);
 			}
 
 			String sql = query.toString();
@@ -567,7 +582,7 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 
 				QueryPos qPos = QueryPos.getInstance(q);
 
-				if (uuid != null) {
+				if (bindUuid) {
 					qPos.add(uuid);
 				}
 
@@ -590,7 +605,7 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 
 	private static final String _FINDER_COLUMN_UUID_UUID_1 = "app.uuid IS NULL";
 	private static final String _FINDER_COLUMN_UUID_UUID_2 = "app.uuid = ?";
-	private static final String _FINDER_COLUMN_UUID_UUID_3 = "(app.uuid IS NULL OR app.uuid = ?)";
+	private static final String _FINDER_COLUMN_UUID_UUID_3 = "(app.uuid IS NULL OR app.uuid = '')";
 	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_UUID_C = new FinderPath(AppModelImpl.ENTITY_CACHE_ENABLED,
 			AppModelImpl.FINDER_CACHE_ENABLED, AppImpl.class,
 			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByUuid_C",
@@ -620,6 +635,7 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 	 * @return the matching apps
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<App> findByUuid_C(String uuid, long companyId)
 		throws SystemException {
 		return findByUuid_C(uuid, companyId, QueryUtil.ALL_POS,
@@ -640,6 +656,7 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 	 * @return the range of matching apps
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<App> findByUuid_C(String uuid, long companyId, int start,
 		int end) throws SystemException {
 		return findByUuid_C(uuid, companyId, start, end, null);
@@ -660,6 +677,7 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 	 * @return the ordered range of matching apps
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<App> findByUuid_C(String uuid, long companyId, int start,
 		int end, OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -708,16 +726,18 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 
 			query.append(_SQL_SELECT_APP_WHERE);
 
+			boolean bindUuid = false;
+
 			if (uuid == null) {
 				query.append(_FINDER_COLUMN_UUID_C_UUID_1);
 			}
+			else if (uuid.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_UUID_C_UUID_3);
+			}
 			else {
-				if (uuid.equals(StringPool.BLANK)) {
-					query.append(_FINDER_COLUMN_UUID_C_UUID_3);
-				}
-				else {
-					query.append(_FINDER_COLUMN_UUID_C_UUID_2);
-				}
+				bindUuid = true;
+
+				query.append(_FINDER_COLUMN_UUID_C_UUID_2);
 			}
 
 			query.append(_FINDER_COLUMN_UUID_C_COMPANYID_2);
@@ -742,7 +762,7 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 
 				QueryPos qPos = QueryPos.getInstance(q);
 
-				if (uuid != null) {
+				if (bindUuid) {
 					qPos.add(uuid);
 				}
 
@@ -787,6 +807,7 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 	 * @throws com.liferay.marketplace.NoSuchAppException if a matching app could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public App findByUuid_C_First(String uuid, long companyId,
 		OrderByComparator orderByComparator)
 		throws NoSuchAppException, SystemException {
@@ -820,6 +841,7 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 	 * @return the first matching app, or <code>null</code> if a matching app could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public App fetchByUuid_C_First(String uuid, long companyId,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<App> list = findByUuid_C(uuid, companyId, 0, 1, orderByComparator);
@@ -841,6 +863,7 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 	 * @throws com.liferay.marketplace.NoSuchAppException if a matching app could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public App findByUuid_C_Last(String uuid, long companyId,
 		OrderByComparator orderByComparator)
 		throws NoSuchAppException, SystemException {
@@ -874,6 +897,7 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 	 * @return the last matching app, or <code>null</code> if a matching app could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public App fetchByUuid_C_Last(String uuid, long companyId,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByUuid_C(uuid, companyId);
@@ -899,6 +923,7 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 	 * @throws com.liferay.marketplace.NoSuchAppException if a app with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public App[] findByUuid_C_PrevAndNext(long appId, String uuid,
 		long companyId, OrderByComparator orderByComparator)
 		throws NoSuchAppException, SystemException {
@@ -944,16 +969,18 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 
 		query.append(_SQL_SELECT_APP_WHERE);
 
+		boolean bindUuid = false;
+
 		if (uuid == null) {
 			query.append(_FINDER_COLUMN_UUID_C_UUID_1);
 		}
+		else if (uuid.equals(StringPool.BLANK)) {
+			query.append(_FINDER_COLUMN_UUID_C_UUID_3);
+		}
 		else {
-			if (uuid.equals(StringPool.BLANK)) {
-				query.append(_FINDER_COLUMN_UUID_C_UUID_3);
-			}
-			else {
-				query.append(_FINDER_COLUMN_UUID_C_UUID_2);
-			}
+			bindUuid = true;
+
+			query.append(_FINDER_COLUMN_UUID_C_UUID_2);
 		}
 
 		query.append(_FINDER_COLUMN_UUID_C_COMPANYID_2);
@@ -1026,7 +1053,7 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 
 		QueryPos qPos = QueryPos.getInstance(q);
 
-		if (uuid != null) {
+		if (bindUuid) {
 			qPos.add(uuid);
 		}
 
@@ -1057,6 +1084,7 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 	 * @param companyId the company ID
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByUuid_C(String uuid, long companyId)
 		throws SystemException {
 		for (App app : findByUuid_C(uuid, companyId, QueryUtil.ALL_POS,
@@ -1073,6 +1101,7 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 	 * @return the number of matching apps
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByUuid_C(String uuid, long companyId)
 		throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_UUID_C;
@@ -1087,16 +1116,18 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 
 			query.append(_SQL_COUNT_APP_WHERE);
 
+			boolean bindUuid = false;
+
 			if (uuid == null) {
 				query.append(_FINDER_COLUMN_UUID_C_UUID_1);
 			}
+			else if (uuid.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_UUID_C_UUID_3);
+			}
 			else {
-				if (uuid.equals(StringPool.BLANK)) {
-					query.append(_FINDER_COLUMN_UUID_C_UUID_3);
-				}
-				else {
-					query.append(_FINDER_COLUMN_UUID_C_UUID_2);
-				}
+				bindUuid = true;
+
+				query.append(_FINDER_COLUMN_UUID_C_UUID_2);
 			}
 
 			query.append(_FINDER_COLUMN_UUID_C_COMPANYID_2);
@@ -1112,7 +1143,7 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 
 				QueryPos qPos = QueryPos.getInstance(q);
 
-				if (uuid != null) {
+				if (bindUuid) {
 					qPos.add(uuid);
 				}
 
@@ -1137,7 +1168,7 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 
 	private static final String _FINDER_COLUMN_UUID_C_UUID_1 = "app.uuid IS NULL AND ";
 	private static final String _FINDER_COLUMN_UUID_C_UUID_2 = "app.uuid = ? AND ";
-	private static final String _FINDER_COLUMN_UUID_C_UUID_3 = "(app.uuid IS NULL OR app.uuid = ?) AND ";
+	private static final String _FINDER_COLUMN_UUID_C_UUID_3 = "(app.uuid IS NULL OR app.uuid = '') AND ";
 	private static final String _FINDER_COLUMN_UUID_C_COMPANYID_2 = "app.companyId = ?";
 	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_COMPANYID =
 		new FinderPath(AppModelImpl.ENTITY_CACHE_ENABLED,
@@ -1167,6 +1198,7 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 	 * @return the matching apps
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<App> findByCompanyId(long companyId) throws SystemException {
 		return findByCompanyId(companyId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 			null);
@@ -1185,6 +1217,7 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 	 * @return the range of matching apps
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<App> findByCompanyId(long companyId, int start, int end)
 		throws SystemException {
 		return findByCompanyId(companyId, start, end, null);
@@ -1204,6 +1237,7 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 	 * @return the ordered range of matching apps
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<App> findByCompanyId(long companyId, int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -1309,6 +1343,7 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 	 * @throws com.liferay.marketplace.NoSuchAppException if a matching app could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public App findByCompanyId_First(long companyId,
 		OrderByComparator orderByComparator)
 		throws NoSuchAppException, SystemException {
@@ -1338,6 +1373,7 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 	 * @return the first matching app, or <code>null</code> if a matching app could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public App fetchByCompanyId_First(long companyId,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<App> list = findByCompanyId(companyId, 0, 1, orderByComparator);
@@ -1358,6 +1394,7 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 	 * @throws com.liferay.marketplace.NoSuchAppException if a matching app could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public App findByCompanyId_Last(long companyId,
 		OrderByComparator orderByComparator)
 		throws NoSuchAppException, SystemException {
@@ -1387,6 +1424,7 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 	 * @return the last matching app, or <code>null</code> if a matching app could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public App fetchByCompanyId_Last(long companyId,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByCompanyId(companyId);
@@ -1411,6 +1449,7 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 	 * @throws com.liferay.marketplace.NoSuchAppException if a app with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public App[] findByCompanyId_PrevAndNext(long appId, long companyId,
 		OrderByComparator orderByComparator)
 		throws NoSuchAppException, SystemException {
@@ -1551,6 +1590,7 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 	 * @param companyId the company ID
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByCompanyId(long companyId) throws SystemException {
 		for (App app : findByCompanyId(companyId, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
@@ -1565,6 +1605,7 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 	 * @return the number of matching apps
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByCompanyId(long companyId) throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_COMPANYID;
 
@@ -1629,6 +1670,7 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 	 * @throws com.liferay.marketplace.NoSuchAppException if a matching app could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public App findByRemoteAppId(long remoteAppId)
 		throws NoSuchAppException, SystemException {
 		App app = fetchByRemoteAppId(remoteAppId);
@@ -1660,6 +1702,7 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 	 * @return the matching app, or <code>null</code> if a matching app could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public App fetchByRemoteAppId(long remoteAppId) throws SystemException {
 		return fetchByRemoteAppId(remoteAppId, true);
 	}
@@ -1672,6 +1715,7 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 	 * @return the matching app, or <code>null</code> if a matching app could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public App fetchByRemoteAppId(long remoteAppId, boolean retrieveFromCache)
 		throws SystemException {
 		Object[] finderArgs = new Object[] { remoteAppId };
@@ -1763,6 +1807,7 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 	 * @return the app that was removed
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public App removeByRemoteAppId(long remoteAppId)
 		throws NoSuchAppException, SystemException {
 		App app = findByRemoteAppId(remoteAppId);
@@ -1777,6 +1822,7 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 	 * @return the number of matching apps
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByRemoteAppId(long remoteAppId) throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_REMOTEAPPID;
 
@@ -1829,12 +1875,13 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 	 *
 	 * @param app the app
 	 */
+	@Override
 	public void cacheResult(App app) {
 		EntityCacheUtil.putResult(AppModelImpl.ENTITY_CACHE_ENABLED,
 			AppImpl.class, app.getPrimaryKey(), app);
 
 		FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_REMOTEAPPID,
-			new Object[] { Long.valueOf(app.getRemoteAppId()) }, app);
+			new Object[] { app.getRemoteAppId() }, app);
 
 		app.resetOriginalValues();
 	}
@@ -1844,6 +1891,7 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 	 *
 	 * @param apps the apps
 	 */
+	@Override
 	public void cacheResult(List<App> apps) {
 		for (App app : apps) {
 			if (EntityCacheUtil.getResult(AppModelImpl.ENTITY_CACHE_ENABLED,
@@ -1907,9 +1955,45 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 		}
 	}
 
+	protected void cacheUniqueFindersCache(App app) {
+		if (app.isNew()) {
+			Object[] args = new Object[] { app.getRemoteAppId() };
+
+			FinderCacheUtil.putResult(FINDER_PATH_COUNT_BY_REMOTEAPPID, args,
+				Long.valueOf(1));
+			FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_REMOTEAPPID, args,
+				app);
+		}
+		else {
+			AppModelImpl appModelImpl = (AppModelImpl)app;
+
+			if ((appModelImpl.getColumnBitmask() &
+					FINDER_PATH_FETCH_BY_REMOTEAPPID.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] { app.getRemoteAppId() };
+
+				FinderCacheUtil.putResult(FINDER_PATH_COUNT_BY_REMOTEAPPID,
+					args, Long.valueOf(1));
+				FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_REMOTEAPPID,
+					args, app);
+			}
+		}
+	}
+
 	protected void clearUniqueFindersCache(App app) {
-		FinderCacheUtil.removeResult(FINDER_PATH_FETCH_BY_REMOTEAPPID,
-			new Object[] { Long.valueOf(app.getRemoteAppId()) });
+		AppModelImpl appModelImpl = (AppModelImpl)app;
+
+		Object[] args = new Object[] { app.getRemoteAppId() };
+
+		FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_REMOTEAPPID, args);
+		FinderCacheUtil.removeResult(FINDER_PATH_FETCH_BY_REMOTEAPPID, args);
+
+		if ((appModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_REMOTEAPPID.getColumnBitmask()) != 0) {
+			args = new Object[] { appModelImpl.getOriginalRemoteAppId() };
+
+			FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_REMOTEAPPID, args);
+			FinderCacheUtil.removeResult(FINDER_PATH_FETCH_BY_REMOTEAPPID, args);
+		}
 	}
 
 	/**
@@ -1918,6 +2002,7 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 	 * @param appId the primary key for the new app
 	 * @return the new app
 	 */
+	@Override
 	public App create(long appId) {
 		App app = new AppImpl();
 
@@ -1939,8 +2024,9 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 	 * @throws com.liferay.marketplace.NoSuchAppException if a app with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public App remove(long appId) throws NoSuchAppException, SystemException {
-		return remove(Long.valueOf(appId));
+		return remove((Serializable)appId);
 	}
 
 	/**
@@ -2076,7 +2162,7 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID_C.getColumnBitmask()) != 0) {
 				Object[] args = new Object[] {
 						appModelImpl.getOriginalUuid(),
-						Long.valueOf(appModelImpl.getOriginalCompanyId())
+						appModelImpl.getOriginalCompanyId()
 					};
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_UUID_C, args);
@@ -2084,8 +2170,7 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 					args);
 
 				args = new Object[] {
-						appModelImpl.getUuid(),
-						Long.valueOf(appModelImpl.getCompanyId())
+						appModelImpl.getUuid(), appModelImpl.getCompanyId()
 					};
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_UUID_C, args);
@@ -2095,16 +2180,14 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 
 			if ((appModelImpl.getColumnBitmask() &
 					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_COMPANYID.getColumnBitmask()) != 0) {
-				Object[] args = new Object[] {
-						Long.valueOf(appModelImpl.getOriginalCompanyId())
-					};
+				Object[] args = new Object[] { appModelImpl.getOriginalCompanyId() };
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_COMPANYID,
 					args);
 				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_COMPANYID,
 					args);
 
-				args = new Object[] { Long.valueOf(appModelImpl.getCompanyId()) };
+				args = new Object[] { appModelImpl.getCompanyId() };
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_COMPANYID,
 					args);
@@ -2116,27 +2199,8 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 		EntityCacheUtil.putResult(AppModelImpl.ENTITY_CACHE_ENABLED,
 			AppImpl.class, app.getPrimaryKey(), app);
 
-		if (isNew) {
-			FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_REMOTEAPPID,
-				new Object[] { Long.valueOf(app.getRemoteAppId()) }, app);
-		}
-		else {
-			if ((appModelImpl.getColumnBitmask() &
-					FINDER_PATH_FETCH_BY_REMOTEAPPID.getColumnBitmask()) != 0) {
-				Object[] args = new Object[] {
-						Long.valueOf(appModelImpl.getOriginalRemoteAppId())
-					};
-
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_REMOTEAPPID,
-					args);
-
-				FinderCacheUtil.removeResult(FINDER_PATH_FETCH_BY_REMOTEAPPID,
-					args);
-
-				FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_REMOTEAPPID,
-					new Object[] { Long.valueOf(app.getRemoteAppId()) }, app);
-			}
-		}
+		clearUniqueFindersCache(app);
+		cacheUniqueFindersCache(app);
 
 		return app;
 	}
@@ -2169,13 +2233,24 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 	 *
 	 * @param primaryKey the primary key of the app
 	 * @return the app
-	 * @throws com.liferay.portal.NoSuchModelException if a app with the primary key could not be found
+	 * @throws com.liferay.marketplace.NoSuchAppException if a app with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
 	public App findByPrimaryKey(Serializable primaryKey)
-		throws NoSuchModelException, SystemException {
-		return findByPrimaryKey(((Long)primaryKey).longValue());
+		throws NoSuchAppException, SystemException {
+		App app = fetchByPrimaryKey(primaryKey);
+
+		if (app == null) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
+			}
+
+			throw new NoSuchAppException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
+				primaryKey);
+		}
+
+		return app;
 	}
 
 	/**
@@ -2186,20 +2261,10 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 	 * @throws com.liferay.marketplace.NoSuchAppException if a app with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public App findByPrimaryKey(long appId)
 		throws NoSuchAppException, SystemException {
-		App app = fetchByPrimaryKey(appId);
-
-		if (app == null) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + appId);
-			}
-
-			throw new NoSuchAppException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
-				appId);
-		}
-
-		return app;
+		return findByPrimaryKey((Serializable)appId);
 	}
 
 	/**
@@ -2212,19 +2277,8 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 	@Override
 	public App fetchByPrimaryKey(Serializable primaryKey)
 		throws SystemException {
-		return fetchByPrimaryKey(((Long)primaryKey).longValue());
-	}
-
-	/**
-	 * Returns the app with the primary key or returns <code>null</code> if it could not be found.
-	 *
-	 * @param appId the primary key of the app
-	 * @return the app, or <code>null</code> if a app with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	public App fetchByPrimaryKey(long appId) throws SystemException {
 		App app = (App)EntityCacheUtil.getResult(AppModelImpl.ENTITY_CACHE_ENABLED,
-				AppImpl.class, appId);
+				AppImpl.class, primaryKey);
 
 		if (app == _nullApp) {
 			return null;
@@ -2236,19 +2290,19 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 			try {
 				session = openSession();
 
-				app = (App)session.get(AppImpl.class, Long.valueOf(appId));
+				app = (App)session.get(AppImpl.class, primaryKey);
 
 				if (app != null) {
 					cacheResult(app);
 				}
 				else {
 					EntityCacheUtil.putResult(AppModelImpl.ENTITY_CACHE_ENABLED,
-						AppImpl.class, appId, _nullApp);
+						AppImpl.class, primaryKey, _nullApp);
 				}
 			}
 			catch (Exception e) {
 				EntityCacheUtil.removeResult(AppModelImpl.ENTITY_CACHE_ENABLED,
-					AppImpl.class, appId);
+					AppImpl.class, primaryKey);
 
 				throw processException(e);
 			}
@@ -2261,11 +2315,24 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 	}
 
 	/**
+	 * Returns the app with the primary key or returns <code>null</code> if it could not be found.
+	 *
+	 * @param appId the primary key of the app
+	 * @return the app, or <code>null</code> if a app with the primary key could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public App fetchByPrimaryKey(long appId) throws SystemException {
+		return fetchByPrimaryKey((Serializable)appId);
+	}
+
+	/**
 	 * Returns all the apps.
 	 *
 	 * @return the apps
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<App> findAll() throws SystemException {
 		return findAll(QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
@@ -2282,6 +2349,7 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 	 * @return the range of apps
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<App> findAll(int start, int end) throws SystemException {
 		return findAll(start, end, null);
 	}
@@ -2299,6 +2367,7 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 	 * @return the ordered range of apps
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<App> findAll(int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -2383,6 +2452,7 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 	 *
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeAll() throws SystemException {
 		for (App app : findAll()) {
 			remove(app);
@@ -2395,6 +2465,7 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 	 * @return the number of apps
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countAll() throws SystemException {
 		Long count = (Long)FinderCacheUtil.getResult(FINDER_PATH_COUNT_ALL,
 				FINDER_ARGS_EMPTY, this);
@@ -2426,6 +2497,11 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 		return count.intValue();
 	}
 
+	@Override
+	protected Set<String> getBadColumnNames() {
+		return _badColumnNames;
+	}
+
 	/**
 	 * Initializes the app persistence.
 	 */
@@ -2440,7 +2516,7 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 
 				for (String listenerClassName : listenerClassNames) {
 					listenersList.add((ModelListener<App>)InstanceFactory.newInstance(
-							listenerClassName));
+							getClassLoader(), listenerClassName));
 				}
 
 				listeners = listenersList.toArray(new ModelListener[listenersList.size()]);
@@ -2458,12 +2534,6 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 		FinderCacheUtil.removeCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 	}
 
-	@BeanReference(type = AppPersistence.class)
-	protected AppPersistence appPersistence;
-	@BeanReference(type = ModulePersistence.class)
-	protected ModulePersistence modulePersistence;
-	@BeanReference(type = UserPersistence.class)
-	protected UserPersistence userPersistence;
 	private static final String _SQL_SELECT_APP = "SELECT app FROM App app";
 	private static final String _SQL_SELECT_APP_WHERE = "SELECT app FROM App app WHERE ";
 	private static final String _SQL_COUNT_APP = "SELECT COUNT(app) FROM App app";
@@ -2474,6 +2544,9 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = GetterUtil.getBoolean(PropsUtil.get(
 				PropsKeys.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE));
 	private static Log _log = LogFactoryUtil.getLog(AppPersistenceImpl.class);
+	private static Set<String> _badColumnNames = SetUtil.fromArray(new String[] {
+				"uuid"
+			});
 	private static App _nullApp = new AppImpl() {
 			@Override
 			public Object clone() {
@@ -2487,6 +2560,7 @@ public class AppPersistenceImpl extends BasePersistenceImpl<App>
 		};
 
 	private static CacheModel<App> _nullAppCacheModel = new CacheModel<App>() {
+			@Override
 			public App toEntityModel() {
 				return _nullApp;
 			}

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -19,11 +19,12 @@ import com.liferay.portal.kernel.util.ReferenceRegistry;
 import com.liferay.portal.service.InvokableLocalService;
 
 /**
- * The utility for the foo local service. This utility wraps {@link com.liferay.sampleservicebuilder.service.impl.FooLocalServiceImpl} and is the primary access point for service operations in application layer code running on the local server.
- *
- * <p>
- * This is a local service. Methods of this service will not have security checks based on the propagated JAAS credentials because this service can only be accessed from within the same VM.
- * </p>
+ * Provides the local service utility for Foo. This utility wraps
+ * {@link com.liferay.sampleservicebuilder.service.impl.FooLocalServiceImpl} and is the
+ * primary access point for service operations in application layer code running
+ * on the local server. Methods of this service will not have security checks
+ * based on the propagated JAAS credentials because this service can only be
+ * accessed from within the same VM.
  *
  * @author Brian Wing Shun Chan
  * @see FooLocalService
@@ -192,12 +193,12 @@ public class FooLocalServiceUtil {
 	}
 
 	/**
-	* Returns the foo with the UUID in the group.
+	* Returns the foo matching the UUID and group.
 	*
-	* @param uuid the UUID of foo
-	* @param groupId the group id of the foo
-	* @return the foo
-	* @throws PortalException if a foo with the UUID in the group could not be found
+	* @param uuid the foo's UUID
+	* @param groupId the primary key of the group
+	* @return the matching foo
+	* @throws PortalException if a matching foo could not be found
 	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.sampleservicebuilder.model.Foo getFooByUuidAndGroupId(
@@ -341,7 +342,7 @@ public class FooLocalServiceUtil {
 	}
 
 	/**
-	 * @deprecated
+	 * @deprecated As of 6.2.0
 	 */
 	public void setService(FooLocalService service) {
 	}

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -19,8 +19,6 @@ import com.liferay.ams.model.Type;
 import com.liferay.ams.model.impl.TypeImpl;
 import com.liferay.ams.model.impl.TypeModelImpl;
 
-import com.liferay.portal.NoSuchModelException;
-import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.cache.CacheRegistryUtil;
 import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
 import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
@@ -41,7 +39,6 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnmodifiableList;
 import com.liferay.portal.model.CacheModel;
 import com.liferay.portal.model.ModelListener;
-import com.liferay.portal.service.persistence.UserPersistence;
 import com.liferay.portal.service.persistence.impl.BasePersistenceImpl;
 
 import java.io.Serializable;
@@ -89,6 +86,7 @@ public class TypePersistenceImpl extends BasePersistenceImpl<Type>
 	 *
 	 * @param type the type
 	 */
+	@Override
 	public void cacheResult(Type type) {
 		EntityCacheUtil.putResult(TypeModelImpl.ENTITY_CACHE_ENABLED,
 			TypeImpl.class, type.getPrimaryKey(), type);
@@ -101,6 +99,7 @@ public class TypePersistenceImpl extends BasePersistenceImpl<Type>
 	 *
 	 * @param types the types
 	 */
+	@Override
 	public void cacheResult(List<Type> types) {
 		for (Type type : types) {
 			if (EntityCacheUtil.getResult(TypeModelImpl.ENTITY_CACHE_ENABLED,
@@ -166,6 +165,7 @@ public class TypePersistenceImpl extends BasePersistenceImpl<Type>
 	 * @param typeId the primary key for the new type
 	 * @return the new type
 	 */
+	@Override
 	public Type create(long typeId) {
 		Type type = new TypeImpl();
 
@@ -183,8 +183,9 @@ public class TypePersistenceImpl extends BasePersistenceImpl<Type>
 	 * @throws com.liferay.ams.NoSuchTypeException if a type with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Type remove(long typeId) throws NoSuchTypeException, SystemException {
-		return remove(Long.valueOf(typeId));
+		return remove((Serializable)typeId);
 	}
 
 	/**
@@ -320,13 +321,24 @@ public class TypePersistenceImpl extends BasePersistenceImpl<Type>
 	 *
 	 * @param primaryKey the primary key of the type
 	 * @return the type
-	 * @throws com.liferay.portal.NoSuchModelException if a type with the primary key could not be found
+	 * @throws com.liferay.ams.NoSuchTypeException if a type with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
 	public Type findByPrimaryKey(Serializable primaryKey)
-		throws NoSuchModelException, SystemException {
-		return findByPrimaryKey(((Long)primaryKey).longValue());
+		throws NoSuchTypeException, SystemException {
+		Type type = fetchByPrimaryKey(primaryKey);
+
+		if (type == null) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
+			}
+
+			throw new NoSuchTypeException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
+				primaryKey);
+		}
+
+		return type;
 	}
 
 	/**
@@ -337,20 +349,10 @@ public class TypePersistenceImpl extends BasePersistenceImpl<Type>
 	 * @throws com.liferay.ams.NoSuchTypeException if a type with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Type findByPrimaryKey(long typeId)
 		throws NoSuchTypeException, SystemException {
-		Type type = fetchByPrimaryKey(typeId);
-
-		if (type == null) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + typeId);
-			}
-
-			throw new NoSuchTypeException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
-				typeId);
-		}
-
-		return type;
+		return findByPrimaryKey((Serializable)typeId);
 	}
 
 	/**
@@ -363,19 +365,8 @@ public class TypePersistenceImpl extends BasePersistenceImpl<Type>
 	@Override
 	public Type fetchByPrimaryKey(Serializable primaryKey)
 		throws SystemException {
-		return fetchByPrimaryKey(((Long)primaryKey).longValue());
-	}
-
-	/**
-	 * Returns the type with the primary key or returns <code>null</code> if it could not be found.
-	 *
-	 * @param typeId the primary key of the type
-	 * @return the type, or <code>null</code> if a type with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	public Type fetchByPrimaryKey(long typeId) throws SystemException {
 		Type type = (Type)EntityCacheUtil.getResult(TypeModelImpl.ENTITY_CACHE_ENABLED,
-				TypeImpl.class, typeId);
+				TypeImpl.class, primaryKey);
 
 		if (type == _nullType) {
 			return null;
@@ -387,19 +378,19 @@ public class TypePersistenceImpl extends BasePersistenceImpl<Type>
 			try {
 				session = openSession();
 
-				type = (Type)session.get(TypeImpl.class, Long.valueOf(typeId));
+				type = (Type)session.get(TypeImpl.class, primaryKey);
 
 				if (type != null) {
 					cacheResult(type);
 				}
 				else {
 					EntityCacheUtil.putResult(TypeModelImpl.ENTITY_CACHE_ENABLED,
-						TypeImpl.class, typeId, _nullType);
+						TypeImpl.class, primaryKey, _nullType);
 				}
 			}
 			catch (Exception e) {
 				EntityCacheUtil.removeResult(TypeModelImpl.ENTITY_CACHE_ENABLED,
-					TypeImpl.class, typeId);
+					TypeImpl.class, primaryKey);
 
 				throw processException(e);
 			}
@@ -412,11 +403,24 @@ public class TypePersistenceImpl extends BasePersistenceImpl<Type>
 	}
 
 	/**
+	 * Returns the type with the primary key or returns <code>null</code> if it could not be found.
+	 *
+	 * @param typeId the primary key of the type
+	 * @return the type, or <code>null</code> if a type with the primary key could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public Type fetchByPrimaryKey(long typeId) throws SystemException {
+		return fetchByPrimaryKey((Serializable)typeId);
+	}
+
+	/**
 	 * Returns all the types.
 	 *
 	 * @return the types
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Type> findAll() throws SystemException {
 		return findAll(QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
@@ -433,6 +437,7 @@ public class TypePersistenceImpl extends BasePersistenceImpl<Type>
 	 * @return the range of types
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Type> findAll(int start, int end) throws SystemException {
 		return findAll(start, end, null);
 	}
@@ -450,6 +455,7 @@ public class TypePersistenceImpl extends BasePersistenceImpl<Type>
 	 * @return the ordered range of types
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Type> findAll(int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -535,6 +541,7 @@ public class TypePersistenceImpl extends BasePersistenceImpl<Type>
 	 *
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeAll() throws SystemException {
 		for (Type type : findAll()) {
 			remove(type);
@@ -547,6 +554,7 @@ public class TypePersistenceImpl extends BasePersistenceImpl<Type>
 	 * @return the number of types
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countAll() throws SystemException {
 		Long count = (Long)FinderCacheUtil.getResult(FINDER_PATH_COUNT_ALL,
 				FINDER_ARGS_EMPTY, this);
@@ -592,7 +600,7 @@ public class TypePersistenceImpl extends BasePersistenceImpl<Type>
 
 				for (String listenerClassName : listenerClassNames) {
 					listenersList.add((ModelListener<Type>)InstanceFactory.newInstance(
-							listenerClassName));
+							getClassLoader(), listenerClassName));
 				}
 
 				listeners = listenersList.toArray(new ModelListener[listenersList.size()]);
@@ -610,16 +618,6 @@ public class TypePersistenceImpl extends BasePersistenceImpl<Type>
 		FinderCacheUtil.removeCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 	}
 
-	@BeanReference(type = AssetPersistence.class)
-	protected AssetPersistence assetPersistence;
-	@BeanReference(type = CheckoutPersistence.class)
-	protected CheckoutPersistence checkoutPersistence;
-	@BeanReference(type = DefinitionPersistence.class)
-	protected DefinitionPersistence definitionPersistence;
-	@BeanReference(type = TypePersistence.class)
-	protected TypePersistence typePersistence;
-	@BeanReference(type = UserPersistence.class)
-	protected UserPersistence userPersistence;
 	private static final String _SQL_SELECT_TYPE = "SELECT type FROM Type type";
 	private static final String _SQL_COUNT_TYPE = "SELECT COUNT(type) FROM Type type";
 	private static final String _ORDER_BY_ENTITY_ALIAS = "type.";
@@ -640,6 +638,7 @@ public class TypePersistenceImpl extends BasePersistenceImpl<Type>
 		};
 
 	private static CacheModel<Type> _nullTypeCacheModel = new CacheModel<Type>() {
+			@Override
 			public Type toEntityModel() {
 				return _nullType;
 			}

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -15,6 +15,7 @@
 package com.liferay.akismet.model;
 
 import com.liferay.portal.kernel.bean.AutoEscape;
+import com.liferay.portal.model.AttachedModel;
 import com.liferay.portal.model.BaseModel;
 import com.liferay.portal.model.CacheModel;
 import com.liferay.portal.service.ServiceContext;
@@ -38,7 +39,7 @@ import java.util.Date;
  * @see com.liferay.akismet.model.impl.AkismetDataModelImpl
  * @generated
  */
-public interface AkismetDataModel extends BaseModel<AkismetData> {
+public interface AkismetDataModel extends AttachedModel, BaseModel<AkismetData> {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
@@ -88,18 +89,46 @@ public interface AkismetDataModel extends BaseModel<AkismetData> {
 	public void setModifiedDate(Date modifiedDate);
 
 	/**
-	 * Returns the mb message ID of this akismet data.
+	 * Returns the fully qualified class name of this akismet data.
 	 *
-	 * @return the mb message ID of this akismet data
+	 * @return the fully qualified class name of this akismet data
 	 */
-	public long getMbMessageId();
+	@Override
+	public String getClassName();
+
+	public void setClassName(String className);
 
 	/**
-	 * Sets the mb message ID of this akismet data.
+	 * Returns the class name ID of this akismet data.
 	 *
-	 * @param mbMessageId the mb message ID of this akismet data
+	 * @return the class name ID of this akismet data
 	 */
-	public void setMbMessageId(long mbMessageId);
+	@Override
+	public long getClassNameId();
+
+	/**
+	 * Sets the class name ID of this akismet data.
+	 *
+	 * @param classNameId the class name ID of this akismet data
+	 */
+	@Override
+	public void setClassNameId(long classNameId);
+
+	/**
+	 * Returns the class p k of this akismet data.
+	 *
+	 * @return the class p k of this akismet data
+	 */
+	@Override
+	public long getClassPK();
+
+	/**
+	 * Sets the class p k of this akismet data.
+	 *
+	 * @param classPK the class p k of this akismet data
+	 */
+	@Override
+	public void setClassPK(long classPK);
 
 	/**
 	 * Returns the type of this akismet data.
@@ -191,37 +220,60 @@ public interface AkismetDataModel extends BaseModel<AkismetData> {
 	 */
 	public void setUserURL(String userURL);
 
+	@Override
 	public boolean isNew();
 
+	@Override
 	public void setNew(boolean n);
 
+	@Override
 	public boolean isCachedModel();
 
+	@Override
 	public void setCachedModel(boolean cachedModel);
 
+	@Override
 	public boolean isEscapedModel();
 
+	@Override
 	public Serializable getPrimaryKeyObj();
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj);
 
+	@Override
 	public ExpandoBridge getExpandoBridge();
 
+	@Override
+	public void setExpandoBridgeAttributes(BaseModel<?> baseModel);
+
+	@Override
+	public void setExpandoBridgeAttributes(ExpandoBridge expandoBridge);
+
+	@Override
 	public void setExpandoBridgeAttributes(ServiceContext serviceContext);
 
+	@Override
 	public Object clone();
 
+	@Override
 	public int compareTo(AkismetData akismetData);
 
+	@Override
 	public int hashCode();
 
+	@Override
 	public CacheModel<AkismetData> toCacheModel();
 
+	@Override
 	public AkismetData toEscapedModel();
 
+	@Override
 	public AkismetData toUnescapedModel();
 
+	@Override
 	public String toString();
 
+	@Override
 	public String toXmlString();
 }

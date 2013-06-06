@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -35,15 +35,13 @@ String dirName = ParamUtil.getString(request, "dirName");
 	title='<%= (kbArticle != null) ? kbArticle.getTitle() : "new-article" %>'
 />
 
-<liferay-portlet:actionURL name="updateKBArticle" var="updateKBArticleURL">
-	<portlet:param name="mvcPath" value='<%= templatePath + "edit_article.jsp" %>' />
-	<portlet:param name="redirect" value="<%= redirect %>" />
-	<portlet:param name="resourcePrimKey" value="<%= String.valueOf(resourcePrimKey) %>" />
-	<portlet:param name="status" value="<%= String.valueOf(WorkflowConstants.STATUS_ANY) %>" />
-</liferay-portlet:actionURL>
+<liferay-portlet:actionURL name="updateKBArticle" var="updateKBArticleURL" />
 
 <aui:form action="<%= updateKBArticleURL %>" method="post" name="fm" onSubmit='<%= "event.preventDefault(); " + renderResponse.getNamespace() + "updateKBArticle();" %>'>
+	<aui:input name="mvcPath" type="hidden" value='<%= templatePath + "edit_article.jsp" %>' />
 	<aui:input name="<%= Constants.CMD %>" type="hidden" />
+	<aui:input name="redirect" type="hidden" value="<%= redirect %>" />
+	<aui:input name="resourcePrimKey" type="hidden" value="<%= String.valueOf(resourcePrimKey) %>" />
 	<aui:input name="parentResourcePrimKey" type="hidden" value="<%= parentResourcePrimKey %>" />
 	<aui:input name="dirName" type="hidden" value="<%= dirName %>" />
 	<aui:input name="workflowAction" type="hidden" value="<%= WorkflowConstants.ACTION_SAVE_DRAFT %>" />
@@ -121,9 +119,13 @@ String dirName = ParamUtil.getString(request, "dirName");
 			<aui:model-context bean="<%= kbArticle %>" model="<%= KBArticle.class %>" />
 		</c:if>
 
-		<aui:input classPK="<%= (kbArticle != null) ? kbArticle.getClassPK() : 0 %>" name="categories" type="assetCategories" />
+		<liferay-ui:panel collapsible="<%= true %>" defaultState="closed" extended="<%= false %>" persistState="<%= true %>" title="categorization">
+			<aui:fieldset>
+				<aui:input classPK="<%= (kbArticle != null) ? kbArticle.getClassPK() : 0 %>" name="categories" type="assetCategories" />
 
-		<aui:input classPK="<%= (kbArticle != null) ? kbArticle.getClassPK() : 0 %>" name="tags" type="assetTags" />
+				<aui:input classPK="<%= (kbArticle != null) ? kbArticle.getClassPK() : 0 %>" name="tags" type="assetTags" />
+			</aui:fieldset>
+		</liferay-ui:panel>
 
 		<c:if test="<%= kbArticle == null %>">
 			<aui:field-wrapper cssClass='<%= (parentResourcePrimKey != KBArticleConstants.DEFAULT_PARENT_RESOURCE_PRIM_KEY) ? "aui-helper-hidden" : StringPool.BLANK %>' label="permissions">

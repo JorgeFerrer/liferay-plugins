@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,8 +14,6 @@
 
 package com.liferay.testtransaction.service.persistence;
 
-import com.liferay.portal.NoSuchModelException;
-import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.cache.CacheRegistryUtil;
 import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
 import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
@@ -32,6 +30,7 @@ import com.liferay.portal.kernel.util.InstanceFactory;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -39,8 +38,6 @@ import com.liferay.portal.kernel.util.UnmodifiableList;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.model.CacheModel;
 import com.liferay.portal.model.ModelListener;
-import com.liferay.portal.service.persistence.ClassNamePersistence;
-import com.liferay.portal.service.persistence.UserPersistence;
 import com.liferay.portal.service.persistence.impl.BasePersistenceImpl;
 
 import com.liferay.testtransaction.NoSuchBarException;
@@ -53,6 +50,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * The persistence implementation for the bar service.
@@ -113,6 +111,7 @@ public class BarPersistenceImpl extends BasePersistenceImpl<Bar>
 	 * @return the matching bars
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Bar> findByText(String text) throws SystemException {
 		return findByText(text, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
@@ -130,6 +129,7 @@ public class BarPersistenceImpl extends BasePersistenceImpl<Bar>
 	 * @return the range of matching bars
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Bar> findByText(String text, int start, int end)
 		throws SystemException {
 		return findByText(text, start, end, null);
@@ -149,6 +149,7 @@ public class BarPersistenceImpl extends BasePersistenceImpl<Bar>
 	 * @return the ordered range of matching bars
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Bar> findByText(String text, int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -192,16 +193,18 @@ public class BarPersistenceImpl extends BasePersistenceImpl<Bar>
 
 			query.append(_SQL_SELECT_BAR_WHERE);
 
+			boolean bindText = false;
+
 			if (text == null) {
 				query.append(_FINDER_COLUMN_TEXT_TEXT_1);
 			}
+			else if (text.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_TEXT_TEXT_3);
+			}
 			else {
-				if (text.equals(StringPool.BLANK)) {
-					query.append(_FINDER_COLUMN_TEXT_TEXT_3);
-				}
-				else {
-					query.append(_FINDER_COLUMN_TEXT_TEXT_2);
-				}
+				bindText = true;
+
+				query.append(_FINDER_COLUMN_TEXT_TEXT_2);
 			}
 
 			if (orderByComparator != null) {
@@ -224,7 +227,7 @@ public class BarPersistenceImpl extends BasePersistenceImpl<Bar>
 
 				QueryPos qPos = QueryPos.getInstance(q);
 
-				if (text != null) {
+				if (bindText) {
 					qPos.add(text);
 				}
 
@@ -266,6 +269,7 @@ public class BarPersistenceImpl extends BasePersistenceImpl<Bar>
 	 * @throws com.liferay.testtransaction.NoSuchBarException if a matching bar could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Bar findByText_First(String text, OrderByComparator orderByComparator)
 		throws NoSuchBarException, SystemException {
 		Bar bar = fetchByText_First(text, orderByComparator);
@@ -294,6 +298,7 @@ public class BarPersistenceImpl extends BasePersistenceImpl<Bar>
 	 * @return the first matching bar, or <code>null</code> if a matching bar could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Bar fetchByText_First(String text,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<Bar> list = findByText(text, 0, 1, orderByComparator);
@@ -314,6 +319,7 @@ public class BarPersistenceImpl extends BasePersistenceImpl<Bar>
 	 * @throws com.liferay.testtransaction.NoSuchBarException if a matching bar could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Bar findByText_Last(String text, OrderByComparator orderByComparator)
 		throws NoSuchBarException, SystemException {
 		Bar bar = fetchByText_Last(text, orderByComparator);
@@ -342,6 +348,7 @@ public class BarPersistenceImpl extends BasePersistenceImpl<Bar>
 	 * @return the last matching bar, or <code>null</code> if a matching bar could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Bar fetchByText_Last(String text, OrderByComparator orderByComparator)
 		throws SystemException {
 		int count = countByText(text);
@@ -365,6 +372,7 @@ public class BarPersistenceImpl extends BasePersistenceImpl<Bar>
 	 * @throws com.liferay.testtransaction.NoSuchBarException if a bar with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Bar[] findByText_PrevAndNext(long barId, String text,
 		OrderByComparator orderByComparator)
 		throws NoSuchBarException, SystemException {
@@ -409,16 +417,18 @@ public class BarPersistenceImpl extends BasePersistenceImpl<Bar>
 
 		query.append(_SQL_SELECT_BAR_WHERE);
 
+		boolean bindText = false;
+
 		if (text == null) {
 			query.append(_FINDER_COLUMN_TEXT_TEXT_1);
 		}
+		else if (text.equals(StringPool.BLANK)) {
+			query.append(_FINDER_COLUMN_TEXT_TEXT_3);
+		}
 		else {
-			if (text.equals(StringPool.BLANK)) {
-				query.append(_FINDER_COLUMN_TEXT_TEXT_3);
-			}
-			else {
-				query.append(_FINDER_COLUMN_TEXT_TEXT_2);
-			}
+			bindText = true;
+
+			query.append(_FINDER_COLUMN_TEXT_TEXT_2);
 		}
 
 		if (orderByComparator != null) {
@@ -489,7 +499,7 @@ public class BarPersistenceImpl extends BasePersistenceImpl<Bar>
 
 		QueryPos qPos = QueryPos.getInstance(q);
 
-		if (text != null) {
+		if (bindText) {
 			qPos.add(text);
 		}
 
@@ -517,6 +527,7 @@ public class BarPersistenceImpl extends BasePersistenceImpl<Bar>
 	 * @param text the text
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByText(String text) throws SystemException {
 		for (Bar bar : findByText(text, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 				null)) {
@@ -531,6 +542,7 @@ public class BarPersistenceImpl extends BasePersistenceImpl<Bar>
 	 * @return the number of matching bars
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByText(String text) throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_TEXT;
 
@@ -544,16 +556,18 @@ public class BarPersistenceImpl extends BasePersistenceImpl<Bar>
 
 			query.append(_SQL_COUNT_BAR_WHERE);
 
+			boolean bindText = false;
+
 			if (text == null) {
 				query.append(_FINDER_COLUMN_TEXT_TEXT_1);
 			}
+			else if (text.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_TEXT_TEXT_3);
+			}
 			else {
-				if (text.equals(StringPool.BLANK)) {
-					query.append(_FINDER_COLUMN_TEXT_TEXT_3);
-				}
-				else {
-					query.append(_FINDER_COLUMN_TEXT_TEXT_2);
-				}
+				bindText = true;
+
+				query.append(_FINDER_COLUMN_TEXT_TEXT_2);
 			}
 
 			String sql = query.toString();
@@ -567,7 +581,7 @@ public class BarPersistenceImpl extends BasePersistenceImpl<Bar>
 
 				QueryPos qPos = QueryPos.getInstance(q);
 
-				if (text != null) {
+				if (bindText) {
 					qPos.add(text);
 				}
 
@@ -590,13 +604,14 @@ public class BarPersistenceImpl extends BasePersistenceImpl<Bar>
 
 	private static final String _FINDER_COLUMN_TEXT_TEXT_1 = "bar.text IS NULL";
 	private static final String _FINDER_COLUMN_TEXT_TEXT_2 = "bar.text = ?";
-	private static final String _FINDER_COLUMN_TEXT_TEXT_3 = "(bar.text IS NULL OR bar.text = ?)";
+	private static final String _FINDER_COLUMN_TEXT_TEXT_3 = "(bar.text IS NULL OR bar.text = '')";
 
 	/**
 	 * Caches the bar in the entity cache if it is enabled.
 	 *
 	 * @param bar the bar
 	 */
+	@Override
 	public void cacheResult(Bar bar) {
 		EntityCacheUtil.putResult(BarModelImpl.ENTITY_CACHE_ENABLED,
 			BarImpl.class, bar.getPrimaryKey(), bar);
@@ -609,6 +624,7 @@ public class BarPersistenceImpl extends BasePersistenceImpl<Bar>
 	 *
 	 * @param bars the bars
 	 */
+	@Override
 	public void cacheResult(List<Bar> bars) {
 		for (Bar bar : bars) {
 			if (EntityCacheUtil.getResult(BarModelImpl.ENTITY_CACHE_ENABLED,
@@ -674,6 +690,7 @@ public class BarPersistenceImpl extends BasePersistenceImpl<Bar>
 	 * @param barId the primary key for the new bar
 	 * @return the new bar
 	 */
+	@Override
 	public Bar create(long barId) {
 		Bar bar = new BarImpl();
 
@@ -691,8 +708,9 @@ public class BarPersistenceImpl extends BasePersistenceImpl<Bar>
 	 * @throws com.liferay.testtransaction.NoSuchBarException if a bar with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Bar remove(long barId) throws NoSuchBarException, SystemException {
-		return remove(Long.valueOf(barId));
+		return remove((Serializable)barId);
 	}
 
 	/**
@@ -846,13 +864,24 @@ public class BarPersistenceImpl extends BasePersistenceImpl<Bar>
 	 *
 	 * @param primaryKey the primary key of the bar
 	 * @return the bar
-	 * @throws com.liferay.portal.NoSuchModelException if a bar with the primary key could not be found
+	 * @throws com.liferay.testtransaction.NoSuchBarException if a bar with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
 	public Bar findByPrimaryKey(Serializable primaryKey)
-		throws NoSuchModelException, SystemException {
-		return findByPrimaryKey(((Long)primaryKey).longValue());
+		throws NoSuchBarException, SystemException {
+		Bar bar = fetchByPrimaryKey(primaryKey);
+
+		if (bar == null) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
+			}
+
+			throw new NoSuchBarException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
+				primaryKey);
+		}
+
+		return bar;
 	}
 
 	/**
@@ -863,20 +892,10 @@ public class BarPersistenceImpl extends BasePersistenceImpl<Bar>
 	 * @throws com.liferay.testtransaction.NoSuchBarException if a bar with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Bar findByPrimaryKey(long barId)
 		throws NoSuchBarException, SystemException {
-		Bar bar = fetchByPrimaryKey(barId);
-
-		if (bar == null) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + barId);
-			}
-
-			throw new NoSuchBarException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
-				barId);
-		}
-
-		return bar;
+		return findByPrimaryKey((Serializable)barId);
 	}
 
 	/**
@@ -889,19 +908,8 @@ public class BarPersistenceImpl extends BasePersistenceImpl<Bar>
 	@Override
 	public Bar fetchByPrimaryKey(Serializable primaryKey)
 		throws SystemException {
-		return fetchByPrimaryKey(((Long)primaryKey).longValue());
-	}
-
-	/**
-	 * Returns the bar with the primary key or returns <code>null</code> if it could not be found.
-	 *
-	 * @param barId the primary key of the bar
-	 * @return the bar, or <code>null</code> if a bar with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	public Bar fetchByPrimaryKey(long barId) throws SystemException {
 		Bar bar = (Bar)EntityCacheUtil.getResult(BarModelImpl.ENTITY_CACHE_ENABLED,
-				BarImpl.class, barId);
+				BarImpl.class, primaryKey);
 
 		if (bar == _nullBar) {
 			return null;
@@ -913,19 +921,19 @@ public class BarPersistenceImpl extends BasePersistenceImpl<Bar>
 			try {
 				session = openSession();
 
-				bar = (Bar)session.get(BarImpl.class, Long.valueOf(barId));
+				bar = (Bar)session.get(BarImpl.class, primaryKey);
 
 				if (bar != null) {
 					cacheResult(bar);
 				}
 				else {
 					EntityCacheUtil.putResult(BarModelImpl.ENTITY_CACHE_ENABLED,
-						BarImpl.class, barId, _nullBar);
+						BarImpl.class, primaryKey, _nullBar);
 				}
 			}
 			catch (Exception e) {
 				EntityCacheUtil.removeResult(BarModelImpl.ENTITY_CACHE_ENABLED,
-					BarImpl.class, barId);
+					BarImpl.class, primaryKey);
 
 				throw processException(e);
 			}
@@ -938,11 +946,24 @@ public class BarPersistenceImpl extends BasePersistenceImpl<Bar>
 	}
 
 	/**
+	 * Returns the bar with the primary key or returns <code>null</code> if it could not be found.
+	 *
+	 * @param barId the primary key of the bar
+	 * @return the bar, or <code>null</code> if a bar with the primary key could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public Bar fetchByPrimaryKey(long barId) throws SystemException {
+		return fetchByPrimaryKey((Serializable)barId);
+	}
+
+	/**
 	 * Returns all the bars.
 	 *
 	 * @return the bars
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Bar> findAll() throws SystemException {
 		return findAll(QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
@@ -959,6 +980,7 @@ public class BarPersistenceImpl extends BasePersistenceImpl<Bar>
 	 * @return the range of bars
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Bar> findAll(int start, int end) throws SystemException {
 		return findAll(start, end, null);
 	}
@@ -976,6 +998,7 @@ public class BarPersistenceImpl extends BasePersistenceImpl<Bar>
 	 * @return the ordered range of bars
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Bar> findAll(int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -1060,6 +1083,7 @@ public class BarPersistenceImpl extends BasePersistenceImpl<Bar>
 	 *
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeAll() throws SystemException {
 		for (Bar bar : findAll()) {
 			remove(bar);
@@ -1072,6 +1096,7 @@ public class BarPersistenceImpl extends BasePersistenceImpl<Bar>
 	 * @return the number of bars
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countAll() throws SystemException {
 		Long count = (Long)FinderCacheUtil.getResult(FINDER_PATH_COUNT_ALL,
 				FINDER_ARGS_EMPTY, this);
@@ -1103,6 +1128,11 @@ public class BarPersistenceImpl extends BasePersistenceImpl<Bar>
 		return count.intValue();
 	}
 
+	@Override
+	protected Set<String> getBadColumnNames() {
+		return _badColumnNames;
+	}
+
 	/**
 	 * Initializes the bar persistence.
 	 */
@@ -1117,7 +1147,7 @@ public class BarPersistenceImpl extends BasePersistenceImpl<Bar>
 
 				for (String listenerClassName : listenerClassNames) {
 					listenersList.add((ModelListener<Bar>)InstanceFactory.newInstance(
-							listenerClassName));
+							getClassLoader(), listenerClassName));
 				}
 
 				listeners = listenersList.toArray(new ModelListener[listenersList.size()]);
@@ -1135,12 +1165,6 @@ public class BarPersistenceImpl extends BasePersistenceImpl<Bar>
 		FinderCacheUtil.removeCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 	}
 
-	@BeanReference(type = BarPersistence.class)
-	protected BarPersistence barPersistence;
-	@BeanReference(type = ClassNamePersistence.class)
-	protected ClassNamePersistence classNamePersistence;
-	@BeanReference(type = UserPersistence.class)
-	protected UserPersistence userPersistence;
 	private static final String _SQL_SELECT_BAR = "SELECT bar FROM Bar bar";
 	private static final String _SQL_SELECT_BAR_WHERE = "SELECT bar FROM Bar bar WHERE ";
 	private static final String _SQL_COUNT_BAR = "SELECT COUNT(bar) FROM Bar bar";
@@ -1151,6 +1175,9 @@ public class BarPersistenceImpl extends BasePersistenceImpl<Bar>
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = GetterUtil.getBoolean(PropsUtil.get(
 				PropsKeys.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE));
 	private static Log _log = LogFactoryUtil.getLog(BarPersistenceImpl.class);
+	private static Set<String> _badColumnNames = SetUtil.fromArray(new String[] {
+				"text"
+			});
 	private static Bar _nullBar = new BarImpl() {
 			@Override
 			public Object clone() {
@@ -1164,6 +1191,7 @@ public class BarPersistenceImpl extends BasePersistenceImpl<Bar>
 		};
 
 	private static CacheModel<Bar> _nullBarCacheModel = new CacheModel<Bar>() {
+			@Override
 			public Bar toEntityModel() {
 				return _nullBar;
 			}

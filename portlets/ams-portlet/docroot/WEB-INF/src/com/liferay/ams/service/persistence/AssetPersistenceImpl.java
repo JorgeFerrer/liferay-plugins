@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -19,8 +19,6 @@ import com.liferay.ams.model.Asset;
 import com.liferay.ams.model.impl.AssetImpl;
 import com.liferay.ams.model.impl.AssetModelImpl;
 
-import com.liferay.portal.NoSuchModelException;
-import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.cache.CacheRegistryUtil;
 import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
 import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
@@ -36,12 +34,12 @@ import com.liferay.portal.kernel.util.InstanceFactory;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnmodifiableList;
 import com.liferay.portal.model.CacheModel;
 import com.liferay.portal.model.ModelListener;
-import com.liferay.portal.service.persistence.UserPersistence;
 import com.liferay.portal.service.persistence.impl.BasePersistenceImpl;
 
 import java.io.Serializable;
@@ -49,6 +47,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * The persistence implementation for the asset service.
@@ -89,6 +88,7 @@ public class AssetPersistenceImpl extends BasePersistenceImpl<Asset>
 	 *
 	 * @param asset the asset
 	 */
+	@Override
 	public void cacheResult(Asset asset) {
 		EntityCacheUtil.putResult(AssetModelImpl.ENTITY_CACHE_ENABLED,
 			AssetImpl.class, asset.getPrimaryKey(), asset);
@@ -101,6 +101,7 @@ public class AssetPersistenceImpl extends BasePersistenceImpl<Asset>
 	 *
 	 * @param assets the assets
 	 */
+	@Override
 	public void cacheResult(List<Asset> assets) {
 		for (Asset asset : assets) {
 			if (EntityCacheUtil.getResult(AssetModelImpl.ENTITY_CACHE_ENABLED,
@@ -166,6 +167,7 @@ public class AssetPersistenceImpl extends BasePersistenceImpl<Asset>
 	 * @param assetId the primary key for the new asset
 	 * @return the new asset
 	 */
+	@Override
 	public Asset create(long assetId) {
 		Asset asset = new AssetImpl();
 
@@ -183,9 +185,10 @@ public class AssetPersistenceImpl extends BasePersistenceImpl<Asset>
 	 * @throws com.liferay.ams.NoSuchAssetException if a asset with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Asset remove(long assetId)
 		throws NoSuchAssetException, SystemException {
-		return remove(Long.valueOf(assetId));
+		return remove((Serializable)assetId);
 	}
 
 	/**
@@ -329,13 +332,24 @@ public class AssetPersistenceImpl extends BasePersistenceImpl<Asset>
 	 *
 	 * @param primaryKey the primary key of the asset
 	 * @return the asset
-	 * @throws com.liferay.portal.NoSuchModelException if a asset with the primary key could not be found
+	 * @throws com.liferay.ams.NoSuchAssetException if a asset with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
 	public Asset findByPrimaryKey(Serializable primaryKey)
-		throws NoSuchModelException, SystemException {
-		return findByPrimaryKey(((Long)primaryKey).longValue());
+		throws NoSuchAssetException, SystemException {
+		Asset asset = fetchByPrimaryKey(primaryKey);
+
+		if (asset == null) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
+			}
+
+			throw new NoSuchAssetException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
+				primaryKey);
+		}
+
+		return asset;
 	}
 
 	/**
@@ -346,20 +360,10 @@ public class AssetPersistenceImpl extends BasePersistenceImpl<Asset>
 	 * @throws com.liferay.ams.NoSuchAssetException if a asset with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Asset findByPrimaryKey(long assetId)
 		throws NoSuchAssetException, SystemException {
-		Asset asset = fetchByPrimaryKey(assetId);
-
-		if (asset == null) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + assetId);
-			}
-
-			throw new NoSuchAssetException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
-				assetId);
-		}
-
-		return asset;
+		return findByPrimaryKey((Serializable)assetId);
 	}
 
 	/**
@@ -372,19 +376,8 @@ public class AssetPersistenceImpl extends BasePersistenceImpl<Asset>
 	@Override
 	public Asset fetchByPrimaryKey(Serializable primaryKey)
 		throws SystemException {
-		return fetchByPrimaryKey(((Long)primaryKey).longValue());
-	}
-
-	/**
-	 * Returns the asset with the primary key or returns <code>null</code> if it could not be found.
-	 *
-	 * @param assetId the primary key of the asset
-	 * @return the asset, or <code>null</code> if a asset with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	public Asset fetchByPrimaryKey(long assetId) throws SystemException {
 		Asset asset = (Asset)EntityCacheUtil.getResult(AssetModelImpl.ENTITY_CACHE_ENABLED,
-				AssetImpl.class, assetId);
+				AssetImpl.class, primaryKey);
 
 		if (asset == _nullAsset) {
 			return null;
@@ -396,20 +389,19 @@ public class AssetPersistenceImpl extends BasePersistenceImpl<Asset>
 			try {
 				session = openSession();
 
-				asset = (Asset)session.get(AssetImpl.class,
-						Long.valueOf(assetId));
+				asset = (Asset)session.get(AssetImpl.class, primaryKey);
 
 				if (asset != null) {
 					cacheResult(asset);
 				}
 				else {
 					EntityCacheUtil.putResult(AssetModelImpl.ENTITY_CACHE_ENABLED,
-						AssetImpl.class, assetId, _nullAsset);
+						AssetImpl.class, primaryKey, _nullAsset);
 				}
 			}
 			catch (Exception e) {
 				EntityCacheUtil.removeResult(AssetModelImpl.ENTITY_CACHE_ENABLED,
-					AssetImpl.class, assetId);
+					AssetImpl.class, primaryKey);
 
 				throw processException(e);
 			}
@@ -422,11 +414,24 @@ public class AssetPersistenceImpl extends BasePersistenceImpl<Asset>
 	}
 
 	/**
+	 * Returns the asset with the primary key or returns <code>null</code> if it could not be found.
+	 *
+	 * @param assetId the primary key of the asset
+	 * @return the asset, or <code>null</code> if a asset with the primary key could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public Asset fetchByPrimaryKey(long assetId) throws SystemException {
+		return fetchByPrimaryKey((Serializable)assetId);
+	}
+
+	/**
 	 * Returns all the assets.
 	 *
 	 * @return the assets
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Asset> findAll() throws SystemException {
 		return findAll(QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
@@ -443,6 +448,7 @@ public class AssetPersistenceImpl extends BasePersistenceImpl<Asset>
 	 * @return the range of assets
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Asset> findAll(int start, int end) throws SystemException {
 		return findAll(start, end, null);
 	}
@@ -460,6 +466,7 @@ public class AssetPersistenceImpl extends BasePersistenceImpl<Asset>
 	 * @return the ordered range of assets
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Asset> findAll(int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -545,6 +552,7 @@ public class AssetPersistenceImpl extends BasePersistenceImpl<Asset>
 	 *
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeAll() throws SystemException {
 		for (Asset asset : findAll()) {
 			remove(asset);
@@ -557,6 +565,7 @@ public class AssetPersistenceImpl extends BasePersistenceImpl<Asset>
 	 * @return the number of assets
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countAll() throws SystemException {
 		Long count = (Long)FinderCacheUtil.getResult(FINDER_PATH_COUNT_ALL,
 				FINDER_ARGS_EMPTY, this);
@@ -588,6 +597,11 @@ public class AssetPersistenceImpl extends BasePersistenceImpl<Asset>
 		return count.intValue();
 	}
 
+	@Override
+	protected Set<String> getBadColumnNames() {
+		return _badColumnNames;
+	}
+
 	/**
 	 * Initializes the asset persistence.
 	 */
@@ -602,7 +616,7 @@ public class AssetPersistenceImpl extends BasePersistenceImpl<Asset>
 
 				for (String listenerClassName : listenerClassNames) {
 					listenersList.add((ModelListener<Asset>)InstanceFactory.newInstance(
-							listenerClassName));
+							getClassLoader(), listenerClassName));
 				}
 
 				listeners = listenersList.toArray(new ModelListener[listenersList.size()]);
@@ -620,16 +634,6 @@ public class AssetPersistenceImpl extends BasePersistenceImpl<Asset>
 		FinderCacheUtil.removeCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 	}
 
-	@BeanReference(type = AssetPersistence.class)
-	protected AssetPersistence assetPersistence;
-	@BeanReference(type = CheckoutPersistence.class)
-	protected CheckoutPersistence checkoutPersistence;
-	@BeanReference(type = DefinitionPersistence.class)
-	protected DefinitionPersistence definitionPersistence;
-	@BeanReference(type = TypePersistence.class)
-	protected TypePersistence typePersistence;
-	@BeanReference(type = UserPersistence.class)
-	protected UserPersistence userPersistence;
 	private static final String _SQL_SELECT_ASSET = "SELECT asset FROM Asset asset";
 	private static final String _SQL_COUNT_ASSET = "SELECT COUNT(asset) FROM Asset asset";
 	private static final String _ORDER_BY_ENTITY_ALIAS = "asset.";
@@ -637,6 +641,9 @@ public class AssetPersistenceImpl extends BasePersistenceImpl<Asset>
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = GetterUtil.getBoolean(PropsUtil.get(
 				PropsKeys.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE));
 	private static Log _log = LogFactoryUtil.getLog(AssetPersistenceImpl.class);
+	private static Set<String> _badColumnNames = SetUtil.fromArray(new String[] {
+				"active"
+			});
 	private static Asset _nullAsset = new AssetImpl() {
 			@Override
 			public Object clone() {
@@ -650,6 +657,7 @@ public class AssetPersistenceImpl extends BasePersistenceImpl<Asset>
 		};
 
 	private static CacheModel<Asset> _nullAssetCacheModel = new CacheModel<Asset>() {
+			@Override
 			public Asset toEntityModel() {
 				return _nullAsset;
 			}

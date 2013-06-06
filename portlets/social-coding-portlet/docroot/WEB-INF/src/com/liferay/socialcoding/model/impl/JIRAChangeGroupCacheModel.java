@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -53,6 +53,7 @@ public class JIRAChangeGroupCacheModel implements CacheModel<JIRAChangeGroup>,
 		return sb.toString();
 	}
 
+	@Override
 	public JIRAChangeGroup toEntityModel() {
 		JIRAChangeGroupImpl jiraChangeGroupImpl = new JIRAChangeGroupImpl();
 
@@ -79,6 +80,7 @@ public class JIRAChangeGroupCacheModel implements CacheModel<JIRAChangeGroup>,
 		return jiraChangeGroupImpl;
 	}
 
+	@Override
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		jiraChangeGroupId = objectInput.readLong();
 		jiraUserId = objectInput.readUTF();
@@ -86,6 +88,7 @@ public class JIRAChangeGroupCacheModel implements CacheModel<JIRAChangeGroup>,
 		jiraIssueId = objectInput.readLong();
 	}
 
+	@Override
 	public void writeExternal(ObjectOutput objectOutput)
 		throws IOException {
 		objectOutput.writeLong(jiraChangeGroupId);

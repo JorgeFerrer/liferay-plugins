@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -61,6 +61,7 @@ public class WSRPConsumerPortletCacheModel implements CacheModel<WSRPConsumerPor
 		return sb.toString();
 	}
 
+	@Override
 	public WSRPConsumerPortlet toEntityModel() {
 		WSRPConsumerPortletImpl wsrpConsumerPortletImpl = new WSRPConsumerPortletImpl();
 
@@ -109,6 +110,7 @@ public class WSRPConsumerPortletCacheModel implements CacheModel<WSRPConsumerPor
 		return wsrpConsumerPortletImpl;
 	}
 
+	@Override
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		uuid = objectInput.readUTF();
 		wsrpConsumerPortletId = objectInput.readLong();
@@ -120,6 +122,7 @@ public class WSRPConsumerPortletCacheModel implements CacheModel<WSRPConsumerPor
 		portletHandle = objectInput.readUTF();
 	}
 
+	@Override
 	public void writeExternal(ObjectOutput objectOutput)
 		throws IOException {
 		if (uuid == null) {

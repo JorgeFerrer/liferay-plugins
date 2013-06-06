@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -19,8 +19,6 @@ import com.liferay.calendar.model.Calendar;
 import com.liferay.calendar.model.impl.CalendarImpl;
 import com.liferay.calendar.model.impl.CalendarModelImpl;
 
-import com.liferay.portal.NoSuchModelException;
-import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.cache.CacheRegistryUtil;
 import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
 import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
@@ -37,6 +35,7 @@ import com.liferay.portal.kernel.util.InstanceFactory;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -46,7 +45,6 @@ import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import com.liferay.portal.model.CacheModel;
 import com.liferay.portal.model.ModelListener;
 import com.liferay.portal.security.permission.InlineSQLHelperUtil;
-import com.liferay.portal.service.persistence.UserPersistence;
 import com.liferay.portal.service.persistence.impl.BasePersistenceImpl;
 
 import java.io.Serializable;
@@ -54,6 +52,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * The persistence implementation for the calendar service.
@@ -117,6 +116,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @return the matching calendars
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Calendar> findByResourceBlockId(long resourceBlockId)
 		throws SystemException {
 		return findByResourceBlockId(resourceBlockId, QueryUtil.ALL_POS,
@@ -136,6 +136,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @return the range of matching calendars
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Calendar> findByResourceBlockId(long resourceBlockId,
 		int start, int end) throws SystemException {
 		return findByResourceBlockId(resourceBlockId, start, end, null);
@@ -155,6 +156,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @return the ordered range of matching calendars
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Calendar> findByResourceBlockId(long resourceBlockId,
 		int start, int end, OrderByComparator orderByComparator)
 		throws SystemException {
@@ -266,6 +268,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @throws com.liferay.calendar.NoSuchCalendarException if a matching calendar could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Calendar findByResourceBlockId_First(long resourceBlockId,
 		OrderByComparator orderByComparator)
 		throws NoSuchCalendarException, SystemException {
@@ -296,6 +299,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @return the first matching calendar, or <code>null</code> if a matching calendar could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Calendar fetchByResourceBlockId_First(long resourceBlockId,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<Calendar> list = findByResourceBlockId(resourceBlockId, 0, 1,
@@ -317,6 +321,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @throws com.liferay.calendar.NoSuchCalendarException if a matching calendar could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Calendar findByResourceBlockId_Last(long resourceBlockId,
 		OrderByComparator orderByComparator)
 		throws NoSuchCalendarException, SystemException {
@@ -347,6 +352,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @return the last matching calendar, or <code>null</code> if a matching calendar could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Calendar fetchByResourceBlockId_Last(long resourceBlockId,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByResourceBlockId(resourceBlockId);
@@ -371,6 +377,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @throws com.liferay.calendar.NoSuchCalendarException if a calendar with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Calendar[] findByResourceBlockId_PrevAndNext(long calendarId,
 		long resourceBlockId, OrderByComparator orderByComparator)
 		throws NoSuchCalendarException, SystemException {
@@ -512,6 +519,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @param resourceBlockId the resource block ID
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByResourceBlockId(long resourceBlockId)
 		throws SystemException {
 		for (Calendar calendar : findByResourceBlockId(resourceBlockId,
@@ -527,6 +535,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @return the number of matching calendars
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByResourceBlockId(long resourceBlockId)
 		throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_RESOURCEBLOCKID;
@@ -602,6 +611,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @return the matching calendars
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Calendar> findByUuid(String uuid) throws SystemException {
 		return findByUuid(uuid, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
@@ -619,6 +629,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @return the range of matching calendars
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Calendar> findByUuid(String uuid, int start, int end)
 		throws SystemException {
 		return findByUuid(uuid, start, end, null);
@@ -638,6 +649,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @return the ordered range of matching calendars
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Calendar> findByUuid(String uuid, int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -681,16 +693,18 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 
 			query.append(_SQL_SELECT_CALENDAR_WHERE);
 
+			boolean bindUuid = false;
+
 			if (uuid == null) {
 				query.append(_FINDER_COLUMN_UUID_UUID_1);
 			}
+			else if (uuid.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_UUID_UUID_3);
+			}
 			else {
-				if (uuid.equals(StringPool.BLANK)) {
-					query.append(_FINDER_COLUMN_UUID_UUID_3);
-				}
-				else {
-					query.append(_FINDER_COLUMN_UUID_UUID_2);
-				}
+				bindUuid = true;
+
+				query.append(_FINDER_COLUMN_UUID_UUID_2);
 			}
 
 			if (orderByComparator != null) {
@@ -713,7 +727,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 
 				QueryPos qPos = QueryPos.getInstance(q);
 
-				if (uuid != null) {
+				if (bindUuid) {
 					qPos.add(uuid);
 				}
 
@@ -756,6 +770,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @throws com.liferay.calendar.NoSuchCalendarException if a matching calendar could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Calendar findByUuid_First(String uuid,
 		OrderByComparator orderByComparator)
 		throws NoSuchCalendarException, SystemException {
@@ -785,6 +800,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @return the first matching calendar, or <code>null</code> if a matching calendar could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Calendar fetchByUuid_First(String uuid,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<Calendar> list = findByUuid(uuid, 0, 1, orderByComparator);
@@ -805,6 +821,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @throws com.liferay.calendar.NoSuchCalendarException if a matching calendar could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Calendar findByUuid_Last(String uuid,
 		OrderByComparator orderByComparator)
 		throws NoSuchCalendarException, SystemException {
@@ -834,6 +851,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @return the last matching calendar, or <code>null</code> if a matching calendar could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Calendar fetchByUuid_Last(String uuid,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByUuid(uuid);
@@ -858,6 +876,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @throws com.liferay.calendar.NoSuchCalendarException if a calendar with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Calendar[] findByUuid_PrevAndNext(long calendarId, String uuid,
 		OrderByComparator orderByComparator)
 		throws NoSuchCalendarException, SystemException {
@@ -903,16 +922,18 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 
 		query.append(_SQL_SELECT_CALENDAR_WHERE);
 
+		boolean bindUuid = false;
+
 		if (uuid == null) {
 			query.append(_FINDER_COLUMN_UUID_UUID_1);
 		}
+		else if (uuid.equals(StringPool.BLANK)) {
+			query.append(_FINDER_COLUMN_UUID_UUID_3);
+		}
 		else {
-			if (uuid.equals(StringPool.BLANK)) {
-				query.append(_FINDER_COLUMN_UUID_UUID_3);
-			}
-			else {
-				query.append(_FINDER_COLUMN_UUID_UUID_2);
-			}
+			bindUuid = true;
+
+			query.append(_FINDER_COLUMN_UUID_UUID_2);
 		}
 
 		if (orderByComparator != null) {
@@ -983,7 +1004,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 
 		QueryPos qPos = QueryPos.getInstance(q);
 
-		if (uuid != null) {
+		if (bindUuid) {
 			qPos.add(uuid);
 		}
 
@@ -1011,6 +1032,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @param uuid the uuid
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByUuid(String uuid) throws SystemException {
 		for (Calendar calendar : findByUuid(uuid, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
@@ -1025,6 +1047,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @return the number of matching calendars
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByUuid(String uuid) throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_UUID;
 
@@ -1038,16 +1061,18 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 
 			query.append(_SQL_COUNT_CALENDAR_WHERE);
 
+			boolean bindUuid = false;
+
 			if (uuid == null) {
 				query.append(_FINDER_COLUMN_UUID_UUID_1);
 			}
+			else if (uuid.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_UUID_UUID_3);
+			}
 			else {
-				if (uuid.equals(StringPool.BLANK)) {
-					query.append(_FINDER_COLUMN_UUID_UUID_3);
-				}
-				else {
-					query.append(_FINDER_COLUMN_UUID_UUID_2);
-				}
+				bindUuid = true;
+
+				query.append(_FINDER_COLUMN_UUID_UUID_2);
 			}
 
 			String sql = query.toString();
@@ -1061,7 +1086,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 
 				QueryPos qPos = QueryPos.getInstance(q);
 
-				if (uuid != null) {
+				if (bindUuid) {
 					qPos.add(uuid);
 				}
 
@@ -1084,7 +1109,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 
 	private static final String _FINDER_COLUMN_UUID_UUID_1 = "calendar.uuid IS NULL";
 	private static final String _FINDER_COLUMN_UUID_UUID_2 = "calendar.uuid = ?";
-	private static final String _FINDER_COLUMN_UUID_UUID_3 = "(calendar.uuid IS NULL OR calendar.uuid = ?)";
+	private static final String _FINDER_COLUMN_UUID_UUID_3 = "(calendar.uuid IS NULL OR calendar.uuid = '')";
 	public static final FinderPath FINDER_PATH_FETCH_BY_UUID_G = new FinderPath(CalendarModelImpl.ENTITY_CACHE_ENABLED,
 			CalendarModelImpl.FINDER_CACHE_ENABLED, CalendarImpl.class,
 			FINDER_CLASS_NAME_ENTITY, "fetchByUUID_G",
@@ -1105,6 +1130,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @throws com.liferay.calendar.NoSuchCalendarException if a matching calendar could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Calendar findByUUID_G(String uuid, long groupId)
 		throws NoSuchCalendarException, SystemException {
 		Calendar calendar = fetchByUUID_G(uuid, groupId);
@@ -1140,6 +1166,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @return the matching calendar, or <code>null</code> if a matching calendar could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Calendar fetchByUUID_G(String uuid, long groupId)
 		throws SystemException {
 		return fetchByUUID_G(uuid, groupId, true);
@@ -1154,6 +1181,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @return the matching calendar, or <code>null</code> if a matching calendar could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Calendar fetchByUUID_G(String uuid, long groupId,
 		boolean retrieveFromCache) throws SystemException {
 		Object[] finderArgs = new Object[] { uuid, groupId };
@@ -1179,16 +1207,18 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 
 			query.append(_SQL_SELECT_CALENDAR_WHERE);
 
+			boolean bindUuid = false;
+
 			if (uuid == null) {
 				query.append(_FINDER_COLUMN_UUID_G_UUID_1);
 			}
+			else if (uuid.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_UUID_G_UUID_3);
+			}
 			else {
-				if (uuid.equals(StringPool.BLANK)) {
-					query.append(_FINDER_COLUMN_UUID_G_UUID_3);
-				}
-				else {
-					query.append(_FINDER_COLUMN_UUID_G_UUID_2);
-				}
+				bindUuid = true;
+
+				query.append(_FINDER_COLUMN_UUID_G_UUID_2);
 			}
 
 			query.append(_FINDER_COLUMN_UUID_G_GROUPID_2);
@@ -1204,7 +1234,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 
 				QueryPos qPos = QueryPos.getInstance(q);
 
-				if (uuid != null) {
+				if (bindUuid) {
 					qPos.add(uuid);
 				}
 
@@ -1258,6 +1288,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @return the calendar that was removed
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Calendar removeByUUID_G(String uuid, long groupId)
 		throws NoSuchCalendarException, SystemException {
 		Calendar calendar = findByUUID_G(uuid, groupId);
@@ -1273,6 +1304,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @return the number of matching calendars
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByUUID_G(String uuid, long groupId)
 		throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_UUID_G;
@@ -1287,16 +1319,18 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 
 			query.append(_SQL_COUNT_CALENDAR_WHERE);
 
+			boolean bindUuid = false;
+
 			if (uuid == null) {
 				query.append(_FINDER_COLUMN_UUID_G_UUID_1);
 			}
+			else if (uuid.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_UUID_G_UUID_3);
+			}
 			else {
-				if (uuid.equals(StringPool.BLANK)) {
-					query.append(_FINDER_COLUMN_UUID_G_UUID_3);
-				}
-				else {
-					query.append(_FINDER_COLUMN_UUID_G_UUID_2);
-				}
+				bindUuid = true;
+
+				query.append(_FINDER_COLUMN_UUID_G_UUID_2);
 			}
 
 			query.append(_FINDER_COLUMN_UUID_G_GROUPID_2);
@@ -1312,7 +1346,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 
 				QueryPos qPos = QueryPos.getInstance(q);
 
-				if (uuid != null) {
+				if (bindUuid) {
 					qPos.add(uuid);
 				}
 
@@ -1337,7 +1371,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 
 	private static final String _FINDER_COLUMN_UUID_G_UUID_1 = "calendar.uuid IS NULL AND ";
 	private static final String _FINDER_COLUMN_UUID_G_UUID_2 = "calendar.uuid = ? AND ";
-	private static final String _FINDER_COLUMN_UUID_G_UUID_3 = "(calendar.uuid IS NULL OR calendar.uuid = ?) AND ";
+	private static final String _FINDER_COLUMN_UUID_G_UUID_3 = "(calendar.uuid IS NULL OR calendar.uuid = '') AND ";
 	private static final String _FINDER_COLUMN_UUID_G_GROUPID_2 = "calendar.groupId = ?";
 	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_UUID_C = new FinderPath(CalendarModelImpl.ENTITY_CACHE_ENABLED,
 			CalendarModelImpl.FINDER_CACHE_ENABLED, CalendarImpl.class,
@@ -1369,6 +1403,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @return the matching calendars
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Calendar> findByUuid_C(String uuid, long companyId)
 		throws SystemException {
 		return findByUuid_C(uuid, companyId, QueryUtil.ALL_POS,
@@ -1389,6 +1424,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @return the range of matching calendars
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Calendar> findByUuid_C(String uuid, long companyId, int start,
 		int end) throws SystemException {
 		return findByUuid_C(uuid, companyId, start, end, null);
@@ -1409,6 +1445,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @return the ordered range of matching calendars
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Calendar> findByUuid_C(String uuid, long companyId, int start,
 		int end, OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -1457,16 +1494,18 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 
 			query.append(_SQL_SELECT_CALENDAR_WHERE);
 
+			boolean bindUuid = false;
+
 			if (uuid == null) {
 				query.append(_FINDER_COLUMN_UUID_C_UUID_1);
 			}
+			else if (uuid.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_UUID_C_UUID_3);
+			}
 			else {
-				if (uuid.equals(StringPool.BLANK)) {
-					query.append(_FINDER_COLUMN_UUID_C_UUID_3);
-				}
-				else {
-					query.append(_FINDER_COLUMN_UUID_C_UUID_2);
-				}
+				bindUuid = true;
+
+				query.append(_FINDER_COLUMN_UUID_C_UUID_2);
 			}
 
 			query.append(_FINDER_COLUMN_UUID_C_COMPANYID_2);
@@ -1491,7 +1530,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 
 				QueryPos qPos = QueryPos.getInstance(q);
 
-				if (uuid != null) {
+				if (bindUuid) {
 					qPos.add(uuid);
 				}
 
@@ -1537,6 +1576,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @throws com.liferay.calendar.NoSuchCalendarException if a matching calendar could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Calendar findByUuid_C_First(String uuid, long companyId,
 		OrderByComparator orderByComparator)
 		throws NoSuchCalendarException, SystemException {
@@ -1571,6 +1611,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @return the first matching calendar, or <code>null</code> if a matching calendar could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Calendar fetchByUuid_C_First(String uuid, long companyId,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<Calendar> list = findByUuid_C(uuid, companyId, 0, 1,
@@ -1593,6 +1634,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @throws com.liferay.calendar.NoSuchCalendarException if a matching calendar could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Calendar findByUuid_C_Last(String uuid, long companyId,
 		OrderByComparator orderByComparator)
 		throws NoSuchCalendarException, SystemException {
@@ -1627,6 +1669,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @return the last matching calendar, or <code>null</code> if a matching calendar could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Calendar fetchByUuid_C_Last(String uuid, long companyId,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByUuid_C(uuid, companyId);
@@ -1652,6 +1695,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @throws com.liferay.calendar.NoSuchCalendarException if a calendar with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Calendar[] findByUuid_C_PrevAndNext(long calendarId, String uuid,
 		long companyId, OrderByComparator orderByComparator)
 		throws NoSuchCalendarException, SystemException {
@@ -1697,16 +1741,18 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 
 		query.append(_SQL_SELECT_CALENDAR_WHERE);
 
+		boolean bindUuid = false;
+
 		if (uuid == null) {
 			query.append(_FINDER_COLUMN_UUID_C_UUID_1);
 		}
+		else if (uuid.equals(StringPool.BLANK)) {
+			query.append(_FINDER_COLUMN_UUID_C_UUID_3);
+		}
 		else {
-			if (uuid.equals(StringPool.BLANK)) {
-				query.append(_FINDER_COLUMN_UUID_C_UUID_3);
-			}
-			else {
-				query.append(_FINDER_COLUMN_UUID_C_UUID_2);
-			}
+			bindUuid = true;
+
+			query.append(_FINDER_COLUMN_UUID_C_UUID_2);
 		}
 
 		query.append(_FINDER_COLUMN_UUID_C_COMPANYID_2);
@@ -1779,7 +1825,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 
 		QueryPos qPos = QueryPos.getInstance(q);
 
-		if (uuid != null) {
+		if (bindUuid) {
 			qPos.add(uuid);
 		}
 
@@ -1810,6 +1856,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @param companyId the company ID
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByUuid_C(String uuid, long companyId)
 		throws SystemException {
 		for (Calendar calendar : findByUuid_C(uuid, companyId,
@@ -1826,6 +1873,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @return the number of matching calendars
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByUuid_C(String uuid, long companyId)
 		throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_UUID_C;
@@ -1840,16 +1888,18 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 
 			query.append(_SQL_COUNT_CALENDAR_WHERE);
 
+			boolean bindUuid = false;
+
 			if (uuid == null) {
 				query.append(_FINDER_COLUMN_UUID_C_UUID_1);
 			}
+			else if (uuid.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_UUID_C_UUID_3);
+			}
 			else {
-				if (uuid.equals(StringPool.BLANK)) {
-					query.append(_FINDER_COLUMN_UUID_C_UUID_3);
-				}
-				else {
-					query.append(_FINDER_COLUMN_UUID_C_UUID_2);
-				}
+				bindUuid = true;
+
+				query.append(_FINDER_COLUMN_UUID_C_UUID_2);
 			}
 
 			query.append(_FINDER_COLUMN_UUID_C_COMPANYID_2);
@@ -1865,7 +1915,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 
 				QueryPos qPos = QueryPos.getInstance(q);
 
-				if (uuid != null) {
+				if (bindUuid) {
 					qPos.add(uuid);
 				}
 
@@ -1890,7 +1940,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 
 	private static final String _FINDER_COLUMN_UUID_C_UUID_1 = "calendar.uuid IS NULL AND ";
 	private static final String _FINDER_COLUMN_UUID_C_UUID_2 = "calendar.uuid = ? AND ";
-	private static final String _FINDER_COLUMN_UUID_C_UUID_3 = "(calendar.uuid IS NULL OR calendar.uuid = ?) AND ";
+	private static final String _FINDER_COLUMN_UUID_C_UUID_3 = "(calendar.uuid IS NULL OR calendar.uuid = '') AND ";
 	private static final String _FINDER_COLUMN_UUID_C_COMPANYID_2 = "calendar.companyId = ?";
 	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_G_C = new FinderPath(CalendarModelImpl.ENTITY_CACHE_ENABLED,
 			CalendarModelImpl.FINDER_CACHE_ENABLED, CalendarImpl.class,
@@ -1921,6 +1971,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @return the matching calendars
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Calendar> findByG_C(long groupId, long calendarResourceId)
 		throws SystemException {
 		return findByG_C(groupId, calendarResourceId, QueryUtil.ALL_POS,
@@ -1941,6 +1992,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @return the range of matching calendars
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Calendar> findByG_C(long groupId, long calendarResourceId,
 		int start, int end) throws SystemException {
 		return findByG_C(groupId, calendarResourceId, start, end, null);
@@ -1961,6 +2013,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @return the ordered range of matching calendars
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Calendar> findByG_C(long groupId, long calendarResourceId,
 		int start, int end, OrderByComparator orderByComparator)
 		throws SystemException {
@@ -2078,6 +2131,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @throws com.liferay.calendar.NoSuchCalendarException if a matching calendar could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Calendar findByG_C_First(long groupId, long calendarResourceId,
 		OrderByComparator orderByComparator)
 		throws NoSuchCalendarException, SystemException {
@@ -2112,6 +2166,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @return the first matching calendar, or <code>null</code> if a matching calendar could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Calendar fetchByG_C_First(long groupId, long calendarResourceId,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<Calendar> list = findByG_C(groupId, calendarResourceId, 0, 1,
@@ -2134,6 +2189,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @throws com.liferay.calendar.NoSuchCalendarException if a matching calendar could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Calendar findByG_C_Last(long groupId, long calendarResourceId,
 		OrderByComparator orderByComparator)
 		throws NoSuchCalendarException, SystemException {
@@ -2168,6 +2224,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @return the last matching calendar, or <code>null</code> if a matching calendar could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Calendar fetchByG_C_Last(long groupId, long calendarResourceId,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByG_C(groupId, calendarResourceId);
@@ -2193,6 +2250,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @throws com.liferay.calendar.NoSuchCalendarException if a calendar with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Calendar[] findByG_C_PrevAndNext(long calendarId, long groupId,
 		long calendarResourceId, OrderByComparator orderByComparator)
 		throws NoSuchCalendarException, SystemException {
@@ -2340,6 +2398,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @return the matching calendars that the user has permission to view
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Calendar> filterFindByG_C(long groupId, long calendarResourceId)
 		throws SystemException {
 		return filterFindByG_C(groupId, calendarResourceId, QueryUtil.ALL_POS,
@@ -2360,6 +2419,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @return the range of matching calendars that the user has permission to view
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Calendar> filterFindByG_C(long groupId,
 		long calendarResourceId, int start, int end) throws SystemException {
 		return filterFindByG_C(groupId, calendarResourceId, start, end, null);
@@ -2380,6 +2440,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @return the ordered range of matching calendars that the user has permission to view
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Calendar> filterFindByG_C(long groupId,
 		long calendarResourceId, int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
@@ -2451,6 +2512,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @throws com.liferay.calendar.NoSuchCalendarException if a calendar with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Calendar[] filterFindByG_C_PrevAndNext(long calendarId,
 		long groupId, long calendarResourceId,
 		OrderByComparator orderByComparator)
@@ -2606,6 +2668,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @param calendarResourceId the calendar resource ID
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByG_C(long groupId, long calendarResourceId)
 		throws SystemException {
 		for (Calendar calendar : findByG_C(groupId, calendarResourceId,
@@ -2622,6 +2685,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @return the number of matching calendars
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByG_C(long groupId, long calendarResourceId)
 		throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_G_C;
@@ -2680,6 +2744,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @return the number of matching calendars that the user has permission to view
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int filterCountByG_C(long groupId, long calendarResourceId)
 		throws SystemException {
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
@@ -2764,6 +2829,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @return the matching calendars
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Calendar> findByG_C_D(long groupId, long calendarResourceId,
 		boolean defaultCalendar) throws SystemException {
 		return findByG_C_D(groupId, calendarResourceId, defaultCalendar,
@@ -2785,6 +2851,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @return the range of matching calendars
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Calendar> findByG_C_D(long groupId, long calendarResourceId,
 		boolean defaultCalendar, int start, int end) throws SystemException {
 		return findByG_C_D(groupId, calendarResourceId, defaultCalendar, start,
@@ -2807,6 +2874,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @return the ordered range of matching calendars
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Calendar> findByG_C_D(long groupId, long calendarResourceId,
 		boolean defaultCalendar, int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
@@ -2932,6 +3000,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @throws com.liferay.calendar.NoSuchCalendarException if a matching calendar could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Calendar findByG_C_D_First(long groupId, long calendarResourceId,
 		boolean defaultCalendar, OrderByComparator orderByComparator)
 		throws NoSuchCalendarException, SystemException {
@@ -2970,6 +3039,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @return the first matching calendar, or <code>null</code> if a matching calendar could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Calendar fetchByG_C_D_First(long groupId, long calendarResourceId,
 		boolean defaultCalendar, OrderByComparator orderByComparator)
 		throws SystemException {
@@ -2994,6 +3064,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @throws com.liferay.calendar.NoSuchCalendarException if a matching calendar could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Calendar findByG_C_D_Last(long groupId, long calendarResourceId,
 		boolean defaultCalendar, OrderByComparator orderByComparator)
 		throws NoSuchCalendarException, SystemException {
@@ -3032,6 +3103,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @return the last matching calendar, or <code>null</code> if a matching calendar could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Calendar fetchByG_C_D_Last(long groupId, long calendarResourceId,
 		boolean defaultCalendar, OrderByComparator orderByComparator)
 		throws SystemException {
@@ -3059,6 +3131,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @throws com.liferay.calendar.NoSuchCalendarException if a calendar with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Calendar[] findByG_C_D_PrevAndNext(long calendarId, long groupId,
 		long calendarResourceId, boolean defaultCalendar,
 		OrderByComparator orderByComparator)
@@ -3214,6 +3287,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @return the matching calendars that the user has permission to view
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Calendar> filterFindByG_C_D(long groupId,
 		long calendarResourceId, boolean defaultCalendar)
 		throws SystemException {
@@ -3236,6 +3310,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @return the range of matching calendars that the user has permission to view
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Calendar> filterFindByG_C_D(long groupId,
 		long calendarResourceId, boolean defaultCalendar, int start, int end)
 		throws SystemException {
@@ -3259,6 +3334,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @return the ordered range of matching calendars that the user has permission to view
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Calendar> filterFindByG_C_D(long groupId,
 		long calendarResourceId, boolean defaultCalendar, int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
@@ -3335,6 +3411,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @throws com.liferay.calendar.NoSuchCalendarException if a calendar with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Calendar[] filterFindByG_C_D_PrevAndNext(long calendarId,
 		long groupId, long calendarResourceId, boolean defaultCalendar,
 		OrderByComparator orderByComparator)
@@ -3497,6 +3574,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @param defaultCalendar the default calendar
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByG_C_D(long groupId, long calendarResourceId,
 		boolean defaultCalendar) throws SystemException {
 		for (Calendar calendar : findByG_C_D(groupId, calendarResourceId,
@@ -3514,6 +3592,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @return the number of matching calendars
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByG_C_D(long groupId, long calendarResourceId,
 		boolean defaultCalendar) throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_G_C_D;
@@ -3579,6 +3658,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @return the number of matching calendars that the user has permission to view
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int filterCountByG_C_D(long groupId, long calendarResourceId,
 		boolean defaultCalendar) throws SystemException {
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
@@ -3636,13 +3716,13 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 *
 	 * @param calendar the calendar
 	 */
+	@Override
 	public void cacheResult(Calendar calendar) {
 		EntityCacheUtil.putResult(CalendarModelImpl.ENTITY_CACHE_ENABLED,
 			CalendarImpl.class, calendar.getPrimaryKey(), calendar);
 
 		FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_UUID_G,
-			new Object[] { calendar.getUuid(), Long.valueOf(
-					calendar.getGroupId()) }, calendar);
+			new Object[] { calendar.getUuid(), calendar.getGroupId() }, calendar);
 
 		calendar.resetOriginalValues();
 	}
@@ -3652,6 +3732,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 *
 	 * @param calendars the calendars
 	 */
+	@Override
 	public void cacheResult(List<Calendar> calendars) {
 		for (Calendar calendar : calendars) {
 			if (EntityCacheUtil.getResult(
@@ -3716,10 +3797,52 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 		}
 	}
 
+	protected void cacheUniqueFindersCache(Calendar calendar) {
+		if (calendar.isNew()) {
+			Object[] args = new Object[] {
+					calendar.getUuid(), calendar.getGroupId()
+				};
+
+			FinderCacheUtil.putResult(FINDER_PATH_COUNT_BY_UUID_G, args,
+				Long.valueOf(1));
+			FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_UUID_G, args,
+				calendar);
+		}
+		else {
+			CalendarModelImpl calendarModelImpl = (CalendarModelImpl)calendar;
+
+			if ((calendarModelImpl.getColumnBitmask() &
+					FINDER_PATH_FETCH_BY_UUID_G.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						calendar.getUuid(), calendar.getGroupId()
+					};
+
+				FinderCacheUtil.putResult(FINDER_PATH_COUNT_BY_UUID_G, args,
+					Long.valueOf(1));
+				FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_UUID_G, args,
+					calendar);
+			}
+		}
+	}
+
 	protected void clearUniqueFindersCache(Calendar calendar) {
-		FinderCacheUtil.removeResult(FINDER_PATH_FETCH_BY_UUID_G,
-			new Object[] { calendar.getUuid(), Long.valueOf(
-					calendar.getGroupId()) });
+		CalendarModelImpl calendarModelImpl = (CalendarModelImpl)calendar;
+
+		Object[] args = new Object[] { calendar.getUuid(), calendar.getGroupId() };
+
+		FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_UUID_G, args);
+		FinderCacheUtil.removeResult(FINDER_PATH_FETCH_BY_UUID_G, args);
+
+		if ((calendarModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_UUID_G.getColumnBitmask()) != 0) {
+			args = new Object[] {
+					calendarModelImpl.getOriginalUuid(),
+					calendarModelImpl.getOriginalGroupId()
+				};
+
+			FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_UUID_G, args);
+			FinderCacheUtil.removeResult(FINDER_PATH_FETCH_BY_UUID_G, args);
+		}
 	}
 
 	/**
@@ -3728,6 +3851,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @param calendarId the primary key for the new calendar
 	 * @return the new calendar
 	 */
+	@Override
 	public Calendar create(long calendarId) {
 		Calendar calendar = new CalendarImpl();
 
@@ -3749,9 +3873,10 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @throws com.liferay.calendar.NoSuchCalendarException if a calendar with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Calendar remove(long calendarId)
 		throws NoSuchCalendarException, SystemException {
-		return remove(Long.valueOf(calendarId));
+		return remove((Serializable)calendarId);
 	}
 
 	/**
@@ -3873,7 +3998,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 			if ((calendarModelImpl.getColumnBitmask() &
 					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_RESOURCEBLOCKID.getColumnBitmask()) != 0) {
 				Object[] args = new Object[] {
-						Long.valueOf(calendarModelImpl.getOriginalResourceBlockId())
+						calendarModelImpl.getOriginalResourceBlockId()
 					};
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_RESOURCEBLOCKID,
@@ -3881,9 +4006,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_RESOURCEBLOCKID,
 					args);
 
-				args = new Object[] {
-						Long.valueOf(calendarModelImpl.getResourceBlockId())
-					};
+				args = new Object[] { calendarModelImpl.getResourceBlockId() };
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_RESOURCEBLOCKID,
 					args);
@@ -3910,7 +4033,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID_C.getColumnBitmask()) != 0) {
 				Object[] args = new Object[] {
 						calendarModelImpl.getOriginalUuid(),
-						Long.valueOf(calendarModelImpl.getOriginalCompanyId())
+						calendarModelImpl.getOriginalCompanyId()
 					};
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_UUID_C, args);
@@ -3919,7 +4042,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 
 				args = new Object[] {
 						calendarModelImpl.getUuid(),
-						Long.valueOf(calendarModelImpl.getCompanyId())
+						calendarModelImpl.getCompanyId()
 					};
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_UUID_C, args);
@@ -3930,8 +4053,8 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 			if ((calendarModelImpl.getColumnBitmask() &
 					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_C.getColumnBitmask()) != 0) {
 				Object[] args = new Object[] {
-						Long.valueOf(calendarModelImpl.getOriginalGroupId()),
-						Long.valueOf(calendarModelImpl.getOriginalCalendarResourceId())
+						calendarModelImpl.getOriginalGroupId(),
+						calendarModelImpl.getOriginalCalendarResourceId()
 					};
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_G_C, args);
@@ -3939,8 +4062,8 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 					args);
 
 				args = new Object[] {
-						Long.valueOf(calendarModelImpl.getGroupId()),
-						Long.valueOf(calendarModelImpl.getCalendarResourceId())
+						calendarModelImpl.getGroupId(),
+						calendarModelImpl.getCalendarResourceId()
 					};
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_G_C, args);
@@ -3951,9 +4074,9 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 			if ((calendarModelImpl.getColumnBitmask() &
 					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_C_D.getColumnBitmask()) != 0) {
 				Object[] args = new Object[] {
-						Long.valueOf(calendarModelImpl.getOriginalGroupId()),
-						Long.valueOf(calendarModelImpl.getOriginalCalendarResourceId()),
-						Boolean.valueOf(calendarModelImpl.getOriginalDefaultCalendar())
+						calendarModelImpl.getOriginalGroupId(),
+						calendarModelImpl.getOriginalCalendarResourceId(),
+						calendarModelImpl.getOriginalDefaultCalendar()
 					};
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_G_C_D, args);
@@ -3961,9 +4084,9 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 					args);
 
 				args = new Object[] {
-						Long.valueOf(calendarModelImpl.getGroupId()),
-						Long.valueOf(calendarModelImpl.getCalendarResourceId()),
-						Boolean.valueOf(calendarModelImpl.getDefaultCalendar())
+						calendarModelImpl.getGroupId(),
+						calendarModelImpl.getCalendarResourceId(),
+						calendarModelImpl.getDefaultCalendar()
 					};
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_G_C_D, args);
@@ -3975,30 +4098,8 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 		EntityCacheUtil.putResult(CalendarModelImpl.ENTITY_CACHE_ENABLED,
 			CalendarImpl.class, calendar.getPrimaryKey(), calendar);
 
-		if (isNew) {
-			FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_UUID_G,
-				new Object[] {
-					calendar.getUuid(), Long.valueOf(calendar.getGroupId())
-				}, calendar);
-		}
-		else {
-			if ((calendarModelImpl.getColumnBitmask() &
-					FINDER_PATH_FETCH_BY_UUID_G.getColumnBitmask()) != 0) {
-				Object[] args = new Object[] {
-						calendarModelImpl.getOriginalUuid(),
-						Long.valueOf(calendarModelImpl.getOriginalGroupId())
-					};
-
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_UUID_G, args);
-
-				FinderCacheUtil.removeResult(FINDER_PATH_FETCH_BY_UUID_G, args);
-
-				FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_UUID_G,
-					new Object[] {
-						calendar.getUuid(), Long.valueOf(calendar.getGroupId())
-					}, calendar);
-			}
-		}
+		clearUniqueFindersCache(calendar);
+		cacheUniqueFindersCache(calendar);
 
 		return calendar;
 	}
@@ -4027,6 +4128,8 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 		calendarImpl.setDescription(calendar.getDescription());
 		calendarImpl.setColor(calendar.getColor());
 		calendarImpl.setDefaultCalendar(calendar.isDefaultCalendar());
+		calendarImpl.setEnableComments(calendar.isEnableComments());
+		calendarImpl.setEnableRatings(calendar.isEnableRatings());
 
 		return calendarImpl;
 	}
@@ -4036,13 +4139,24 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 *
 	 * @param primaryKey the primary key of the calendar
 	 * @return the calendar
-	 * @throws com.liferay.portal.NoSuchModelException if a calendar with the primary key could not be found
+	 * @throws com.liferay.calendar.NoSuchCalendarException if a calendar with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
 	public Calendar findByPrimaryKey(Serializable primaryKey)
-		throws NoSuchModelException, SystemException {
-		return findByPrimaryKey(((Long)primaryKey).longValue());
+		throws NoSuchCalendarException, SystemException {
+		Calendar calendar = fetchByPrimaryKey(primaryKey);
+
+		if (calendar == null) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
+			}
+
+			throw new NoSuchCalendarException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
+				primaryKey);
+		}
+
+		return calendar;
 	}
 
 	/**
@@ -4053,20 +4167,10 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @throws com.liferay.calendar.NoSuchCalendarException if a calendar with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Calendar findByPrimaryKey(long calendarId)
 		throws NoSuchCalendarException, SystemException {
-		Calendar calendar = fetchByPrimaryKey(calendarId);
-
-		if (calendar == null) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + calendarId);
-			}
-
-			throw new NoSuchCalendarException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
-				calendarId);
-		}
-
-		return calendar;
+		return findByPrimaryKey((Serializable)calendarId);
 	}
 
 	/**
@@ -4079,20 +4183,8 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	@Override
 	public Calendar fetchByPrimaryKey(Serializable primaryKey)
 		throws SystemException {
-		return fetchByPrimaryKey(((Long)primaryKey).longValue());
-	}
-
-	/**
-	 * Returns the calendar with the primary key or returns <code>null</code> if it could not be found.
-	 *
-	 * @param calendarId the primary key of the calendar
-	 * @return the calendar, or <code>null</code> if a calendar with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	public Calendar fetchByPrimaryKey(long calendarId)
-		throws SystemException {
 		Calendar calendar = (Calendar)EntityCacheUtil.getResult(CalendarModelImpl.ENTITY_CACHE_ENABLED,
-				CalendarImpl.class, calendarId);
+				CalendarImpl.class, primaryKey);
 
 		if (calendar == _nullCalendar) {
 			return null;
@@ -4104,20 +4196,19 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 			try {
 				session = openSession();
 
-				calendar = (Calendar)session.get(CalendarImpl.class,
-						Long.valueOf(calendarId));
+				calendar = (Calendar)session.get(CalendarImpl.class, primaryKey);
 
 				if (calendar != null) {
 					cacheResult(calendar);
 				}
 				else {
 					EntityCacheUtil.putResult(CalendarModelImpl.ENTITY_CACHE_ENABLED,
-						CalendarImpl.class, calendarId, _nullCalendar);
+						CalendarImpl.class, primaryKey, _nullCalendar);
 				}
 			}
 			catch (Exception e) {
 				EntityCacheUtil.removeResult(CalendarModelImpl.ENTITY_CACHE_ENABLED,
-					CalendarImpl.class, calendarId);
+					CalendarImpl.class, primaryKey);
 
 				throw processException(e);
 			}
@@ -4130,11 +4221,25 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	}
 
 	/**
+	 * Returns the calendar with the primary key or returns <code>null</code> if it could not be found.
+	 *
+	 * @param calendarId the primary key of the calendar
+	 * @return the calendar, or <code>null</code> if a calendar with the primary key could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public Calendar fetchByPrimaryKey(long calendarId)
+		throws SystemException {
+		return fetchByPrimaryKey((Serializable)calendarId);
+	}
+
+	/**
 	 * Returns all the calendars.
 	 *
 	 * @return the calendars
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Calendar> findAll() throws SystemException {
 		return findAll(QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
@@ -4151,6 +4256,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @return the range of calendars
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Calendar> findAll(int start, int end) throws SystemException {
 		return findAll(start, end, null);
 	}
@@ -4168,6 +4274,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @return the ordered range of calendars
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Calendar> findAll(int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -4253,6 +4360,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 *
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeAll() throws SystemException {
 		for (Calendar calendar : findAll()) {
 			remove(calendar);
@@ -4265,6 +4373,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	 * @return the number of calendars
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countAll() throws SystemException {
 		Long count = (Long)FinderCacheUtil.getResult(FINDER_PATH_COUNT_ALL,
 				FINDER_ARGS_EMPTY, this);
@@ -4296,6 +4405,11 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 		return count.intValue();
 	}
 
+	@Override
+	protected Set<String> getBadColumnNames() {
+		return _badColumnNames;
+	}
+
 	/**
 	 * Initializes the calendar persistence.
 	 */
@@ -4310,7 +4424,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 
 				for (String listenerClassName : listenerClassNames) {
 					listenersList.add((ModelListener<Calendar>)InstanceFactory.newInstance(
-							listenerClassName));
+							getClassLoader(), listenerClassName));
 				}
 
 				listeners = listenersList.toArray(new ModelListener[listenersList.size()]);
@@ -4328,14 +4442,6 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 		FinderCacheUtil.removeCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 	}
 
-	@BeanReference(type = CalendarPersistence.class)
-	protected CalendarPersistence calendarPersistence;
-	@BeanReference(type = CalendarBookingPersistence.class)
-	protected CalendarBookingPersistence calendarBookingPersistence;
-	@BeanReference(type = CalendarResourcePersistence.class)
-	protected CalendarResourcePersistence calendarResourcePersistence;
-	@BeanReference(type = UserPersistence.class)
-	protected UserPersistence userPersistence;
 	private static final String _SQL_SELECT_CALENDAR = "SELECT calendar FROM Calendar calendar";
 	private static final String _SQL_SELECT_CALENDAR_WHERE = "SELECT calendar FROM Calendar calendar WHERE ";
 	private static final String _SQL_COUNT_CALENDAR = "SELECT COUNT(calendar) FROM Calendar calendar";
@@ -4348,6 +4454,9 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = GetterUtil.getBoolean(PropsUtil.get(
 				PropsKeys.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE));
 	private static Log _log = LogFactoryUtil.getLog(CalendarPersistenceImpl.class);
+	private static Set<String> _badColumnNames = SetUtil.fromArray(new String[] {
+				"uuid"
+			});
 	private static Calendar _nullCalendar = new CalendarImpl() {
 			@Override
 			public Object clone() {
@@ -4361,6 +4470,7 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 		};
 
 	private static CacheModel<Calendar> _nullCalendarCacheModel = new CacheModel<Calendar>() {
+			@Override
 			public Calendar toEntityModel() {
 				return _nullCalendar;
 			}

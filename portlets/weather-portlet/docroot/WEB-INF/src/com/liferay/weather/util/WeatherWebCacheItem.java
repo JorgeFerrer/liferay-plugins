@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -41,6 +41,7 @@ public class WeatherWebCacheItem implements WebCacheItem {
 		}
 	}
 
+	@Override
 	public Object convert(String key) throws WebCacheException {
 		Weather weather = null;
 
@@ -54,6 +55,7 @@ public class WeatherWebCacheItem implements WebCacheItem {
 		return weather;
 	}
 
+	@Override
 	public long getRefreshTime() {
 		return _REFRESH_TIME;
 	}
@@ -61,7 +63,8 @@ public class WeatherWebCacheItem implements WebCacheItem {
 	protected Weather doConvert(String key) throws Exception {
 		StringBundler sb = new StringBundler(5);
 
-		sb.append("http://free.worldweatheronline.com/feed/weather.ashx?key=");
+		sb.append(
+			"http://api.worldweatheronline.com/free/v1/weather.ashx?key=");
 		sb.append(_apiKey);
 		sb.append("&q=");
 		sb.append(HttpUtil.encodeURL(_zip));

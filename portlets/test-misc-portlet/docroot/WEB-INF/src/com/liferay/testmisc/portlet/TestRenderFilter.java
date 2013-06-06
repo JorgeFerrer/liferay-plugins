@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -32,12 +32,14 @@ import javax.portlet.filter.RenderFilter;
  */
 public class TestRenderFilter implements RenderFilter {
 
+	@Override
 	public void destroy() {
 		Log log = LogFactoryUtil.getLog(TestRenderFilter.class);
 
 		log.info("Destroy");
 	}
 
+	@Override
 	public void doFilter(
 			RenderRequest renderRequest, RenderResponse renderResponse,
 			FilterChain filterChain)
@@ -59,6 +61,7 @@ public class TestRenderFilter implements RenderFilter {
 		log.info("After filter");
 	}
 
+	@Override
 	public void init(FilterConfig filterConfig) {
 		Log log = LogFactoryUtil.getLog(TestRenderFilter.class);
 

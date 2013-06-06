@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -38,14 +38,16 @@ public class AkismetDataCacheModel implements CacheModel<AkismetData>,
 	Externalizable {
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(19);
+		StringBundler sb = new StringBundler(21);
 
 		sb.append("{akismetDataId=");
 		sb.append(akismetDataId);
 		sb.append(", modifiedDate=");
 		sb.append(modifiedDate);
-		sb.append(", mbMessageId=");
-		sb.append(mbMessageId);
+		sb.append(", classNameId=");
+		sb.append(classNameId);
+		sb.append(", classPK=");
+		sb.append(classPK);
 		sb.append(", type=");
 		sb.append(type);
 		sb.append(", permalink=");
@@ -63,6 +65,7 @@ public class AkismetDataCacheModel implements CacheModel<AkismetData>,
 		return sb.toString();
 	}
 
+	@Override
 	public AkismetData toEntityModel() {
 		AkismetDataImpl akismetDataImpl = new AkismetDataImpl();
 
@@ -75,7 +78,8 @@ public class AkismetDataCacheModel implements CacheModel<AkismetData>,
 			akismetDataImpl.setModifiedDate(new Date(modifiedDate));
 		}
 
-		akismetDataImpl.setMbMessageId(mbMessageId);
+		akismetDataImpl.setClassNameId(classNameId);
+		akismetDataImpl.setClassPK(classPK);
 
 		if (type == null) {
 			akismetDataImpl.setType(StringPool.BLANK);
@@ -124,10 +128,12 @@ public class AkismetDataCacheModel implements CacheModel<AkismetData>,
 		return akismetDataImpl;
 	}
 
+	@Override
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		akismetDataId = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
-		mbMessageId = objectInput.readLong();
+		classNameId = objectInput.readLong();
+		classPK = objectInput.readLong();
 		type = objectInput.readUTF();
 		permalink = objectInput.readUTF();
 		referrer = objectInput.readUTF();
@@ -136,11 +142,13 @@ public class AkismetDataCacheModel implements CacheModel<AkismetData>,
 		userURL = objectInput.readUTF();
 	}
 
+	@Override
 	public void writeExternal(ObjectOutput objectOutput)
 		throws IOException {
 		objectOutput.writeLong(akismetDataId);
 		objectOutput.writeLong(modifiedDate);
-		objectOutput.writeLong(mbMessageId);
+		objectOutput.writeLong(classNameId);
+		objectOutput.writeLong(classPK);
 
 		if (type == null) {
 			objectOutput.writeUTF(StringPool.BLANK);
@@ -187,7 +195,8 @@ public class AkismetDataCacheModel implements CacheModel<AkismetData>,
 
 	public long akismetDataId;
 	public long modifiedDate;
-	public long mbMessageId;
+	public long classNameId;
+	public long classPK;
 	public String type;
 	public String permalink;
 	public String referrer;

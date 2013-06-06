@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -61,6 +61,7 @@ public class AttachmentCacheModel implements CacheModel<Attachment>,
 		return sb.toString();
 	}
 
+	@Override
 	public Attachment toEntityModel() {
 		AttachmentImpl attachmentImpl = new AttachmentImpl();
 
@@ -92,6 +93,7 @@ public class AttachmentCacheModel implements CacheModel<Attachment>,
 		return attachmentImpl;
 	}
 
+	@Override
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		attachmentId = objectInput.readLong();
 		companyId = objectInput.readLong();
@@ -104,6 +106,7 @@ public class AttachmentCacheModel implements CacheModel<Attachment>,
 		size = objectInput.readLong();
 	}
 
+	@Override
 	public void writeExternal(ObjectOutput objectOutput)
 		throws IOException {
 		objectOutput.writeLong(attachmentId);

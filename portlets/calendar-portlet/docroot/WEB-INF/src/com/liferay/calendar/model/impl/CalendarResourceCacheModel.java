@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -38,7 +38,7 @@ public class CalendarResourceCacheModel implements CacheModel<CalendarResource>,
 	Externalizable {
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(35);
+		StringBundler sb = new StringBundler(33);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -70,8 +70,6 @@ public class CalendarResourceCacheModel implements CacheModel<CalendarResource>,
 		sb.append(name);
 		sb.append(", description=");
 		sb.append(description);
-		sb.append(", type=");
-		sb.append(type);
 		sb.append(", active=");
 		sb.append(active);
 		sb.append("}");
@@ -79,6 +77,7 @@ public class CalendarResourceCacheModel implements CacheModel<CalendarResource>,
 		return sb.toString();
 	}
 
+	@Override
 	public CalendarResource toEntityModel() {
 		CalendarResourceImpl calendarResourceImpl = new CalendarResourceImpl();
 
@@ -147,13 +146,6 @@ public class CalendarResourceCacheModel implements CacheModel<CalendarResource>,
 			calendarResourceImpl.setDescription(description);
 		}
 
-		if (type == null) {
-			calendarResourceImpl.setType(StringPool.BLANK);
-		}
-		else {
-			calendarResourceImpl.setType(type);
-		}
-
 		calendarResourceImpl.setActive(active);
 
 		calendarResourceImpl.resetOriginalValues();
@@ -161,6 +153,7 @@ public class CalendarResourceCacheModel implements CacheModel<CalendarResource>,
 		return calendarResourceImpl;
 	}
 
+	@Override
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		uuid = objectInput.readUTF();
 		calendarResourceId = objectInput.readLong();
@@ -177,10 +170,10 @@ public class CalendarResourceCacheModel implements CacheModel<CalendarResource>,
 		code = objectInput.readUTF();
 		name = objectInput.readUTF();
 		description = objectInput.readUTF();
-		type = objectInput.readUTF();
 		active = objectInput.readBoolean();
 	}
 
+	@Override
 	public void writeExternal(ObjectOutput objectOutput)
 		throws IOException {
 		if (uuid == null) {
@@ -236,13 +229,6 @@ public class CalendarResourceCacheModel implements CacheModel<CalendarResource>,
 			objectOutput.writeUTF(description);
 		}
 
-		if (type == null) {
-			objectOutput.writeUTF(StringPool.BLANK);
-		}
-		else {
-			objectOutput.writeUTF(type);
-		}
-
 		objectOutput.writeBoolean(active);
 	}
 
@@ -261,6 +247,5 @@ public class CalendarResourceCacheModel implements CacheModel<CalendarResource>,
 	public String code;
 	public String name;
 	public String description;
-	public String type;
 	public boolean active;
 }

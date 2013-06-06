@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,8 +14,6 @@
 
 package com.liferay.portal.workflow.kaleo.service.persistence;
 
-import com.liferay.portal.NoSuchModelException;
-import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.cache.CacheRegistryUtil;
 import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
 import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
@@ -38,7 +36,6 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnmodifiableList;
 import com.liferay.portal.model.CacheModel;
 import com.liferay.portal.model.ModelListener;
-import com.liferay.portal.service.persistence.UserPersistence;
 import com.liferay.portal.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.workflow.kaleo.NoSuchTaskAssignmentInstanceException;
 import com.liferay.portal.workflow.kaleo.model.KaleoTaskAssignmentInstance;
@@ -118,6 +115,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 	 * @return the matching kaleo task assignment instances
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoTaskAssignmentInstance> findByCompanyId(long companyId)
 		throws SystemException {
 		return findByCompanyId(companyId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
@@ -137,6 +135,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 	 * @return the range of matching kaleo task assignment instances
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoTaskAssignmentInstance> findByCompanyId(long companyId,
 		int start, int end) throws SystemException {
 		return findByCompanyId(companyId, start, end, null);
@@ -156,6 +155,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 	 * @return the ordered range of matching kaleo task assignment instances
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoTaskAssignmentInstance> findByCompanyId(long companyId,
 		int start, int end, OrderByComparator orderByComparator)
 		throws SystemException {
@@ -263,6 +263,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchTaskAssignmentInstanceException if a matching kaleo task assignment instance could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoTaskAssignmentInstance findByCompanyId_First(long companyId,
 		OrderByComparator orderByComparator)
 		throws NoSuchTaskAssignmentInstanceException, SystemException {
@@ -293,6 +294,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 	 * @return the first matching kaleo task assignment instance, or <code>null</code> if a matching kaleo task assignment instance could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoTaskAssignmentInstance fetchByCompanyId_First(long companyId,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<KaleoTaskAssignmentInstance> list = findByCompanyId(companyId, 0,
@@ -314,6 +316,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchTaskAssignmentInstanceException if a matching kaleo task assignment instance could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoTaskAssignmentInstance findByCompanyId_Last(long companyId,
 		OrderByComparator orderByComparator)
 		throws NoSuchTaskAssignmentInstanceException, SystemException {
@@ -344,6 +347,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 	 * @return the last matching kaleo task assignment instance, or <code>null</code> if a matching kaleo task assignment instance could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoTaskAssignmentInstance fetchByCompanyId_Last(long companyId,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByCompanyId(companyId);
@@ -368,6 +372,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchTaskAssignmentInstanceException if a kaleo task assignment instance with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoTaskAssignmentInstance[] findByCompanyId_PrevAndNext(
 		long kaleoTaskAssignmentInstanceId, long companyId,
 		OrderByComparator orderByComparator)
@@ -513,6 +518,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 	 * @param companyId the company ID
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByCompanyId(long companyId) throws SystemException {
 		for (KaleoTaskAssignmentInstance kaleoTaskAssignmentInstance : findByCompanyId(
 				companyId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
@@ -527,6 +533,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 	 * @return the number of matching kaleo task assignment instances
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByCompanyId(long companyId) throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_COMPANYID;
 
@@ -603,6 +610,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 	 * @return the matching kaleo task assignment instances
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoTaskAssignmentInstance> findByKaleoDefinitionId(
 		long kaleoDefinitionId) throws SystemException {
 		return findByKaleoDefinitionId(kaleoDefinitionId, QueryUtil.ALL_POS,
@@ -622,6 +630,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 	 * @return the range of matching kaleo task assignment instances
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoTaskAssignmentInstance> findByKaleoDefinitionId(
 		long kaleoDefinitionId, int start, int end) throws SystemException {
 		return findByKaleoDefinitionId(kaleoDefinitionId, start, end, null);
@@ -641,6 +650,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 	 * @return the ordered range of matching kaleo task assignment instances
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoTaskAssignmentInstance> findByKaleoDefinitionId(
 		long kaleoDefinitionId, int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
@@ -752,6 +762,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchTaskAssignmentInstanceException if a matching kaleo task assignment instance could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoTaskAssignmentInstance findByKaleoDefinitionId_First(
 		long kaleoDefinitionId, OrderByComparator orderByComparator)
 		throws NoSuchTaskAssignmentInstanceException, SystemException {
@@ -782,6 +793,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 	 * @return the first matching kaleo task assignment instance, or <code>null</code> if a matching kaleo task assignment instance could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoTaskAssignmentInstance fetchByKaleoDefinitionId_First(
 		long kaleoDefinitionId, OrderByComparator orderByComparator)
 		throws SystemException {
@@ -804,6 +816,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchTaskAssignmentInstanceException if a matching kaleo task assignment instance could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoTaskAssignmentInstance findByKaleoDefinitionId_Last(
 		long kaleoDefinitionId, OrderByComparator orderByComparator)
 		throws NoSuchTaskAssignmentInstanceException, SystemException {
@@ -834,6 +847,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 	 * @return the last matching kaleo task assignment instance, or <code>null</code> if a matching kaleo task assignment instance could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoTaskAssignmentInstance fetchByKaleoDefinitionId_Last(
 		long kaleoDefinitionId, OrderByComparator orderByComparator)
 		throws SystemException {
@@ -859,6 +873,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchTaskAssignmentInstanceException if a kaleo task assignment instance with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoTaskAssignmentInstance[] findByKaleoDefinitionId_PrevAndNext(
 		long kaleoTaskAssignmentInstanceId, long kaleoDefinitionId,
 		OrderByComparator orderByComparator)
@@ -1005,6 +1020,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 	 * @param kaleoDefinitionId the kaleo definition ID
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByKaleoDefinitionId(long kaleoDefinitionId)
 		throws SystemException {
 		for (KaleoTaskAssignmentInstance kaleoTaskAssignmentInstance : findByKaleoDefinitionId(
@@ -1020,6 +1036,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 	 * @return the number of matching kaleo task assignment instances
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByKaleoDefinitionId(long kaleoDefinitionId)
 		throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_KALEODEFINITIONID;
@@ -1098,6 +1115,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 	 * @return the matching kaleo task assignment instances
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoTaskAssignmentInstance> findByKaleoInstanceId(
 		long kaleoInstanceId) throws SystemException {
 		return findByKaleoInstanceId(kaleoInstanceId, QueryUtil.ALL_POS,
@@ -1117,6 +1135,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 	 * @return the range of matching kaleo task assignment instances
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoTaskAssignmentInstance> findByKaleoInstanceId(
 		long kaleoInstanceId, int start, int end) throws SystemException {
 		return findByKaleoInstanceId(kaleoInstanceId, start, end, null);
@@ -1136,6 +1155,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 	 * @return the ordered range of matching kaleo task assignment instances
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoTaskAssignmentInstance> findByKaleoInstanceId(
 		long kaleoInstanceId, int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
@@ -1247,6 +1267,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchTaskAssignmentInstanceException if a matching kaleo task assignment instance could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoTaskAssignmentInstance findByKaleoInstanceId_First(
 		long kaleoInstanceId, OrderByComparator orderByComparator)
 		throws NoSuchTaskAssignmentInstanceException, SystemException {
@@ -1277,6 +1298,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 	 * @return the first matching kaleo task assignment instance, or <code>null</code> if a matching kaleo task assignment instance could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoTaskAssignmentInstance fetchByKaleoInstanceId_First(
 		long kaleoInstanceId, OrderByComparator orderByComparator)
 		throws SystemException {
@@ -1299,6 +1321,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchTaskAssignmentInstanceException if a matching kaleo task assignment instance could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoTaskAssignmentInstance findByKaleoInstanceId_Last(
 		long kaleoInstanceId, OrderByComparator orderByComparator)
 		throws NoSuchTaskAssignmentInstanceException, SystemException {
@@ -1329,6 +1352,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 	 * @return the last matching kaleo task assignment instance, or <code>null</code> if a matching kaleo task assignment instance could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoTaskAssignmentInstance fetchByKaleoInstanceId_Last(
 		long kaleoInstanceId, OrderByComparator orderByComparator)
 		throws SystemException {
@@ -1354,6 +1378,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchTaskAssignmentInstanceException if a kaleo task assignment instance with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoTaskAssignmentInstance[] findByKaleoInstanceId_PrevAndNext(
 		long kaleoTaskAssignmentInstanceId, long kaleoInstanceId,
 		OrderByComparator orderByComparator)
@@ -1500,6 +1525,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 	 * @param kaleoInstanceId the kaleo instance ID
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByKaleoInstanceId(long kaleoInstanceId)
 		throws SystemException {
 		for (KaleoTaskAssignmentInstance kaleoTaskAssignmentInstance : findByKaleoInstanceId(
@@ -1515,6 +1541,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 	 * @return the number of matching kaleo task assignment instances
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByKaleoInstanceId(long kaleoInstanceId)
 		throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_KALEOINSTANCEID;
@@ -1597,6 +1624,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 	 * @return the matching kaleo task assignment instances
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoTaskAssignmentInstance> findBykaleoTaskInstanceTokenId(
 		long kaleoTaskInstanceTokenId) throws SystemException {
 		return findBykaleoTaskInstanceTokenId(kaleoTaskInstanceTokenId,
@@ -1616,6 +1644,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 	 * @return the range of matching kaleo task assignment instances
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoTaskAssignmentInstance> findBykaleoTaskInstanceTokenId(
 		long kaleoTaskInstanceTokenId, int start, int end)
 		throws SystemException {
@@ -1637,6 +1666,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 	 * @return the ordered range of matching kaleo task assignment instances
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoTaskAssignmentInstance> findBykaleoTaskInstanceTokenId(
 		long kaleoTaskInstanceTokenId, int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
@@ -1748,6 +1778,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchTaskAssignmentInstanceException if a matching kaleo task assignment instance could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoTaskAssignmentInstance findBykaleoTaskInstanceTokenId_First(
 		long kaleoTaskInstanceTokenId, OrderByComparator orderByComparator)
 		throws NoSuchTaskAssignmentInstanceException, SystemException {
@@ -1778,6 +1809,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 	 * @return the first matching kaleo task assignment instance, or <code>null</code> if a matching kaleo task assignment instance could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoTaskAssignmentInstance fetchBykaleoTaskInstanceTokenId_First(
 		long kaleoTaskInstanceTokenId, OrderByComparator orderByComparator)
 		throws SystemException {
@@ -1800,6 +1832,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchTaskAssignmentInstanceException if a matching kaleo task assignment instance could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoTaskAssignmentInstance findBykaleoTaskInstanceTokenId_Last(
 		long kaleoTaskInstanceTokenId, OrderByComparator orderByComparator)
 		throws NoSuchTaskAssignmentInstanceException, SystemException {
@@ -1830,6 +1863,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 	 * @return the last matching kaleo task assignment instance, or <code>null</code> if a matching kaleo task assignment instance could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoTaskAssignmentInstance fetchBykaleoTaskInstanceTokenId_Last(
 		long kaleoTaskInstanceTokenId, OrderByComparator orderByComparator)
 		throws SystemException {
@@ -1855,6 +1889,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchTaskAssignmentInstanceException if a kaleo task assignment instance with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoTaskAssignmentInstance[] findBykaleoTaskInstanceTokenId_PrevAndNext(
 		long kaleoTaskAssignmentInstanceId, long kaleoTaskInstanceTokenId,
 		OrderByComparator orderByComparator)
@@ -2001,6 +2036,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 	 * @param kaleoTaskInstanceTokenId the kaleo task instance token ID
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeBykaleoTaskInstanceTokenId(long kaleoTaskInstanceTokenId)
 		throws SystemException {
 		for (KaleoTaskAssignmentInstance kaleoTaskAssignmentInstance : findBykaleoTaskInstanceTokenId(
@@ -2017,6 +2053,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 	 * @return the number of matching kaleo task assignment instances
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countBykaleoTaskInstanceTokenId(long kaleoTaskInstanceTokenId)
 		throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_KALEOTASKINSTANCETOKENID;
@@ -2071,6 +2108,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 	 *
 	 * @param kaleoTaskAssignmentInstance the kaleo task assignment instance
 	 */
+	@Override
 	public void cacheResult(
 		KaleoTaskAssignmentInstance kaleoTaskAssignmentInstance) {
 		EntityCacheUtil.putResult(KaleoTaskAssignmentInstanceModelImpl.ENTITY_CACHE_ENABLED,
@@ -2086,6 +2124,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 	 *
 	 * @param kaleoTaskAssignmentInstances the kaleo task assignment instances
 	 */
+	@Override
 	public void cacheResult(
 		List<KaleoTaskAssignmentInstance> kaleoTaskAssignmentInstances) {
 		for (KaleoTaskAssignmentInstance kaleoTaskAssignmentInstance : kaleoTaskAssignmentInstances) {
@@ -2158,6 +2197,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 	 * @param kaleoTaskAssignmentInstanceId the primary key for the new kaleo task assignment instance
 	 * @return the new kaleo task assignment instance
 	 */
+	@Override
 	public KaleoTaskAssignmentInstance create(
 		long kaleoTaskAssignmentInstanceId) {
 		KaleoTaskAssignmentInstance kaleoTaskAssignmentInstance = new KaleoTaskAssignmentInstanceImpl();
@@ -2176,10 +2216,11 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchTaskAssignmentInstanceException if a kaleo task assignment instance with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoTaskAssignmentInstance remove(
 		long kaleoTaskAssignmentInstanceId)
 		throws NoSuchTaskAssignmentInstanceException, SystemException {
-		return remove(Long.valueOf(kaleoTaskAssignmentInstanceId));
+		return remove((Serializable)kaleoTaskAssignmentInstanceId);
 	}
 
 	/**
@@ -2300,7 +2341,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 			if ((kaleoTaskAssignmentInstanceModelImpl.getColumnBitmask() &
 					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_COMPANYID.getColumnBitmask()) != 0) {
 				Object[] args = new Object[] {
-						Long.valueOf(kaleoTaskAssignmentInstanceModelImpl.getOriginalCompanyId())
+						kaleoTaskAssignmentInstanceModelImpl.getOriginalCompanyId()
 					};
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_COMPANYID,
@@ -2309,7 +2350,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 					args);
 
 				args = new Object[] {
-						Long.valueOf(kaleoTaskAssignmentInstanceModelImpl.getCompanyId())
+						kaleoTaskAssignmentInstanceModelImpl.getCompanyId()
 					};
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_COMPANYID,
@@ -2321,7 +2362,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 			if ((kaleoTaskAssignmentInstanceModelImpl.getColumnBitmask() &
 					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_KALEODEFINITIONID.getColumnBitmask()) != 0) {
 				Object[] args = new Object[] {
-						Long.valueOf(kaleoTaskAssignmentInstanceModelImpl.getOriginalKaleoDefinitionId())
+						kaleoTaskAssignmentInstanceModelImpl.getOriginalKaleoDefinitionId()
 					};
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_KALEODEFINITIONID,
@@ -2330,7 +2371,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 					args);
 
 				args = new Object[] {
-						Long.valueOf(kaleoTaskAssignmentInstanceModelImpl.getKaleoDefinitionId())
+						kaleoTaskAssignmentInstanceModelImpl.getKaleoDefinitionId()
 					};
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_KALEODEFINITIONID,
@@ -2342,7 +2383,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 			if ((kaleoTaskAssignmentInstanceModelImpl.getColumnBitmask() &
 					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_KALEOINSTANCEID.getColumnBitmask()) != 0) {
 				Object[] args = new Object[] {
-						Long.valueOf(kaleoTaskAssignmentInstanceModelImpl.getOriginalKaleoInstanceId())
+						kaleoTaskAssignmentInstanceModelImpl.getOriginalKaleoInstanceId()
 					};
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_KALEOINSTANCEID,
@@ -2351,7 +2392,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 					args);
 
 				args = new Object[] {
-						Long.valueOf(kaleoTaskAssignmentInstanceModelImpl.getKaleoInstanceId())
+						kaleoTaskAssignmentInstanceModelImpl.getKaleoInstanceId()
 					};
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_KALEOINSTANCEID,
@@ -2363,7 +2404,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 			if ((kaleoTaskAssignmentInstanceModelImpl.getColumnBitmask() &
 					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_KALEOTASKINSTANCETOKENID.getColumnBitmask()) != 0) {
 				Object[] args = new Object[] {
-						Long.valueOf(kaleoTaskAssignmentInstanceModelImpl.getOriginalKaleoTaskInstanceTokenId())
+						kaleoTaskAssignmentInstanceModelImpl.getOriginalKaleoTaskInstanceTokenId()
 					};
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_KALEOTASKINSTANCETOKENID,
@@ -2372,7 +2413,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 					args);
 
 				args = new Object[] {
-						Long.valueOf(kaleoTaskAssignmentInstanceModelImpl.getKaleoTaskInstanceTokenId())
+						kaleoTaskAssignmentInstanceModelImpl.getKaleoTaskInstanceTokenId()
 					};
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_KALEOTASKINSTANCETOKENID,
@@ -2427,13 +2468,24 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 	 *
 	 * @param primaryKey the primary key of the kaleo task assignment instance
 	 * @return the kaleo task assignment instance
-	 * @throws com.liferay.portal.NoSuchModelException if a kaleo task assignment instance with the primary key could not be found
+	 * @throws com.liferay.portal.workflow.kaleo.NoSuchTaskAssignmentInstanceException if a kaleo task assignment instance with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
 	public KaleoTaskAssignmentInstance findByPrimaryKey(Serializable primaryKey)
-		throws NoSuchModelException, SystemException {
-		return findByPrimaryKey(((Long)primaryKey).longValue());
+		throws NoSuchTaskAssignmentInstanceException, SystemException {
+		KaleoTaskAssignmentInstance kaleoTaskAssignmentInstance = fetchByPrimaryKey(primaryKey);
+
+		if (kaleoTaskAssignmentInstance == null) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
+			}
+
+			throw new NoSuchTaskAssignmentInstanceException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
+				primaryKey);
+		}
+
+		return kaleoTaskAssignmentInstance;
 	}
 
 	/**
@@ -2444,22 +2496,11 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchTaskAssignmentInstanceException if a kaleo task assignment instance with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoTaskAssignmentInstance findByPrimaryKey(
 		long kaleoTaskAssignmentInstanceId)
 		throws NoSuchTaskAssignmentInstanceException, SystemException {
-		KaleoTaskAssignmentInstance kaleoTaskAssignmentInstance = fetchByPrimaryKey(kaleoTaskAssignmentInstanceId);
-
-		if (kaleoTaskAssignmentInstance == null) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
-					kaleoTaskAssignmentInstanceId);
-			}
-
-			throw new NoSuchTaskAssignmentInstanceException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
-				kaleoTaskAssignmentInstanceId);
-		}
-
-		return kaleoTaskAssignmentInstance;
+		return findByPrimaryKey((Serializable)kaleoTaskAssignmentInstanceId);
 	}
 
 	/**
@@ -2472,21 +2513,8 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 	@Override
 	public KaleoTaskAssignmentInstance fetchByPrimaryKey(
 		Serializable primaryKey) throws SystemException {
-		return fetchByPrimaryKey(((Long)primaryKey).longValue());
-	}
-
-	/**
-	 * Returns the kaleo task assignment instance with the primary key or returns <code>null</code> if it could not be found.
-	 *
-	 * @param kaleoTaskAssignmentInstanceId the primary key of the kaleo task assignment instance
-	 * @return the kaleo task assignment instance, or <code>null</code> if a kaleo task assignment instance with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	public KaleoTaskAssignmentInstance fetchByPrimaryKey(
-		long kaleoTaskAssignmentInstanceId) throws SystemException {
 		KaleoTaskAssignmentInstance kaleoTaskAssignmentInstance = (KaleoTaskAssignmentInstance)EntityCacheUtil.getResult(KaleoTaskAssignmentInstanceModelImpl.ENTITY_CACHE_ENABLED,
-				KaleoTaskAssignmentInstanceImpl.class,
-				kaleoTaskAssignmentInstanceId);
+				KaleoTaskAssignmentInstanceImpl.class, primaryKey);
 
 		if (kaleoTaskAssignmentInstance == _nullKaleoTaskAssignmentInstance) {
 			return null;
@@ -2499,22 +2527,20 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 				session = openSession();
 
 				kaleoTaskAssignmentInstance = (KaleoTaskAssignmentInstance)session.get(KaleoTaskAssignmentInstanceImpl.class,
-						Long.valueOf(kaleoTaskAssignmentInstanceId));
+						primaryKey);
 
 				if (kaleoTaskAssignmentInstance != null) {
 					cacheResult(kaleoTaskAssignmentInstance);
 				}
 				else {
 					EntityCacheUtil.putResult(KaleoTaskAssignmentInstanceModelImpl.ENTITY_CACHE_ENABLED,
-						KaleoTaskAssignmentInstanceImpl.class,
-						kaleoTaskAssignmentInstanceId,
+						KaleoTaskAssignmentInstanceImpl.class, primaryKey,
 						_nullKaleoTaskAssignmentInstance);
 				}
 			}
 			catch (Exception e) {
 				EntityCacheUtil.removeResult(KaleoTaskAssignmentInstanceModelImpl.ENTITY_CACHE_ENABLED,
-					KaleoTaskAssignmentInstanceImpl.class,
-					kaleoTaskAssignmentInstanceId);
+					KaleoTaskAssignmentInstanceImpl.class, primaryKey);
 
 				throw processException(e);
 			}
@@ -2527,11 +2553,25 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 	}
 
 	/**
+	 * Returns the kaleo task assignment instance with the primary key or returns <code>null</code> if it could not be found.
+	 *
+	 * @param kaleoTaskAssignmentInstanceId the primary key of the kaleo task assignment instance
+	 * @return the kaleo task assignment instance, or <code>null</code> if a kaleo task assignment instance with the primary key could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public KaleoTaskAssignmentInstance fetchByPrimaryKey(
+		long kaleoTaskAssignmentInstanceId) throws SystemException {
+		return fetchByPrimaryKey((Serializable)kaleoTaskAssignmentInstanceId);
+	}
+
+	/**
 	 * Returns all the kaleo task assignment instances.
 	 *
 	 * @return the kaleo task assignment instances
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoTaskAssignmentInstance> findAll()
 		throws SystemException {
 		return findAll(QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
@@ -2549,6 +2589,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 	 * @return the range of kaleo task assignment instances
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoTaskAssignmentInstance> findAll(int start, int end)
 		throws SystemException {
 		return findAll(start, end, null);
@@ -2567,6 +2608,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 	 * @return the ordered range of kaleo task assignment instances
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoTaskAssignmentInstance> findAll(int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -2652,6 +2694,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 	 *
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeAll() throws SystemException {
 		for (KaleoTaskAssignmentInstance kaleoTaskAssignmentInstance : findAll()) {
 			remove(kaleoTaskAssignmentInstance);
@@ -2664,6 +2707,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 	 * @return the number of kaleo task assignment instances
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countAll() throws SystemException {
 		Long count = (Long)FinderCacheUtil.getResult(FINDER_PATH_COUNT_ALL,
 				FINDER_ARGS_EMPTY, this);
@@ -2709,7 +2753,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 
 				for (String listenerClassName : listenerClassNames) {
 					listenersList.add((ModelListener<KaleoTaskAssignmentInstance>)InstanceFactory.newInstance(
-							listenerClassName));
+							getClassLoader(), listenerClassName));
 				}
 
 				listeners = listenersList.toArray(new ModelListener[listenersList.size()]);
@@ -2727,40 +2771,6 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 		FinderCacheUtil.removeCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 	}
 
-	@BeanReference(type = KaleoActionPersistence.class)
-	protected KaleoActionPersistence kaleoActionPersistence;
-	@BeanReference(type = KaleoConditionPersistence.class)
-	protected KaleoConditionPersistence kaleoConditionPersistence;
-	@BeanReference(type = KaleoDefinitionPersistence.class)
-	protected KaleoDefinitionPersistence kaleoDefinitionPersistence;
-	@BeanReference(type = KaleoInstancePersistence.class)
-	protected KaleoInstancePersistence kaleoInstancePersistence;
-	@BeanReference(type = KaleoInstanceTokenPersistence.class)
-	protected KaleoInstanceTokenPersistence kaleoInstanceTokenPersistence;
-	@BeanReference(type = KaleoLogPersistence.class)
-	protected KaleoLogPersistence kaleoLogPersistence;
-	@BeanReference(type = KaleoNodePersistence.class)
-	protected KaleoNodePersistence kaleoNodePersistence;
-	@BeanReference(type = KaleoNotificationPersistence.class)
-	protected KaleoNotificationPersistence kaleoNotificationPersistence;
-	@BeanReference(type = KaleoNotificationRecipientPersistence.class)
-	protected KaleoNotificationRecipientPersistence kaleoNotificationRecipientPersistence;
-	@BeanReference(type = KaleoTaskPersistence.class)
-	protected KaleoTaskPersistence kaleoTaskPersistence;
-	@BeanReference(type = KaleoTaskAssignmentPersistence.class)
-	protected KaleoTaskAssignmentPersistence kaleoTaskAssignmentPersistence;
-	@BeanReference(type = KaleoTaskAssignmentInstancePersistence.class)
-	protected KaleoTaskAssignmentInstancePersistence kaleoTaskAssignmentInstancePersistence;
-	@BeanReference(type = KaleoTaskInstanceTokenPersistence.class)
-	protected KaleoTaskInstanceTokenPersistence kaleoTaskInstanceTokenPersistence;
-	@BeanReference(type = KaleoTimerPersistence.class)
-	protected KaleoTimerPersistence kaleoTimerPersistence;
-	@BeanReference(type = KaleoTimerInstanceTokenPersistence.class)
-	protected KaleoTimerInstanceTokenPersistence kaleoTimerInstanceTokenPersistence;
-	@BeanReference(type = KaleoTransitionPersistence.class)
-	protected KaleoTransitionPersistence kaleoTransitionPersistence;
-	@BeanReference(type = UserPersistence.class)
-	protected UserPersistence userPersistence;
 	private static final String _SQL_SELECT_KALEOTASKASSIGNMENTINSTANCE = "SELECT kaleoTaskAssignmentInstance FROM KaleoTaskAssignmentInstance kaleoTaskAssignmentInstance";
 	private static final String _SQL_SELECT_KALEOTASKASSIGNMENTINSTANCE_WHERE = "SELECT kaleoTaskAssignmentInstance FROM KaleoTaskAssignmentInstance kaleoTaskAssignmentInstance WHERE ";
 	private static final String _SQL_COUNT_KALEOTASKASSIGNMENTINSTANCE = "SELECT COUNT(kaleoTaskAssignmentInstance) FROM KaleoTaskAssignmentInstance kaleoTaskAssignmentInstance";
@@ -2785,6 +2795,7 @@ public class KaleoTaskAssignmentInstancePersistenceImpl
 
 	private static CacheModel<KaleoTaskAssignmentInstance> _nullKaleoTaskAssignmentInstanceCacheModel =
 		new CacheModel<KaleoTaskAssignmentInstance>() {
+			@Override
 			public KaleoTaskAssignmentInstance toEntityModel() {
 				return _nullKaleoTaskAssignmentInstance;
 			}

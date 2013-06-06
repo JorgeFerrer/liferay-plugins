@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -39,14 +39,15 @@ public class CalendarBookingSoap implements Serializable {
 		soapModel.setUserName(model.getUserName());
 		soapModel.setCreateDate(model.getCreateDate());
 		soapModel.setModifiedDate(model.getModifiedDate());
+		soapModel.setResourceBlockId(model.getResourceBlockId());
 		soapModel.setCalendarId(model.getCalendarId());
 		soapModel.setCalendarResourceId(model.getCalendarResourceId());
 		soapModel.setParentCalendarBookingId(model.getParentCalendarBookingId());
 		soapModel.setTitle(model.getTitle());
 		soapModel.setDescription(model.getDescription());
 		soapModel.setLocation(model.getLocation());
-		soapModel.setStartDate(model.getStartDate());
-		soapModel.setEndDate(model.getEndDate());
+		soapModel.setStartTime(model.getStartTime());
+		soapModel.setEndTime(model.getEndTime());
 		soapModel.setAllDay(model.getAllDay());
 		soapModel.setRecurrence(model.getRecurrence());
 		soapModel.setFirstReminder(model.getFirstReminder());
@@ -175,6 +176,14 @@ public class CalendarBookingSoap implements Serializable {
 		_modifiedDate = modifiedDate;
 	}
 
+	public long getResourceBlockId() {
+		return _resourceBlockId;
+	}
+
+	public void setResourceBlockId(long resourceBlockId) {
+		_resourceBlockId = resourceBlockId;
+	}
+
 	public long getCalendarId() {
 		return _calendarId;
 	}
@@ -223,20 +232,20 @@ public class CalendarBookingSoap implements Serializable {
 		_location = location;
 	}
 
-	public long getStartDate() {
-		return _startDate;
+	public long getStartTime() {
+		return _startTime;
 	}
 
-	public void setStartDate(long startDate) {
-		_startDate = startDate;
+	public void setStartTime(long startTime) {
+		_startTime = startTime;
 	}
 
-	public long getEndDate() {
-		return _endDate;
+	public long getEndTime() {
+		return _endTime;
 	}
 
-	public void setEndDate(long endDate) {
-		_endDate = endDate;
+	public void setEndTime(long endTime) {
+		_endTime = endTime;
 	}
 
 	public boolean getAllDay() {
@@ -331,14 +340,15 @@ public class CalendarBookingSoap implements Serializable {
 	private String _userName;
 	private Date _createDate;
 	private Date _modifiedDate;
+	private long _resourceBlockId;
 	private long _calendarId;
 	private long _calendarResourceId;
 	private long _parentCalendarBookingId;
 	private String _title;
 	private String _description;
 	private String _location;
-	private long _startDate;
-	private long _endDate;
+	private long _startTime;
+	private long _endTime;
 	private boolean _allDay;
 	private String _recurrence;
 	private long _firstReminder;

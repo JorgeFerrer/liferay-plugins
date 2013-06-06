@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License as published by the Free
@@ -34,6 +34,7 @@ import net.sourceforge.wurfl.core.WURFLManager;
 public class WURFLDeviceRecognitionProvider
 	implements DeviceRecognitionProvider {
 
+	@Override
 	public Device detectDevice(HttpServletRequest request) {
 		WURFLManager wurflManager = _wurflHolderImpl.getWURFLManager();
 
@@ -64,16 +65,19 @@ public class WURFLDeviceRecognitionProvider
 		return device;
 	}
 
+	@Override
 	public KnownDevices getKnownDevices() {
 		return _knownDevices;
 	}
 
+	@Override
 	public void reload() throws Exception {
 		_wurflHolderImpl.reload();
 
 		_knownDevices.reload();
 	}
 
+	@Override
 	public void setDeviceCapabilityFilter(
 		DeviceCapabilityFilter deviceCapabilityFilter) {
 

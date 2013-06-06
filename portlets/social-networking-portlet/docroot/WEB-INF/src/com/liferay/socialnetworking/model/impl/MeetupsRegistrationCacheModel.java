@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -63,6 +63,7 @@ public class MeetupsRegistrationCacheModel implements CacheModel<MeetupsRegistra
 		return sb.toString();
 	}
 
+	@Override
 	public MeetupsRegistration toEntityModel() {
 		MeetupsRegistrationImpl meetupsRegistrationImpl = new MeetupsRegistrationImpl();
 
@@ -106,6 +107,7 @@ public class MeetupsRegistrationCacheModel implements CacheModel<MeetupsRegistra
 		return meetupsRegistrationImpl;
 	}
 
+	@Override
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		meetupsRegistrationId = objectInput.readLong();
 		companyId = objectInput.readLong();
@@ -118,6 +120,7 @@ public class MeetupsRegistrationCacheModel implements CacheModel<MeetupsRegistra
 		comments = objectInput.readUTF();
 	}
 
+	@Override
 	public void writeExternal(ObjectOutput objectOutput)
 		throws IOException {
 		objectOutput.writeLong(meetupsRegistrationId);

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -39,6 +39,7 @@ public class IMAPMessageCountListener implements MessageCountListener {
 		_imapAccessor = new IMAPAccessor(user, account, password);
 	}
 
+	@Override
 	public void messagesAdded(MessageCountEvent messageCountEvent) {
 		Message[] jxMessages = messageCountEvent.getMessages();
 
@@ -67,6 +68,7 @@ public class IMAPMessageCountListener implements MessageCountListener {
 		}
 	}
 
+	@Override
 	public void messagesRemoved(MessageCountEvent messageCountEvent) {
 		Message[] jxMessages = messageCountEvent.getMessages();
 

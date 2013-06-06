@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -36,6 +36,16 @@ for (String importer : importers) {
 	}
 
 	if (group != null) {
+		if (importer.equals("lar")) {
+			Map<String, String[]> parameters = new HashMap<String, String[]>();
+
+			parameters.put(PortletDataHandlerKeys.PORTLET_DATA_ALL, new String[] {Boolean.TRUE.toString()});
+
+			File file = LayoutLocalServiceUtil.exportLayoutsAsFile(group.getGroupId(), false, null, parameters, null, null);
+
+			FileUtil.copyFile(file, new File(application.getRealPath("/WEB-INF/classes/test/lar/archive.lar")));
+		}
+
 		GroupLocalServiceUtil.deleteGroup(group);
 	}
 
@@ -96,17 +106,23 @@ for (String importer : importers) {
 		}
 		%>
 
-		LayoutLocalServiceUtil#getLayoutsCount=<%= _assertEquals(5, LayoutLocalServiceUtil.getLayoutsCount(group, false)) %><br />
-
 		<%
 		Layout importedLayout = LayoutLocalServiceUtil.getLayout(groupId, false, 1);
 
+		Map<Locale, String> nameMap = importedLayout.getNameMap();
+		%>
+
+		Layout#getNameMap=<%= _assertTrue(nameMap.containsValue("Bienvenue")) %><br />
+
+		LayoutLocalServiceUtil#getLayoutsCount=<%= _assertEquals(5, LayoutLocalServiceUtil.getLayoutsCount(group, false)) %><br />
+
+		<%
 		UnicodeProperties layoutTypeSettingsProperties = importedLayout.getTypeSettingsProperties();
 
 		String nestedColumnIds = layoutTypeSettingsProperties.get(LayoutTypePortletConstants.NESTED_COLUMN_IDS);
 		%>
 
-		LayoutTypePortletConstants#NESTED_COLUMN_IDS=<%= _assertTrue((nestedColumnIds != null) && nestedColumnIds.contains("column-1") && nestedColumnIds.contains("column-2")) %>
+		LayoutTypePortletConstants#NESTED_COLUMN_IDS=<%= _assertTrue((nestedColumnIds != null) && nestedColumnIds.contains("column-1") && nestedColumnIds.contains("column-2")) %><br />
 	</p>
 
 	<p>
@@ -147,24 +163,38 @@ for (String importer : importers) {
 		JournalArticleLocalService#getArticlesCount=<%= _assertEquals(5, JournalArticleLocalServiceUtil.getArticlesCount(groupId)) %><br />
 
 		<%
-		JournalStructure journalStructure = JournalStructureLocalServiceUtil.getStructure(groupId, "CHILD-STRUCTURE-1");
+		DDMStructure ddmStructure = DDMStructureLocalServiceUtil.getStructure(groupId, PortalUtil.getClassNameId(JournalArticle.class), "CHILD-STRUCTURE-1");
 
-		String parentStructureId = journalStructure.getParentStructureId();
+		long parentStructureId = ddmStructure.getParentStructureId();
+
+		String parentStructureKey = StringPool.BLANK;
+
+		DDMStructure parentDDMStructure = DDMStructureLocalServiceUtil.fetchStructure(parentStructureId);
+
+		if (parentDDMStructure != null) {
+			parentStructureKey = parentDDMStructure.getStructureKey();
+		}
 		%>
 
-		JournalStructure#getParentStructureId=<%= _assertEquals("PARENT-STRUCTURE", parentStructureId) %><br />
+		DDMStructure#getParentStructureId=<%= _assertEquals("PARENT-STRUCTURE", parentStructureKey) %><br />
 
-		JournalStructureLocalServiceUtil#getStructuresCount=<%= _assertEquals(3, JournalStructureLocalServiceUtil.getStructuresCount(groupId)) %><br />
+		DDMStructureLocalServiceUtil#getStructuresCount=<%= _assertEquals(3, DDMStructureLocalServiceUtil.getStructuresCount(groupId)) %><br />
 
 		<%
-		JournalTemplate journalTemplate = JournalTemplateLocalServiceUtil.getTemplate(groupId, "CHILD-TEMPLATE-1");
+		DDMTemplate ddmTemplate = DDMTemplateLocalServiceUtil.getTemplate(groupId, PortalUtil.getClassNameId(DDMStructure.class), "CHILD-TEMPLATE-1");
 
-		String journalStructureId = journalTemplate.getStructureId();
+		DDMStructure ddmTemplateStructure = DDMStructureLocalServiceUtil.fetchDDMStructure(ddmTemplate.getClassPK());
+
+		String ddmStructureKey = StringPool.BLANK;
+
+		if (ddmTemplateStructure != null) {
+			ddmStructureKey = ddmTemplateStructure.getStructureKey();
+		}
 		%>
 
-		JournalTemplate#getStructureId=<%= _assertEquals("CHILD-STRUCTURE-1", journalStructureId) %><br />
+		DDMTemplate#getStructureId=<%= _assertEquals("CHILD-STRUCTURE-1", ddmStructureKey) %><br />
 
-		JournalTemplateLocalServiceUtil#getTemplatesCount=<%= _assertEquals(2, JournalTemplateLocalServiceUtil.getTemplatesCount(groupId)) %><br />
+		DDMTemplateLocalServiceUtil#getTemplatesCount=<%= _assertEquals(2, DDMTemplateLocalServiceUtil.getTemplatesCount(groupId)) %><br />
 	</p>
 
 <%

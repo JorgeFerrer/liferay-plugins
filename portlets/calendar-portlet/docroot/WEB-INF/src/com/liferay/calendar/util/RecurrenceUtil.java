@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -17,8 +17,8 @@ package com.liferay.calendar.util;
 import com.google.ical.iter.RecurrenceIterator;
 import com.google.ical.iter.RecurrenceIteratorFactory;
 import com.google.ical.util.TimeUtils;
-import com.google.ical.values.DateTimeValueImpl;
 import com.google.ical.values.DateValue;
+import com.google.ical.values.DateValueImpl;
 
 import com.liferay.calendar.model.CalendarBooking;
 import com.liferay.portal.kernel.log.Log;
@@ -37,44 +37,49 @@ import java.util.TimeZone;
  */
 public class RecurrenceUtil {
 
-	public static List<CalendarBooking> expandCalendarBookings(
-		List<CalendarBooking> calendarBookings, long startDate, long endDate) {
+	public static List<CalendarBooking> expandCalendarBooking(
+		CalendarBooking calendarBooking, long startTime, long endTime,
+		int maxSize) {
 
 		List<CalendarBooking> expandedCalendarBookings =
 			new ArrayList<CalendarBooking>();
 
-		DateValue startDateValue = _toDateValue(startDate);
-		DateValue endDateValue = _toDateValue(endDate);
+		DateValue startDateValue = _toDateValue(startTime);
+		DateValue endDateValue = _toDateValue(endTime);
+
+		if (!calendarBooking.isRecurring()) {
+			expandedCalendarBookings.add(calendarBooking);
+
+			return expandedCalendarBookings;
+		}
 
 		try {
-			for (CalendarBooking calendarBooking : calendarBookings) {
-				if (!calendarBooking.isRecurring()) {
-					expandedCalendarBookings.add(calendarBooking);
+			RecurrenceIterator recurrenceIterator =
+				RecurrenceIteratorFactory.createRecurrenceIterator(
+					calendarBooking.getRecurrence(),
+					_toDateValue(calendarBooking.getStartTime()),
+					TimeUtils.utcTimezone());
 
+			while (recurrenceIterator.hasNext()) {
+				DateValue dateValue = recurrenceIterator.next();
+
+				if (dateValue.compareTo(startDateValue) < 0) {
 					continue;
 				}
 
-				RecurrenceIterator recurrenceIterator =
-					RecurrenceIteratorFactory.createRecurrenceIterator(
-						calendarBooking.getRecurrence(),
-						_toDateValue(calendarBooking.getStartDate()),
-						TimeUtils.utcTimezone());
+				if (dateValue.compareTo(endDateValue) > 0) {
+					break;
+				}
 
-				while (recurrenceIterator.hasNext()) {
-					DateValue dateValue = recurrenceIterator.next();
+				CalendarBooking newCalendarBooking = _copyCalendarBooking(
+					calendarBooking, dateValue);
 
-					if (dateValue.compareTo(startDateValue) < 0) {
-						continue;
-					}
+				expandedCalendarBookings.add(newCalendarBooking);
 
-					if (dateValue.compareTo(endDateValue) > 0) {
-						break;
-					}
+				if ((maxSize > 0) &&
+					(expandedCalendarBookings.size() >= maxSize)) {
 
-					CalendarBooking clone = _copyCalendarBooking(
-						calendarBooking, dateValue);
-
-					expandedCalendarBookings.add(clone);
+					break;
 				}
 			}
 		}
@@ -85,6 +90,60 @@ public class RecurrenceUtil {
 		return expandedCalendarBookings;
 	}
 
+	public static List<CalendarBooking> expandCalendarBookings(
+		List<CalendarBooking> calendarBookings, long startTime, long endTime) {
+
+		return expandCalendarBookings(calendarBookings, startTime, endTime, 0);
+	}
+
+	public static List<CalendarBooking> expandCalendarBookings(
+		List<CalendarBooking> calendarBookings, long startTime, long endTime,
+		int maxSize) {
+
+		List<CalendarBooking> expandedCalendarBookings =
+			new ArrayList<CalendarBooking>();
+
+		for (CalendarBooking calendarBooking : calendarBookings) {
+			List<CalendarBooking> expandedCalendarBooking =
+				expandCalendarBooking(
+					calendarBooking, startTime, endTime, maxSize);
+
+			expandedCalendarBookings.addAll(expandedCalendarBooking);
+		}
+
+		return expandedCalendarBookings;
+	}
+
+	public static int getIndexOfInstance(
+		String recurrence, long recurrenceStartTime, long instanceStartTime) {
+
+		int count = 0;
+
+		DateValue instanceDateValue = _toDateValue(instanceStartTime);
+
+		try {
+			RecurrenceIterator recurrenceIterator =
+				RecurrenceIteratorFactory.createRecurrenceIterator(
+					recurrence, _toDateValue(recurrenceStartTime),
+					TimeUtils.utcTimezone());
+
+			while (recurrenceIterator.hasNext()) {
+				DateValue dateValue = recurrenceIterator.next();
+
+				if (dateValue.compareTo(instanceDateValue) >= 0) {
+					break;
+				}
+
+				count++;
+			}
+		}
+		catch (ParseException e) {
+			_log.error("Unable to parse data ", e);
+		}
+
+		return count;
+	}
+
 	private static CalendarBooking _copyCalendarBooking(
 		CalendarBooking calendarBooking, DateValue startDateValue) {
 
@@ -92,7 +151,7 @@ public class RecurrenceUtil {
 			(CalendarBooking)calendarBooking.clone();
 
 		Calendar jCalendar = JCalendarUtil.getJCalendar(
-			calendarBooking.getStartDate());
+			calendarBooking.getStartTime());
 
 		jCalendar = JCalendarUtil.getJCalendar(
 			startDateValue.year(), startDateValue.month() - 1,
@@ -101,9 +160,9 @@ public class RecurrenceUtil {
 			jCalendar.get(Calendar.MILLISECOND),
 			TimeZone.getTimeZone(StringPool.UTC));
 
-		newCalendarBooking.setEndDate(
+		newCalendarBooking.setEndTime(
 			jCalendar.getTimeInMillis() + calendarBooking.getDuration());
-		newCalendarBooking.setStartDate(jCalendar.getTimeInMillis());
+		newCalendarBooking.setStartTime(jCalendar.getTimeInMillis());
 
 		return newCalendarBooking;
 	}
@@ -111,11 +170,9 @@ public class RecurrenceUtil {
 	private static DateValue _toDateValue(long time) {
 		Calendar jCalendar = JCalendarUtil.getJCalendar(time);
 
-		return new DateTimeValueImpl(
+		return new DateValueImpl(
 			jCalendar.get(Calendar.YEAR), jCalendar.get(Calendar.MONTH) + 1,
-			jCalendar.get(Calendar.DAY_OF_MONTH),
-			jCalendar.get(Calendar.HOUR_OF_DAY), jCalendar.get(Calendar.MINUTE),
-			jCalendar.get(Calendar.SECOND));
+			jCalendar.get(Calendar.DAY_OF_MONTH));
 	}
 
 	private static Log _log = LogFactoryUtil.getLog(RecurrenceUtil.class);

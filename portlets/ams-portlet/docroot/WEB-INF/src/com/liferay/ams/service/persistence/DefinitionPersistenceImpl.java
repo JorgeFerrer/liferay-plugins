@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -19,8 +19,6 @@ import com.liferay.ams.model.Definition;
 import com.liferay.ams.model.impl.DefinitionImpl;
 import com.liferay.ams.model.impl.DefinitionModelImpl;
 
-import com.liferay.portal.NoSuchModelException;
-import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.cache.CacheRegistryUtil;
 import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
 import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
@@ -41,7 +39,6 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnmodifiableList;
 import com.liferay.portal.model.CacheModel;
 import com.liferay.portal.model.ModelListener;
-import com.liferay.portal.service.persistence.UserPersistence;
 import com.liferay.portal.service.persistence.impl.BasePersistenceImpl;
 
 import java.io.Serializable;
@@ -89,6 +86,7 @@ public class DefinitionPersistenceImpl extends BasePersistenceImpl<Definition>
 	 *
 	 * @param definition the definition
 	 */
+	@Override
 	public void cacheResult(Definition definition) {
 		EntityCacheUtil.putResult(DefinitionModelImpl.ENTITY_CACHE_ENABLED,
 			DefinitionImpl.class, definition.getPrimaryKey(), definition);
@@ -101,6 +99,7 @@ public class DefinitionPersistenceImpl extends BasePersistenceImpl<Definition>
 	 *
 	 * @param definitions the definitions
 	 */
+	@Override
 	public void cacheResult(List<Definition> definitions) {
 		for (Definition definition : definitions) {
 			if (EntityCacheUtil.getResult(
@@ -167,6 +166,7 @@ public class DefinitionPersistenceImpl extends BasePersistenceImpl<Definition>
 	 * @param definitionId the primary key for the new definition
 	 * @return the new definition
 	 */
+	@Override
 	public Definition create(long definitionId) {
 		Definition definition = new DefinitionImpl();
 
@@ -184,9 +184,10 @@ public class DefinitionPersistenceImpl extends BasePersistenceImpl<Definition>
 	 * @throws com.liferay.ams.NoSuchDefinitionException if a definition with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Definition remove(long definitionId)
 		throws NoSuchDefinitionException, SystemException {
-		return remove(Long.valueOf(definitionId));
+		return remove((Serializable)definitionId);
 	}
 
 	/**
@@ -335,13 +336,24 @@ public class DefinitionPersistenceImpl extends BasePersistenceImpl<Definition>
 	 *
 	 * @param primaryKey the primary key of the definition
 	 * @return the definition
-	 * @throws com.liferay.portal.NoSuchModelException if a definition with the primary key could not be found
+	 * @throws com.liferay.ams.NoSuchDefinitionException if a definition with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
 	public Definition findByPrimaryKey(Serializable primaryKey)
-		throws NoSuchModelException, SystemException {
-		return findByPrimaryKey(((Long)primaryKey).longValue());
+		throws NoSuchDefinitionException, SystemException {
+		Definition definition = fetchByPrimaryKey(primaryKey);
+
+		if (definition == null) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
+			}
+
+			throw new NoSuchDefinitionException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
+				primaryKey);
+		}
+
+		return definition;
 	}
 
 	/**
@@ -352,20 +364,10 @@ public class DefinitionPersistenceImpl extends BasePersistenceImpl<Definition>
 	 * @throws com.liferay.ams.NoSuchDefinitionException if a definition with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Definition findByPrimaryKey(long definitionId)
 		throws NoSuchDefinitionException, SystemException {
-		Definition definition = fetchByPrimaryKey(definitionId);
-
-		if (definition == null) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + definitionId);
-			}
-
-			throw new NoSuchDefinitionException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
-				definitionId);
-		}
-
-		return definition;
+		return findByPrimaryKey((Serializable)definitionId);
 	}
 
 	/**
@@ -378,20 +380,8 @@ public class DefinitionPersistenceImpl extends BasePersistenceImpl<Definition>
 	@Override
 	public Definition fetchByPrimaryKey(Serializable primaryKey)
 		throws SystemException {
-		return fetchByPrimaryKey(((Long)primaryKey).longValue());
-	}
-
-	/**
-	 * Returns the definition with the primary key or returns <code>null</code> if it could not be found.
-	 *
-	 * @param definitionId the primary key of the definition
-	 * @return the definition, or <code>null</code> if a definition with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	public Definition fetchByPrimaryKey(long definitionId)
-		throws SystemException {
 		Definition definition = (Definition)EntityCacheUtil.getResult(DefinitionModelImpl.ENTITY_CACHE_ENABLED,
-				DefinitionImpl.class, definitionId);
+				DefinitionImpl.class, primaryKey);
 
 		if (definition == _nullDefinition) {
 			return null;
@@ -404,19 +394,19 @@ public class DefinitionPersistenceImpl extends BasePersistenceImpl<Definition>
 				session = openSession();
 
 				definition = (Definition)session.get(DefinitionImpl.class,
-						Long.valueOf(definitionId));
+						primaryKey);
 
 				if (definition != null) {
 					cacheResult(definition);
 				}
 				else {
 					EntityCacheUtil.putResult(DefinitionModelImpl.ENTITY_CACHE_ENABLED,
-						DefinitionImpl.class, definitionId, _nullDefinition);
+						DefinitionImpl.class, primaryKey, _nullDefinition);
 				}
 			}
 			catch (Exception e) {
 				EntityCacheUtil.removeResult(DefinitionModelImpl.ENTITY_CACHE_ENABLED,
-					DefinitionImpl.class, definitionId);
+					DefinitionImpl.class, primaryKey);
 
 				throw processException(e);
 			}
@@ -429,11 +419,25 @@ public class DefinitionPersistenceImpl extends BasePersistenceImpl<Definition>
 	}
 
 	/**
+	 * Returns the definition with the primary key or returns <code>null</code> if it could not be found.
+	 *
+	 * @param definitionId the primary key of the definition
+	 * @return the definition, or <code>null</code> if a definition with the primary key could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public Definition fetchByPrimaryKey(long definitionId)
+		throws SystemException {
+		return fetchByPrimaryKey((Serializable)definitionId);
+	}
+
+	/**
 	 * Returns all the definitions.
 	 *
 	 * @return the definitions
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Definition> findAll() throws SystemException {
 		return findAll(QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
@@ -450,6 +454,7 @@ public class DefinitionPersistenceImpl extends BasePersistenceImpl<Definition>
 	 * @return the range of definitions
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Definition> findAll(int start, int end)
 		throws SystemException {
 		return findAll(start, end, null);
@@ -468,6 +473,7 @@ public class DefinitionPersistenceImpl extends BasePersistenceImpl<Definition>
 	 * @return the ordered range of definitions
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Definition> findAll(int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -553,6 +559,7 @@ public class DefinitionPersistenceImpl extends BasePersistenceImpl<Definition>
 	 *
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeAll() throws SystemException {
 		for (Definition definition : findAll()) {
 			remove(definition);
@@ -565,6 +572,7 @@ public class DefinitionPersistenceImpl extends BasePersistenceImpl<Definition>
 	 * @return the number of definitions
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countAll() throws SystemException {
 		Long count = (Long)FinderCacheUtil.getResult(FINDER_PATH_COUNT_ALL,
 				FINDER_ARGS_EMPTY, this);
@@ -610,7 +618,7 @@ public class DefinitionPersistenceImpl extends BasePersistenceImpl<Definition>
 
 				for (String listenerClassName : listenerClassNames) {
 					listenersList.add((ModelListener<Definition>)InstanceFactory.newInstance(
-							listenerClassName));
+							getClassLoader(), listenerClassName));
 				}
 
 				listeners = listenersList.toArray(new ModelListener[listenersList.size()]);
@@ -628,16 +636,6 @@ public class DefinitionPersistenceImpl extends BasePersistenceImpl<Definition>
 		FinderCacheUtil.removeCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 	}
 
-	@BeanReference(type = AssetPersistence.class)
-	protected AssetPersistence assetPersistence;
-	@BeanReference(type = CheckoutPersistence.class)
-	protected CheckoutPersistence checkoutPersistence;
-	@BeanReference(type = DefinitionPersistence.class)
-	protected DefinitionPersistence definitionPersistence;
-	@BeanReference(type = TypePersistence.class)
-	protected TypePersistence typePersistence;
-	@BeanReference(type = UserPersistence.class)
-	protected UserPersistence userPersistence;
 	private static final String _SQL_SELECT_DEFINITION = "SELECT definition FROM Definition definition";
 	private static final String _SQL_COUNT_DEFINITION = "SELECT COUNT(definition) FROM Definition definition";
 	private static final String _ORDER_BY_ENTITY_ALIAS = "definition.";
@@ -658,6 +656,7 @@ public class DefinitionPersistenceImpl extends BasePersistenceImpl<Definition>
 		};
 
 	private static CacheModel<Definition> _nullDefinitionCacheModel = new CacheModel<Definition>() {
+			@Override
 			public Definition toEntityModel() {
 				return _nullDefinition;
 			}

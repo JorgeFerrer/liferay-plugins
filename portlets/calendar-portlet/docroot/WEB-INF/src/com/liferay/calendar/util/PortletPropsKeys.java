@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -24,9 +24,6 @@ public class PortletPropsKeys {
 	public static final String CALENDAR_COLOR_DEFAULT =
 		"calendar.color.default";
 
-	public static final String CALENDAR_NOTIFICATION_BODY =
-		"calendar.notification.body";
-
 	public static final String CALENDAR_NOTIFICATION_CHECK_INTERVAL =
 		"calendar.notification.check.interval";
 
@@ -36,19 +33,15 @@ public class PortletPropsKeys {
 	public static final String CALENDAR_NOTIFICATION_ENABLED =
 		"calendar.notification.enabled";
 
-	public static final String CALENDAR_NOTIFICATION_FROM_ADDRESS =
-		"calendar.notification.from.address";
-
-	public static final String CALENDAR_NOTIFICATION_FROM_NAME =
-		"calendar.notification.from.name";
-
-	public static final String CALENDAR_NOTIFICATION_SUBJECT =
-		"calendar.notification.subject";
+	public static final String CALENDAR_NOTIFICATION_PREFIX =
+		"calendar.notification";
 
 	public static final String CALENDAR_RESOURCE_FORCE_AUTOGENERATE_CODE =
 		"calendar.resource.force.autogenerate.code";
 
-	public static final String CALENDAR_RESOURCE_TYPES =
-		"calendar.resource.types";
+	public static final String CALENDAR_RSS_TEMPLATE = "calendar.rss.template";
+
+	public static final String CALENDAR_SYNC_CALEVENTS_ON_STARTUP =
+		"calendar.sync.calevents.on.startup";
 
 }

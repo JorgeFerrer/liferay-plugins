@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -28,6 +28,7 @@ public class ConnectionListener implements javax.mail.event.ConnectionListener {
 		_service = service;
 	}
 
+	@Override
 	public void closed(ConnectionEvent connectionEvent) {
 		if (_log.isDebugEnabled()) {
 			long uptime = (System.currentTimeMillis() - _startTime) / 1000;
@@ -36,6 +37,7 @@ public class ConnectionListener implements javax.mail.event.ConnectionListener {
 		}
 	}
 
+	@Override
 	public void disconnected(ConnectionEvent connectionEvent) {
 		if (_log.isDebugEnabled()) {
 			long uptime = (System.currentTimeMillis() - _startTime) / 1000;
@@ -45,6 +47,7 @@ public class ConnectionListener implements javax.mail.event.ConnectionListener {
 		}
 	}
 
+	@Override
 	public void opened(ConnectionEvent connectionEvent) {
 		_startTime = System.currentTimeMillis();
 

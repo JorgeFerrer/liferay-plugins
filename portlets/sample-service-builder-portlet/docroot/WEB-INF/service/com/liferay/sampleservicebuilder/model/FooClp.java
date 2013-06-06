@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -22,9 +22,12 @@ import com.liferay.portal.model.BaseModel;
 import com.liferay.portal.model.impl.BaseModelImpl;
 import com.liferay.portal.util.PortalUtil;
 
+import com.liferay.sampleservicebuilder.service.ClpSerializer;
 import com.liferay.sampleservicebuilder.service.FooLocalServiceUtil;
 
 import java.io.Serializable;
+
+import java.lang.reflect.Method;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -37,26 +40,32 @@ public class FooClp extends BaseModelImpl<Foo> implements Foo {
 	public FooClp() {
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return Foo.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return Foo.class.getName();
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _fooId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setFooId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
-		return new Long(_fooId);
+		return _fooId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
@@ -163,120 +172,318 @@ public class FooClp extends BaseModelImpl<Foo> implements Foo {
 		}
 	}
 
+	@Override
 	public String getUuid() {
 		return _uuid;
 	}
 
+	@Override
 	public void setUuid(String uuid) {
 		_uuid = uuid;
+
+		if (_fooRemoteModel != null) {
+			try {
+				Class<?> clazz = _fooRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setUuid", String.class);
+
+				method.invoke(_fooRemoteModel, uuid);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getFooId() {
 		return _fooId;
 	}
 
+	@Override
 	public void setFooId(long fooId) {
 		_fooId = fooId;
+
+		if (_fooRemoteModel != null) {
+			try {
+				Class<?> clazz = _fooRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setFooId", long.class);
+
+				method.invoke(_fooRemoteModel, fooId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getGroupId() {
 		return _groupId;
 	}
 
+	@Override
 	public void setGroupId(long groupId) {
 		_groupId = groupId;
+
+		if (_fooRemoteModel != null) {
+			try {
+				Class<?> clazz = _fooRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setGroupId", long.class);
+
+				method.invoke(_fooRemoteModel, groupId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getCompanyId() {
 		return _companyId;
 	}
 
+	@Override
 	public void setCompanyId(long companyId) {
 		_companyId = companyId;
+
+		if (_fooRemoteModel != null) {
+			try {
+				Class<?> clazz = _fooRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setCompanyId", long.class);
+
+				method.invoke(_fooRemoteModel, companyId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getUserId() {
 		return _userId;
 	}
 
+	@Override
 	public void setUserId(long userId) {
 		_userId = userId;
+
+		if (_fooRemoteModel != null) {
+			try {
+				Class<?> clazz = _fooRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setUserId", long.class);
+
+				method.invoke(_fooRemoteModel, userId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getUserUuid() throws SystemException {
 		return PortalUtil.getUserValue(getUserId(), "uuid", _userUuid);
 	}
 
+	@Override
 	public void setUserUuid(String userUuid) {
 		_userUuid = userUuid;
 	}
 
+	@Override
 	public String getUserName() {
 		return _userName;
 	}
 
+	@Override
 	public void setUserName(String userName) {
 		_userName = userName;
+
+		if (_fooRemoteModel != null) {
+			try {
+				Class<?> clazz = _fooRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setUserName", String.class);
+
+				method.invoke(_fooRemoteModel, userName);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public Date getCreateDate() {
 		return _createDate;
 	}
 
+	@Override
 	public void setCreateDate(Date createDate) {
 		_createDate = createDate;
+
+		if (_fooRemoteModel != null) {
+			try {
+				Class<?> clazz = _fooRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setCreateDate", Date.class);
+
+				method.invoke(_fooRemoteModel, createDate);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public Date getModifiedDate() {
 		return _modifiedDate;
 	}
 
+	@Override
 	public void setModifiedDate(Date modifiedDate) {
 		_modifiedDate = modifiedDate;
+
+		if (_fooRemoteModel != null) {
+			try {
+				Class<?> clazz = _fooRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setModifiedDate", Date.class);
+
+				method.invoke(_fooRemoteModel, modifiedDate);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getField1() {
 		return _field1;
 	}
 
+	@Override
 	public void setField1(String field1) {
 		_field1 = field1;
+
+		if (_fooRemoteModel != null) {
+			try {
+				Class<?> clazz = _fooRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setField1", String.class);
+
+				method.invoke(_fooRemoteModel, field1);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public boolean getField2() {
 		return _field2;
 	}
 
+	@Override
 	public boolean isField2() {
 		return _field2;
 	}
 
+	@Override
 	public void setField2(boolean field2) {
 		_field2 = field2;
+
+		if (_fooRemoteModel != null) {
+			try {
+				Class<?> clazz = _fooRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setField2", boolean.class);
+
+				method.invoke(_fooRemoteModel, field2);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public int getField3() {
 		return _field3;
 	}
 
+	@Override
 	public void setField3(int field3) {
 		_field3 = field3;
+
+		if (_fooRemoteModel != null) {
+			try {
+				Class<?> clazz = _fooRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setField3", int.class);
+
+				method.invoke(_fooRemoteModel, field3);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public Date getField4() {
 		return _field4;
 	}
 
+	@Override
 	public void setField4(Date field4) {
 		_field4 = field4;
+
+		if (_fooRemoteModel != null) {
+			try {
+				Class<?> clazz = _fooRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setField4", Date.class);
+
+				method.invoke(_fooRemoteModel, field4);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getField5() {
 		return _field5;
 	}
 
+	@Override
 	public void setField5(String field5) {
 		_field5 = field5;
+
+		if (_fooRemoteModel != null) {
+			try {
+				Class<?> clazz = _fooRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setField5", String.class);
+
+				method.invoke(_fooRemoteModel, field5);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public BaseModel<?> getFooRemoteModel() {
@@ -287,6 +494,48 @@ public class FooClp extends BaseModelImpl<Foo> implements Foo {
 		_fooRemoteModel = fooRemoteModel;
 	}
 
+	public Object invokeOnRemoteModel(String methodName,
+		Class<?>[] parameterTypes, Object[] parameterValues)
+		throws Exception {
+		Object[] remoteParameterValues = new Object[parameterValues.length];
+
+		for (int i = 0; i < parameterValues.length; i++) {
+			if (parameterValues[i] != null) {
+				remoteParameterValues[i] = ClpSerializer.translateInput(parameterValues[i]);
+			}
+		}
+
+		Class<?> remoteModelClass = _fooRemoteModel.getClass();
+
+		ClassLoader remoteModelClassLoader = remoteModelClass.getClassLoader();
+
+		Class<?>[] remoteParameterTypes = new Class[parameterTypes.length];
+
+		for (int i = 0; i < parameterTypes.length; i++) {
+			if (parameterTypes[i].isPrimitive()) {
+				remoteParameterTypes[i] = parameterTypes[i];
+			}
+			else {
+				String parameterTypeName = parameterTypes[i].getName();
+
+				remoteParameterTypes[i] = remoteModelClassLoader.loadClass(parameterTypeName);
+			}
+		}
+
+		Method method = remoteModelClass.getMethod(methodName,
+				remoteParameterTypes);
+
+		Object returnValue = method.invoke(_fooRemoteModel,
+				remoteParameterValues);
+
+		if (returnValue != null) {
+			returnValue = ClpSerializer.translateOutput(returnValue);
+		}
+
+		return returnValue;
+	}
+
+	@Override
 	public void persist() throws SystemException {
 		if (this.isNew()) {
 			FooLocalServiceUtil.addFoo(this);
@@ -323,6 +572,7 @@ public class FooClp extends BaseModelImpl<Foo> implements Foo {
 		return clone;
 	}
 
+	@Override
 	public int compareTo(Foo foo) {
 		int value = 0;
 
@@ -337,18 +587,15 @@ public class FooClp extends BaseModelImpl<Foo> implements Foo {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof FooClp)) {
 			return false;
 		}
 
-		FooClp foo = null;
-
-		try {
-			foo = (FooClp)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		FooClp foo = (FooClp)obj;
 
 		long primaryKey = foo.getPrimaryKey();
 
@@ -400,6 +647,7 @@ public class FooClp extends BaseModelImpl<Foo> implements Foo {
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
 		StringBundler sb = new StringBundler(43);
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -70,6 +70,7 @@ public class KaleoNotificationRecipientCacheModel implements CacheModel<KaleoNot
 		return sb.toString();
 	}
 
+	@Override
 	public KaleoNotificationRecipient toEntityModel() {
 		KaleoNotificationRecipientImpl kaleoNotificationRecipientImpl = new KaleoNotificationRecipientImpl();
 
@@ -125,6 +126,7 @@ public class KaleoNotificationRecipientCacheModel implements CacheModel<KaleoNot
 		return kaleoNotificationRecipientImpl;
 	}
 
+	@Override
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		kaleoNotificationRecipientId = objectInput.readLong();
 		groupId = objectInput.readLong();
@@ -141,6 +143,7 @@ public class KaleoNotificationRecipientCacheModel implements CacheModel<KaleoNot
 		address = objectInput.readUTF();
 	}
 
+	@Override
 	public void writeExternal(ObjectOutput objectOutput)
 		throws IOException {
 		objectOutput.writeLong(kaleoNotificationRecipientId);

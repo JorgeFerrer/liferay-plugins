@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -21,9 +21,12 @@ import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.model.BaseModel;
 import com.liferay.portal.model.impl.BaseModelImpl;
 
+import com.liferay.wsrp.service.ClpSerializer;
 import com.liferay.wsrp.service.WSRPConsumerLocalServiceUtil;
 
 import java.io.Serializable;
+
+import java.lang.reflect.Method;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -37,26 +40,32 @@ public class WSRPConsumerClp extends BaseModelImpl<WSRPConsumer>
 	public WSRPConsumerClp() {
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return WSRPConsumer.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return WSRPConsumer.class.getName();
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _wsrpConsumerId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setWsrpConsumerId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
-		return new Long(_wsrpConsumerId);
+		return _wsrpConsumerId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
@@ -168,127 +177,387 @@ public class WSRPConsumerClp extends BaseModelImpl<WSRPConsumer>
 		}
 	}
 
+	@Override
 	public String getUuid() {
 		return _uuid;
 	}
 
+	@Override
 	public void setUuid(String uuid) {
 		_uuid = uuid;
+
+		if (_wsrpConsumerRemoteModel != null) {
+			try {
+				Class<?> clazz = _wsrpConsumerRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setUuid", String.class);
+
+				method.invoke(_wsrpConsumerRemoteModel, uuid);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getWsrpConsumerId() {
 		return _wsrpConsumerId;
 	}
 
+	@Override
 	public void setWsrpConsumerId(long wsrpConsumerId) {
 		_wsrpConsumerId = wsrpConsumerId;
+
+		if (_wsrpConsumerRemoteModel != null) {
+			try {
+				Class<?> clazz = _wsrpConsumerRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setWsrpConsumerId", long.class);
+
+				method.invoke(_wsrpConsumerRemoteModel, wsrpConsumerId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getCompanyId() {
 		return _companyId;
 	}
 
+	@Override
 	public void setCompanyId(long companyId) {
 		_companyId = companyId;
+
+		if (_wsrpConsumerRemoteModel != null) {
+			try {
+				Class<?> clazz = _wsrpConsumerRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setCompanyId", long.class);
+
+				method.invoke(_wsrpConsumerRemoteModel, companyId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public Date getCreateDate() {
 		return _createDate;
 	}
 
+	@Override
 	public void setCreateDate(Date createDate) {
 		_createDate = createDate;
+
+		if (_wsrpConsumerRemoteModel != null) {
+			try {
+				Class<?> clazz = _wsrpConsumerRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setCreateDate", Date.class);
+
+				method.invoke(_wsrpConsumerRemoteModel, createDate);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public Date getModifiedDate() {
 		return _modifiedDate;
 	}
 
+	@Override
 	public void setModifiedDate(Date modifiedDate) {
 		_modifiedDate = modifiedDate;
+
+		if (_wsrpConsumerRemoteModel != null) {
+			try {
+				Class<?> clazz = _wsrpConsumerRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setModifiedDate", Date.class);
+
+				method.invoke(_wsrpConsumerRemoteModel, modifiedDate);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getName() {
 		return _name;
 	}
 
+	@Override
 	public void setName(String name) {
 		_name = name;
+
+		if (_wsrpConsumerRemoteModel != null) {
+			try {
+				Class<?> clazz = _wsrpConsumerRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setName", String.class);
+
+				method.invoke(_wsrpConsumerRemoteModel, name);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getUrl() {
 		return _url;
 	}
 
+	@Override
 	public void setUrl(String url) {
 		_url = url;
+
+		if (_wsrpConsumerRemoteModel != null) {
+			try {
+				Class<?> clazz = _wsrpConsumerRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setUrl", String.class);
+
+				method.invoke(_wsrpConsumerRemoteModel, url);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getWsdl() {
 		return _wsdl;
 	}
 
+	@Override
 	public void setWsdl(String wsdl) {
 		_wsdl = wsdl;
+
+		if (_wsrpConsumerRemoteModel != null) {
+			try {
+				Class<?> clazz = _wsrpConsumerRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setWsdl", String.class);
+
+				method.invoke(_wsrpConsumerRemoteModel, wsdl);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getRegistrationContextString() {
 		return _registrationContextString;
 	}
 
+	@Override
 	public void setRegistrationContextString(String registrationContextString) {
 		_registrationContextString = registrationContextString;
+
+		if (_wsrpConsumerRemoteModel != null) {
+			try {
+				Class<?> clazz = _wsrpConsumerRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setRegistrationContextString",
+						String.class);
+
+				method.invoke(_wsrpConsumerRemoteModel,
+					registrationContextString);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getRegistrationPropertiesString() {
 		return _registrationPropertiesString;
 	}
 
+	@Override
 	public void setRegistrationPropertiesString(
 		String registrationPropertiesString) {
 		_registrationPropertiesString = registrationPropertiesString;
+
+		if (_wsrpConsumerRemoteModel != null) {
+			try {
+				Class<?> clazz = _wsrpConsumerRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setRegistrationPropertiesString",
+						String.class);
+
+				method.invoke(_wsrpConsumerRemoteModel,
+					registrationPropertiesString);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getForwardCookies() {
 		return _forwardCookies;
 	}
 
+	@Override
 	public void setForwardCookies(String forwardCookies) {
 		_forwardCookies = forwardCookies;
+
+		if (_wsrpConsumerRemoteModel != null) {
+			try {
+				Class<?> clazz = _wsrpConsumerRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setForwardCookies",
+						String.class);
+
+				method.invoke(_wsrpConsumerRemoteModel, forwardCookies);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getForwardHeaders() {
 		return _forwardHeaders;
 	}
 
+	@Override
 	public void setForwardHeaders(String forwardHeaders) {
 		_forwardHeaders = forwardHeaders;
+
+		if (_wsrpConsumerRemoteModel != null) {
+			try {
+				Class<?> clazz = _wsrpConsumerRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setForwardHeaders",
+						String.class);
+
+				method.invoke(_wsrpConsumerRemoteModel, forwardHeaders);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getMarkupCharacterSets() {
 		return _markupCharacterSets;
 	}
 
+	@Override
 	public void setMarkupCharacterSets(String markupCharacterSets) {
 		_markupCharacterSets = markupCharacterSets;
+
+		if (_wsrpConsumerRemoteModel != null) {
+			try {
+				Class<?> clazz = _wsrpConsumerRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setMarkupCharacterSets",
+						String.class);
+
+				method.invoke(_wsrpConsumerRemoteModel, markupCharacterSets);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public void setRegistrationContext(
 		oasis.names.tc.wsrp.v2.types.RegistrationContext registrationContext) {
-		throw new UnsupportedOperationException();
+		try {
+			String methodName = "setRegistrationContext";
+
+			Class<?>[] parameterTypes = new Class<?>[] {
+					oasis.names.tc.wsrp.v2.types.RegistrationContext.class
+				};
+
+			Object[] parameterValues = new Object[] { registrationContext };
+
+			invokeOnRemoteModel(methodName, parameterTypes, parameterValues);
+		}
+		catch (Exception e) {
+			throw new UnsupportedOperationException(e);
+		}
 	}
 
+	@Override
 	public com.liferay.portal.kernel.util.UnicodeProperties getRegistrationProperties() {
-		throw new UnsupportedOperationException();
+		try {
+			String methodName = "getRegistrationProperties";
+
+			Class<?>[] parameterTypes = new Class<?>[] {  };
+
+			Object[] parameterValues = new Object[] {  };
+
+			com.liferay.portal.kernel.util.UnicodeProperties returnObj = (com.liferay.portal.kernel.util.UnicodeProperties)invokeOnRemoteModel(methodName,
+					parameterTypes, parameterValues);
+
+			return returnObj;
+		}
+		catch (Exception e) {
+			throw new UnsupportedOperationException(e);
+		}
 	}
 
+	@Override
 	public void setRegistrationProperties(
 		com.liferay.portal.kernel.util.UnicodeProperties registrationProperties) {
-		throw new UnsupportedOperationException();
+		try {
+			String methodName = "setRegistrationProperties";
+
+			Class<?>[] parameterTypes = new Class<?>[] {
+					com.liferay.portal.kernel.util.UnicodeProperties.class
+				};
+
+			Object[] parameterValues = new Object[] { registrationProperties };
+
+			invokeOnRemoteModel(methodName, parameterTypes, parameterValues);
+		}
+		catch (Exception e) {
+			throw new UnsupportedOperationException(e);
+		}
 	}
 
+	@Override
 	public oasis.names.tc.wsrp.v2.types.RegistrationContext getRegistrationContext() {
-		throw new UnsupportedOperationException();
+		try {
+			String methodName = "getRegistrationContext";
+
+			Class<?>[] parameterTypes = new Class<?>[] {  };
+
+			Object[] parameterValues = new Object[] {  };
+
+			oasis.names.tc.wsrp.v2.types.RegistrationContext returnObj = (oasis.names.tc.wsrp.v2.types.RegistrationContext)invokeOnRemoteModel(methodName,
+					parameterTypes, parameterValues);
+
+			return returnObj;
+		}
+		catch (Exception e) {
+			throw new UnsupportedOperationException(e);
+		}
 	}
 
 	public BaseModel<?> getWSRPConsumerRemoteModel() {
@@ -299,6 +568,48 @@ public class WSRPConsumerClp extends BaseModelImpl<WSRPConsumer>
 		_wsrpConsumerRemoteModel = wsrpConsumerRemoteModel;
 	}
 
+	public Object invokeOnRemoteModel(String methodName,
+		Class<?>[] parameterTypes, Object[] parameterValues)
+		throws Exception {
+		Object[] remoteParameterValues = new Object[parameterValues.length];
+
+		for (int i = 0; i < parameterValues.length; i++) {
+			if (parameterValues[i] != null) {
+				remoteParameterValues[i] = ClpSerializer.translateInput(parameterValues[i]);
+			}
+		}
+
+		Class<?> remoteModelClass = _wsrpConsumerRemoteModel.getClass();
+
+		ClassLoader remoteModelClassLoader = remoteModelClass.getClassLoader();
+
+		Class<?>[] remoteParameterTypes = new Class[parameterTypes.length];
+
+		for (int i = 0; i < parameterTypes.length; i++) {
+			if (parameterTypes[i].isPrimitive()) {
+				remoteParameterTypes[i] = parameterTypes[i];
+			}
+			else {
+				String parameterTypeName = parameterTypes[i].getName();
+
+				remoteParameterTypes[i] = remoteModelClassLoader.loadClass(parameterTypeName);
+			}
+		}
+
+		Method method = remoteModelClass.getMethod(methodName,
+				remoteParameterTypes);
+
+		Object returnValue = method.invoke(_wsrpConsumerRemoteModel,
+				remoteParameterValues);
+
+		if (returnValue != null) {
+			returnValue = ClpSerializer.translateOutput(returnValue);
+		}
+
+		return returnValue;
+	}
+
+	@Override
 	public void persist() throws SystemException {
 		if (this.isNew()) {
 			WSRPConsumerLocalServiceUtil.addWSRPConsumer(this);
@@ -335,6 +646,7 @@ public class WSRPConsumerClp extends BaseModelImpl<WSRPConsumer>
 		return clone;
 	}
 
+	@Override
 	public int compareTo(WSRPConsumer wsrpConsumer) {
 		int value = 0;
 
@@ -349,18 +661,15 @@ public class WSRPConsumerClp extends BaseModelImpl<WSRPConsumer>
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof WSRPConsumerClp)) {
 			return false;
 		}
 
-		WSRPConsumerClp wsrpConsumer = null;
-
-		try {
-			wsrpConsumer = (WSRPConsumerClp)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		WSRPConsumerClp wsrpConsumer = (WSRPConsumerClp)obj;
 
 		long primaryKey = wsrpConsumer.getPrimaryKey();
 
@@ -412,6 +721,7 @@ public class WSRPConsumerClp extends BaseModelImpl<WSRPConsumer>
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
 		StringBundler sb = new StringBundler(43);
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,8 +14,6 @@
 
 package com.liferay.portal.workflow.kaleo.service.persistence;
 
-import com.liferay.portal.NoSuchModelException;
-import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.cache.CacheRegistryUtil;
 import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
 import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
@@ -40,7 +38,6 @@ import com.liferay.portal.kernel.util.UnmodifiableList;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.model.CacheModel;
 import com.liferay.portal.model.ModelListener;
-import com.liferay.portal.service.persistence.UserPersistence;
 import com.liferay.portal.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.workflow.kaleo.NoSuchInstanceException;
 import com.liferay.portal.workflow.kaleo.model.KaleoInstance;
@@ -118,6 +115,7 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 	 * @return the matching kaleo instances
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoInstance> findByCompanyId(long companyId)
 		throws SystemException {
 		return findByCompanyId(companyId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
@@ -137,6 +135,7 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 	 * @return the range of matching kaleo instances
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoInstance> findByCompanyId(long companyId, int start,
 		int end) throws SystemException {
 		return findByCompanyId(companyId, start, end, null);
@@ -156,6 +155,7 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 	 * @return the ordered range of matching kaleo instances
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoInstance> findByCompanyId(long companyId, int start,
 		int end, OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -262,6 +262,7 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchInstanceException if a matching kaleo instance could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoInstance findByCompanyId_First(long companyId,
 		OrderByComparator orderByComparator)
 		throws NoSuchInstanceException, SystemException {
@@ -292,6 +293,7 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 	 * @return the first matching kaleo instance, or <code>null</code> if a matching kaleo instance could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoInstance fetchByCompanyId_First(long companyId,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<KaleoInstance> list = findByCompanyId(companyId, 0, 1,
@@ -313,6 +315,7 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchInstanceException if a matching kaleo instance could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoInstance findByCompanyId_Last(long companyId,
 		OrderByComparator orderByComparator)
 		throws NoSuchInstanceException, SystemException {
@@ -343,6 +346,7 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 	 * @return the last matching kaleo instance, or <code>null</code> if a matching kaleo instance could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoInstance fetchByCompanyId_Last(long companyId,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByCompanyId(companyId);
@@ -367,6 +371,7 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchInstanceException if a kaleo instance with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoInstance[] findByCompanyId_PrevAndNext(long kaleoInstanceId,
 		long companyId, OrderByComparator orderByComparator)
 		throws NoSuchInstanceException, SystemException {
@@ -508,6 +513,7 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 	 * @param companyId the company ID
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByCompanyId(long companyId) throws SystemException {
 		for (KaleoInstance kaleoInstance : findByCompanyId(companyId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
@@ -522,6 +528,7 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 	 * @return the number of matching kaleo instances
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByCompanyId(long companyId) throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_COMPANYID;
 
@@ -597,6 +604,7 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 	 * @return the matching kaleo instances
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoInstance> findByKaleoDefinitionId(long kaleoDefinitionId)
 		throws SystemException {
 		return findByKaleoDefinitionId(kaleoDefinitionId, QueryUtil.ALL_POS,
@@ -616,6 +624,7 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 	 * @return the range of matching kaleo instances
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoInstance> findByKaleoDefinitionId(long kaleoDefinitionId,
 		int start, int end) throws SystemException {
 		return findByKaleoDefinitionId(kaleoDefinitionId, start, end, null);
@@ -635,6 +644,7 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 	 * @return the ordered range of matching kaleo instances
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoInstance> findByKaleoDefinitionId(long kaleoDefinitionId,
 		int start, int end, OrderByComparator orderByComparator)
 		throws SystemException {
@@ -746,6 +756,7 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchInstanceException if a matching kaleo instance could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoInstance findByKaleoDefinitionId_First(long kaleoDefinitionId,
 		OrderByComparator orderByComparator)
 		throws NoSuchInstanceException, SystemException {
@@ -776,6 +787,7 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 	 * @return the first matching kaleo instance, or <code>null</code> if a matching kaleo instance could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoInstance fetchByKaleoDefinitionId_First(
 		long kaleoDefinitionId, OrderByComparator orderByComparator)
 		throws SystemException {
@@ -798,6 +810,7 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchInstanceException if a matching kaleo instance could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoInstance findByKaleoDefinitionId_Last(long kaleoDefinitionId,
 		OrderByComparator orderByComparator)
 		throws NoSuchInstanceException, SystemException {
@@ -828,6 +841,7 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 	 * @return the last matching kaleo instance, or <code>null</code> if a matching kaleo instance could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoInstance fetchByKaleoDefinitionId_Last(long kaleoDefinitionId,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByKaleoDefinitionId(kaleoDefinitionId);
@@ -852,6 +866,7 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchInstanceException if a kaleo instance with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoInstance[] findByKaleoDefinitionId_PrevAndNext(
 		long kaleoInstanceId, long kaleoDefinitionId,
 		OrderByComparator orderByComparator)
@@ -994,6 +1009,7 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 	 * @param kaleoDefinitionId the kaleo definition ID
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByKaleoDefinitionId(long kaleoDefinitionId)
 		throws SystemException {
 		for (KaleoInstance kaleoInstance : findByKaleoDefinitionId(
@@ -1009,6 +1025,7 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 	 * @return the number of matching kaleo instances
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByKaleoDefinitionId(long kaleoDefinitionId)
 		throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_KALEODEFINITIONID;
@@ -1087,6 +1104,7 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 	 * @return the matching kaleo instances
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoInstance> findByKDI_C(long kaleoDefinitionId,
 		boolean completed) throws SystemException {
 		return findByKDI_C(kaleoDefinitionId, completed, QueryUtil.ALL_POS,
@@ -1107,6 +1125,7 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 	 * @return the range of matching kaleo instances
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoInstance> findByKDI_C(long kaleoDefinitionId,
 		boolean completed, int start, int end) throws SystemException {
 		return findByKDI_C(kaleoDefinitionId, completed, start, end, null);
@@ -1127,6 +1146,7 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 	 * @return the ordered range of matching kaleo instances
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoInstance> findByKDI_C(long kaleoDefinitionId,
 		boolean completed, int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
@@ -1244,6 +1264,7 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchInstanceException if a matching kaleo instance could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoInstance findByKDI_C_First(long kaleoDefinitionId,
 		boolean completed, OrderByComparator orderByComparator)
 		throws NoSuchInstanceException, SystemException {
@@ -1278,6 +1299,7 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 	 * @return the first matching kaleo instance, or <code>null</code> if a matching kaleo instance could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoInstance fetchByKDI_C_First(long kaleoDefinitionId,
 		boolean completed, OrderByComparator orderByComparator)
 		throws SystemException {
@@ -1301,6 +1323,7 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchInstanceException if a matching kaleo instance could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoInstance findByKDI_C_Last(long kaleoDefinitionId,
 		boolean completed, OrderByComparator orderByComparator)
 		throws NoSuchInstanceException, SystemException {
@@ -1335,6 +1358,7 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 	 * @return the last matching kaleo instance, or <code>null</code> if a matching kaleo instance could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoInstance fetchByKDI_C_Last(long kaleoDefinitionId,
 		boolean completed, OrderByComparator orderByComparator)
 		throws SystemException {
@@ -1361,6 +1385,7 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchInstanceException if a kaleo instance with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoInstance[] findByKDI_C_PrevAndNext(long kaleoInstanceId,
 		long kaleoDefinitionId, boolean completed,
 		OrderByComparator orderByComparator)
@@ -1508,6 +1533,7 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 	 * @param completed the completed
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByKDI_C(long kaleoDefinitionId, boolean completed)
 		throws SystemException {
 		for (KaleoInstance kaleoInstance : findByKDI_C(kaleoDefinitionId,
@@ -1524,6 +1550,7 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 	 * @return the number of matching kaleo instances
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByKDI_C(long kaleoDefinitionId, boolean completed)
 		throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_KDI_C;
@@ -1619,6 +1646,7 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 	 * @return the matching kaleo instances
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoInstance> findByC_KDN_KDV_CD(long companyId,
 		String kaleoDefinitionName, int kaleoDefinitionVersion,
 		Date completionDate) throws SystemException {
@@ -1643,6 +1671,7 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 	 * @return the range of matching kaleo instances
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoInstance> findByC_KDN_KDV_CD(long companyId,
 		String kaleoDefinitionName, int kaleoDefinitionVersion,
 		Date completionDate, int start, int end) throws SystemException {
@@ -1667,6 +1696,7 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 	 * @return the ordered range of matching kaleo instances
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoInstance> findByC_KDN_KDV_CD(long companyId,
 		String kaleoDefinitionName, int kaleoDefinitionVersion,
 		Date completionDate, int start, int end,
@@ -1727,24 +1757,30 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 
 			query.append(_FINDER_COLUMN_C_KDN_KDV_CD_COMPANYID_2);
 
+			boolean bindKaleoDefinitionName = false;
+
 			if (kaleoDefinitionName == null) {
 				query.append(_FINDER_COLUMN_C_KDN_KDV_CD_KALEODEFINITIONNAME_1);
 			}
+			else if (kaleoDefinitionName.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_C_KDN_KDV_CD_KALEODEFINITIONNAME_3);
+			}
 			else {
-				if (kaleoDefinitionName.equals(StringPool.BLANK)) {
-					query.append(_FINDER_COLUMN_C_KDN_KDV_CD_KALEODEFINITIONNAME_3);
-				}
-				else {
-					query.append(_FINDER_COLUMN_C_KDN_KDV_CD_KALEODEFINITIONNAME_2);
-				}
+				bindKaleoDefinitionName = true;
+
+				query.append(_FINDER_COLUMN_C_KDN_KDV_CD_KALEODEFINITIONNAME_2);
 			}
 
 			query.append(_FINDER_COLUMN_C_KDN_KDV_CD_KALEODEFINITIONVERSION_2);
+
+			boolean bindCompletionDate = false;
 
 			if (completionDate == null) {
 				query.append(_FINDER_COLUMN_C_KDN_KDV_CD_COMPLETIONDATE_1);
 			}
 			else {
+				bindCompletionDate = true;
+
 				query.append(_FINDER_COLUMN_C_KDN_KDV_CD_COMPLETIONDATE_2);
 			}
 
@@ -1770,13 +1806,13 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 
 				qPos.add(companyId);
 
-				if (kaleoDefinitionName != null) {
+				if (bindKaleoDefinitionName) {
 					qPos.add(kaleoDefinitionName);
 				}
 
 				qPos.add(kaleoDefinitionVersion);
 
-				if (completionDate != null) {
+				if (bindCompletionDate) {
 					qPos.add(CalendarUtil.getTimestamp(completionDate));
 				}
 
@@ -1822,6 +1858,7 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchInstanceException if a matching kaleo instance could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoInstance findByC_KDN_KDV_CD_First(long companyId,
 		String kaleoDefinitionName, int kaleoDefinitionVersion,
 		Date completionDate, OrderByComparator orderByComparator)
@@ -1866,6 +1903,7 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 	 * @return the first matching kaleo instance, or <code>null</code> if a matching kaleo instance could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoInstance fetchByC_KDN_KDV_CD_First(long companyId,
 		String kaleoDefinitionName, int kaleoDefinitionVersion,
 		Date completionDate, OrderByComparator orderByComparator)
@@ -1893,6 +1931,7 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchInstanceException if a matching kaleo instance could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoInstance findByC_KDN_KDV_CD_Last(long companyId,
 		String kaleoDefinitionName, int kaleoDefinitionVersion,
 		Date completionDate, OrderByComparator orderByComparator)
@@ -1937,6 +1976,7 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 	 * @return the last matching kaleo instance, or <code>null</code> if a matching kaleo instance could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoInstance fetchByC_KDN_KDV_CD_Last(long companyId,
 		String kaleoDefinitionName, int kaleoDefinitionVersion,
 		Date completionDate, OrderByComparator orderByComparator)
@@ -1968,6 +2008,7 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchInstanceException if a kaleo instance with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoInstance[] findByC_KDN_KDV_CD_PrevAndNext(
 		long kaleoInstanceId, long companyId, String kaleoDefinitionName,
 		int kaleoDefinitionVersion, Date completionDate,
@@ -2021,24 +2062,30 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 
 		query.append(_FINDER_COLUMN_C_KDN_KDV_CD_COMPANYID_2);
 
+		boolean bindKaleoDefinitionName = false;
+
 		if (kaleoDefinitionName == null) {
 			query.append(_FINDER_COLUMN_C_KDN_KDV_CD_KALEODEFINITIONNAME_1);
 		}
+		else if (kaleoDefinitionName.equals(StringPool.BLANK)) {
+			query.append(_FINDER_COLUMN_C_KDN_KDV_CD_KALEODEFINITIONNAME_3);
+		}
 		else {
-			if (kaleoDefinitionName.equals(StringPool.BLANK)) {
-				query.append(_FINDER_COLUMN_C_KDN_KDV_CD_KALEODEFINITIONNAME_3);
-			}
-			else {
-				query.append(_FINDER_COLUMN_C_KDN_KDV_CD_KALEODEFINITIONNAME_2);
-			}
+			bindKaleoDefinitionName = true;
+
+			query.append(_FINDER_COLUMN_C_KDN_KDV_CD_KALEODEFINITIONNAME_2);
 		}
 
 		query.append(_FINDER_COLUMN_C_KDN_KDV_CD_KALEODEFINITIONVERSION_2);
+
+		boolean bindCompletionDate = false;
 
 		if (completionDate == null) {
 			query.append(_FINDER_COLUMN_C_KDN_KDV_CD_COMPLETIONDATE_1);
 		}
 		else {
+			bindCompletionDate = true;
+
 			query.append(_FINDER_COLUMN_C_KDN_KDV_CD_COMPLETIONDATE_2);
 		}
 
@@ -2112,13 +2159,13 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 
 		qPos.add(companyId);
 
-		if (kaleoDefinitionName != null) {
+		if (bindKaleoDefinitionName) {
 			qPos.add(kaleoDefinitionName);
 		}
 
 		qPos.add(kaleoDefinitionVersion);
 
-		if (completionDate != null) {
+		if (bindCompletionDate) {
 			qPos.add(CalendarUtil.getTimestamp(completionDate));
 		}
 
@@ -2149,6 +2196,7 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 	 * @param completionDate the completion date
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByC_KDN_KDV_CD(long companyId,
 		String kaleoDefinitionName, int kaleoDefinitionVersion,
 		Date completionDate) throws SystemException {
@@ -2169,6 +2217,7 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 	 * @return the number of matching kaleo instances
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByC_KDN_KDV_CD(long companyId, String kaleoDefinitionName,
 		int kaleoDefinitionVersion, Date completionDate)
 		throws SystemException {
@@ -2189,24 +2238,30 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 
 			query.append(_FINDER_COLUMN_C_KDN_KDV_CD_COMPANYID_2);
 
+			boolean bindKaleoDefinitionName = false;
+
 			if (kaleoDefinitionName == null) {
 				query.append(_FINDER_COLUMN_C_KDN_KDV_CD_KALEODEFINITIONNAME_1);
 			}
+			else if (kaleoDefinitionName.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_C_KDN_KDV_CD_KALEODEFINITIONNAME_3);
+			}
 			else {
-				if (kaleoDefinitionName.equals(StringPool.BLANK)) {
-					query.append(_FINDER_COLUMN_C_KDN_KDV_CD_KALEODEFINITIONNAME_3);
-				}
-				else {
-					query.append(_FINDER_COLUMN_C_KDN_KDV_CD_KALEODEFINITIONNAME_2);
-				}
+				bindKaleoDefinitionName = true;
+
+				query.append(_FINDER_COLUMN_C_KDN_KDV_CD_KALEODEFINITIONNAME_2);
 			}
 
 			query.append(_FINDER_COLUMN_C_KDN_KDV_CD_KALEODEFINITIONVERSION_2);
+
+			boolean bindCompletionDate = false;
 
 			if (completionDate == null) {
 				query.append(_FINDER_COLUMN_C_KDN_KDV_CD_COMPLETIONDATE_1);
 			}
 			else {
+				bindCompletionDate = true;
+
 				query.append(_FINDER_COLUMN_C_KDN_KDV_CD_COMPLETIONDATE_2);
 			}
 
@@ -2223,13 +2278,13 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 
 				qPos.add(companyId);
 
-				if (kaleoDefinitionName != null) {
+				if (bindKaleoDefinitionName) {
 					qPos.add(kaleoDefinitionName);
 				}
 
 				qPos.add(kaleoDefinitionVersion);
 
-				if (completionDate != null) {
+				if (bindCompletionDate) {
 					qPos.add(CalendarUtil.getTimestamp(completionDate));
 				}
 
@@ -2256,7 +2311,7 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 	private static final String _FINDER_COLUMN_C_KDN_KDV_CD_KALEODEFINITIONNAME_2 =
 		"kaleoInstance.kaleoDefinitionName = ? AND ";
 	private static final String _FINDER_COLUMN_C_KDN_KDV_CD_KALEODEFINITIONNAME_3 =
-		"(kaleoInstance.kaleoDefinitionName IS NULL OR kaleoInstance.kaleoDefinitionName = ?) AND ";
+		"(kaleoInstance.kaleoDefinitionName IS NULL OR kaleoInstance.kaleoDefinitionName = '') AND ";
 	private static final String _FINDER_COLUMN_C_KDN_KDV_CD_KALEODEFINITIONVERSION_2 =
 		"kaleoInstance.kaleoDefinitionVersion = ? AND ";
 	private static final String _FINDER_COLUMN_C_KDN_KDV_CD_COMPLETIONDATE_1 = "kaleoInstance.completionDate IS NULL";
@@ -2267,6 +2322,7 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 	 *
 	 * @param kaleoInstance the kaleo instance
 	 */
+	@Override
 	public void cacheResult(KaleoInstance kaleoInstance) {
 		EntityCacheUtil.putResult(KaleoInstanceModelImpl.ENTITY_CACHE_ENABLED,
 			KaleoInstanceImpl.class, kaleoInstance.getPrimaryKey(),
@@ -2280,6 +2336,7 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 	 *
 	 * @param kaleoInstances the kaleo instances
 	 */
+	@Override
 	public void cacheResult(List<KaleoInstance> kaleoInstances) {
 		for (KaleoInstance kaleoInstance : kaleoInstances) {
 			if (EntityCacheUtil.getResult(
@@ -2346,6 +2403,7 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 	 * @param kaleoInstanceId the primary key for the new kaleo instance
 	 * @return the new kaleo instance
 	 */
+	@Override
 	public KaleoInstance create(long kaleoInstanceId) {
 		KaleoInstance kaleoInstance = new KaleoInstanceImpl();
 
@@ -2363,9 +2421,10 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchInstanceException if a kaleo instance with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoInstance remove(long kaleoInstanceId)
 		throws NoSuchInstanceException, SystemException {
-		return remove(Long.valueOf(kaleoInstanceId));
+		return remove((Serializable)kaleoInstanceId);
 	}
 
 	/**
@@ -2483,7 +2542,7 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 			if ((kaleoInstanceModelImpl.getColumnBitmask() &
 					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_COMPANYID.getColumnBitmask()) != 0) {
 				Object[] args = new Object[] {
-						Long.valueOf(kaleoInstanceModelImpl.getOriginalCompanyId())
+						kaleoInstanceModelImpl.getOriginalCompanyId()
 					};
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_COMPANYID,
@@ -2491,9 +2550,7 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_COMPANYID,
 					args);
 
-				args = new Object[] {
-						Long.valueOf(kaleoInstanceModelImpl.getCompanyId())
-					};
+				args = new Object[] { kaleoInstanceModelImpl.getCompanyId() };
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_COMPANYID,
 					args);
@@ -2504,7 +2561,7 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 			if ((kaleoInstanceModelImpl.getColumnBitmask() &
 					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_KALEODEFINITIONID.getColumnBitmask()) != 0) {
 				Object[] args = new Object[] {
-						Long.valueOf(kaleoInstanceModelImpl.getOriginalKaleoDefinitionId())
+						kaleoInstanceModelImpl.getOriginalKaleoDefinitionId()
 					};
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_KALEODEFINITIONID,
@@ -2513,7 +2570,7 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 					args);
 
 				args = new Object[] {
-						Long.valueOf(kaleoInstanceModelImpl.getKaleoDefinitionId())
+						kaleoInstanceModelImpl.getKaleoDefinitionId()
 					};
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_KALEODEFINITIONID,
@@ -2525,8 +2582,8 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 			if ((kaleoInstanceModelImpl.getColumnBitmask() &
 					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_KDI_C.getColumnBitmask()) != 0) {
 				Object[] args = new Object[] {
-						Long.valueOf(kaleoInstanceModelImpl.getOriginalKaleoDefinitionId()),
-						Boolean.valueOf(kaleoInstanceModelImpl.getOriginalCompleted())
+						kaleoInstanceModelImpl.getOriginalKaleoDefinitionId(),
+						kaleoInstanceModelImpl.getOriginalCompleted()
 					};
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_KDI_C, args);
@@ -2534,8 +2591,8 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 					args);
 
 				args = new Object[] {
-						Long.valueOf(kaleoInstanceModelImpl.getKaleoDefinitionId()),
-						Boolean.valueOf(kaleoInstanceModelImpl.getCompleted())
+						kaleoInstanceModelImpl.getKaleoDefinitionId(),
+						kaleoInstanceModelImpl.getCompleted()
 					};
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_KDI_C, args);
@@ -2546,11 +2603,9 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 			if ((kaleoInstanceModelImpl.getColumnBitmask() &
 					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_C_KDN_KDV_CD.getColumnBitmask()) != 0) {
 				Object[] args = new Object[] {
-						Long.valueOf(kaleoInstanceModelImpl.getOriginalCompanyId()),
-						
+						kaleoInstanceModelImpl.getOriginalCompanyId(),
 						kaleoInstanceModelImpl.getOriginalKaleoDefinitionName(),
-						Integer.valueOf(kaleoInstanceModelImpl.getOriginalKaleoDefinitionVersion()),
-						
+						kaleoInstanceModelImpl.getOriginalKaleoDefinitionVersion(),
 						kaleoInstanceModelImpl.getOriginalCompletionDate()
 					};
 
@@ -2560,11 +2615,9 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 					args);
 
 				args = new Object[] {
-						Long.valueOf(kaleoInstanceModelImpl.getCompanyId()),
-						
+						kaleoInstanceModelImpl.getCompanyId(),
 						kaleoInstanceModelImpl.getKaleoDefinitionName(),
-						Integer.valueOf(kaleoInstanceModelImpl.getKaleoDefinitionVersion()),
-						
+						kaleoInstanceModelImpl.getKaleoDefinitionVersion(),
 						kaleoInstanceModelImpl.getCompletionDate()
 					};
 
@@ -2617,13 +2670,24 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 	 *
 	 * @param primaryKey the primary key of the kaleo instance
 	 * @return the kaleo instance
-	 * @throws com.liferay.portal.NoSuchModelException if a kaleo instance with the primary key could not be found
+	 * @throws com.liferay.portal.workflow.kaleo.NoSuchInstanceException if a kaleo instance with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
 	public KaleoInstance findByPrimaryKey(Serializable primaryKey)
-		throws NoSuchModelException, SystemException {
-		return findByPrimaryKey(((Long)primaryKey).longValue());
+		throws NoSuchInstanceException, SystemException {
+		KaleoInstance kaleoInstance = fetchByPrimaryKey(primaryKey);
+
+		if (kaleoInstance == null) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
+			}
+
+			throw new NoSuchInstanceException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
+				primaryKey);
+		}
+
+		return kaleoInstance;
 	}
 
 	/**
@@ -2634,20 +2698,10 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchInstanceException if a kaleo instance with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoInstance findByPrimaryKey(long kaleoInstanceId)
 		throws NoSuchInstanceException, SystemException {
-		KaleoInstance kaleoInstance = fetchByPrimaryKey(kaleoInstanceId);
-
-		if (kaleoInstance == null) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + kaleoInstanceId);
-			}
-
-			throw new NoSuchInstanceException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
-				kaleoInstanceId);
-		}
-
-		return kaleoInstance;
+		return findByPrimaryKey((Serializable)kaleoInstanceId);
 	}
 
 	/**
@@ -2660,20 +2714,8 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 	@Override
 	public KaleoInstance fetchByPrimaryKey(Serializable primaryKey)
 		throws SystemException {
-		return fetchByPrimaryKey(((Long)primaryKey).longValue());
-	}
-
-	/**
-	 * Returns the kaleo instance with the primary key or returns <code>null</code> if it could not be found.
-	 *
-	 * @param kaleoInstanceId the primary key of the kaleo instance
-	 * @return the kaleo instance, or <code>null</code> if a kaleo instance with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	public KaleoInstance fetchByPrimaryKey(long kaleoInstanceId)
-		throws SystemException {
 		KaleoInstance kaleoInstance = (KaleoInstance)EntityCacheUtil.getResult(KaleoInstanceModelImpl.ENTITY_CACHE_ENABLED,
-				KaleoInstanceImpl.class, kaleoInstanceId);
+				KaleoInstanceImpl.class, primaryKey);
 
 		if (kaleoInstance == _nullKaleoInstance) {
 			return null;
@@ -2686,20 +2728,19 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 				session = openSession();
 
 				kaleoInstance = (KaleoInstance)session.get(KaleoInstanceImpl.class,
-						Long.valueOf(kaleoInstanceId));
+						primaryKey);
 
 				if (kaleoInstance != null) {
 					cacheResult(kaleoInstance);
 				}
 				else {
 					EntityCacheUtil.putResult(KaleoInstanceModelImpl.ENTITY_CACHE_ENABLED,
-						KaleoInstanceImpl.class, kaleoInstanceId,
-						_nullKaleoInstance);
+						KaleoInstanceImpl.class, primaryKey, _nullKaleoInstance);
 				}
 			}
 			catch (Exception e) {
 				EntityCacheUtil.removeResult(KaleoInstanceModelImpl.ENTITY_CACHE_ENABLED,
-					KaleoInstanceImpl.class, kaleoInstanceId);
+					KaleoInstanceImpl.class, primaryKey);
 
 				throw processException(e);
 			}
@@ -2712,11 +2753,25 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 	}
 
 	/**
+	 * Returns the kaleo instance with the primary key or returns <code>null</code> if it could not be found.
+	 *
+	 * @param kaleoInstanceId the primary key of the kaleo instance
+	 * @return the kaleo instance, or <code>null</code> if a kaleo instance with the primary key could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public KaleoInstance fetchByPrimaryKey(long kaleoInstanceId)
+		throws SystemException {
+		return fetchByPrimaryKey((Serializable)kaleoInstanceId);
+	}
+
+	/**
 	 * Returns all the kaleo instances.
 	 *
 	 * @return the kaleo instances
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoInstance> findAll() throws SystemException {
 		return findAll(QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
@@ -2733,6 +2788,7 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 	 * @return the range of kaleo instances
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoInstance> findAll(int start, int end)
 		throws SystemException {
 		return findAll(start, end, null);
@@ -2751,6 +2807,7 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 	 * @return the ordered range of kaleo instances
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoInstance> findAll(int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -2836,6 +2893,7 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 	 *
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeAll() throws SystemException {
 		for (KaleoInstance kaleoInstance : findAll()) {
 			remove(kaleoInstance);
@@ -2848,6 +2906,7 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 	 * @return the number of kaleo instances
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countAll() throws SystemException {
 		Long count = (Long)FinderCacheUtil.getResult(FINDER_PATH_COUNT_ALL,
 				FINDER_ARGS_EMPTY, this);
@@ -2893,7 +2952,7 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 
 				for (String listenerClassName : listenerClassNames) {
 					listenersList.add((ModelListener<KaleoInstance>)InstanceFactory.newInstance(
-							listenerClassName));
+							getClassLoader(), listenerClassName));
 				}
 
 				listeners = listenersList.toArray(new ModelListener[listenersList.size()]);
@@ -2911,40 +2970,6 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 		FinderCacheUtil.removeCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 	}
 
-	@BeanReference(type = KaleoActionPersistence.class)
-	protected KaleoActionPersistence kaleoActionPersistence;
-	@BeanReference(type = KaleoConditionPersistence.class)
-	protected KaleoConditionPersistence kaleoConditionPersistence;
-	@BeanReference(type = KaleoDefinitionPersistence.class)
-	protected KaleoDefinitionPersistence kaleoDefinitionPersistence;
-	@BeanReference(type = KaleoInstancePersistence.class)
-	protected KaleoInstancePersistence kaleoInstancePersistence;
-	@BeanReference(type = KaleoInstanceTokenPersistence.class)
-	protected KaleoInstanceTokenPersistence kaleoInstanceTokenPersistence;
-	@BeanReference(type = KaleoLogPersistence.class)
-	protected KaleoLogPersistence kaleoLogPersistence;
-	@BeanReference(type = KaleoNodePersistence.class)
-	protected KaleoNodePersistence kaleoNodePersistence;
-	@BeanReference(type = KaleoNotificationPersistence.class)
-	protected KaleoNotificationPersistence kaleoNotificationPersistence;
-	@BeanReference(type = KaleoNotificationRecipientPersistence.class)
-	protected KaleoNotificationRecipientPersistence kaleoNotificationRecipientPersistence;
-	@BeanReference(type = KaleoTaskPersistence.class)
-	protected KaleoTaskPersistence kaleoTaskPersistence;
-	@BeanReference(type = KaleoTaskAssignmentPersistence.class)
-	protected KaleoTaskAssignmentPersistence kaleoTaskAssignmentPersistence;
-	@BeanReference(type = KaleoTaskAssignmentInstancePersistence.class)
-	protected KaleoTaskAssignmentInstancePersistence kaleoTaskAssignmentInstancePersistence;
-	@BeanReference(type = KaleoTaskInstanceTokenPersistence.class)
-	protected KaleoTaskInstanceTokenPersistence kaleoTaskInstanceTokenPersistence;
-	@BeanReference(type = KaleoTimerPersistence.class)
-	protected KaleoTimerPersistence kaleoTimerPersistence;
-	@BeanReference(type = KaleoTimerInstanceTokenPersistence.class)
-	protected KaleoTimerInstanceTokenPersistence kaleoTimerInstanceTokenPersistence;
-	@BeanReference(type = KaleoTransitionPersistence.class)
-	protected KaleoTransitionPersistence kaleoTransitionPersistence;
-	@BeanReference(type = UserPersistence.class)
-	protected UserPersistence userPersistence;
 	private static final String _SQL_SELECT_KALEOINSTANCE = "SELECT kaleoInstance FROM KaleoInstance kaleoInstance";
 	private static final String _SQL_SELECT_KALEOINSTANCE_WHERE = "SELECT kaleoInstance FROM KaleoInstance kaleoInstance WHERE ";
 	private static final String _SQL_COUNT_KALEOINSTANCE = "SELECT COUNT(kaleoInstance) FROM KaleoInstance kaleoInstance";
@@ -2968,6 +2993,7 @@ public class KaleoInstancePersistenceImpl extends BasePersistenceImpl<KaleoInsta
 		};
 
 	private static CacheModel<KaleoInstance> _nullKaleoInstanceCacheModel = new CacheModel<KaleoInstance>() {
+			@Override
 			public KaleoInstance toEntityModel() {
 				return _nullKaleoInstance;
 			}

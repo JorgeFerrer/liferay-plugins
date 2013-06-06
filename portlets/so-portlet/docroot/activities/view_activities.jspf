@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This file is part of Liferay Social Office. Liferay Social Office is free
  * software: you can redistribute it and/or modify it under the terms of the GNU
@@ -17,89 +17,65 @@
  */
 --%>
 
-<div class="portrait-social-activities">
+<%
+List<SocialActivity> results = null;
+int total = 0;
+%>
 
-	<%
-	Date now = new Date();
+<c:choose>
+	<c:when test="<%= group.isUser() && (themeDisplay.getUserId() == group.getClassPK()) && !layout.isPublicLayout() %>">
+		<liferay-ui:tabs
+			names="all,connections,following,my-sites"
+			url="<%= portletURL.toString() %>"
+			value="<%= tabs1 %>"
+		/>
 
-	int daysBetween = -1;
-
-	for (SocialActivity activity : activities) {
-		SocialActivityFeedEntry activityFeedEntry = SocialActivityInterpreterLocalServiceUtil.interpret(activity, themeDisplay);
-
-		if (activityFeedEntry == null) {
-			continue;
+		<%
+		if (tabs1.equals("connections")) {
+			results = SocialActivityLocalServiceUtil.getRelationActivities(themeDisplay.getUserId(), SocialRelationConstants.TYPE_BI_CONNECTION, searchContainer.getStart(), searchContainer.getEnd());
+			total = SocialActivityLocalServiceUtil.getRelationActivitiesCount(themeDisplay.getUserId(), SocialRelationConstants.TYPE_BI_CONNECTION);
 		}
+		else if (tabs1.equals("following")) {
+			results = SocialActivityLocalServiceUtil.getRelationActivities(themeDisplay.getUserId(), SocialRelationConstants.TYPE_UNI_FOLLOWER, searchContainer.getStart(), searchContainer.getEnd());
+			total = SocialActivityLocalServiceUtil.getRelationActivitiesCount(themeDisplay.getUserId(), SocialRelationConstants.TYPE_UNI_FOLLOWER);
+		}
+		else if (tabs1.equals("my-sites")) {
+			results = SocialActivityLocalServiceUtil.getUserGroupsActivities(themeDisplay.getUserId(), searchContainer.getStart(), searchContainer.getEnd());
+			total = SocialActivityLocalServiceUtil.getUserGroupsActivitiesCount(themeDisplay.getUserId());
+		}
+		else {
+			results = SocialActivityLocalServiceUtil.getUserActivities(themeDisplay.getUserId(), searchContainer.getStart(), searchContainer.getEnd());
+			total = SocialActivityLocalServiceUtil.getUserActivitiesCount(themeDisplay.getUserId());
+		}
+		%>
 
-		Portlet portlet = PortletLocalServiceUtil.getPortletById(company.getCompanyId(), activityFeedEntry.getPortletId());
+	</c:when>
+	<c:otherwise>
 
-		int curDaysBetween = DateUtil.getDaysBetween(new Date(activity.getCreateDate()), now, timeZone);
-	%>
+		<%
+		if (group.isUser()) {
+			results = SocialActivityLocalServiceUtil.getUserActivities(group.getClassPK(), searchContainer.getStart(), searchContainer.getEnd());
+			total = SocialActivityLocalServiceUtil.getUserActivitiesCount(group.getClassPK());
+		}
+		else {
+			results = SocialActivityLocalServiceUtil.getGroupActivities(group.getGroupId(), searchContainer.getStart(), searchContainer.getEnd());
+			total = SocialActivityLocalServiceUtil.getGroupActivitiesCount(group.getGroupId());
+		}
+		%>
 
-		<c:if test="<%= curDaysBetween > daysBetween %>">
+	</c:otherwise>
+</c:choose>
 
-			<%
-			daysBetween = curDaysBetween;
-			String message = null;
+<%
+searchContainer.setResults(results);
+searchContainer.setTotal(total);
+%>
 
-			if (curDaysBetween == 0) {
-				message = "today";
-			}
-			else if (curDaysBetween == 1) {
-				message = "yesterday";
-			}
-			else {
-				message = dateFormatDate.format(activity.getCreateDate());
-			}
-			%>
+<%@ include file="/activities/view_activities_feed.jspf" %>
 
-			<h3><liferay-ui:message key="<%= message %>" /></h3>
-		</c:if>
-
-		<div class="activity-item">
-
-			<%
-			User curUser = null;
-
-			try {
-				curUser = UserLocalServiceUtil.getUserById(activity.getUserId());
-			}
-			catch (Exception e) {
-			}
-			%>
-
-			<div class="user-portrait">
-				<span class="avatar">
-					<img alt="<%= curUser.getFullName() %>" src="<%= curUser.getPortraitURL(themeDisplay) %>" />
-				</span>
-
-				<span class="icon">
-					<liferay-portlet:icon-portlet portlet="<%= portlet %>" />
-				</span>
-			</div>
-
-			<div class="activity-data">
-				<div class="activity-title">
-					<%= activityFeedEntry.getTitle() %>
-				</div>
-
-				<div class="activity-body">
-					<span class="time">
-						<%= timeFormatDate.format(activity.getCreateDate()) %>
-					</span>
-
-					<%= activityFeedEntry.getBody() %>
-				</div>
-			</div>
-		</div>
-
-	<%
-	}
-	%>
-
-	<c:if test="<%= activities.size() <= 0 %>">
-		<div class="portlet-msg-info">
-			<liferay-ui:message key="there-are-no-recent-activities" />
-		</div>
-	</c:if>
-</div>
+<c:if test="<%= (!results.isEmpty()) %>">
+	<liferay-ui:search-paginator
+		searchContainer="<%= searchContainer %>"
+		type="article"
+	/>
+</c:if>

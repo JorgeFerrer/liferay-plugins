@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -65,6 +65,7 @@ public class UserThreadCacheModel implements CacheModel<UserThread>,
 		return sb.toString();
 	}
 
+	@Override
 	public UserThread toEntityModel() {
 		UserThreadImpl userThreadImpl = new UserThreadImpl();
 
@@ -103,6 +104,7 @@ public class UserThreadCacheModel implements CacheModel<UserThread>,
 		return userThreadImpl;
 	}
 
+	@Override
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		userThreadId = objectInput.readLong();
 		companyId = objectInput.readLong();
@@ -116,6 +118,7 @@ public class UserThreadCacheModel implements CacheModel<UserThread>,
 		deleted = objectInput.readBoolean();
 	}
 
+	@Override
 	public void writeExternal(ObjectOutput objectOutput)
 		throws IOException {
 		objectOutput.writeLong(userThreadId);

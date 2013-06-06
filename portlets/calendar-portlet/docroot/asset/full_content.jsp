@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -87,10 +87,10 @@
 		/>
 
 		<%
-		java.util.Calendar startDateJCalendar = JCalendarUtil.getJCalendar(calendarBooking.getStartDate(), user.getTimeZone());
+		java.util.Calendar startTimeJCalendar = JCalendarUtil.getJCalendar(calendarBooking.getStartTime(), user.getTimeZone());
 		%>
 
-		<liferay-ui:message key="start-date" />: <%= dateFormatLongDate.format(startDateJCalendar.getTime()) + ", " + dateFormatTime.format(startDateJCalendar.getTime()) %>
+		<liferay-ui:message key="start-date" />: <%= dateFormatLongDate.format(startTimeJCalendar.getTime()) + ", " + dateFormatTime.format(startTimeJCalendar.getTime()) %>
 
 		<br />
 
@@ -100,10 +100,10 @@
 		/>
 
 		<%
-		java.util.Calendar endDateJCalendar = JCalendarUtil.getJCalendar(calendarBooking.getEndDate(), user.getTimeZone());
+		java.util.Calendar endTimeJCalendar = JCalendarUtil.getJCalendar(calendarBooking.getEndTime(), user.getTimeZone());
 		%>
 
-		<liferay-ui:message key="end-date" />: <%= dateFormatLongDate.format(endDateJCalendar.getTime()) + ", " + dateFormatTime.format(endDateJCalendar.getTime()) %>
+		<liferay-ui:message key="end-date" />: <%= dateFormatLongDate.format(endTimeJCalendar.getTime()) + ", " + dateFormatTime.format(endTimeJCalendar.getTime()) %>
 
 		<c:if test="<%= Validator.isNotNull(calendarBooking.getLocation()) %>">
 			<br /><br />
@@ -115,6 +115,15 @@
 
 			<liferay-ui:message key="location" />: <a href="https://maps.google.com.br/maps?q=<%= HtmlUtil.escapeHREF(calendarBooking.getLocation()) %>" target="_blank"><%= HtmlUtil.escape(calendarBooking.getLocation()) %></a>
 		</c:if>
+
+		<liferay-ui:custom-attributes-available className="<%= CalendarBooking.class.getName() %>">
+			<liferay-ui:custom-attribute-list
+				className="<%= CalendarBooking.class.getName() %>"
+				classPK="<%= (calendarBooking != null) ? calendarBooking.getCalendarBookingId() : 0 %>"
+				editable="<%= false %>"
+				label="<%= true %>"
+			/>
+		</liferay-ui:custom-attributes-available>
 	</p>
 </div>
 

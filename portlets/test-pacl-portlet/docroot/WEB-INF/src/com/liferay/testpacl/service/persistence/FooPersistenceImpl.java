@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,8 +14,6 @@
 
 package com.liferay.testpacl.service.persistence;
 
-import com.liferay.portal.NoSuchModelException;
-import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.cache.CacheRegistryUtil;
 import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
 import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
@@ -38,9 +36,6 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnmodifiableList;
 import com.liferay.portal.model.CacheModel;
 import com.liferay.portal.model.ModelListener;
-import com.liferay.portal.service.persistence.CompanyPersistence;
-import com.liferay.portal.service.persistence.GroupPersistence;
-import com.liferay.portal.service.persistence.UserPersistence;
 import com.liferay.portal.service.persistence.impl.BasePersistenceImpl;
 
 import com.liferay.testpacl.NoSuchFooException;
@@ -115,6 +110,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @return the matching foos
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Foo> findByField2(boolean field2) throws SystemException {
 		return findByField2(field2, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
@@ -132,6 +128,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @return the range of matching foos
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Foo> findByField2(boolean field2, int start, int end)
 		throws SystemException {
 		return findByField2(field2, start, end, null);
@@ -151,6 +148,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @return the ordered range of matching foos
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Foo> findByField2(boolean field2, int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -256,6 +254,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @throws com.liferay.testpacl.NoSuchFooException if a matching foo could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Foo findByField2_First(boolean field2,
 		OrderByComparator orderByComparator)
 		throws NoSuchFooException, SystemException {
@@ -285,6 +284,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @return the first matching foo, or <code>null</code> if a matching foo could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Foo fetchByField2_First(boolean field2,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<Foo> list = findByField2(field2, 0, 1, orderByComparator);
@@ -305,6 +305,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @throws com.liferay.testpacl.NoSuchFooException if a matching foo could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Foo findByField2_Last(boolean field2,
 		OrderByComparator orderByComparator)
 		throws NoSuchFooException, SystemException {
@@ -334,6 +335,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @return the last matching foo, or <code>null</code> if a matching foo could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Foo fetchByField2_Last(boolean field2,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByField2(field2);
@@ -358,6 +360,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @throws com.liferay.testpacl.NoSuchFooException if a foo with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Foo[] findByField2_PrevAndNext(long fooId, boolean field2,
 		OrderByComparator orderByComparator)
 		throws NoSuchFooException, SystemException {
@@ -498,6 +501,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @param field2 the field2
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByField2(boolean field2) throws SystemException {
 		for (Foo foo : findByField2(field2, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
@@ -512,6 +516,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @return the number of matching foos
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByField2(boolean field2) throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_FIELD2;
 
@@ -564,6 +569,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 *
 	 * @param foo the foo
 	 */
+	@Override
 	public void cacheResult(Foo foo) {
 		EntityCacheUtil.putResult(FooModelImpl.ENTITY_CACHE_ENABLED,
 			FooImpl.class, foo.getPrimaryKey(), foo);
@@ -576,6 +582,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 *
 	 * @param foos the foos
 	 */
+	@Override
 	public void cacheResult(List<Foo> foos) {
 		for (Foo foo : foos) {
 			if (EntityCacheUtil.getResult(FooModelImpl.ENTITY_CACHE_ENABLED,
@@ -641,6 +648,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @param fooId the primary key for the new foo
 	 * @return the new foo
 	 */
+	@Override
 	public Foo create(long fooId) {
 		Foo foo = new FooImpl();
 
@@ -658,8 +666,9 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @throws com.liferay.testpacl.NoSuchFooException if a foo with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Foo remove(long fooId) throws NoSuchFooException, SystemException {
-		return remove(Long.valueOf(fooId));
+		return remove((Serializable)fooId);
 	}
 
 	/**
@@ -772,15 +781,13 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 		else {
 			if ((fooModelImpl.getColumnBitmask() &
 					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_FIELD2.getColumnBitmask()) != 0) {
-				Object[] args = new Object[] {
-						Boolean.valueOf(fooModelImpl.getOriginalField2())
-					};
+				Object[] args = new Object[] { fooModelImpl.getOriginalField2() };
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_FIELD2, args);
 				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_FIELD2,
 					args);
 
-				args = new Object[] { Boolean.valueOf(fooModelImpl.getField2()) };
+				args = new Object[] { fooModelImpl.getField2() };
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_FIELD2, args);
 				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_FIELD2,
@@ -825,13 +832,24 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 *
 	 * @param primaryKey the primary key of the foo
 	 * @return the foo
-	 * @throws com.liferay.portal.NoSuchModelException if a foo with the primary key could not be found
+	 * @throws com.liferay.testpacl.NoSuchFooException if a foo with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
 	public Foo findByPrimaryKey(Serializable primaryKey)
-		throws NoSuchModelException, SystemException {
-		return findByPrimaryKey(((Long)primaryKey).longValue());
+		throws NoSuchFooException, SystemException {
+		Foo foo = fetchByPrimaryKey(primaryKey);
+
+		if (foo == null) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
+			}
+
+			throw new NoSuchFooException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
+				primaryKey);
+		}
+
+		return foo;
 	}
 
 	/**
@@ -842,20 +860,10 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @throws com.liferay.testpacl.NoSuchFooException if a foo with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Foo findByPrimaryKey(long fooId)
 		throws NoSuchFooException, SystemException {
-		Foo foo = fetchByPrimaryKey(fooId);
-
-		if (foo == null) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + fooId);
-			}
-
-			throw new NoSuchFooException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
-				fooId);
-		}
-
-		return foo;
+		return findByPrimaryKey((Serializable)fooId);
 	}
 
 	/**
@@ -868,19 +876,8 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	@Override
 	public Foo fetchByPrimaryKey(Serializable primaryKey)
 		throws SystemException {
-		return fetchByPrimaryKey(((Long)primaryKey).longValue());
-	}
-
-	/**
-	 * Returns the foo with the primary key or returns <code>null</code> if it could not be found.
-	 *
-	 * @param fooId the primary key of the foo
-	 * @return the foo, or <code>null</code> if a foo with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	public Foo fetchByPrimaryKey(long fooId) throws SystemException {
 		Foo foo = (Foo)EntityCacheUtil.getResult(FooModelImpl.ENTITY_CACHE_ENABLED,
-				FooImpl.class, fooId);
+				FooImpl.class, primaryKey);
 
 		if (foo == _nullFoo) {
 			return null;
@@ -892,19 +889,19 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 			try {
 				session = openSession();
 
-				foo = (Foo)session.get(FooImpl.class, Long.valueOf(fooId));
+				foo = (Foo)session.get(FooImpl.class, primaryKey);
 
 				if (foo != null) {
 					cacheResult(foo);
 				}
 				else {
 					EntityCacheUtil.putResult(FooModelImpl.ENTITY_CACHE_ENABLED,
-						FooImpl.class, fooId, _nullFoo);
+						FooImpl.class, primaryKey, _nullFoo);
 				}
 			}
 			catch (Exception e) {
 				EntityCacheUtil.removeResult(FooModelImpl.ENTITY_CACHE_ENABLED,
-					FooImpl.class, fooId);
+					FooImpl.class, primaryKey);
 
 				throw processException(e);
 			}
@@ -917,11 +914,24 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	}
 
 	/**
+	 * Returns the foo with the primary key or returns <code>null</code> if it could not be found.
+	 *
+	 * @param fooId the primary key of the foo
+	 * @return the foo, or <code>null</code> if a foo with the primary key could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public Foo fetchByPrimaryKey(long fooId) throws SystemException {
+		return fetchByPrimaryKey((Serializable)fooId);
+	}
+
+	/**
 	 * Returns all the foos.
 	 *
 	 * @return the foos
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Foo> findAll() throws SystemException {
 		return findAll(QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
@@ -938,6 +948,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @return the range of foos
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Foo> findAll(int start, int end) throws SystemException {
 		return findAll(start, end, null);
 	}
@@ -955,6 +966,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @return the ordered range of foos
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Foo> findAll(int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -1039,6 +1051,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 *
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeAll() throws SystemException {
 		for (Foo foo : findAll()) {
 			remove(foo);
@@ -1051,6 +1064,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @return the number of foos
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countAll() throws SystemException {
 		Long count = (Long)FinderCacheUtil.getResult(FINDER_PATH_COUNT_ALL,
 				FINDER_ARGS_EMPTY, this);
@@ -1096,7 +1110,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 
 				for (String listenerClassName : listenerClassNames) {
 					listenersList.add((ModelListener<Foo>)InstanceFactory.newInstance(
-							listenerClassName));
+							getClassLoader(), listenerClassName));
 				}
 
 				listeners = listenersList.toArray(new ModelListener[listenersList.size()]);
@@ -1114,14 +1128,6 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 		FinderCacheUtil.removeCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 	}
 
-	@BeanReference(type = FooPersistence.class)
-	protected FooPersistence fooPersistence;
-	@BeanReference(type = CompanyPersistence.class)
-	protected CompanyPersistence companyPersistence;
-	@BeanReference(type = GroupPersistence.class)
-	protected GroupPersistence groupPersistence;
-	@BeanReference(type = UserPersistence.class)
-	protected UserPersistence userPersistence;
 	private static final String _SQL_SELECT_FOO = "SELECT foo FROM Foo foo";
 	private static final String _SQL_SELECT_FOO_WHERE = "SELECT foo FROM Foo foo WHERE ";
 	private static final String _SQL_COUNT_FOO = "SELECT COUNT(foo) FROM Foo foo";
@@ -1145,6 +1151,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 		};
 
 	private static CacheModel<Foo> _nullFooCacheModel = new CacheModel<Foo>() {
+			@Override
 			public Foo toEntityModel() {
 				return _nullFoo;
 			}

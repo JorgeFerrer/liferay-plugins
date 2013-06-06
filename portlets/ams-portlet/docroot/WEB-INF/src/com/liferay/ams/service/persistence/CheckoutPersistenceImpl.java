@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -19,8 +19,6 @@ import com.liferay.ams.model.Checkout;
 import com.liferay.ams.model.impl.CheckoutImpl;
 import com.liferay.ams.model.impl.CheckoutModelImpl;
 
-import com.liferay.portal.NoSuchModelException;
-import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.cache.CacheRegistryUtil;
 import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
 import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
@@ -41,7 +39,6 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnmodifiableList;
 import com.liferay.portal.model.CacheModel;
 import com.liferay.portal.model.ModelListener;
-import com.liferay.portal.service.persistence.UserPersistence;
 import com.liferay.portal.service.persistence.impl.BasePersistenceImpl;
 
 import java.io.Serializable;
@@ -89,6 +86,7 @@ public class CheckoutPersistenceImpl extends BasePersistenceImpl<Checkout>
 	 *
 	 * @param checkout the checkout
 	 */
+	@Override
 	public void cacheResult(Checkout checkout) {
 		EntityCacheUtil.putResult(CheckoutModelImpl.ENTITY_CACHE_ENABLED,
 			CheckoutImpl.class, checkout.getPrimaryKey(), checkout);
@@ -101,6 +99,7 @@ public class CheckoutPersistenceImpl extends BasePersistenceImpl<Checkout>
 	 *
 	 * @param checkouts the checkouts
 	 */
+	@Override
 	public void cacheResult(List<Checkout> checkouts) {
 		for (Checkout checkout : checkouts) {
 			if (EntityCacheUtil.getResult(
@@ -167,6 +166,7 @@ public class CheckoutPersistenceImpl extends BasePersistenceImpl<Checkout>
 	 * @param checkoutId the primary key for the new checkout
 	 * @return the new checkout
 	 */
+	@Override
 	public Checkout create(long checkoutId) {
 		Checkout checkout = new CheckoutImpl();
 
@@ -184,9 +184,10 @@ public class CheckoutPersistenceImpl extends BasePersistenceImpl<Checkout>
 	 * @throws com.liferay.ams.NoSuchCheckoutException if a checkout with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Checkout remove(long checkoutId)
 		throws NoSuchCheckoutException, SystemException {
-		return remove(Long.valueOf(checkoutId));
+		return remove((Serializable)checkoutId);
 	}
 
 	/**
@@ -331,13 +332,24 @@ public class CheckoutPersistenceImpl extends BasePersistenceImpl<Checkout>
 	 *
 	 * @param primaryKey the primary key of the checkout
 	 * @return the checkout
-	 * @throws com.liferay.portal.NoSuchModelException if a checkout with the primary key could not be found
+	 * @throws com.liferay.ams.NoSuchCheckoutException if a checkout with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
 	public Checkout findByPrimaryKey(Serializable primaryKey)
-		throws NoSuchModelException, SystemException {
-		return findByPrimaryKey(((Long)primaryKey).longValue());
+		throws NoSuchCheckoutException, SystemException {
+		Checkout checkout = fetchByPrimaryKey(primaryKey);
+
+		if (checkout == null) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
+			}
+
+			throw new NoSuchCheckoutException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
+				primaryKey);
+		}
+
+		return checkout;
 	}
 
 	/**
@@ -348,20 +360,10 @@ public class CheckoutPersistenceImpl extends BasePersistenceImpl<Checkout>
 	 * @throws com.liferay.ams.NoSuchCheckoutException if a checkout with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Checkout findByPrimaryKey(long checkoutId)
 		throws NoSuchCheckoutException, SystemException {
-		Checkout checkout = fetchByPrimaryKey(checkoutId);
-
-		if (checkout == null) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + checkoutId);
-			}
-
-			throw new NoSuchCheckoutException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
-				checkoutId);
-		}
-
-		return checkout;
+		return findByPrimaryKey((Serializable)checkoutId);
 	}
 
 	/**
@@ -374,20 +376,8 @@ public class CheckoutPersistenceImpl extends BasePersistenceImpl<Checkout>
 	@Override
 	public Checkout fetchByPrimaryKey(Serializable primaryKey)
 		throws SystemException {
-		return fetchByPrimaryKey(((Long)primaryKey).longValue());
-	}
-
-	/**
-	 * Returns the checkout with the primary key or returns <code>null</code> if it could not be found.
-	 *
-	 * @param checkoutId the primary key of the checkout
-	 * @return the checkout, or <code>null</code> if a checkout with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	public Checkout fetchByPrimaryKey(long checkoutId)
-		throws SystemException {
 		Checkout checkout = (Checkout)EntityCacheUtil.getResult(CheckoutModelImpl.ENTITY_CACHE_ENABLED,
-				CheckoutImpl.class, checkoutId);
+				CheckoutImpl.class, primaryKey);
 
 		if (checkout == _nullCheckout) {
 			return null;
@@ -399,20 +389,19 @@ public class CheckoutPersistenceImpl extends BasePersistenceImpl<Checkout>
 			try {
 				session = openSession();
 
-				checkout = (Checkout)session.get(CheckoutImpl.class,
-						Long.valueOf(checkoutId));
+				checkout = (Checkout)session.get(CheckoutImpl.class, primaryKey);
 
 				if (checkout != null) {
 					cacheResult(checkout);
 				}
 				else {
 					EntityCacheUtil.putResult(CheckoutModelImpl.ENTITY_CACHE_ENABLED,
-						CheckoutImpl.class, checkoutId, _nullCheckout);
+						CheckoutImpl.class, primaryKey, _nullCheckout);
 				}
 			}
 			catch (Exception e) {
 				EntityCacheUtil.removeResult(CheckoutModelImpl.ENTITY_CACHE_ENABLED,
-					CheckoutImpl.class, checkoutId);
+					CheckoutImpl.class, primaryKey);
 
 				throw processException(e);
 			}
@@ -425,11 +414,25 @@ public class CheckoutPersistenceImpl extends BasePersistenceImpl<Checkout>
 	}
 
 	/**
+	 * Returns the checkout with the primary key or returns <code>null</code> if it could not be found.
+	 *
+	 * @param checkoutId the primary key of the checkout
+	 * @return the checkout, or <code>null</code> if a checkout with the primary key could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public Checkout fetchByPrimaryKey(long checkoutId)
+		throws SystemException {
+		return fetchByPrimaryKey((Serializable)checkoutId);
+	}
+
+	/**
 	 * Returns all the checkouts.
 	 *
 	 * @return the checkouts
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Checkout> findAll() throws SystemException {
 		return findAll(QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
@@ -446,6 +449,7 @@ public class CheckoutPersistenceImpl extends BasePersistenceImpl<Checkout>
 	 * @return the range of checkouts
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Checkout> findAll(int start, int end) throws SystemException {
 		return findAll(start, end, null);
 	}
@@ -463,6 +467,7 @@ public class CheckoutPersistenceImpl extends BasePersistenceImpl<Checkout>
 	 * @return the ordered range of checkouts
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Checkout> findAll(int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -548,6 +553,7 @@ public class CheckoutPersistenceImpl extends BasePersistenceImpl<Checkout>
 	 *
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeAll() throws SystemException {
 		for (Checkout checkout : findAll()) {
 			remove(checkout);
@@ -560,6 +566,7 @@ public class CheckoutPersistenceImpl extends BasePersistenceImpl<Checkout>
 	 * @return the number of checkouts
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countAll() throws SystemException {
 		Long count = (Long)FinderCacheUtil.getResult(FINDER_PATH_COUNT_ALL,
 				FINDER_ARGS_EMPTY, this);
@@ -605,7 +612,7 @@ public class CheckoutPersistenceImpl extends BasePersistenceImpl<Checkout>
 
 				for (String listenerClassName : listenerClassNames) {
 					listenersList.add((ModelListener<Checkout>)InstanceFactory.newInstance(
-							listenerClassName));
+							getClassLoader(), listenerClassName));
 				}
 
 				listeners = listenersList.toArray(new ModelListener[listenersList.size()]);
@@ -623,16 +630,6 @@ public class CheckoutPersistenceImpl extends BasePersistenceImpl<Checkout>
 		FinderCacheUtil.removeCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 	}
 
-	@BeanReference(type = AssetPersistence.class)
-	protected AssetPersistence assetPersistence;
-	@BeanReference(type = CheckoutPersistence.class)
-	protected CheckoutPersistence checkoutPersistence;
-	@BeanReference(type = DefinitionPersistence.class)
-	protected DefinitionPersistence definitionPersistence;
-	@BeanReference(type = TypePersistence.class)
-	protected TypePersistence typePersistence;
-	@BeanReference(type = UserPersistence.class)
-	protected UserPersistence userPersistence;
 	private static final String _SQL_SELECT_CHECKOUT = "SELECT checkout FROM Checkout checkout";
 	private static final String _SQL_COUNT_CHECKOUT = "SELECT COUNT(checkout) FROM Checkout checkout";
 	private static final String _ORDER_BY_ENTITY_ALIAS = "checkout.";
@@ -653,6 +650,7 @@ public class CheckoutPersistenceImpl extends BasePersistenceImpl<Checkout>
 		};
 
 	private static CacheModel<Checkout> _nullCheckoutCacheModel = new CacheModel<Checkout>() {
+			@Override
 			public Checkout toEntityModel() {
 				return _nullCheckout;
 			}

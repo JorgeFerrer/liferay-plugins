@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -48,8 +48,6 @@ public class AdminPortlet extends MVCPortlet {
 			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws Exception {
 
-		checkPermissions(actionRequest);
-
 		long wsrpConsumerId = ParamUtil.getLong(
 			actionRequest, "wsrpConsumerId");
 
@@ -59,8 +57,6 @@ public class AdminPortlet extends MVCPortlet {
 	public void deleteWSRPConsumerPortlet(
 			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws Exception {
-
-		checkPermissions(actionRequest);
 
 		long wsrpConsumerPortletId = ParamUtil.getLong(
 			actionRequest, "wsrpConsumerPortletId");
@@ -73,8 +69,6 @@ public class AdminPortlet extends MVCPortlet {
 			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws Exception {
 
-		checkPermissions(actionRequest);
-
 		long wsrpProducerId = ParamUtil.getLong(
 			actionRequest, "wsrpProducerId");
 
@@ -84,8 +78,6 @@ public class AdminPortlet extends MVCPortlet {
 	public void restartConsumer(
 			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws Exception {
-
-		checkPermissions(actionRequest);
 
 		try {
 			doRestartConsumer(actionRequest, actionResponse);
@@ -99,8 +91,6 @@ public class AdminPortlet extends MVCPortlet {
 			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws Exception {
 
-		checkPermissions(actionRequest);
-
 		try {
 			doUpdateServiceDescription(actionRequest, actionResponse);
 		}
@@ -112,8 +102,6 @@ public class AdminPortlet extends MVCPortlet {
 	public void updateWSRPConsumer(
 			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws Exception {
-
-		checkPermissions(actionRequest);
 
 		try {
 			doUpdateWSRPConsumer(actionRequest, actionResponse);
@@ -127,8 +115,6 @@ public class AdminPortlet extends MVCPortlet {
 			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws Exception {
 
-		checkPermissions(actionRequest);
-
 		try {
 			doUpdateWSRPConsumerPortlet(actionRequest, actionResponse);
 		}
@@ -140,8 +126,6 @@ public class AdminPortlet extends MVCPortlet {
 	public void updateWSRPConsumerRegistration(
 			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws Exception {
-
-		checkPermissions(actionRequest);
 
 		try {
 			doUpdateWSRPConsumerRegistration(actionRequest, actionResponse);
@@ -155,8 +139,6 @@ public class AdminPortlet extends MVCPortlet {
 			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws Exception {
 
-		checkPermissions(actionRequest);
-
 		try {
 			doUpdateWSRPProducer(actionRequest, actionResponse);
 		}
@@ -165,6 +147,7 @@ public class AdminPortlet extends MVCPortlet {
 		}
 	}
 
+	@Override
 	protected void checkPermissions(PortletRequest portletRequest)
 		throws Exception {
 
@@ -190,7 +173,7 @@ public class AdminPortlet extends MVCPortlet {
 	}
 
 	protected void doUpdateServiceDescription(
-		ActionRequest actionRequest, ActionResponse actionResponse)
+			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws Exception {
 
 		long wsrpConsumerId = ParamUtil.getLong(

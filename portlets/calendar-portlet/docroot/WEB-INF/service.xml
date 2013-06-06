@@ -33,6 +33,8 @@
 		<column name="description" type="String" localized="true" />
 		<column name="color" type="int" />
 		<column name="defaultCalendar" type="boolean" />
+		<column name="enableComments" type="boolean" />
+		<column name="enableRatings" type="boolean" />
 
 		<!-- Order -->
 
@@ -70,6 +72,10 @@
 		<column name="createDate" type="Date" />
 		<column name="modifiedDate" type="Date" />
 
+		<!-- Permission fields -->
+
+		<column name="resourceBlockId" type="long" />
+
 		<!-- Other fields -->
 
 		<column name="calendarId" type="long" />
@@ -78,8 +84,8 @@
 		<column name="title" type="String" localized="true" />
 		<column name="description" type="String" localized="true" />
 		<column name="location" type="String" />
-		<column name="startDate" type="long" />
-		<column name="endDate" type="long" />
+		<column name="startTime" type="long" />
+		<column name="endTime" type="long" />
 		<column name="allDay" type="boolean" />
 		<column name="recurrence" type="String" />
 		<column name="firstReminder" type="long" />
@@ -94,7 +100,7 @@
 		<!-- Order -->
 
 		<order by="asc">
-			<order-column name="startDate" />
+			<order-column name="startTime" />
 			<order-column name="title" case-sensitive="false" />
 		</order>
 
@@ -121,19 +127,74 @@
 			<finder-column name="parentCalendarBookingId" />
 			<finder-column name="status" />
 		</finder>
-		<finder name="C_S_E" return-type="Collection">
-			<finder-column name="calendarId" />
-			<finder-column name="startDate" />
-			<finder-column name="endDate" />
-		</finder>
 
 		<!-- References -->
 
 		<reference package-path="com.liferay.mail" entity="Mail" />
+		<reference package-path="com.liferay.portal" entity="Subscription" />
 		<reference package-path="com.liferay.portlet.asset" entity="AssetEntry" />
 		<reference package-path="com.liferay.portlet.asset" entity="AssetLink" />
+		<reference package-path="com.liferay.portlet.messageboards" entity="MBMessage" />
+		<reference package-path="com.liferay.portlet.ratings" entity="RatingsStats" />
+		<reference package-path="com.liferay.portlet.social" entity="SocialActivity" />
 	</entity>
+	<entity name="CalendarImporter" local-service="true" remote-service="false">
 
+		<!-- References -->
+
+		<reference package-path="com.liferay.portal" entity="Group" />
+		<reference package-path="com.liferay.portal" entity="ResourceAction" />
+		<reference package-path="com.liferay.portal" entity="ResourceBlock" />
+		<reference package-path="com.liferay.portal" entity="ResourcePermission" />
+		<reference package-path="com.liferay.portal" entity="Subscription" />
+		<reference package-path="com.liferay.portlet.asset" entity="AssetCategory" />
+		<reference package-path="com.liferay.portlet.asset" entity="AssetEntry" />
+		<reference package-path="com.liferay.portlet.asset" entity="AssetLink" />
+		<reference package-path="com.liferay.portlet.asset" entity="AssetVocabulary" />
+		<reference package-path="com.liferay.portlet.calendar" entity="CalEvent" />
+		<reference package-path="com.liferay.portlet.calendar" entity="CalEvent" />
+		<reference package-path="com.liferay.portlet.messageboards" entity="MBDiscussion" />
+		<reference package-path="com.liferay.portlet.messageboards" entity="MBMessage" />
+		<reference package-path="com.liferay.portlet.messageboards" entity="MBThread" />
+		<reference package-path="com.liferay.portlet.ratings" entity="RatingsEntry" />
+		<reference package-path="com.liferay.portlet.ratings" entity="RatingsStats" />
+		<reference package-path="com.liferay.portlet.social" entity="SocialActivity" />
+	</entity>
+	<entity name="CalendarNotificationTemplate" uuid="true" local-service="true" remote-service="true">
+
+		<!-- PK fields -->
+
+		<column name="calendarNotificationTemplateId" type="long" primary="true" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="calendarId" type="long" />
+		<column name="notificationType" type="String" />
+		<column name="notificationTypeSettings" type="String" />
+		<column name="notificationTemplateType" type="String" />
+		<column name="subject" type="String" />
+		<column name="body" type="String" />
+
+		<!-- Finder methods -->
+
+		<finder name="C_NT_NTT" return-type="CalendarNotificationTemplate">
+			<finder-column name="calendarId" />
+			<finder-column name="notificationType" />
+			<finder-column name="notificationTemplateType" />
+		</finder>
+	</entity>
 	<entity name="CalendarResource" uuid="true" local-service="true" remote-service="true">
 
 		<!-- PK fields -->
@@ -164,7 +225,6 @@
 		<column name="code" type="String" />
 		<column name="name" type="String" localized="true" />
 		<column name="description" type="String" localized="true" />
-		<column name="type" type="String" />
 		<column name="active" type="boolean" />
 
 		<!-- Order -->
@@ -208,14 +268,20 @@
 			<finder-column name="name" comparator="LIKE" />
 			<finder-column name="active" />
 		</finder>
+
+		<!-- References -->
+
+		<reference package-path="com.liferay.portlet.asset" entity="AssetEntry" />
 	</entity>
 	<exceptions>
 		<exception>CalendarBookingDuration</exception>
-		<exception>CalendarBookingEndDate</exception>
-		<exception>CalendarBookingStartDate</exception>
+		<exception>CalendarBookingEndTime</exception>
+		<exception>CalendarBookingStartTime</exception>
 		<exception>CalendarBookingTitle</exception>
 		<exception>CalendarName</exception>
 		<exception>CalendarResourceCode</exception>
+		<exception>CalendarResourceName</exception>
 		<exception>DuplicateCalendarResource</exception>
+		<exception>RequiredCalendar</exception>
 	</exceptions>
 </service-builder>

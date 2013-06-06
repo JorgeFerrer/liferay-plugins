@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -26,13 +26,11 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * <p>
- * This class provides a SOAP utility for the
+ * Provides the SOAP utility for the
  * {@link com.liferay.calendar.service.CalendarResourceServiceUtil} service utility. The
  * static methods of this class calls the same methods of the service utility.
  * However, the signatures are different because it is difficult for SOAP to
  * support certain types.
- * </p>
  *
  * <p>
  * ServiceBuilder follows certain rules in translating the methods. For example,
@@ -74,8 +72,8 @@ public class CalendarResourceServiceSoap {
 		java.lang.String[] nameMapLanguageIds,
 		java.lang.String[] nameMapValues,
 		java.lang.String[] descriptionMapLanguageIds,
-		java.lang.String[] descriptionMapValues, java.lang.String type,
-		boolean active, com.liferay.portal.service.ServiceContext serviceContext)
+		java.lang.String[] descriptionMapValues, boolean active,
+		com.liferay.portal.service.ServiceContext serviceContext)
 		throws RemoteException {
 		try {
 			Map<Locale, String> nameMap = LocalizationUtil.getLocalizationMap(nameMapLanguageIds,
@@ -85,7 +83,7 @@ public class CalendarResourceServiceSoap {
 
 			com.liferay.calendar.model.CalendarResource returnValue = CalendarResourceServiceUtil.addCalendarResource(groupId,
 					className, classPK, classUuid, code, nameMap,
-					descriptionMap, type, active, serviceContext);
+					descriptionMap, active, serviceContext);
 
 			return com.liferay.calendar.model.CalendarResourceSoap.toSoapModel(returnValue);
 		}
@@ -163,15 +161,15 @@ public class CalendarResourceServiceSoap {
 	public static com.liferay.calendar.model.CalendarResourceSoap[] search(
 		long companyId, long[] groupIds, long[] classNameIds,
 		java.lang.String code, java.lang.String name,
-		java.lang.String description, java.lang.String type, boolean active,
-		boolean andOperator, int start, int end,
+		java.lang.String description, boolean active, boolean andOperator,
+		int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
 		throws RemoteException {
 		try {
 			java.util.List<com.liferay.calendar.model.CalendarResource> returnValue =
 				CalendarResourceServiceUtil.search(companyId, groupIds,
-					classNameIds, code, name, description, type, active,
-					andOperator, start, end, orderByComparator);
+					classNameIds, code, name, description, active, andOperator,
+					start, end, orderByComparator);
 
 			return com.liferay.calendar.model.CalendarResourceSoap.toSoapModels(returnValue);
 		}
@@ -200,12 +198,12 @@ public class CalendarResourceServiceSoap {
 
 	public static int searchCount(long companyId, long[] groupIds,
 		long[] classNameIds, java.lang.String code, java.lang.String name,
-		java.lang.String description, java.lang.String type, boolean active,
-		boolean andOperator) throws RemoteException {
+		java.lang.String description, boolean active, boolean andOperator)
+		throws RemoteException {
 		try {
 			int returnValue = CalendarResourceServiceUtil.searchCount(companyId,
-					groupIds, classNameIds, code, name, description, type,
-					active, andOperator);
+					groupIds, classNameIds, code, name, description, active,
+					andOperator);
 
 			return returnValue;
 		}
@@ -220,8 +218,8 @@ public class CalendarResourceServiceSoap {
 		long calendarResourceId, java.lang.String[] nameMapLanguageIds,
 		java.lang.String[] nameMapValues,
 		java.lang.String[] descriptionMapLanguageIds,
-		java.lang.String[] descriptionMapValues, java.lang.String type,
-		boolean active, com.liferay.portal.service.ServiceContext serviceContext)
+		java.lang.String[] descriptionMapValues, boolean active,
+		com.liferay.portal.service.ServiceContext serviceContext)
 		throws RemoteException {
 		try {
 			Map<Locale, String> nameMap = LocalizationUtil.getLocalizationMap(nameMapLanguageIds,
@@ -230,7 +228,7 @@ public class CalendarResourceServiceSoap {
 					descriptionMapValues);
 
 			com.liferay.calendar.model.CalendarResource returnValue = CalendarResourceServiceUtil.updateCalendarResource(calendarResourceId,
-					nameMap, descriptionMap, type, active, serviceContext);
+					nameMap, descriptionMap, active, serviceContext);
 
 			return com.liferay.calendar.model.CalendarResourceSoap.toSoapModel(returnValue);
 		}

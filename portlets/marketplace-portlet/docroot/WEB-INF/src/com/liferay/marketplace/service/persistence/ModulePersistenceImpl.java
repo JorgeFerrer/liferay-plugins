@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -19,8 +19,6 @@ import com.liferay.marketplace.model.Module;
 import com.liferay.marketplace.model.impl.ModuleImpl;
 import com.liferay.marketplace.model.impl.ModuleModelImpl;
 
-import com.liferay.portal.NoSuchModelException;
-import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.cache.CacheRegistryUtil;
 import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
 import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
@@ -37,6 +35,7 @@ import com.liferay.portal.kernel.util.InstanceFactory;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -45,7 +44,6 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import com.liferay.portal.model.CacheModel;
 import com.liferay.portal.model.ModelListener;
-import com.liferay.portal.service.persistence.UserPersistence;
 import com.liferay.portal.service.persistence.impl.BasePersistenceImpl;
 
 import java.io.Serializable;
@@ -53,6 +51,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * The persistence implementation for the module service.
@@ -113,6 +112,7 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 	 * @return the matching modules
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Module> findByUuid(String uuid) throws SystemException {
 		return findByUuid(uuid, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
@@ -130,6 +130,7 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 	 * @return the range of matching modules
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Module> findByUuid(String uuid, int start, int end)
 		throws SystemException {
 		return findByUuid(uuid, start, end, null);
@@ -149,6 +150,7 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 	 * @return the ordered range of matching modules
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Module> findByUuid(String uuid, int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -192,16 +194,18 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 
 			query.append(_SQL_SELECT_MODULE_WHERE);
 
+			boolean bindUuid = false;
+
 			if (uuid == null) {
 				query.append(_FINDER_COLUMN_UUID_UUID_1);
 			}
+			else if (uuid.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_UUID_UUID_3);
+			}
 			else {
-				if (uuid.equals(StringPool.BLANK)) {
-					query.append(_FINDER_COLUMN_UUID_UUID_3);
-				}
-				else {
-					query.append(_FINDER_COLUMN_UUID_UUID_2);
-				}
+				bindUuid = true;
+
+				query.append(_FINDER_COLUMN_UUID_UUID_2);
 			}
 
 			if (orderByComparator != null) {
@@ -224,7 +228,7 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 
 				QueryPos qPos = QueryPos.getInstance(q);
 
-				if (uuid != null) {
+				if (bindUuid) {
 					qPos.add(uuid);
 				}
 
@@ -267,6 +271,7 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 	 * @throws com.liferay.marketplace.NoSuchModuleException if a matching module could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Module findByUuid_First(String uuid,
 		OrderByComparator orderByComparator)
 		throws NoSuchModuleException, SystemException {
@@ -296,6 +301,7 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 	 * @return the first matching module, or <code>null</code> if a matching module could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Module fetchByUuid_First(String uuid,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<Module> list = findByUuid(uuid, 0, 1, orderByComparator);
@@ -316,6 +322,7 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 	 * @throws com.liferay.marketplace.NoSuchModuleException if a matching module could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Module findByUuid_Last(String uuid,
 		OrderByComparator orderByComparator)
 		throws NoSuchModuleException, SystemException {
@@ -345,6 +352,7 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 	 * @return the last matching module, or <code>null</code> if a matching module could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Module fetchByUuid_Last(String uuid,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByUuid(uuid);
@@ -368,6 +376,7 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 	 * @throws com.liferay.marketplace.NoSuchModuleException if a module with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Module[] findByUuid_PrevAndNext(long moduleId, String uuid,
 		OrderByComparator orderByComparator)
 		throws NoSuchModuleException, SystemException {
@@ -412,16 +421,18 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 
 		query.append(_SQL_SELECT_MODULE_WHERE);
 
+		boolean bindUuid = false;
+
 		if (uuid == null) {
 			query.append(_FINDER_COLUMN_UUID_UUID_1);
 		}
+		else if (uuid.equals(StringPool.BLANK)) {
+			query.append(_FINDER_COLUMN_UUID_UUID_3);
+		}
 		else {
-			if (uuid.equals(StringPool.BLANK)) {
-				query.append(_FINDER_COLUMN_UUID_UUID_3);
-			}
-			else {
-				query.append(_FINDER_COLUMN_UUID_UUID_2);
-			}
+			bindUuid = true;
+
+			query.append(_FINDER_COLUMN_UUID_UUID_2);
 		}
 
 		if (orderByComparator != null) {
@@ -492,7 +503,7 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 
 		QueryPos qPos = QueryPos.getInstance(q);
 
-		if (uuid != null) {
+		if (bindUuid) {
 			qPos.add(uuid);
 		}
 
@@ -520,6 +531,7 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 	 * @param uuid the uuid
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByUuid(String uuid) throws SystemException {
 		for (Module module : findByUuid(uuid, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
@@ -534,6 +546,7 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 	 * @return the number of matching modules
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByUuid(String uuid) throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_UUID;
 
@@ -547,16 +560,18 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 
 			query.append(_SQL_COUNT_MODULE_WHERE);
 
+			boolean bindUuid = false;
+
 			if (uuid == null) {
 				query.append(_FINDER_COLUMN_UUID_UUID_1);
 			}
+			else if (uuid.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_UUID_UUID_3);
+			}
 			else {
-				if (uuid.equals(StringPool.BLANK)) {
-					query.append(_FINDER_COLUMN_UUID_UUID_3);
-				}
-				else {
-					query.append(_FINDER_COLUMN_UUID_UUID_2);
-				}
+				bindUuid = true;
+
+				query.append(_FINDER_COLUMN_UUID_UUID_2);
 			}
 
 			String sql = query.toString();
@@ -570,7 +585,7 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 
 				QueryPos qPos = QueryPos.getInstance(q);
 
-				if (uuid != null) {
+				if (bindUuid) {
 					qPos.add(uuid);
 				}
 
@@ -593,7 +608,7 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 
 	private static final String _FINDER_COLUMN_UUID_UUID_1 = "module.uuid IS NULL";
 	private static final String _FINDER_COLUMN_UUID_UUID_2 = "module.uuid = ?";
-	private static final String _FINDER_COLUMN_UUID_UUID_3 = "(module.uuid IS NULL OR module.uuid = ?)";
+	private static final String _FINDER_COLUMN_UUID_UUID_3 = "(module.uuid IS NULL OR module.uuid = '')";
 	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_APPID = new FinderPath(ModuleModelImpl.ENTITY_CACHE_ENABLED,
 			ModuleModelImpl.FINDER_CACHE_ENABLED, ModuleImpl.class,
 			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByAppId",
@@ -620,6 +635,7 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 	 * @return the matching modules
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Module> findByAppId(long appId) throws SystemException {
 		return findByAppId(appId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
@@ -637,6 +653,7 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 	 * @return the range of matching modules
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Module> findByAppId(long appId, int start, int end)
 		throws SystemException {
 		return findByAppId(appId, start, end, null);
@@ -656,6 +673,7 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 	 * @return the ordered range of matching modules
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Module> findByAppId(long appId, int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -762,6 +780,7 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 	 * @throws com.liferay.marketplace.NoSuchModuleException if a matching module could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Module findByAppId_First(long appId,
 		OrderByComparator orderByComparator)
 		throws NoSuchModuleException, SystemException {
@@ -791,6 +810,7 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 	 * @return the first matching module, or <code>null</code> if a matching module could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Module fetchByAppId_First(long appId,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<Module> list = findByAppId(appId, 0, 1, orderByComparator);
@@ -811,6 +831,7 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 	 * @throws com.liferay.marketplace.NoSuchModuleException if a matching module could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Module findByAppId_Last(long appId,
 		OrderByComparator orderByComparator)
 		throws NoSuchModuleException, SystemException {
@@ -840,6 +861,7 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 	 * @return the last matching module, or <code>null</code> if a matching module could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Module fetchByAppId_Last(long appId,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByAppId(appId);
@@ -864,6 +886,7 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 	 * @throws com.liferay.marketplace.NoSuchModuleException if a module with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Module[] findByAppId_PrevAndNext(long moduleId, long appId,
 		OrderByComparator orderByComparator)
 		throws NoSuchModuleException, SystemException {
@@ -1004,6 +1027,7 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 	 * @param appId the app ID
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByAppId(long appId) throws SystemException {
 		for (Module module : findByAppId(appId, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
@@ -1018,6 +1042,7 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 	 * @return the number of matching modules
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByAppId(long appId) throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_APPID;
 
@@ -1092,6 +1117,7 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 	 * @return the matching modules
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Module> findByContextName(String contextName)
 		throws SystemException {
 		return findByContextName(contextName, QueryUtil.ALL_POS,
@@ -1111,6 +1137,7 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 	 * @return the range of matching modules
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Module> findByContextName(String contextName, int start, int end)
 		throws SystemException {
 		return findByContextName(contextName, start, end, null);
@@ -1130,6 +1157,7 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 	 * @return the ordered range of matching modules
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Module> findByContextName(String contextName, int start,
 		int end, OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -1173,16 +1201,18 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 
 			query.append(_SQL_SELECT_MODULE_WHERE);
 
+			boolean bindContextName = false;
+
 			if (contextName == null) {
 				query.append(_FINDER_COLUMN_CONTEXTNAME_CONTEXTNAME_1);
 			}
+			else if (contextName.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_CONTEXTNAME_CONTEXTNAME_3);
+			}
 			else {
-				if (contextName.equals(StringPool.BLANK)) {
-					query.append(_FINDER_COLUMN_CONTEXTNAME_CONTEXTNAME_3);
-				}
-				else {
-					query.append(_FINDER_COLUMN_CONTEXTNAME_CONTEXTNAME_2);
-				}
+				bindContextName = true;
+
+				query.append(_FINDER_COLUMN_CONTEXTNAME_CONTEXTNAME_2);
 			}
 
 			if (orderByComparator != null) {
@@ -1205,7 +1235,7 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 
 				QueryPos qPos = QueryPos.getInstance(q);
 
-				if (contextName != null) {
+				if (bindContextName) {
 					qPos.add(contextName);
 				}
 
@@ -1248,6 +1278,7 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 	 * @throws com.liferay.marketplace.NoSuchModuleException if a matching module could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Module findByContextName_First(String contextName,
 		OrderByComparator orderByComparator)
 		throws NoSuchModuleException, SystemException {
@@ -1277,6 +1308,7 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 	 * @return the first matching module, or <code>null</code> if a matching module could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Module fetchByContextName_First(String contextName,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<Module> list = findByContextName(contextName, 0, 1,
@@ -1298,6 +1330,7 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 	 * @throws com.liferay.marketplace.NoSuchModuleException if a matching module could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Module findByContextName_Last(String contextName,
 		OrderByComparator orderByComparator)
 		throws NoSuchModuleException, SystemException {
@@ -1327,6 +1360,7 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 	 * @return the last matching module, or <code>null</code> if a matching module could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Module fetchByContextName_Last(String contextName,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByContextName(contextName);
@@ -1351,6 +1385,7 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 	 * @throws com.liferay.marketplace.NoSuchModuleException if a module with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Module[] findByContextName_PrevAndNext(long moduleId,
 		String contextName, OrderByComparator orderByComparator)
 		throws NoSuchModuleException, SystemException {
@@ -1396,16 +1431,18 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 
 		query.append(_SQL_SELECT_MODULE_WHERE);
 
+		boolean bindContextName = false;
+
 		if (contextName == null) {
 			query.append(_FINDER_COLUMN_CONTEXTNAME_CONTEXTNAME_1);
 		}
+		else if (contextName.equals(StringPool.BLANK)) {
+			query.append(_FINDER_COLUMN_CONTEXTNAME_CONTEXTNAME_3);
+		}
 		else {
-			if (contextName.equals(StringPool.BLANK)) {
-				query.append(_FINDER_COLUMN_CONTEXTNAME_CONTEXTNAME_3);
-			}
-			else {
-				query.append(_FINDER_COLUMN_CONTEXTNAME_CONTEXTNAME_2);
-			}
+			bindContextName = true;
+
+			query.append(_FINDER_COLUMN_CONTEXTNAME_CONTEXTNAME_2);
 		}
 
 		if (orderByComparator != null) {
@@ -1476,7 +1513,7 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 
 		QueryPos qPos = QueryPos.getInstance(q);
 
-		if (contextName != null) {
+		if (bindContextName) {
 			qPos.add(contextName);
 		}
 
@@ -1504,6 +1541,7 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 	 * @param contextName the context name
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByContextName(String contextName)
 		throws SystemException {
 		for (Module module : findByContextName(contextName, QueryUtil.ALL_POS,
@@ -1519,6 +1557,7 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 	 * @return the number of matching modules
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByContextName(String contextName) throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_CONTEXTNAME;
 
@@ -1532,16 +1571,18 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 
 			query.append(_SQL_COUNT_MODULE_WHERE);
 
+			boolean bindContextName = false;
+
 			if (contextName == null) {
 				query.append(_FINDER_COLUMN_CONTEXTNAME_CONTEXTNAME_1);
 			}
+			else if (contextName.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_CONTEXTNAME_CONTEXTNAME_3);
+			}
 			else {
-				if (contextName.equals(StringPool.BLANK)) {
-					query.append(_FINDER_COLUMN_CONTEXTNAME_CONTEXTNAME_3);
-				}
-				else {
-					query.append(_FINDER_COLUMN_CONTEXTNAME_CONTEXTNAME_2);
-				}
+				bindContextName = true;
+
+				query.append(_FINDER_COLUMN_CONTEXTNAME_CONTEXTNAME_2);
 			}
 
 			String sql = query.toString();
@@ -1555,7 +1596,7 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 
 				QueryPos qPos = QueryPos.getInstance(q);
 
-				if (contextName != null) {
+				if (bindContextName) {
 					qPos.add(contextName);
 				}
 
@@ -1578,7 +1619,7 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 
 	private static final String _FINDER_COLUMN_CONTEXTNAME_CONTEXTNAME_1 = "module.contextName IS NULL";
 	private static final String _FINDER_COLUMN_CONTEXTNAME_CONTEXTNAME_2 = "module.contextName = ?";
-	private static final String _FINDER_COLUMN_CONTEXTNAME_CONTEXTNAME_3 = "(module.contextName IS NULL OR module.contextName = ?)";
+	private static final String _FINDER_COLUMN_CONTEXTNAME_CONTEXTNAME_3 = "(module.contextName IS NULL OR module.contextName = '')";
 	public static final FinderPath FINDER_PATH_FETCH_BY_A_C = new FinderPath(ModuleModelImpl.ENTITY_CACHE_ENABLED,
 			ModuleModelImpl.FINDER_CACHE_ENABLED, ModuleImpl.class,
 			FINDER_CLASS_NAME_ENTITY, "fetchByA_C",
@@ -1599,6 +1640,7 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 	 * @throws com.liferay.marketplace.NoSuchModuleException if a matching module could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Module findByA_C(long appId, String contextName)
 		throws NoSuchModuleException, SystemException {
 		Module module = fetchByA_C(appId, contextName);
@@ -1634,6 +1676,7 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 	 * @return the matching module, or <code>null</code> if a matching module could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Module fetchByA_C(long appId, String contextName)
 		throws SystemException {
 		return fetchByA_C(appId, contextName, true);
@@ -1648,6 +1691,7 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 	 * @return the matching module, or <code>null</code> if a matching module could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Module fetchByA_C(long appId, String contextName,
 		boolean retrieveFromCache) throws SystemException {
 		Object[] finderArgs = new Object[] { appId, contextName };
@@ -1675,16 +1719,18 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 
 			query.append(_FINDER_COLUMN_A_C_APPID_2);
 
+			boolean bindContextName = false;
+
 			if (contextName == null) {
 				query.append(_FINDER_COLUMN_A_C_CONTEXTNAME_1);
 			}
+			else if (contextName.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_A_C_CONTEXTNAME_3);
+			}
 			else {
-				if (contextName.equals(StringPool.BLANK)) {
-					query.append(_FINDER_COLUMN_A_C_CONTEXTNAME_3);
-				}
-				else {
-					query.append(_FINDER_COLUMN_A_C_CONTEXTNAME_2);
-				}
+				bindContextName = true;
+
+				query.append(_FINDER_COLUMN_A_C_CONTEXTNAME_2);
 			}
 
 			String sql = query.toString();
@@ -1700,7 +1746,7 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 
 				qPos.add(appId);
 
-				if (contextName != null) {
+				if (bindContextName) {
 					qPos.add(contextName);
 				}
 
@@ -1759,6 +1805,7 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 	 * @return the module that was removed
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Module removeByA_C(long appId, String contextName)
 		throws NoSuchModuleException, SystemException {
 		Module module = findByA_C(appId, contextName);
@@ -1774,6 +1821,7 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 	 * @return the number of matching modules
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByA_C(long appId, String contextName)
 		throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_A_C;
@@ -1790,16 +1838,18 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 
 			query.append(_FINDER_COLUMN_A_C_APPID_2);
 
+			boolean bindContextName = false;
+
 			if (contextName == null) {
 				query.append(_FINDER_COLUMN_A_C_CONTEXTNAME_1);
 			}
+			else if (contextName.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_A_C_CONTEXTNAME_3);
+			}
 			else {
-				if (contextName.equals(StringPool.BLANK)) {
-					query.append(_FINDER_COLUMN_A_C_CONTEXTNAME_3);
-				}
-				else {
-					query.append(_FINDER_COLUMN_A_C_CONTEXTNAME_2);
-				}
+				bindContextName = true;
+
+				query.append(_FINDER_COLUMN_A_C_CONTEXTNAME_2);
 			}
 
 			String sql = query.toString();
@@ -1815,7 +1865,7 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 
 				qPos.add(appId);
 
-				if (contextName != null) {
+				if (bindContextName) {
 					qPos.add(contextName);
 				}
 
@@ -1839,23 +1889,20 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 	private static final String _FINDER_COLUMN_A_C_APPID_2 = "module.appId = ? AND ";
 	private static final String _FINDER_COLUMN_A_C_CONTEXTNAME_1 = "module.contextName IS NULL";
 	private static final String _FINDER_COLUMN_A_C_CONTEXTNAME_2 = "module.contextName = ?";
-	private static final String _FINDER_COLUMN_A_C_CONTEXTNAME_3 = "(module.contextName IS NULL OR module.contextName = ?)";
+	private static final String _FINDER_COLUMN_A_C_CONTEXTNAME_3 = "(module.contextName IS NULL OR module.contextName = '')";
 
 	/**
 	 * Caches the module in the entity cache if it is enabled.
 	 *
 	 * @param module the module
 	 */
+	@Override
 	public void cacheResult(Module module) {
 		EntityCacheUtil.putResult(ModuleModelImpl.ENTITY_CACHE_ENABLED,
 			ModuleImpl.class, module.getPrimaryKey(), module);
 
 		FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_A_C,
-			new Object[] {
-				Long.valueOf(module.getAppId()),
-				
-			module.getContextName()
-			}, module);
+			new Object[] { module.getAppId(), module.getContextName() }, module);
 
 		module.resetOriginalValues();
 	}
@@ -1865,6 +1912,7 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 	 *
 	 * @param modules the modules
 	 */
+	@Override
 	public void cacheResult(List<Module> modules) {
 		for (Module module : modules) {
 			if (EntityCacheUtil.getResult(
@@ -1929,13 +1977,50 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 		}
 	}
 
+	protected void cacheUniqueFindersCache(Module module) {
+		if (module.isNew()) {
+			Object[] args = new Object[] {
+					module.getAppId(), module.getContextName()
+				};
+
+			FinderCacheUtil.putResult(FINDER_PATH_COUNT_BY_A_C, args,
+				Long.valueOf(1));
+			FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_A_C, args, module);
+		}
+		else {
+			ModuleModelImpl moduleModelImpl = (ModuleModelImpl)module;
+
+			if ((moduleModelImpl.getColumnBitmask() &
+					FINDER_PATH_FETCH_BY_A_C.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						module.getAppId(), module.getContextName()
+					};
+
+				FinderCacheUtil.putResult(FINDER_PATH_COUNT_BY_A_C, args,
+					Long.valueOf(1));
+				FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_A_C, args, module);
+			}
+		}
+	}
+
 	protected void clearUniqueFindersCache(Module module) {
-		FinderCacheUtil.removeResult(FINDER_PATH_FETCH_BY_A_C,
-			new Object[] {
-				Long.valueOf(module.getAppId()),
-				
-			module.getContextName()
-			});
+		ModuleModelImpl moduleModelImpl = (ModuleModelImpl)module;
+
+		Object[] args = new Object[] { module.getAppId(), module.getContextName() };
+
+		FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_A_C, args);
+		FinderCacheUtil.removeResult(FINDER_PATH_FETCH_BY_A_C, args);
+
+		if ((moduleModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_A_C.getColumnBitmask()) != 0) {
+			args = new Object[] {
+					moduleModelImpl.getOriginalAppId(),
+					moduleModelImpl.getOriginalContextName()
+				};
+
+			FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_A_C, args);
+			FinderCacheUtil.removeResult(FINDER_PATH_FETCH_BY_A_C, args);
+		}
 	}
 
 	/**
@@ -1944,6 +2029,7 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 	 * @param moduleId the primary key for the new module
 	 * @return the new module
 	 */
+	@Override
 	public Module create(long moduleId) {
 		Module module = new ModuleImpl();
 
@@ -1965,9 +2051,10 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 	 * @throws com.liferay.marketplace.NoSuchModuleException if a module with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Module remove(long moduleId)
 		throws NoSuchModuleException, SystemException {
-		return remove(Long.valueOf(moduleId));
+		return remove((Serializable)moduleId);
 	}
 
 	/**
@@ -2102,15 +2189,13 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 
 			if ((moduleModelImpl.getColumnBitmask() &
 					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_APPID.getColumnBitmask()) != 0) {
-				Object[] args = new Object[] {
-						Long.valueOf(moduleModelImpl.getOriginalAppId())
-					};
+				Object[] args = new Object[] { moduleModelImpl.getOriginalAppId() };
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_APPID, args);
 				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_APPID,
 					args);
 
-				args = new Object[] { Long.valueOf(moduleModelImpl.getAppId()) };
+				args = new Object[] { moduleModelImpl.getAppId() };
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_APPID, args);
 				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_APPID,
@@ -2140,35 +2225,8 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 		EntityCacheUtil.putResult(ModuleModelImpl.ENTITY_CACHE_ENABLED,
 			ModuleImpl.class, module.getPrimaryKey(), module);
 
-		if (isNew) {
-			FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_A_C,
-				new Object[] {
-					Long.valueOf(module.getAppId()),
-					
-				module.getContextName()
-				}, module);
-		}
-		else {
-			if ((moduleModelImpl.getColumnBitmask() &
-					FINDER_PATH_FETCH_BY_A_C.getColumnBitmask()) != 0) {
-				Object[] args = new Object[] {
-						Long.valueOf(moduleModelImpl.getOriginalAppId()),
-						
-						moduleModelImpl.getOriginalContextName()
-					};
-
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_A_C, args);
-
-				FinderCacheUtil.removeResult(FINDER_PATH_FETCH_BY_A_C, args);
-
-				FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_A_C,
-					new Object[] {
-						Long.valueOf(module.getAppId()),
-						
-					module.getContextName()
-					}, module);
-			}
-		}
+		clearUniqueFindersCache(module);
+		cacheUniqueFindersCache(module);
 
 		return module;
 	}
@@ -2196,13 +2254,24 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 	 *
 	 * @param primaryKey the primary key of the module
 	 * @return the module
-	 * @throws com.liferay.portal.NoSuchModelException if a module with the primary key could not be found
+	 * @throws com.liferay.marketplace.NoSuchModuleException if a module with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
 	public Module findByPrimaryKey(Serializable primaryKey)
-		throws NoSuchModelException, SystemException {
-		return findByPrimaryKey(((Long)primaryKey).longValue());
+		throws NoSuchModuleException, SystemException {
+		Module module = fetchByPrimaryKey(primaryKey);
+
+		if (module == null) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
+			}
+
+			throw new NoSuchModuleException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
+				primaryKey);
+		}
+
+		return module;
 	}
 
 	/**
@@ -2213,20 +2282,10 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 	 * @throws com.liferay.marketplace.NoSuchModuleException if a module with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Module findByPrimaryKey(long moduleId)
 		throws NoSuchModuleException, SystemException {
-		Module module = fetchByPrimaryKey(moduleId);
-
-		if (module == null) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + moduleId);
-			}
-
-			throw new NoSuchModuleException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
-				moduleId);
-		}
-
-		return module;
+		return findByPrimaryKey((Serializable)moduleId);
 	}
 
 	/**
@@ -2239,19 +2298,8 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 	@Override
 	public Module fetchByPrimaryKey(Serializable primaryKey)
 		throws SystemException {
-		return fetchByPrimaryKey(((Long)primaryKey).longValue());
-	}
-
-	/**
-	 * Returns the module with the primary key or returns <code>null</code> if it could not be found.
-	 *
-	 * @param moduleId the primary key of the module
-	 * @return the module, or <code>null</code> if a module with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	public Module fetchByPrimaryKey(long moduleId) throws SystemException {
 		Module module = (Module)EntityCacheUtil.getResult(ModuleModelImpl.ENTITY_CACHE_ENABLED,
-				ModuleImpl.class, moduleId);
+				ModuleImpl.class, primaryKey);
 
 		if (module == _nullModule) {
 			return null;
@@ -2263,20 +2311,19 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 			try {
 				session = openSession();
 
-				module = (Module)session.get(ModuleImpl.class,
-						Long.valueOf(moduleId));
+				module = (Module)session.get(ModuleImpl.class, primaryKey);
 
 				if (module != null) {
 					cacheResult(module);
 				}
 				else {
 					EntityCacheUtil.putResult(ModuleModelImpl.ENTITY_CACHE_ENABLED,
-						ModuleImpl.class, moduleId, _nullModule);
+						ModuleImpl.class, primaryKey, _nullModule);
 				}
 			}
 			catch (Exception e) {
 				EntityCacheUtil.removeResult(ModuleModelImpl.ENTITY_CACHE_ENABLED,
-					ModuleImpl.class, moduleId);
+					ModuleImpl.class, primaryKey);
 
 				throw processException(e);
 			}
@@ -2289,11 +2336,24 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 	}
 
 	/**
+	 * Returns the module with the primary key or returns <code>null</code> if it could not be found.
+	 *
+	 * @param moduleId the primary key of the module
+	 * @return the module, or <code>null</code> if a module with the primary key could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public Module fetchByPrimaryKey(long moduleId) throws SystemException {
+		return fetchByPrimaryKey((Serializable)moduleId);
+	}
+
+	/**
 	 * Returns all the modules.
 	 *
 	 * @return the modules
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Module> findAll() throws SystemException {
 		return findAll(QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
@@ -2310,6 +2370,7 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 	 * @return the range of modules
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Module> findAll(int start, int end) throws SystemException {
 		return findAll(start, end, null);
 	}
@@ -2327,6 +2388,7 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 	 * @return the ordered range of modules
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Module> findAll(int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -2412,6 +2474,7 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 	 *
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeAll() throws SystemException {
 		for (Module module : findAll()) {
 			remove(module);
@@ -2424,6 +2487,7 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 	 * @return the number of modules
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countAll() throws SystemException {
 		Long count = (Long)FinderCacheUtil.getResult(FINDER_PATH_COUNT_ALL,
 				FINDER_ARGS_EMPTY, this);
@@ -2455,6 +2519,11 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 		return count.intValue();
 	}
 
+	@Override
+	protected Set<String> getBadColumnNames() {
+		return _badColumnNames;
+	}
+
 	/**
 	 * Initializes the module persistence.
 	 */
@@ -2469,7 +2538,7 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 
 				for (String listenerClassName : listenerClassNames) {
 					listenersList.add((ModelListener<Module>)InstanceFactory.newInstance(
-							listenerClassName));
+							getClassLoader(), listenerClassName));
 				}
 
 				listeners = listenersList.toArray(new ModelListener[listenersList.size()]);
@@ -2487,12 +2556,6 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 		FinderCacheUtil.removeCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 	}
 
-	@BeanReference(type = AppPersistence.class)
-	protected AppPersistence appPersistence;
-	@BeanReference(type = ModulePersistence.class)
-	protected ModulePersistence modulePersistence;
-	@BeanReference(type = UserPersistence.class)
-	protected UserPersistence userPersistence;
 	private static final String _SQL_SELECT_MODULE = "SELECT module FROM Module module";
 	private static final String _SQL_SELECT_MODULE_WHERE = "SELECT module FROM Module module WHERE ";
 	private static final String _SQL_COUNT_MODULE = "SELECT COUNT(module) FROM Module module";
@@ -2503,6 +2566,9 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = GetterUtil.getBoolean(PropsUtil.get(
 				PropsKeys.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE));
 	private static Log _log = LogFactoryUtil.getLog(ModulePersistenceImpl.class);
+	private static Set<String> _badColumnNames = SetUtil.fromArray(new String[] {
+				"uuid"
+			});
 	private static Module _nullModule = new ModuleImpl() {
 			@Override
 			public Object clone() {
@@ -2516,6 +2582,7 @@ public class ModulePersistenceImpl extends BasePersistenceImpl<Module>
 		};
 
 	private static CacheModel<Module> _nullModuleCacheModel = new CacheModel<Module>() {
+			@Override
 			public Module toEntityModel() {
 				return _nullModule;
 			}

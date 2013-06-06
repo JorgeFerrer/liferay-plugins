@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -21,9 +21,12 @@ import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.model.BaseModel;
 import com.liferay.portal.model.impl.BaseModelImpl;
 
+import com.liferay.socialcoding.service.ClpSerializer;
 import com.liferay.socialcoding.service.SVNRepositoryLocalServiceUtil;
 
 import java.io.Serializable;
+
+import java.lang.reflect.Method;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,26 +39,32 @@ public class SVNRepositoryClp extends BaseModelImpl<SVNRepository>
 	public SVNRepositoryClp() {
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return SVNRepository.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return SVNRepository.class.getName();
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _svnRepositoryId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setSvnRepositoryId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
-		return new Long(_svnRepositoryId);
+		return _svnRepositoryId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
@@ -92,36 +101,111 @@ public class SVNRepositoryClp extends BaseModelImpl<SVNRepository>
 		}
 	}
 
+	@Override
 	public long getSvnRepositoryId() {
 		return _svnRepositoryId;
 	}
 
+	@Override
 	public void setSvnRepositoryId(long svnRepositoryId) {
 		_svnRepositoryId = svnRepositoryId;
+
+		if (_svnRepositoryRemoteModel != null) {
+			try {
+				Class<?> clazz = _svnRepositoryRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setSvnRepositoryId", long.class);
+
+				method.invoke(_svnRepositoryRemoteModel, svnRepositoryId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getUrl() {
 		return _url;
 	}
 
+	@Override
 	public void setUrl(String url) {
 		_url = url;
+
+		if (_svnRepositoryRemoteModel != null) {
+			try {
+				Class<?> clazz = _svnRepositoryRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setUrl", String.class);
+
+				method.invoke(_svnRepositoryRemoteModel, url);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getRevisionNumber() {
 		return _revisionNumber;
 	}
 
+	@Override
 	public void setRevisionNumber(long revisionNumber) {
 		_revisionNumber = revisionNumber;
+
+		if (_svnRepositoryRemoteModel != null) {
+			try {
+				Class<?> clazz = _svnRepositoryRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setRevisionNumber", long.class);
+
+				method.invoke(_svnRepositoryRemoteModel, revisionNumber);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public java.lang.String getName() {
-		throw new UnsupportedOperationException();
+		try {
+			String methodName = "getName";
+
+			Class<?>[] parameterTypes = new Class<?>[] {  };
+
+			Object[] parameterValues = new Object[] {  };
+
+			java.lang.String returnObj = (java.lang.String)invokeOnRemoteModel(methodName,
+					parameterTypes, parameterValues);
+
+			return returnObj;
+		}
+		catch (Exception e) {
+			throw new UnsupportedOperationException(e);
+		}
 	}
 
+	@Override
 	public java.lang.String getShortURL() {
-		throw new UnsupportedOperationException();
+		try {
+			String methodName = "getShortURL";
+
+			Class<?>[] parameterTypes = new Class<?>[] {  };
+
+			Object[] parameterValues = new Object[] {  };
+
+			java.lang.String returnObj = (java.lang.String)invokeOnRemoteModel(methodName,
+					parameterTypes, parameterValues);
+
+			return returnObj;
+		}
+		catch (Exception e) {
+			throw new UnsupportedOperationException(e);
+		}
 	}
 
 	public BaseModel<?> getSVNRepositoryRemoteModel() {
@@ -133,6 +217,48 @@ public class SVNRepositoryClp extends BaseModelImpl<SVNRepository>
 		_svnRepositoryRemoteModel = svnRepositoryRemoteModel;
 	}
 
+	public Object invokeOnRemoteModel(String methodName,
+		Class<?>[] parameterTypes, Object[] parameterValues)
+		throws Exception {
+		Object[] remoteParameterValues = new Object[parameterValues.length];
+
+		for (int i = 0; i < parameterValues.length; i++) {
+			if (parameterValues[i] != null) {
+				remoteParameterValues[i] = ClpSerializer.translateInput(parameterValues[i]);
+			}
+		}
+
+		Class<?> remoteModelClass = _svnRepositoryRemoteModel.getClass();
+
+		ClassLoader remoteModelClassLoader = remoteModelClass.getClassLoader();
+
+		Class<?>[] remoteParameterTypes = new Class[parameterTypes.length];
+
+		for (int i = 0; i < parameterTypes.length; i++) {
+			if (parameterTypes[i].isPrimitive()) {
+				remoteParameterTypes[i] = parameterTypes[i];
+			}
+			else {
+				String parameterTypeName = parameterTypes[i].getName();
+
+				remoteParameterTypes[i] = remoteModelClassLoader.loadClass(parameterTypeName);
+			}
+		}
+
+		Method method = remoteModelClass.getMethod(methodName,
+				remoteParameterTypes);
+
+		Object returnValue = method.invoke(_svnRepositoryRemoteModel,
+				remoteParameterValues);
+
+		if (returnValue != null) {
+			returnValue = ClpSerializer.translateOutput(returnValue);
+		}
+
+		return returnValue;
+	}
+
+	@Override
 	public void persist() throws SystemException {
 		if (this.isNew()) {
 			SVNRepositoryLocalServiceUtil.addSVNRepository(this);
@@ -159,6 +285,7 @@ public class SVNRepositoryClp extends BaseModelImpl<SVNRepository>
 		return clone;
 	}
 
+	@Override
 	public int compareTo(SVNRepository svnRepository) {
 		int value = 0;
 
@@ -173,18 +300,15 @@ public class SVNRepositoryClp extends BaseModelImpl<SVNRepository>
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof SVNRepositoryClp)) {
 			return false;
 		}
 
-		SVNRepositoryClp svnRepository = null;
-
-		try {
-			svnRepository = (SVNRepositoryClp)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		SVNRepositoryClp svnRepository = (SVNRepositoryClp)obj;
 
 		long primaryKey = svnRepository.getPrimaryKey();
 
@@ -216,6 +340,7 @@ public class SVNRepositoryClp extends BaseModelImpl<SVNRepository>
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
 		StringBundler sb = new StringBundler(13);
 

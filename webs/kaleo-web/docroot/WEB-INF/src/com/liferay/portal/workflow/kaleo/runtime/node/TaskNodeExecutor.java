@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -103,6 +103,7 @@ public class TaskNodeExecutor extends BaseNodeExecutor {
 			KaleoInstanceToken kaleoInstanceToken, KaleoTask kaleoTask,
 			Date dueDate)
 		throws PortalException, SystemException {
+
 		Collection<KaleoTaskAssignment> configuredKaleoTaskAssignments =
 			kaleoTask.getKaleoTaskAssignments();
 
@@ -142,7 +143,7 @@ public class TaskNodeExecutor extends BaseNodeExecutor {
 	}
 
 	@Override
-	protected void doEnter(
+	protected boolean doEnter(
 			KaleoNode currentKaleoNode, ExecutionContext executionContext)
 		throws PortalException, SystemException {
 
@@ -175,6 +176,8 @@ public class TaskNodeExecutor extends BaseNodeExecutor {
 		kaleoLogLocalService.addTaskAssignmentKaleoLog(
 			null, kaleoTaskInstanceToken, "Assigned initial task.",
 			workflowContext, serviceContext);
+
+		return true;
 	}
 
 	@Override
@@ -206,10 +209,6 @@ public class TaskNodeExecutor extends BaseNodeExecutor {
 			List<PathElement> remainingPathElements)
 		throws PortalException, SystemException {
 
-		Map<String, Serializable> workflowContext =
-			executionContext.getWorkflowContext();
-		ServiceContext serviceContext = executionContext.getServiceContext();
-
 		String transitionName = executionContext.getTransitionName();
 
 		KaleoTransition kaleoTransition = null;
@@ -223,8 +222,9 @@ public class TaskNodeExecutor extends BaseNodeExecutor {
 		}
 
 		ExecutionContext newExecutionContext = new ExecutionContext(
-			executionContext.getKaleoInstanceToken(), workflowContext,
-			serviceContext);
+			executionContext.getKaleoInstanceToken(),
+			executionContext.getWorkflowContext(),
+			executionContext.getServiceContext());
 
 		PathElement pathElement = new PathElement(
 			null, kaleoTransition.getTargetKaleoNode(), newExecutionContext);

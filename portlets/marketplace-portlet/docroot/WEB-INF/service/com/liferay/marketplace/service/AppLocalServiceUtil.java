@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -19,11 +19,12 @@ import com.liferay.portal.kernel.util.ReferenceRegistry;
 import com.liferay.portal.service.InvokableLocalService;
 
 /**
- * The utility for the app local service. This utility wraps {@link com.liferay.marketplace.service.impl.AppLocalServiceImpl} and is the primary access point for service operations in application layer code running on the local server.
- *
- * <p>
- * This is a local service. Methods of this service will not have security checks based on the propagated JAAS credentials because this service can only be accessed from within the same VM.
- * </p>
+ * Provides the local service utility for App. This utility wraps
+ * {@link com.liferay.marketplace.service.impl.AppLocalServiceImpl} and is the
+ * primary access point for service operations in application layer code running
+ * on the local server. Methods of this service will not have security checks
+ * based on the propagated JAAS credentials because this service can only be
+ * accessed from within the same VM.
  *
  * @author Ryan Park
  * @see AppLocalService
@@ -256,11 +257,10 @@ public class AppLocalServiceUtil {
 	}
 
 	public static com.liferay.marketplace.model.App addApp(long userId,
-		long remoteAppId, java.lang.String version,
-		java.io.InputStream inputStream)
+		long remoteAppId, java.lang.String version, java.io.File file)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
-		return getService().addApp(userId, remoteAppId, version, inputStream);
+		return getService().addApp(userId, remoteAppId, version, file);
 	}
 
 	public static com.liferay.marketplace.model.App fetchRemoteApp(
@@ -289,10 +289,10 @@ public class AppLocalServiceUtil {
 	}
 
 	public static com.liferay.marketplace.model.App updateApp(long appId,
-		java.lang.String version, java.io.InputStream inputStream)
+		java.lang.String version, java.io.File file)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
-		return getService().updateApp(appId, version, inputStream);
+		return getService().updateApp(appId, version, file);
 	}
 
 	public static void clearService() {
@@ -319,7 +319,7 @@ public class AppLocalServiceUtil {
 	}
 
 	/**
-	 * @deprecated
+	 * @deprecated As of 6.2.0
 	 */
 	public void setService(AppLocalService service) {
 	}

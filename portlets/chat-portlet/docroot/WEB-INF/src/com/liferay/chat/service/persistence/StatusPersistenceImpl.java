@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -19,8 +19,6 @@ import com.liferay.chat.model.Status;
 import com.liferay.chat.model.impl.StatusImpl;
 import com.liferay.chat.model.impl.StatusModelImpl;
 
-import com.liferay.portal.NoSuchModelException;
-import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.cache.CacheRegistryUtil;
 import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
 import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
@@ -37,13 +35,13 @@ import com.liferay.portal.kernel.util.InstanceFactory;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnmodifiableList;
 import com.liferay.portal.model.CacheModel;
 import com.liferay.portal.model.ModelListener;
-import com.liferay.portal.service.persistence.UserPersistence;
 import com.liferay.portal.service.persistence.impl.BasePersistenceImpl;
 
 import java.io.Serializable;
@@ -51,6 +49,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * The persistence implementation for the status service.
@@ -103,6 +102,7 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 	 * @throws com.liferay.chat.NoSuchStatusException if a matching status could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Status findByUserId(long userId)
 		throws NoSuchStatusException, SystemException {
 		Status status = fetchByUserId(userId);
@@ -134,6 +134,7 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 	 * @return the matching status, or <code>null</code> if a matching status could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Status fetchByUserId(long userId) throws SystemException {
 		return fetchByUserId(userId, true);
 	}
@@ -146,6 +147,7 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 	 * @return the matching status, or <code>null</code> if a matching status could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Status fetchByUserId(long userId, boolean retrieveFromCache)
 		throws SystemException {
 		Object[] finderArgs = new Object[] { userId };
@@ -230,6 +232,7 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 	 * @return the status that was removed
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Status removeByUserId(long userId)
 		throws NoSuchStatusException, SystemException {
 		Status status = findByUserId(userId);
@@ -244,6 +247,7 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 	 * @return the number of matching statuses
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByUserId(long userId) throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_USERID;
 
@@ -318,6 +322,7 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 	 * @return the matching statuses
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Status> findByModifiedDate(long modifiedDate)
 		throws SystemException {
 		return findByModifiedDate(modifiedDate, QueryUtil.ALL_POS,
@@ -337,6 +342,7 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 	 * @return the range of matching statuses
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Status> findByModifiedDate(long modifiedDate, int start, int end)
 		throws SystemException {
 		return findByModifiedDate(modifiedDate, start, end, null);
@@ -356,6 +362,7 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 	 * @return the ordered range of matching statuses
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Status> findByModifiedDate(long modifiedDate, int start,
 		int end, OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -466,6 +473,7 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 	 * @throws com.liferay.chat.NoSuchStatusException if a matching status could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Status findByModifiedDate_First(long modifiedDate,
 		OrderByComparator orderByComparator)
 		throws NoSuchStatusException, SystemException {
@@ -496,6 +504,7 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 	 * @return the first matching status, or <code>null</code> if a matching status could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Status fetchByModifiedDate_First(long modifiedDate,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<Status> list = findByModifiedDate(modifiedDate, 0, 1,
@@ -517,6 +526,7 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 	 * @throws com.liferay.chat.NoSuchStatusException if a matching status could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Status findByModifiedDate_Last(long modifiedDate,
 		OrderByComparator orderByComparator)
 		throws NoSuchStatusException, SystemException {
@@ -546,6 +556,7 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 	 * @return the last matching status, or <code>null</code> if a matching status could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Status fetchByModifiedDate_Last(long modifiedDate,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByModifiedDate(modifiedDate);
@@ -570,6 +581,7 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 	 * @throws com.liferay.chat.NoSuchStatusException if a status with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Status[] findByModifiedDate_PrevAndNext(long statusId,
 		long modifiedDate, OrderByComparator orderByComparator)
 		throws NoSuchStatusException, SystemException {
@@ -711,6 +723,7 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 	 * @param modifiedDate the modified date
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByModifiedDate(long modifiedDate)
 		throws SystemException {
 		for (Status status : findByModifiedDate(modifiedDate,
@@ -726,6 +739,7 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 	 * @return the number of matching statuses
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByModifiedDate(long modifiedDate) throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_MODIFIEDDATE;
 
@@ -799,6 +813,7 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 	 * @return the matching statuses
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Status> findByOnline(boolean online) throws SystemException {
 		return findByOnline(online, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
@@ -816,6 +831,7 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 	 * @return the range of matching statuses
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Status> findByOnline(boolean online, int start, int end)
 		throws SystemException {
 		return findByOnline(online, start, end, null);
@@ -835,6 +851,7 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 	 * @return the ordered range of matching statuses
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Status> findByOnline(boolean online, int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -941,6 +958,7 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 	 * @throws com.liferay.chat.NoSuchStatusException if a matching status could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Status findByOnline_First(boolean online,
 		OrderByComparator orderByComparator)
 		throws NoSuchStatusException, SystemException {
@@ -970,6 +988,7 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 	 * @return the first matching status, or <code>null</code> if a matching status could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Status fetchByOnline_First(boolean online,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<Status> list = findByOnline(online, 0, 1, orderByComparator);
@@ -990,6 +1009,7 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 	 * @throws com.liferay.chat.NoSuchStatusException if a matching status could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Status findByOnline_Last(boolean online,
 		OrderByComparator orderByComparator)
 		throws NoSuchStatusException, SystemException {
@@ -1019,6 +1039,7 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 	 * @return the last matching status, or <code>null</code> if a matching status could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Status fetchByOnline_Last(boolean online,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByOnline(online);
@@ -1043,6 +1064,7 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 	 * @throws com.liferay.chat.NoSuchStatusException if a status with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Status[] findByOnline_PrevAndNext(long statusId, boolean online,
 		OrderByComparator orderByComparator)
 		throws NoSuchStatusException, SystemException {
@@ -1183,6 +1205,7 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 	 * @param online the online
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByOnline(boolean online) throws SystemException {
 		for (Status status : findByOnline(online, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
@@ -1197,6 +1220,7 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 	 * @return the number of matching statuses
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByOnline(boolean online) throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_ONLINE;
 
@@ -1271,6 +1295,7 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 	 * @return the matching statuses
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Status> findByM_O(long modifiedDate, boolean online)
 		throws SystemException {
 		return findByM_O(modifiedDate, online, QueryUtil.ALL_POS,
@@ -1291,6 +1316,7 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 	 * @return the range of matching statuses
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Status> findByM_O(long modifiedDate, boolean online, int start,
 		int end) throws SystemException {
 		return findByM_O(modifiedDate, online, start, end, null);
@@ -1311,6 +1337,7 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 	 * @return the ordered range of matching statuses
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Status> findByM_O(long modifiedDate, boolean online, int start,
 		int end, OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -1427,6 +1454,7 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 	 * @throws com.liferay.chat.NoSuchStatusException if a matching status could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Status findByM_O_First(long modifiedDate, boolean online,
 		OrderByComparator orderByComparator)
 		throws NoSuchStatusException, SystemException {
@@ -1460,6 +1488,7 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 	 * @return the first matching status, or <code>null</code> if a matching status could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Status fetchByM_O_First(long modifiedDate, boolean online,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<Status> list = findByM_O(modifiedDate, online, 0, 1,
@@ -1482,6 +1511,7 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 	 * @throws com.liferay.chat.NoSuchStatusException if a matching status could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Status findByM_O_Last(long modifiedDate, boolean online,
 		OrderByComparator orderByComparator)
 		throws NoSuchStatusException, SystemException {
@@ -1515,6 +1545,7 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 	 * @return the last matching status, or <code>null</code> if a matching status could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Status fetchByM_O_Last(long modifiedDate, boolean online,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByM_O(modifiedDate, online);
@@ -1540,6 +1571,7 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 	 * @throws com.liferay.chat.NoSuchStatusException if a status with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Status[] findByM_O_PrevAndNext(long statusId, long modifiedDate,
 		boolean online, OrderByComparator orderByComparator)
 		throws NoSuchStatusException, SystemException {
@@ -1686,6 +1718,7 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 	 * @param online the online
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByM_O(long modifiedDate, boolean online)
 		throws SystemException {
 		for (Status status : findByM_O(modifiedDate, online, QueryUtil.ALL_POS,
@@ -1702,6 +1735,7 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 	 * @return the number of matching statuses
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByM_O(long modifiedDate, boolean online)
 		throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_M_O;
@@ -1760,12 +1794,13 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 	 *
 	 * @param status the status
 	 */
+	@Override
 	public void cacheResult(Status status) {
 		EntityCacheUtil.putResult(StatusModelImpl.ENTITY_CACHE_ENABLED,
 			StatusImpl.class, status.getPrimaryKey(), status);
 
 		FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_USERID,
-			new Object[] { Long.valueOf(status.getUserId()) }, status);
+			new Object[] { status.getUserId() }, status);
 
 		status.resetOriginalValues();
 	}
@@ -1775,6 +1810,7 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 	 *
 	 * @param statuses the statuses
 	 */
+	@Override
 	public void cacheResult(List<Status> statuses) {
 		for (Status status : statuses) {
 			if (EntityCacheUtil.getResult(
@@ -1839,9 +1875,44 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 		}
 	}
 
+	protected void cacheUniqueFindersCache(Status status) {
+		if (status.isNew()) {
+			Object[] args = new Object[] { status.getUserId() };
+
+			FinderCacheUtil.putResult(FINDER_PATH_COUNT_BY_USERID, args,
+				Long.valueOf(1));
+			FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_USERID, args, status);
+		}
+		else {
+			StatusModelImpl statusModelImpl = (StatusModelImpl)status;
+
+			if ((statusModelImpl.getColumnBitmask() &
+					FINDER_PATH_FETCH_BY_USERID.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] { status.getUserId() };
+
+				FinderCacheUtil.putResult(FINDER_PATH_COUNT_BY_USERID, args,
+					Long.valueOf(1));
+				FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_USERID, args,
+					status);
+			}
+		}
+	}
+
 	protected void clearUniqueFindersCache(Status status) {
-		FinderCacheUtil.removeResult(FINDER_PATH_FETCH_BY_USERID,
-			new Object[] { Long.valueOf(status.getUserId()) });
+		StatusModelImpl statusModelImpl = (StatusModelImpl)status;
+
+		Object[] args = new Object[] { status.getUserId() };
+
+		FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_USERID, args);
+		FinderCacheUtil.removeResult(FINDER_PATH_FETCH_BY_USERID, args);
+
+		if ((statusModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_USERID.getColumnBitmask()) != 0) {
+			args = new Object[] { statusModelImpl.getOriginalUserId() };
+
+			FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_USERID, args);
+			FinderCacheUtil.removeResult(FINDER_PATH_FETCH_BY_USERID, args);
+		}
 	}
 
 	/**
@@ -1850,6 +1921,7 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 	 * @param statusId the primary key for the new status
 	 * @return the new status
 	 */
+	@Override
 	public Status create(long statusId) {
 		Status status = new StatusImpl();
 
@@ -1867,9 +1939,10 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 	 * @throws com.liferay.chat.NoSuchStatusException if a status with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Status remove(long statusId)
 		throws NoSuchStatusException, SystemException {
-		return remove(Long.valueOf(statusId));
+		return remove((Serializable)statusId);
 	}
 
 	/**
@@ -1984,7 +2057,7 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 			if ((statusModelImpl.getColumnBitmask() &
 					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_MODIFIEDDATE.getColumnBitmask()) != 0) {
 				Object[] args = new Object[] {
-						Long.valueOf(statusModelImpl.getOriginalModifiedDate())
+						statusModelImpl.getOriginalModifiedDate()
 					};
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_MODIFIEDDATE,
@@ -1992,9 +2065,7 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_MODIFIEDDATE,
 					args);
 
-				args = new Object[] {
-						Long.valueOf(statusModelImpl.getModifiedDate())
-					};
+				args = new Object[] { statusModelImpl.getModifiedDate() };
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_MODIFIEDDATE,
 					args);
@@ -2004,15 +2075,13 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 
 			if ((statusModelImpl.getColumnBitmask() &
 					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_ONLINE.getColumnBitmask()) != 0) {
-				Object[] args = new Object[] {
-						Boolean.valueOf(statusModelImpl.getOriginalOnline())
-					};
+				Object[] args = new Object[] { statusModelImpl.getOriginalOnline() };
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_ONLINE, args);
 				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_ONLINE,
 					args);
 
-				args = new Object[] { Boolean.valueOf(statusModelImpl.getOnline()) };
+				args = new Object[] { statusModelImpl.getOnline() };
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_ONLINE, args);
 				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_ONLINE,
@@ -2022,8 +2091,8 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 			if ((statusModelImpl.getColumnBitmask() &
 					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_M_O.getColumnBitmask()) != 0) {
 				Object[] args = new Object[] {
-						Long.valueOf(statusModelImpl.getOriginalModifiedDate()),
-						Boolean.valueOf(statusModelImpl.getOriginalOnline())
+						statusModelImpl.getOriginalModifiedDate(),
+						statusModelImpl.getOriginalOnline()
 					};
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_M_O, args);
@@ -2031,8 +2100,8 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 					args);
 
 				args = new Object[] {
-						Long.valueOf(statusModelImpl.getModifiedDate()),
-						Boolean.valueOf(statusModelImpl.getOnline())
+						statusModelImpl.getModifiedDate(),
+						statusModelImpl.getOnline()
 					};
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_M_O, args);
@@ -2044,25 +2113,8 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 		EntityCacheUtil.putResult(StatusModelImpl.ENTITY_CACHE_ENABLED,
 			StatusImpl.class, status.getPrimaryKey(), status);
 
-		if (isNew) {
-			FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_USERID,
-				new Object[] { Long.valueOf(status.getUserId()) }, status);
-		}
-		else {
-			if ((statusModelImpl.getColumnBitmask() &
-					FINDER_PATH_FETCH_BY_USERID.getColumnBitmask()) != 0) {
-				Object[] args = new Object[] {
-						Long.valueOf(statusModelImpl.getOriginalUserId())
-					};
-
-				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_USERID, args);
-
-				FinderCacheUtil.removeResult(FINDER_PATH_FETCH_BY_USERID, args);
-
-				FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_USERID,
-					new Object[] { Long.valueOf(status.getUserId()) }, status);
-			}
-		}
+		clearUniqueFindersCache(status);
+		cacheUniqueFindersCache(status);
 
 		return status;
 	}
@@ -2082,7 +2134,7 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 		statusImpl.setModifiedDate(status.getModifiedDate());
 		statusImpl.setOnline(status.isOnline());
 		statusImpl.setAwake(status.isAwake());
-		statusImpl.setActivePanelId(status.getActivePanelId());
+		statusImpl.setActivePanelIds(status.getActivePanelIds());
 		statusImpl.setMessage(status.getMessage());
 		statusImpl.setPlaySound(status.isPlaySound());
 
@@ -2094,13 +2146,24 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 	 *
 	 * @param primaryKey the primary key of the status
 	 * @return the status
-	 * @throws com.liferay.portal.NoSuchModelException if a status with the primary key could not be found
+	 * @throws com.liferay.chat.NoSuchStatusException if a status with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
 	public Status findByPrimaryKey(Serializable primaryKey)
-		throws NoSuchModelException, SystemException {
-		return findByPrimaryKey(((Long)primaryKey).longValue());
+		throws NoSuchStatusException, SystemException {
+		Status status = fetchByPrimaryKey(primaryKey);
+
+		if (status == null) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
+			}
+
+			throw new NoSuchStatusException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
+				primaryKey);
+		}
+
+		return status;
 	}
 
 	/**
@@ -2111,20 +2174,10 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 	 * @throws com.liferay.chat.NoSuchStatusException if a status with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Status findByPrimaryKey(long statusId)
 		throws NoSuchStatusException, SystemException {
-		Status status = fetchByPrimaryKey(statusId);
-
-		if (status == null) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + statusId);
-			}
-
-			throw new NoSuchStatusException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
-				statusId);
-		}
-
-		return status;
+		return findByPrimaryKey((Serializable)statusId);
 	}
 
 	/**
@@ -2137,19 +2190,8 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 	@Override
 	public Status fetchByPrimaryKey(Serializable primaryKey)
 		throws SystemException {
-		return fetchByPrimaryKey(((Long)primaryKey).longValue());
-	}
-
-	/**
-	 * Returns the status with the primary key or returns <code>null</code> if it could not be found.
-	 *
-	 * @param statusId the primary key of the status
-	 * @return the status, or <code>null</code> if a status with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	public Status fetchByPrimaryKey(long statusId) throws SystemException {
 		Status status = (Status)EntityCacheUtil.getResult(StatusModelImpl.ENTITY_CACHE_ENABLED,
-				StatusImpl.class, statusId);
+				StatusImpl.class, primaryKey);
 
 		if (status == _nullStatus) {
 			return null;
@@ -2161,20 +2203,19 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 			try {
 				session = openSession();
 
-				status = (Status)session.get(StatusImpl.class,
-						Long.valueOf(statusId));
+				status = (Status)session.get(StatusImpl.class, primaryKey);
 
 				if (status != null) {
 					cacheResult(status);
 				}
 				else {
 					EntityCacheUtil.putResult(StatusModelImpl.ENTITY_CACHE_ENABLED,
-						StatusImpl.class, statusId, _nullStatus);
+						StatusImpl.class, primaryKey, _nullStatus);
 				}
 			}
 			catch (Exception e) {
 				EntityCacheUtil.removeResult(StatusModelImpl.ENTITY_CACHE_ENABLED,
-					StatusImpl.class, statusId);
+					StatusImpl.class, primaryKey);
 
 				throw processException(e);
 			}
@@ -2187,11 +2228,24 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 	}
 
 	/**
+	 * Returns the status with the primary key or returns <code>null</code> if it could not be found.
+	 *
+	 * @param statusId the primary key of the status
+	 * @return the status, or <code>null</code> if a status with the primary key could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public Status fetchByPrimaryKey(long statusId) throws SystemException {
+		return fetchByPrimaryKey((Serializable)statusId);
+	}
+
+	/**
 	 * Returns all the statuses.
 	 *
 	 * @return the statuses
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Status> findAll() throws SystemException {
 		return findAll(QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
@@ -2208,6 +2262,7 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 	 * @return the range of statuses
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Status> findAll(int start, int end) throws SystemException {
 		return findAll(start, end, null);
 	}
@@ -2225,6 +2280,7 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 	 * @return the ordered range of statuses
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Status> findAll(int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -2310,6 +2366,7 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 	 *
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeAll() throws SystemException {
 		for (Status status : findAll()) {
 			remove(status);
@@ -2322,6 +2379,7 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 	 * @return the number of statuses
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countAll() throws SystemException {
 		Long count = (Long)FinderCacheUtil.getResult(FINDER_PATH_COUNT_ALL,
 				FINDER_ARGS_EMPTY, this);
@@ -2353,6 +2411,11 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 		return count.intValue();
 	}
 
+	@Override
+	protected Set<String> getBadColumnNames() {
+		return _badColumnNames;
+	}
+
 	/**
 	 * Initializes the status persistence.
 	 */
@@ -2367,7 +2430,7 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 
 				for (String listenerClassName : listenerClassNames) {
 					listenersList.add((ModelListener<Status>)InstanceFactory.newInstance(
-							listenerClassName));
+							getClassLoader(), listenerClassName));
 				}
 
 				listeners = listenersList.toArray(new ModelListener[listenersList.size()]);
@@ -2385,12 +2448,6 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 		FinderCacheUtil.removeCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 	}
 
-	@BeanReference(type = EntryPersistence.class)
-	protected EntryPersistence entryPersistence;
-	@BeanReference(type = StatusPersistence.class)
-	protected StatusPersistence statusPersistence;
-	@BeanReference(type = UserPersistence.class)
-	protected UserPersistence userPersistence;
 	private static final String _SQL_SELECT_STATUS = "SELECT status FROM Status status";
 	private static final String _SQL_SELECT_STATUS_WHERE = "SELECT status FROM Status status WHERE ";
 	private static final String _SQL_COUNT_STATUS = "SELECT COUNT(status) FROM Status status";
@@ -2401,6 +2458,9 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = GetterUtil.getBoolean(PropsUtil.get(
 				PropsKeys.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE));
 	private static Log _log = LogFactoryUtil.getLog(StatusPersistenceImpl.class);
+	private static Set<String> _badColumnNames = SetUtil.fromArray(new String[] {
+				"online"
+			});
 	private static Status _nullStatus = new StatusImpl() {
 			@Override
 			public Object clone() {
@@ -2414,6 +2474,7 @@ public class StatusPersistenceImpl extends BasePersistenceImpl<Status>
 		};
 
 	private static CacheModel<Status> _nullStatusCacheModel = new CacheModel<Status>() {
+			@Override
 			public Status toEntityModel() {
 				return _nullStatus;
 			}

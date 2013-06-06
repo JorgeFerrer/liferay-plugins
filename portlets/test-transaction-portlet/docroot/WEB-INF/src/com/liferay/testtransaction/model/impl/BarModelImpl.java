@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -83,26 +83,32 @@ public class BarModelImpl extends BaseModelImpl<Bar> implements BarModel {
 	public BarModelImpl() {
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _barId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setBarId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
-		return new Long(_barId);
+		return _barId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return Bar.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return Bar.class.getName();
 	}
@@ -132,14 +138,17 @@ public class BarModelImpl extends BaseModelImpl<Bar> implements BarModel {
 		}
 	}
 
+	@Override
 	public long getBarId() {
 		return _barId;
 	}
 
+	@Override
 	public void setBarId(long barId) {
 		_barId = barId;
 	}
 
+	@Override
 	public String getText() {
 		if (_text == null) {
 			return StringPool.BLANK;
@@ -149,6 +158,7 @@ public class BarModelImpl extends BaseModelImpl<Bar> implements BarModel {
 		}
 	}
 
+	@Override
 	public void setText(String text) {
 		_columnBitmask = -1L;
 
@@ -202,6 +212,7 @@ public class BarModelImpl extends BaseModelImpl<Bar> implements BarModel {
 		return barImpl;
 	}
 
+	@Override
 	public int compareTo(Bar bar) {
 		int value = 0;
 
@@ -216,18 +227,15 @@ public class BarModelImpl extends BaseModelImpl<Bar> implements BarModel {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof Bar)) {
 			return false;
 		}
 
-		Bar bar = null;
-
-		try {
-			bar = (Bar)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		Bar bar = (Bar)obj;
 
 		long primaryKey = bar.getPrimaryKey();
 
@@ -283,6 +291,7 @@ public class BarModelImpl extends BaseModelImpl<Bar> implements BarModel {
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
 		StringBundler sb = new StringBundler(10);
 

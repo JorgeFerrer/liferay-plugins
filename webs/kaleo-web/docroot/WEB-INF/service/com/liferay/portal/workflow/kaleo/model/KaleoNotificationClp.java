@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -21,9 +21,12 @@ import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.model.BaseModel;
 import com.liferay.portal.model.impl.BaseModelImpl;
 import com.liferay.portal.util.PortalUtil;
+import com.liferay.portal.workflow.kaleo.service.ClpSerializer;
 import com.liferay.portal.workflow.kaleo.service.KaleoNotificationLocalServiceUtil;
 
 import java.io.Serializable;
+
+import java.lang.reflect.Method;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -37,26 +40,32 @@ public class KaleoNotificationClp extends BaseModelImpl<KaleoNotification>
 	public KaleoNotificationClp() {
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return KaleoNotification.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return KaleoNotification.class.getName();
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _kaleoNotificationId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setKaleoNotificationId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
-		return new Long(_kaleoNotificationId);
+		return _kaleoNotificationId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
@@ -191,148 +200,410 @@ public class KaleoNotificationClp extends BaseModelImpl<KaleoNotification>
 		}
 	}
 
+	@Override
 	public long getKaleoNotificationId() {
 		return _kaleoNotificationId;
 	}
 
+	@Override
 	public void setKaleoNotificationId(long kaleoNotificationId) {
 		_kaleoNotificationId = kaleoNotificationId;
+
+		if (_kaleoNotificationRemoteModel != null) {
+			try {
+				Class<?> clazz = _kaleoNotificationRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setKaleoNotificationId",
+						long.class);
+
+				method.invoke(_kaleoNotificationRemoteModel, kaleoNotificationId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getGroupId() {
 		return _groupId;
 	}
 
+	@Override
 	public void setGroupId(long groupId) {
 		_groupId = groupId;
+
+		if (_kaleoNotificationRemoteModel != null) {
+			try {
+				Class<?> clazz = _kaleoNotificationRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setGroupId", long.class);
+
+				method.invoke(_kaleoNotificationRemoteModel, groupId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getCompanyId() {
 		return _companyId;
 	}
 
+	@Override
 	public void setCompanyId(long companyId) {
 		_companyId = companyId;
+
+		if (_kaleoNotificationRemoteModel != null) {
+			try {
+				Class<?> clazz = _kaleoNotificationRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setCompanyId", long.class);
+
+				method.invoke(_kaleoNotificationRemoteModel, companyId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getUserId() {
 		return _userId;
 	}
 
+	@Override
 	public void setUserId(long userId) {
 		_userId = userId;
+
+		if (_kaleoNotificationRemoteModel != null) {
+			try {
+				Class<?> clazz = _kaleoNotificationRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setUserId", long.class);
+
+				method.invoke(_kaleoNotificationRemoteModel, userId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getUserUuid() throws SystemException {
 		return PortalUtil.getUserValue(getUserId(), "uuid", _userUuid);
 	}
 
+	@Override
 	public void setUserUuid(String userUuid) {
 		_userUuid = userUuid;
 	}
 
+	@Override
 	public String getUserName() {
 		return _userName;
 	}
 
+	@Override
 	public void setUserName(String userName) {
 		_userName = userName;
+
+		if (_kaleoNotificationRemoteModel != null) {
+			try {
+				Class<?> clazz = _kaleoNotificationRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setUserName", String.class);
+
+				method.invoke(_kaleoNotificationRemoteModel, userName);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public Date getCreateDate() {
 		return _createDate;
 	}
 
+	@Override
 	public void setCreateDate(Date createDate) {
 		_createDate = createDate;
+
+		if (_kaleoNotificationRemoteModel != null) {
+			try {
+				Class<?> clazz = _kaleoNotificationRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setCreateDate", Date.class);
+
+				method.invoke(_kaleoNotificationRemoteModel, createDate);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public Date getModifiedDate() {
 		return _modifiedDate;
 	}
 
+	@Override
 	public void setModifiedDate(Date modifiedDate) {
 		_modifiedDate = modifiedDate;
+
+		if (_kaleoNotificationRemoteModel != null) {
+			try {
+				Class<?> clazz = _kaleoNotificationRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setModifiedDate", Date.class);
+
+				method.invoke(_kaleoNotificationRemoteModel, modifiedDate);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getKaleoClassName() {
 		return _kaleoClassName;
 	}
 
+	@Override
 	public void setKaleoClassName(String kaleoClassName) {
 		_kaleoClassName = kaleoClassName;
+
+		if (_kaleoNotificationRemoteModel != null) {
+			try {
+				Class<?> clazz = _kaleoNotificationRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setKaleoClassName",
+						String.class);
+
+				method.invoke(_kaleoNotificationRemoteModel, kaleoClassName);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getKaleoClassPK() {
 		return _kaleoClassPK;
 	}
 
+	@Override
 	public void setKaleoClassPK(long kaleoClassPK) {
 		_kaleoClassPK = kaleoClassPK;
+
+		if (_kaleoNotificationRemoteModel != null) {
+			try {
+				Class<?> clazz = _kaleoNotificationRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setKaleoClassPK", long.class);
+
+				method.invoke(_kaleoNotificationRemoteModel, kaleoClassPK);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getKaleoDefinitionId() {
 		return _kaleoDefinitionId;
 	}
 
+	@Override
 	public void setKaleoDefinitionId(long kaleoDefinitionId) {
 		_kaleoDefinitionId = kaleoDefinitionId;
+
+		if (_kaleoNotificationRemoteModel != null) {
+			try {
+				Class<?> clazz = _kaleoNotificationRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setKaleoDefinitionId",
+						long.class);
+
+				method.invoke(_kaleoNotificationRemoteModel, kaleoDefinitionId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getKaleoNodeName() {
 		return _kaleoNodeName;
 	}
 
+	@Override
 	public void setKaleoNodeName(String kaleoNodeName) {
 		_kaleoNodeName = kaleoNodeName;
+
+		if (_kaleoNotificationRemoteModel != null) {
+			try {
+				Class<?> clazz = _kaleoNotificationRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setKaleoNodeName", String.class);
+
+				method.invoke(_kaleoNotificationRemoteModel, kaleoNodeName);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getName() {
 		return _name;
 	}
 
+	@Override
 	public void setName(String name) {
 		_name = name;
+
+		if (_kaleoNotificationRemoteModel != null) {
+			try {
+				Class<?> clazz = _kaleoNotificationRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setName", String.class);
+
+				method.invoke(_kaleoNotificationRemoteModel, name);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getDescription() {
 		return _description;
 	}
 
+	@Override
 	public void setDescription(String description) {
 		_description = description;
+
+		if (_kaleoNotificationRemoteModel != null) {
+			try {
+				Class<?> clazz = _kaleoNotificationRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setDescription", String.class);
+
+				method.invoke(_kaleoNotificationRemoteModel, description);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getExecutionType() {
 		return _executionType;
 	}
 
+	@Override
 	public void setExecutionType(String executionType) {
 		_executionType = executionType;
+
+		if (_kaleoNotificationRemoteModel != null) {
+			try {
+				Class<?> clazz = _kaleoNotificationRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setExecutionType", String.class);
+
+				method.invoke(_kaleoNotificationRemoteModel, executionType);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getTemplate() {
 		return _template;
 	}
 
+	@Override
 	public void setTemplate(String template) {
 		_template = template;
+
+		if (_kaleoNotificationRemoteModel != null) {
+			try {
+				Class<?> clazz = _kaleoNotificationRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setTemplate", String.class);
+
+				method.invoke(_kaleoNotificationRemoteModel, template);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getTemplateLanguage() {
 		return _templateLanguage;
 	}
 
+	@Override
 	public void setTemplateLanguage(String templateLanguage) {
 		_templateLanguage = templateLanguage;
+
+		if (_kaleoNotificationRemoteModel != null) {
+			try {
+				Class<?> clazz = _kaleoNotificationRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setTemplateLanguage",
+						String.class);
+
+				method.invoke(_kaleoNotificationRemoteModel, templateLanguage);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getNotificationTypes() {
 		return _notificationTypes;
 	}
 
+	@Override
 	public void setNotificationTypes(String notificationTypes) {
 		_notificationTypes = notificationTypes;
+
+		if (_kaleoNotificationRemoteModel != null) {
+			try {
+				Class<?> clazz = _kaleoNotificationRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setNotificationTypes",
+						String.class);
+
+				method.invoke(_kaleoNotificationRemoteModel, notificationTypes);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public BaseModel<?> getKaleoNotificationRemoteModel() {
@@ -344,6 +615,48 @@ public class KaleoNotificationClp extends BaseModelImpl<KaleoNotification>
 		_kaleoNotificationRemoteModel = kaleoNotificationRemoteModel;
 	}
 
+	public Object invokeOnRemoteModel(String methodName,
+		Class<?>[] parameterTypes, Object[] parameterValues)
+		throws Exception {
+		Object[] remoteParameterValues = new Object[parameterValues.length];
+
+		for (int i = 0; i < parameterValues.length; i++) {
+			if (parameterValues[i] != null) {
+				remoteParameterValues[i] = ClpSerializer.translateInput(parameterValues[i]);
+			}
+		}
+
+		Class<?> remoteModelClass = _kaleoNotificationRemoteModel.getClass();
+
+		ClassLoader remoteModelClassLoader = remoteModelClass.getClassLoader();
+
+		Class<?>[] remoteParameterTypes = new Class[parameterTypes.length];
+
+		for (int i = 0; i < parameterTypes.length; i++) {
+			if (parameterTypes[i].isPrimitive()) {
+				remoteParameterTypes[i] = parameterTypes[i];
+			}
+			else {
+				String parameterTypeName = parameterTypes[i].getName();
+
+				remoteParameterTypes[i] = remoteModelClassLoader.loadClass(parameterTypeName);
+			}
+		}
+
+		Method method = remoteModelClass.getMethod(methodName,
+				remoteParameterTypes);
+
+		Object returnValue = method.invoke(_kaleoNotificationRemoteModel,
+				remoteParameterValues);
+
+		if (returnValue != null) {
+			returnValue = ClpSerializer.translateOutput(returnValue);
+		}
+
+		return returnValue;
+	}
+
+	@Override
 	public void persist() throws SystemException {
 		if (this.isNew()) {
 			KaleoNotificationLocalServiceUtil.addKaleoNotification(this);
@@ -385,6 +698,7 @@ public class KaleoNotificationClp extends BaseModelImpl<KaleoNotification>
 		return clone;
 	}
 
+	@Override
 	public int compareTo(KaleoNotification kaleoNotification) {
 		int value = 0;
 
@@ -407,18 +721,15 @@ public class KaleoNotificationClp extends BaseModelImpl<KaleoNotification>
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof KaleoNotificationClp)) {
 			return false;
 		}
 
-		KaleoNotificationClp kaleoNotification = null;
-
-		try {
-			kaleoNotification = (KaleoNotificationClp)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		KaleoNotificationClp kaleoNotification = (KaleoNotificationClp)obj;
 
 		long primaryKey = kaleoNotification.getPrimaryKey();
 
@@ -478,6 +789,7 @@ public class KaleoNotificationClp extends BaseModelImpl<KaleoNotification>
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
 		StringBundler sb = new StringBundler(55);
 

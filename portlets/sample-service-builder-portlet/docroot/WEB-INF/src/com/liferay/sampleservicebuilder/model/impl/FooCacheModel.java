@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -70,6 +70,7 @@ public class FooCacheModel implements CacheModel<Foo>, Externalizable {
 		return sb.toString();
 	}
 
+	@Override
 	public Foo toEntityModel() {
 		FooImpl fooImpl = new FooImpl();
 
@@ -135,6 +136,7 @@ public class FooCacheModel implements CacheModel<Foo>, Externalizable {
 		return fooImpl;
 	}
 
+	@Override
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		uuid = objectInput.readUTF();
 		fooId = objectInput.readLong();
@@ -151,6 +153,7 @@ public class FooCacheModel implements CacheModel<Foo>, Externalizable {
 		field5 = objectInput.readUTF();
 	}
 
+	@Override
 	public void writeExternal(ObjectOutput objectOutput)
 		throws IOException {
 		if (uuid == null) {
