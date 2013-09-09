@@ -18,4 +18,4 @@
 
 <portlet:defineObjects />
 
-This is the <b></b> portlet.
+This is the <b>Content Targeting</b> portlet.
