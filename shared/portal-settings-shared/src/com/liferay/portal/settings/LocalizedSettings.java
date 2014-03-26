@@ -14,49 +14,65 @@
 
 package com.liferay.portal.settings;
 
-import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.LocalizationUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.io.IOException;
 
-import java.util.Map;
+import java.util.Locale;
 
 import javax.portlet.ValidatorException;
 
 /**
  * @author Iván Zaera
  */
-public class ParameterMapSettings implements Settings {
+public class LocalizedSettings implements Settings {
 
-	public static final String PREFERENCES_PREFIX = "preferences--";
+	public LocalizedSettings(Settings settings) {
+		this(
+			settings, LocaleUtil.getSiteDefault(),
+			LanguageUtil.getAvailableLocales());
+	}
 
-	public static final String SETTINGS_PREFIX = "settings--";
-
-	public ParameterMapSettings(
-		Settings settings, Map<String, String[]> parameterMap) {
+	public LocalizedSettings(
+		Settings settings, Locale defaultLocale, Locale... availableLocales) {
 
 		_settings = settings;
-		_parameterMap = parameterMap;
+		_defaultLocale = defaultLocale;
+		_availableLocales = availableLocales;
+	}
+
+	public LocalizedValue getLocalizedValue(String key) {
+		LocalizedValue localizedValue = new LocalizedValue(
+			key, _defaultLocale, _availableLocales);
+
+		for (Locale locale : _availableLocales) {
+			String localizedPreference = LocalizationUtil.getLocalizedName(
+				key, LocaleUtil.toLanguageId(locale));
+
+			localizedValue.put(locale, getValue(localizedPreference, null));
+		}
+
+		String defaultValue = localizedValue.get(_defaultLocale);
+
+		if (Validator.isNotNull(defaultValue)) {
+			return localizedValue;
+		}
+
+		localizedValue.put(_defaultLocale, getValue(key, null));
+
+		return localizedValue;
 	}
 
 	@Override
 	public String getValue(String key, String defaultValue) {
-		String[] values = getParameterValue(key);
-
-		if (values != null) {
-			return values[0];
-		}
-
 		return _settings.getValue(key, defaultValue);
 	}
 
 	@Override
 	public String[] getValues(String key, String[] defaultValue) {
-		String[] values = getParameterValue(key);
-
-		if (values != null) {
-			return values;
-		}
-
 		return _settings.getValues(key, defaultValue);
 	}
 
@@ -80,23 +96,8 @@ public class ParameterMapSettings implements Settings {
 		_settings.store();
 	}
 
-	protected String[] getParameterValue(String key) {
-		String[] values = _parameterMap.get(key);
-
-		if (values == null) {
-			values = _parameterMap.get(
-				PREFERENCES_PREFIX + key + StringPool.DOUBLE_DASH);
-		}
-
-		if (values == null) {
-			values = _parameterMap.get(
-				SETTINGS_PREFIX + key + StringPool.DOUBLE_DASH);
-		}
-
-		return values;
-	}
-
-	private Map<String, String[]> _parameterMap;
+	private Locale[] _availableLocales;
+	private Locale _defaultLocale;
 	private Settings _settings;
 
 }
