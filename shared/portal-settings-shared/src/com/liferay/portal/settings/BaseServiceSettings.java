@@ -23,43 +23,46 @@ import javax.portlet.ValidatorException;
  */
 public class BaseServiceSettings implements Settings {
 
-	public BaseServiceSettings(Settings settings, FallbackKeys fallbackPaths) {
-		FallbackSettings fallbackPathSettings = new FallbackSettings(
-			settings, fallbackPaths);
+	public BaseServiceSettings(Settings settings, FallbackKeys fallbackKeys) {
+		_fallbackSettings = new FallbackSettings(settings, fallbackKeys);
 
-		typedSettings = new TypedSettings(fallbackPathSettings);
+		localizedSettings = new LocalizedSettings(_fallbackSettings);
+		typedSettings = new TypedSettings(_fallbackSettings);
 	}
 
 	@Override
 	public String getValue(String key, String defaultValue) {
-		return typedSettings.getValue(key, defaultValue);
+		return _fallbackSettings.getValue(key, defaultValue);
 	}
 
 	@Override
 	public String[] getValues(String key, String[] defaultValue) {
-		return typedSettings.getValues(key, defaultValue);
+		return _fallbackSettings.getValues(key, defaultValue);
 	}
 
 	@Override
 	public void reset(String key) {
-		typedSettings.reset(key);
+		_fallbackSettings.reset(key);
 	}
 
 	@Override
 	public Settings setValue(String key, String value) {
-		return typedSettings.setValue(key, value);
+		return _fallbackSettings.setValue(key, value);
 	}
 
 	@Override
 	public Settings setValues(String key, String[] values) {
-		return typedSettings.setValues(key, values);
+		return _fallbackSettings.setValues(key, values);
 	}
 
 	@Override
 	public void store() throws IOException, ValidatorException {
-		typedSettings.store();
+		_fallbackSettings.store();
 	}
 
+	protected LocalizedSettings localizedSettings;
 	protected TypedSettings typedSettings;
+
+	private FallbackSettings _fallbackSettings;
 
 }
