@@ -27,9 +27,9 @@ import org.powermock.api.mockito.PowerMockito;
 /**
  * @author Iván Zaera
  */
-public class LocalizedSettingsTest extends PowerMockito {
+public class TypedSettingsTest extends PowerMockito {
 
-	public LocalizedSettingsTest() {
+	public TypedSettingsTest() {
 		LocalizationUtil localizationUtil = new LocalizationUtil();
 
 		localizationUtil.setLocalization(new LocalizationImpl());
@@ -47,13 +47,13 @@ public class LocalizedSettingsTest extends PowerMockito {
 		when(_settings.getValue(_KEY + "_en_GB", null)).thenReturn(
 			"value_en_GB");
 
-		_localizedSettings = new LocalizedSettings(
+		_typedSettings = new TypedSettings(
 			_settings, _DEFAULT_LOCALE, _AVAILABLE_LOCALES);
 	}
 
 	@Test
 	public void testGetLocalizedValue() {
-		LocalizedValue localizedValue = _localizedSettings.getLocalizedValue(
+		LocalizedValue localizedValue = _typedSettings.getLocalizedValue(
 			_KEY);
 
 		Assert.assertEquals("value_es_ES", localizedValue.getDefaultValue());
@@ -73,7 +73,7 @@ public class LocalizedSettingsTest extends PowerMockito {
 
 	private static final String _KEY = "key";
 
-	private LocalizedSettings _localizedSettings;
+	private TypedSettings _typedSettings;
 	private Settings _settings;
 
 }
