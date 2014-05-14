@@ -12,35 +12,32 @@
  * details.
  */
 
-package com.liferay.portal.settings;
+package com.liferay.portal.settings.helper;
 
-import java.io.IOException;
-
-import java.util.Collection;
-
-import javax.portlet.ValidatorException;
+import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.settings.Settings;
 
 /**
- * @author Raymond Augé
- * @author Jorge Ferrer
  * @author Iván Zaera
  */
-public interface Settings {
+public class SettingsHelper {
 
-	public Settings getDefaultSettings();
+	public void setValues(Settings sourceSettings, Settings targetSettings) {
+		for (String name : targetSettings.getSetKeys()) {
+			targetSettings.reset(name);
+		}
 
-	public Collection<String> getSetKeys();
+		for (String name : sourceSettings.getSetKeys()) {
+			String[] values = sourceSettings.getValues(
+				name, StringPool.EMPTY_ARRAY);
 
-	public String getValue(String key, String defaultValue);
-
-	public String[] getValues(String key, String[] defaultValue);
-
-	public void reset(String key);
-
-	public Settings setValue(String key, String value);
-
-	public Settings setValues(String key, String[] values);
-
-	public void store() throws IOException, ValidatorException;
+			if (values.length == 1) {
+				targetSettings.setValue(name, values[0]);
+			}
+			else {
+				targetSettings.setValues(name, values);
+			}
+		}
+	}
 
 }
