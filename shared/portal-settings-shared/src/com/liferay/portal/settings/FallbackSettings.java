@@ -16,6 +16,8 @@ package com.liferay.portal.settings;
 
 import java.io.IOException;
 
+import java.util.Set;
+
 import javax.portlet.ValidatorException;
 
 /**
@@ -30,6 +32,11 @@ public class FallbackSettings implements Settings {
 
 	public Settings getDefaultSettings() {
 		return _settings.getDefaultSettings();
+	}
+
+	@Override
+	public Set<String> getNames() {
+		return _settings.getNames();
 	}
 
 	@Override

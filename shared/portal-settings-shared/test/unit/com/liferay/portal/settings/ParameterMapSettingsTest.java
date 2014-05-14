@@ -14,8 +14,13 @@
 
 package com.liferay.portal.settings;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -34,6 +39,27 @@ public class ParameterMapSettingsTest extends PowerMockito {
 
 		_parameterMapSettings = new ParameterMapSettings(
 			_parameterMap, _defaultSettings);
+	}
+
+	@Test
+	public void testGetNames() {
+		mockSettingsGetNames("key0", "key1", "key2");
+
+		String[] values = {"requestValue1", "requestValue2"};
+
+		_parameterMap.put("preferences--key3--", values);
+		_parameterMap.put("settings--key4--", values);
+
+		List<String> expectedNames = Arrays.asList(
+			"key0", "key1", "key2", "key3", "key4");
+
+		Set<String> actualNames = _parameterMapSettings.getNames();
+
+		Assert.assertEquals(expectedNames.size(), actualNames.size());
+
+		actualNames.removeAll(expectedNames);
+
+		Assert.assertTrue(actualNames.isEmpty());
 	}
 
 	@Test
@@ -94,6 +120,18 @@ public class ParameterMapSettingsTest extends PowerMockito {
 				Matchers.eq(key), Matchers.any(String[].class))
 		).thenReturn(
 			values
+		);
+	}
+
+	private void mockSettingsGetNames(String... names) {
+		Set<String> namesSet = new HashSet<>();
+
+		Collections.addAll(namesSet, names);
+
+		when(
+			_defaultSettings.getNames()
+		).thenReturn(
+			namesSet
 		);
 	}
 

@@ -12,27 +12,24 @@
  * details.
  */
 
-package com.liferay.portal.settings;
+package com.liferay.portal.settings.archive;
 
-import java.io.IOException;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
 
-import javax.portlet.ValidatorException;
+import java.util.List;
 
 /**
- * @author Raymond Augé
- * @author Jorge Ferrer
  * @author Iván Zaera
  */
-public interface Settings extends UnmodifiableSettings {
+public interface ArchivedSettingsFactory {
 
-	public Settings getDefaultSettings();
+	public ArchivedSettings getArchivedSettings(
+			long groupId, String portletId, String name)
+		throws PortalException, SystemException;
 
-	public void reset(String key);
-
-	public Settings setValue(String key, String value);
-
-	public Settings setValues(String key, String[] values);
-
-	public void store() throws IOException, ValidatorException;
+	public List<ArchivedSettings> getArchivedSettingsList(
+			long groupId, String portletId)
+		throws PortalException, SystemException;
 
 }

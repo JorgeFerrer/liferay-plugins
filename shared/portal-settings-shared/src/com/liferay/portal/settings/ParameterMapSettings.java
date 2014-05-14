@@ -18,7 +18,9 @@ import com.liferay.portal.kernel.util.StringPool;
 
 import java.io.IOException;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.portlet.ValidatorException;
 
@@ -40,6 +42,33 @@ public class ParameterMapSettings implements Settings {
 
 	public Settings getDefaultSettings() {
 		return _defaultSettings;
+	}
+
+	@Override
+	public Set<String> getNames() {
+		Set<String> names = new HashSet<String>();
+
+		for (String key : _parameterMap.keySet()) {
+			if (key.endsWith(StringPool.DOUBLE_DASH)) {
+				String name = null;
+
+				if (key.startsWith(PREFERENCES_PREFIX)) {
+					name = key.substring(
+						_PREFERENCES_PREFIX_LENGTH, key.length() - 2);
+				}
+
+				if (key.startsWith(SETTINGS_PREFIX)) {
+					name = key.substring(
+						_SETTINGS_PREFIX_LENGTH, key.length() - 2);
+				}
+
+				if (name != null) {
+					names.add(name);
+				}
+			}
+		}
+
+		return names;
 	}
 
 	@Override
@@ -99,6 +128,11 @@ public class ParameterMapSettings implements Settings {
 
 		return values;
 	}
+
+	private static final int _PREFERENCES_PREFIX_LENGTH =
+		PREFERENCES_PREFIX.length();
+
+	private static final int _SETTINGS_PREFIX_LENGTH = SETTINGS_PREFIX.length();
 
 	private Settings _defaultSettings;
 	private Map<String, String[]> _parameterMap;

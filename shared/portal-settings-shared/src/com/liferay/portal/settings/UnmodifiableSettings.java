@@ -14,25 +14,25 @@
 
 package com.liferay.portal.settings;
 
-import java.io.IOException;
-
-import javax.portlet.ValidatorException;
+import java.util.Set;
 
 /**
- * @author Raymond Augé
- * @author Jorge Ferrer
  * @author Iván Zaera
  */
-public interface Settings extends UnmodifiableSettings {
+public interface UnmodifiableSettings {
 
-	public Settings getDefaultSettings();
+	public UnmodifiableSettings getDefaultSettings();
 
-	public void reset(String key);
+	/**
+	 * Get the list of keys with a valid value. The set does NOT include the
+	 * settings for which there's no explicit value even if they have a valid
+	 * default value.
+	 * @return
+	 */
+	public Set<String> getNames();
 
-	public Settings setValue(String key, String value);
+	public String getValue(String key, String defaultValue);
 
-	public Settings setValues(String key, String[] values);
-
-	public void store() throws IOException, ValidatorException;
+	public String[] getValues(String key, String[] defaultValue);
 
 }

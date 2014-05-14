@@ -17,6 +17,7 @@ package com.liferay.portal.settings;
 import com.liferay.portal.settings.impl.PropertiesSettings;
 
 import java.util.Properties;
+import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -35,6 +36,15 @@ public class PropertiesSettingsTest {
 		_properties.put(_MULTIPLE_KEY, _MULTIPLE_VALUES);
 
 		_propertiesSettings = new PropertiesSettings(_properties);
+	}
+
+	@Test
+	public void testGetNames() {
+		Set<String> names = _propertiesSettings.getNames();
+
+		Assert.assertEquals(2, names.size());
+		Assert.assertTrue(names.contains(_SINGLE_KEY));
+		Assert.assertTrue(names.contains(_MULTIPLE_KEY));
 	}
 
 	@Test

@@ -21,7 +21,10 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.settings.Settings;
 import com.liferay.util.ContentUtil;
 
+import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Properties;
+import java.util.Set;
 
 /**
  * @author Jorge Ferrer
@@ -35,6 +38,19 @@ public class PropertiesSettings implements Settings {
 
 	public Settings getDefaultSettings() {
 		return null;
+	}
+
+	@Override
+	public Set<String> getNames() {
+		Set<String> names = new HashSet<String>();
+
+		Enumeration<?> propertyNames = _properties.propertyNames();
+
+		while (propertyNames.hasMoreElements()) {
+			names.add(propertyNames.nextElement().toString());
+		}
+
+		return names;
 	}
 
 	@Override
