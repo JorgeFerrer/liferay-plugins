@@ -59,21 +59,22 @@ public class MobileWidgetsServiceWrapper implements MobileWidgetsService,
 	}
 
 	@Override
-	public boolean resetPasswordByEmailAddress(long companyId,
-		java.lang.String emailAddress) {
+	public java.util.Map<java.lang.String, java.lang.Object> resetPasswordByEmailAddress(
+		long companyId, java.lang.String emailAddress) {
 		return _mobileWidgetsService.resetPasswordByEmailAddress(companyId,
 			emailAddress);
 	}
 
 	@Override
-	public boolean resetPasswordByScreenName(long companyId,
-		java.lang.String screenName) {
+	public java.util.Map<java.lang.String, java.lang.Object> resetPasswordByScreenName(
+		long companyId, java.lang.String screenName) {
 		return _mobileWidgetsService.resetPasswordByScreenName(companyId,
 			screenName);
 	}
 
 	@Override
-	public boolean resetPasswordByUserId(long userId) {
+	public java.util.Map<java.lang.String, java.lang.Object> resetPasswordByUserId(
+		long userId) {
 		return _mobileWidgetsService.resetPasswordByUserId(userId);
 	}
 

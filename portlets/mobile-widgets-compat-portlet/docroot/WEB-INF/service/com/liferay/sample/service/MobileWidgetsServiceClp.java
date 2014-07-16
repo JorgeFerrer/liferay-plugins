@@ -96,8 +96,8 @@ public class MobileWidgetsServiceClp implements MobileWidgetsService {
 	}
 
 	@Override
-	public boolean resetPasswordByEmailAddress(long companyId,
-		java.lang.String emailAddress) {
+	public java.util.Map<java.lang.String, java.lang.Object> resetPasswordByEmailAddress(
+		long companyId, java.lang.String emailAddress) {
 		Object returnObj = null;
 
 		try {
@@ -121,12 +121,12 @@ public class MobileWidgetsServiceClp implements MobileWidgetsService {
 			}
 		}
 
-		return ((Boolean)returnObj).booleanValue();
+		return (java.util.Map<java.lang.String, java.lang.Object>)ClpSerializer.translateOutput(returnObj);
 	}
 
 	@Override
-	public boolean resetPasswordByScreenName(long companyId,
-		java.lang.String screenName) {
+	public java.util.Map<java.lang.String, java.lang.Object> resetPasswordByScreenName(
+		long companyId, java.lang.String screenName) {
 		Object returnObj = null;
 
 		try {
@@ -150,11 +150,12 @@ public class MobileWidgetsServiceClp implements MobileWidgetsService {
 			}
 		}
 
-		return ((Boolean)returnObj).booleanValue();
+		return (java.util.Map<java.lang.String, java.lang.Object>)ClpSerializer.translateOutput(returnObj);
 	}
 
 	@Override
-	public boolean resetPasswordByUserId(long userId) {
+	public java.util.Map<java.lang.String, java.lang.Object> resetPasswordByUserId(
+		long userId) {
 		Object returnObj = null;
 
 		try {
@@ -173,7 +174,7 @@ public class MobileWidgetsServiceClp implements MobileWidgetsService {
 			}
 		}
 
-		return ((Boolean)returnObj).booleanValue();
+		return (java.util.Map<java.lang.String, java.lang.Object>)ClpSerializer.translateOutput(returnObj);
 	}
 
 	private InvokableService _invokableService;

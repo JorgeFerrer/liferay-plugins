@@ -14,13 +14,6 @@
 
 package com.liferay.sample.service.http;
 
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-
-import com.liferay.sample.service.MobileWidgetsServiceUtil;
-
-import java.rmi.RemoteException;
-
 /**
  * Provides the SOAP utility for the
  * {@link com.liferay.sample.service.MobileWidgetsServiceUtil} service utility. The
@@ -51,49 +44,4 @@ import java.rmi.RemoteException;
  * @generated
  */
 public class MobileWidgetsServiceSoap {
-	public static boolean resetPasswordByEmailAddress(long companyId,
-		java.lang.String emailAddress) throws RemoteException {
-		try {
-			boolean returnValue = MobileWidgetsServiceUtil.resetPasswordByEmailAddress(companyId,
-					emailAddress);
-
-			return returnValue;
-		}
-		catch (Exception e) {
-			_log.error(e, e);
-
-			throw new RemoteException(e.getMessage());
-		}
-	}
-
-	public static boolean resetPasswordByScreenName(long companyId,
-		java.lang.String screenName) throws RemoteException {
-		try {
-			boolean returnValue = MobileWidgetsServiceUtil.resetPasswordByScreenName(companyId,
-					screenName);
-
-			return returnValue;
-		}
-		catch (Exception e) {
-			_log.error(e, e);
-
-			throw new RemoteException(e.getMessage());
-		}
-	}
-
-	public static boolean resetPasswordByUserId(long userId)
-		throws RemoteException {
-		try {
-			boolean returnValue = MobileWidgetsServiceUtil.resetPasswordByUserId(userId);
-
-			return returnValue;
-		}
-		catch (Exception e) {
-			_log.error(e, e);
-
-			throw new RemoteException(e.getMessage());
-		}
-	}
-
-	private static Log _log = LogFactoryUtil.getLog(MobileWidgetsServiceSoap.class);
 }

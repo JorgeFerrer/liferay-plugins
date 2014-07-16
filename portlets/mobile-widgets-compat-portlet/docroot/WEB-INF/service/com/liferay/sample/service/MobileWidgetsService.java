@@ -64,11 +64,12 @@ public interface MobileWidgetsService extends BaseService, InvokableService {
 		java.lang.String[] parameterTypes, java.lang.Object[] arguments)
 		throws java.lang.Throwable;
 
-	public boolean resetPasswordByEmailAddress(long companyId,
-		java.lang.String emailAddress);
+	public java.util.Map<java.lang.String, java.lang.Object> resetPasswordByEmailAddress(
+		long companyId, java.lang.String emailAddress);
 
-	public boolean resetPasswordByScreenName(long companyId,
-		java.lang.String screenName);
+	public java.util.Map<java.lang.String, java.lang.Object> resetPasswordByScreenName(
+		long companyId, java.lang.String screenName);
 
-	public boolean resetPasswordByUserId(long userId);
+	public java.util.Map<java.lang.String, java.lang.Object> resetPasswordByUserId(
+		long userId);
 }

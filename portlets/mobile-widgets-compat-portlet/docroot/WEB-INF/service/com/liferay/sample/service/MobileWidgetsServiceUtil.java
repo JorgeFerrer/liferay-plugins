@@ -63,17 +63,18 @@ public class MobileWidgetsServiceUtil {
 		return getService().invokeMethod(name, parameterTypes, arguments);
 	}
 
-	public static boolean resetPasswordByEmailAddress(long companyId,
-		java.lang.String emailAddress) {
+	public static java.util.Map<java.lang.String, java.lang.Object> resetPasswordByEmailAddress(
+		long companyId, java.lang.String emailAddress) {
 		return getService().resetPasswordByEmailAddress(companyId, emailAddress);
 	}
 
-	public static boolean resetPasswordByScreenName(long companyId,
-		java.lang.String screenName) {
+	public static java.util.Map<java.lang.String, java.lang.Object> resetPasswordByScreenName(
+		long companyId, java.lang.String screenName) {
 		return getService().resetPasswordByScreenName(companyId, screenName);
 	}
 
-	public static boolean resetPasswordByUserId(long userId) {
+	public static java.util.Map<java.lang.String, java.lang.Object> resetPasswordByUserId(
+		long userId) {
 		return getService().resetPasswordByUserId(userId);
 	}
 
