@@ -104,6 +104,7 @@ public class MobileWidgetsServiceImpl extends MobileWidgetsServiceBaseImpl {
 			sendPasswordResult == SentEmailForgotPasswordType.SENT_RESET_LINK) {
 
 			resultKey = "success";
+			resultMap.put("email", user.getEmailAddress());
 		}
 		else {
 			resultKey = "error";
