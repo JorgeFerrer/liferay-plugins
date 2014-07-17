@@ -58,62 +58,43 @@ public class MobileWidgetsServiceImpl extends MobileWidgetsServiceBaseImpl {
 
 	@AccessControlled(guestAccessEnabled = true)
 	public Map<String, Object> resetPasswordByEmailAddress(
-		long companyId, String emailAddress) {
+		long companyId, String emailAddress)
+		throws Exception {
 
-		try {
-			User user =
-				UserLocalServiceUtil.getUserByEmailAddress(
-					companyId, emailAddress);
+		User user =
+			UserLocalServiceUtil.getUserByEmailAddress(companyId, emailAddress);
 
-			SentEmailForgotPasswordType sendPasswordResult =
-				_sendPassword(user);
+		SentEmailForgotPasswordType sendPasswordResult = _sendPassword(user);
 
-			return _getMapFromSendPasswordResult(sendPasswordResult);
-
-		}
-		catch (Exception exception) {
-			return _resultMapForException(exception);
-		}
+		return _getResultMap(user, sendPasswordResult);
 	}
 
 	@AccessControlled(guestAccessEnabled = true)
 	public Map<String, Object> resetPasswordByScreenName(
-		long companyId, String screenName) {
+		long companyId, String screenName)
+		throws Exception {
 
-		try {
-			User user =
-				UserLocalServiceUtil.getUserByScreenName(companyId, screenName);
+		User user =
+			UserLocalServiceUtil.getUserByScreenName(companyId, screenName);
 
-			SentEmailForgotPasswordType sendPasswordResult =
-				_sendPassword(user);
+		SentEmailForgotPasswordType sendPasswordResult = _sendPassword(user);
 
-			return _getMapFromSendPasswordResult(sendPasswordResult);
-
-		}
-		catch (Exception exception) {
-			return _resultMapForException(exception);
-		}
+		return _getResultMap(user, sendPasswordResult);
 	}
 
 	@AccessControlled(guestAccessEnabled = true)
-	public Map<String, Object> resetPasswordByUserId(long userId) {
+	public Map<String, Object> resetPasswordByUserId(long userId)
+		throws Exception {
 
-		try {
-			User user = UserLocalServiceUtil.getUser(userId);
+		User user = UserLocalServiceUtil.getUser(userId);
 
-			SentEmailForgotPasswordType sendPasswordResult =
-				_sendPassword(user);
+		SentEmailForgotPasswordType sendPasswordResult = _sendPassword(user);
 
-			return _getMapFromSendPasswordResult(sendPasswordResult);
-
-		}
-		catch (Exception exception) {
-			return _resultMapForException(exception);
-		}
+		return _getResultMap(user, sendPasswordResult);
 	}
 
-	private Map<String, Object> _getMapFromSendPasswordResult(
-		SentEmailForgotPasswordType sendPasswordResult) {
+	private Map<String, Object> _getResultMap(
+		User user, SentEmailForgotPasswordType sendPasswordResult) {
 
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 
