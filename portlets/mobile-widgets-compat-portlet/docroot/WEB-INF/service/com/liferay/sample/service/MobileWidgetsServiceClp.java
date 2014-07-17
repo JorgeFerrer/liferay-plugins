@@ -97,7 +97,8 @@ public class MobileWidgetsServiceClp implements MobileWidgetsService {
 
 	@Override
 	public java.util.Map<java.lang.String, java.lang.Object> resetPasswordByEmailAddress(
-		long companyId, java.lang.String emailAddress) {
+		long companyId, java.lang.String emailAddress)
+		throws java.lang.Exception {
 		Object returnObj = null;
 
 		try {
@@ -111,6 +112,10 @@ public class MobileWidgetsServiceClp implements MobileWidgetsService {
 		}
 		catch (Throwable t) {
 			t = ClpSerializer.translateThrowable(t);
+
+			if (t instanceof java.lang.Exception) {
+				throw (java.lang.Exception)t;
+			}
 
 			if (t instanceof RuntimeException) {
 				throw (RuntimeException)t;
@@ -126,7 +131,7 @@ public class MobileWidgetsServiceClp implements MobileWidgetsService {
 
 	@Override
 	public java.util.Map<java.lang.String, java.lang.Object> resetPasswordByScreenName(
-		long companyId, java.lang.String screenName) {
+		long companyId, java.lang.String screenName) throws java.lang.Exception {
 		Object returnObj = null;
 
 		try {
@@ -140,6 +145,10 @@ public class MobileWidgetsServiceClp implements MobileWidgetsService {
 		}
 		catch (Throwable t) {
 			t = ClpSerializer.translateThrowable(t);
+
+			if (t instanceof java.lang.Exception) {
+				throw (java.lang.Exception)t;
+			}
 
 			if (t instanceof RuntimeException) {
 				throw (RuntimeException)t;
@@ -155,7 +164,7 @@ public class MobileWidgetsServiceClp implements MobileWidgetsService {
 
 	@Override
 	public java.util.Map<java.lang.String, java.lang.Object> resetPasswordByUserId(
-		long userId) {
+		long userId) throws java.lang.Exception {
 		Object returnObj = null;
 
 		try {
@@ -164,6 +173,10 @@ public class MobileWidgetsServiceClp implements MobileWidgetsService {
 		}
 		catch (Throwable t) {
 			t = ClpSerializer.translateThrowable(t);
+
+			if (t instanceof java.lang.Exception) {
+				throw (java.lang.Exception)t;
+			}
 
 			if (t instanceof RuntimeException) {
 				throw (RuntimeException)t;

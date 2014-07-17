@@ -64,17 +64,18 @@ public class MobileWidgetsServiceUtil {
 	}
 
 	public static java.util.Map<java.lang.String, java.lang.Object> resetPasswordByEmailAddress(
-		long companyId, java.lang.String emailAddress) {
+		long companyId, java.lang.String emailAddress)
+		throws java.lang.Exception {
 		return getService().resetPasswordByEmailAddress(companyId, emailAddress);
 	}
 
 	public static java.util.Map<java.lang.String, java.lang.Object> resetPasswordByScreenName(
-		long companyId, java.lang.String screenName) {
+		long companyId, java.lang.String screenName) throws java.lang.Exception {
 		return getService().resetPasswordByScreenName(companyId, screenName);
 	}
 
 	public static java.util.Map<java.lang.String, java.lang.Object> resetPasswordByUserId(
-		long userId) {
+		long userId) throws java.lang.Exception {
 		return getService().resetPasswordByUserId(userId);
 	}
 
