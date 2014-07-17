@@ -24,7 +24,7 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.model.Company;
 import com.liferay.portal.model.User;
 import com.liferay.portal.security.ac.AccessControlled;
-import com.liferay.portal.service.CompanyServiceUtil;
+import com.liferay.portal.service.CompanyLocalServiceUtil;
 import com.liferay.portal.service.PortalPreferencesLocalServiceUtil;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.service.UserLocalServiceUtil;
@@ -136,7 +136,7 @@ public class MobileWidgetsServiceImpl extends MobileWidgetsServiceBaseImpl {
 		throws PortalException, SystemException {
 
 		Company company =
-			CompanyServiceUtil.getCompanyById(user.getCompanyId());
+			CompanyLocalServiceUtil.getCompanyById(user.getCompanyId());
 
 		if (!company.isSendPassword() && !company.isSendPasswordResetLink()) {
 			return SentEmailForgotPasswordType.ERROR_WRONG_CONFIGURATION;
