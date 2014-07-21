@@ -61,7 +61,7 @@ public class MobileWidgetsUserServiceImpl
 	 */
 
 	@AccessControlled(guestAccessEnabled = true)
-	public Map<String, Object> resetPasswordByEmailAddress(
+	public Map<String, Object> sendRememberPasswordEmailByEmailAddress(
 			long companyId, String emailAddress)
 		throws Exception {
 
@@ -74,7 +74,7 @@ public class MobileWidgetsUserServiceImpl
 	}
 
 	@AccessControlled(guestAccessEnabled = true)
-	public Map<String, Object> resetPasswordByScreenName(
+	public Map<String, Object> sendRememberPasswordEmailByScreenName(
 			long companyId, String screenName)
 		throws Exception {
 
@@ -86,7 +86,7 @@ public class MobileWidgetsUserServiceImpl
 	}
 
 	@AccessControlled(guestAccessEnabled = true)
-	public Map<String, Object> resetPasswordByUserId(long userId)
+	public Map<String, Object> sendRememberPasswordEmailByUserId(long userId)
 		throws Exception {
 
 		User user = userLocalService.getUserById(userId);
