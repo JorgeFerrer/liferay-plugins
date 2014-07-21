@@ -31,6 +31,18 @@ public class MobileWidgetsUserServiceClpInvoker {
 		_methodName15 = "setBeanIdentifier";
 
 		_methodParameterTypes15 = new String[] { "java.lang.String" };
+
+		_methodName18 = "resetPasswordByEmailAddress";
+
+		_methodParameterTypes18 = new String[] { "long", "java.lang.String" };
+
+		_methodName19 = "resetPasswordByScreenName";
+
+		_methodParameterTypes19 = new String[] { "long", "java.lang.String" };
+
+		_methodName20 = "resetPasswordByUserId";
+
+		_methodParameterTypes20 = new String[] { "long" };
 	}
 
 	public Object invokeMethod(String name, String[] parameterTypes,
@@ -47,6 +59,23 @@ public class MobileWidgetsUserServiceClpInvoker {
 			return null;
 		}
 
+		if (_methodName18.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes18, parameterTypes)) {
+			return MobileWidgetsUserServiceUtil.resetPasswordByEmailAddress(((Long)arguments[0]).longValue(),
+				(java.lang.String)arguments[1]);
+		}
+
+		if (_methodName19.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes19, parameterTypes)) {
+			return MobileWidgetsUserServiceUtil.resetPasswordByScreenName(((Long)arguments[0]).longValue(),
+				(java.lang.String)arguments[1]);
+		}
+
+		if (_methodName20.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes20, parameterTypes)) {
+			return MobileWidgetsUserServiceUtil.resetPasswordByUserId(((Long)arguments[0]).longValue());
+		}
+
 		throw new UnsupportedOperationException();
 	}
 
@@ -54,4 +83,10 @@ public class MobileWidgetsUserServiceClpInvoker {
 	private String[] _methodParameterTypes14;
 	private String _methodName15;
 	private String[] _methodParameterTypes15;
+	private String _methodName18;
+	private String[] _methodParameterTypes18;
+	private String _methodName19;
+	private String[] _methodParameterTypes19;
+	private String _methodName20;
+	private String[] _methodParameterTypes20;
 }

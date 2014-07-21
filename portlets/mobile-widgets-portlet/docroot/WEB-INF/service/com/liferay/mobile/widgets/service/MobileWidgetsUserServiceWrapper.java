@@ -58,6 +58,27 @@ public class MobileWidgetsUserServiceWrapper implements MobileWidgetsUserService
 			arguments);
 	}
 
+	@Override
+	public java.util.Map<java.lang.String, java.lang.Object> resetPasswordByEmailAddress(
+		long companyId, java.lang.String emailAddress)
+		throws java.lang.Exception {
+		return _mobileWidgetsUserService.resetPasswordByEmailAddress(companyId,
+			emailAddress);
+	}
+
+	@Override
+	public java.util.Map<java.lang.String, java.lang.Object> resetPasswordByScreenName(
+		long companyId, java.lang.String screenName) throws java.lang.Exception {
+		return _mobileWidgetsUserService.resetPasswordByScreenName(companyId,
+			screenName);
+	}
+
+	@Override
+	public java.util.Map<java.lang.String, java.lang.Object> resetPasswordByUserId(
+		long userId) throws java.lang.Exception {
+		return _mobileWidgetsUserService.resetPasswordByUserId(userId);
+	}
+
 	/**
 	 * @deprecated As of 6.1.0, replaced by {@link #getWrappedService}
 	 */

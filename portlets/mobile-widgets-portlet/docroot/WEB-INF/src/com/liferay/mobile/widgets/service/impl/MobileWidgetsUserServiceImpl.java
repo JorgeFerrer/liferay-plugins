@@ -14,7 +14,10 @@
 
 package com.liferay.mobile.widgets.service.impl;
 
+import java.util.Map;
+
 import com.liferay.mobile.widgets.service.base.MobileWidgetsUserServiceBaseImpl;
+import com.liferay.portal.security.ac.AccessControlled;
 
 /**
  * The implementation of the mobile widgets user remote service.
@@ -37,4 +40,27 @@ public class MobileWidgetsUserServiceImpl
 	 *
 	 * Never reference this interface directly. Always use {@link com.liferay.mobile.widgets.service.MobileWidgetsUserServiceUtil} to access the mobile widgets user remote service.
 	 */
+	@AccessControlled(guestAccessEnabled = true)
+	public Map<String, Object> resetPasswordByEmailAddress(
+		long companyId, String emailAddress)
+		throws Exception {
+
+		return null;
+	}
+
+	@AccessControlled(guestAccessEnabled = true)
+	public Map<String, Object> resetPasswordByScreenName(
+		long companyId, String screenName)
+		throws Exception {
+
+		return null;
+	}
+
+	@AccessControlled(guestAccessEnabled = true)
+	public Map<String, Object> resetPasswordByUserId(long userId)
+		throws Exception {
+
+		return null;
+	}
+	
 }

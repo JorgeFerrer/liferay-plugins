@@ -63,4 +63,14 @@ public interface MobileWidgetsUserService extends BaseService, InvokableService 
 	public java.lang.Object invokeMethod(java.lang.String name,
 		java.lang.String[] parameterTypes, java.lang.Object[] arguments)
 		throws java.lang.Throwable;
+
+	public java.util.Map<java.lang.String, java.lang.Object> resetPasswordByEmailAddress(
+		long companyId, java.lang.String emailAddress)
+		throws java.lang.Exception;
+
+	public java.util.Map<java.lang.String, java.lang.Object> resetPasswordByScreenName(
+		long companyId, java.lang.String screenName) throws java.lang.Exception;
+
+	public java.util.Map<java.lang.String, java.lang.Object> resetPasswordByUserId(
+		long userId) throws java.lang.Exception;
 }
