@@ -14,19 +14,24 @@
 
 package com.liferay.mobile.widgets.service.impl;
 
-import java.util.Map;
-
 import com.liferay.mobile.widgets.service.base.MobileWidgetsUserServiceBaseImpl;
 import com.liferay.portal.security.ac.AccessControlled;
+
+import java.util.Map;
 
 /**
  * The implementation of the mobile widgets user remote service.
  *
  * <p>
- * All custom service methods should be put in this class. Whenever methods are added, rerun ServiceBuilder to copy their definitions into the {@link com.liferay.mobile.widgets.service.MobileWidgetsUserService} interface.
+ * All custom service methods should be put in this class. Whenever methods are
+ * added, rerun ServiceBuilder to copy their definitions into the
+ * {@link com.liferay.mobile.widgets.service.MobileWidgetsUserService}
+ * interface.
  *
  * <p>
- * This is a remote service. Methods of this service are expected to have security checks based on the propagated JAAS credentials because this service can be accessed remotely.
+ * This is a remote service. Methods of this service are expected to have
+ * security checks based on the propagated JAAS credentials because this service
+ * can be accessed remotely.
  * </p>
  *
  * @author Jose M. Navarro
@@ -35,14 +40,17 @@ import com.liferay.portal.security.ac.AccessControlled;
  */
 public class MobileWidgetsUserServiceImpl
 	extends MobileWidgetsUserServiceBaseImpl {
-	/*
+
+	/**
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never reference this interface directly. Always use {@link com.liferay.mobile.widgets.service.MobileWidgetsUserServiceUtil} to access the mobile widgets user remote service.
+	 * Never reference this interface directly. Always use
+	 * {@link com.liferay.mobile.widgets.service.MobileWidgetsUserServiceUtil}
+	 * to access the mobile widgets user remote service.
 	 */
 	@AccessControlled(guestAccessEnabled = true)
 	public Map<String, Object> resetPasswordByEmailAddress(
-		long companyId, String emailAddress)
+			long companyId, String emailAddress)
 		throws Exception {
 
 		return null;
@@ -50,7 +58,7 @@ public class MobileWidgetsUserServiceImpl
 
 	@AccessControlled(guestAccessEnabled = true)
 	public Map<String, Object> resetPasswordByScreenName(
-		long companyId, String screenName)
+			long companyId, String screenName)
 		throws Exception {
 
 		return null;
@@ -62,5 +70,5 @@ public class MobileWidgetsUserServiceImpl
 
 		return null;
 	}
-	
+
 }
