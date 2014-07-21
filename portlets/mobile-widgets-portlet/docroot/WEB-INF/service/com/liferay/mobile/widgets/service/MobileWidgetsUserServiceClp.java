@@ -32,15 +32,15 @@ public class MobileWidgetsUserServiceClp implements MobileWidgetsUserService {
 
 		_methodParameterTypes1 = new String[] { "java.lang.String" };
 
-		_methodName3 = "resetPasswordByEmailAddress";
+		_methodName3 = "sendRememberPasswordEmailByEmailAddress";
 
 		_methodParameterTypes3 = new String[] { "long", "java.lang.String" };
 
-		_methodName4 = "resetPasswordByScreenName";
+		_methodName4 = "sendRememberPasswordEmailByScreenName";
 
 		_methodParameterTypes4 = new String[] { "long", "java.lang.String" };
 
-		_methodName5 = "resetPasswordByUserId";
+		_methodName5 = "sendRememberPasswordEmailByUserId";
 
 		_methodParameterTypes5 = new String[] { "long" };
 	}
@@ -96,7 +96,7 @@ public class MobileWidgetsUserServiceClp implements MobileWidgetsUserService {
 	}
 
 	@Override
-	public java.util.Map<java.lang.String, java.lang.Object> resetPasswordByEmailAddress(
+	public java.util.Map<java.lang.String, java.lang.Object> sendRememberPasswordEmailByEmailAddress(
 		long companyId, java.lang.String emailAddress)
 		throws java.lang.Exception {
 		Object returnObj = null;
@@ -130,7 +130,7 @@ public class MobileWidgetsUserServiceClp implements MobileWidgetsUserService {
 	}
 
 	@Override
-	public java.util.Map<java.lang.String, java.lang.Object> resetPasswordByScreenName(
+	public java.util.Map<java.lang.String, java.lang.Object> sendRememberPasswordEmailByScreenName(
 		long companyId, java.lang.String screenName) throws java.lang.Exception {
 		Object returnObj = null;
 
@@ -163,7 +163,7 @@ public class MobileWidgetsUserServiceClp implements MobileWidgetsUserService {
 	}
 
 	@Override
-	public java.util.Map<java.lang.String, java.lang.Object> resetPasswordByUserId(
+	public java.util.Map<java.lang.String, java.lang.Object> sendRememberPasswordEmailByUserId(
 		long userId) throws java.lang.Exception {
 		Object returnObj = null;
 

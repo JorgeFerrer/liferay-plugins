@@ -63,20 +63,30 @@ public class MobileWidgetsUserServiceUtil {
 		return getService().invokeMethod(name, parameterTypes, arguments);
 	}
 
-	public static java.util.Map<java.lang.String, java.lang.Object> resetPasswordByEmailAddress(
+	/**
+	* NOTE FOR DEVELOPERS:
+	*
+	* Never reference this interface directly. Always use
+	* {@link com.liferay.mobile.widgets.service.MobileWidgetsUserServiceUtil}
+	* to access the mobile widgets user remote service.
+	*/
+	public static java.util.Map<java.lang.String, java.lang.Object> sendRememberPasswordEmailByEmailAddress(
 		long companyId, java.lang.String emailAddress)
 		throws java.lang.Exception {
-		return getService().resetPasswordByEmailAddress(companyId, emailAddress);
+		return getService()
+				   .sendRememberPasswordEmailByEmailAddress(companyId,
+			emailAddress);
 	}
 
-	public static java.util.Map<java.lang.String, java.lang.Object> resetPasswordByScreenName(
+	public static java.util.Map<java.lang.String, java.lang.Object> sendRememberPasswordEmailByScreenName(
 		long companyId, java.lang.String screenName) throws java.lang.Exception {
-		return getService().resetPasswordByScreenName(companyId, screenName);
+		return getService()
+				   .sendRememberPasswordEmailByScreenName(companyId, screenName);
 	}
 
-	public static java.util.Map<java.lang.String, java.lang.Object> resetPasswordByUserId(
+	public static java.util.Map<java.lang.String, java.lang.Object> sendRememberPasswordEmailByUserId(
 		long userId) throws java.lang.Exception {
-		return getService().resetPasswordByUserId(userId);
+		return getService().sendRememberPasswordEmailByUserId(userId);
 	}
 
 	public static void clearService() {

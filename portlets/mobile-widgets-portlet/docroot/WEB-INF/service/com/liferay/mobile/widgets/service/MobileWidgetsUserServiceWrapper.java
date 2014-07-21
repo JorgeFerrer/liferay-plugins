@@ -58,25 +58,32 @@ public class MobileWidgetsUserServiceWrapper implements MobileWidgetsUserService
 			arguments);
 	}
 
+	/**
+	* NOTE FOR DEVELOPERS:
+	*
+	* Never reference this interface directly. Always use
+	* {@link com.liferay.mobile.widgets.service.MobileWidgetsUserServiceUtil}
+	* to access the mobile widgets user remote service.
+	*/
 	@Override
-	public java.util.Map<java.lang.String, java.lang.Object> resetPasswordByEmailAddress(
+	public java.util.Map<java.lang.String, java.lang.Object> sendRememberPasswordEmailByEmailAddress(
 		long companyId, java.lang.String emailAddress)
 		throws java.lang.Exception {
-		return _mobileWidgetsUserService.resetPasswordByEmailAddress(companyId,
+		return _mobileWidgetsUserService.sendRememberPasswordEmailByEmailAddress(companyId,
 			emailAddress);
 	}
 
 	@Override
-	public java.util.Map<java.lang.String, java.lang.Object> resetPasswordByScreenName(
+	public java.util.Map<java.lang.String, java.lang.Object> sendRememberPasswordEmailByScreenName(
 		long companyId, java.lang.String screenName) throws java.lang.Exception {
-		return _mobileWidgetsUserService.resetPasswordByScreenName(companyId,
+		return _mobileWidgetsUserService.sendRememberPasswordEmailByScreenName(companyId,
 			screenName);
 	}
 
 	@Override
-	public java.util.Map<java.lang.String, java.lang.Object> resetPasswordByUserId(
+	public java.util.Map<java.lang.String, java.lang.Object> sendRememberPasswordEmailByUserId(
 		long userId) throws java.lang.Exception {
-		return _mobileWidgetsUserService.resetPasswordByUserId(userId);
+		return _mobileWidgetsUserService.sendRememberPasswordEmailByUserId(userId);
 	}
 
 	/**

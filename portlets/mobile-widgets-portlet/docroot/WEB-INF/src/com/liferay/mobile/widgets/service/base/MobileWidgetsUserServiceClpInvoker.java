@@ -32,15 +32,15 @@ public class MobileWidgetsUserServiceClpInvoker {
 
 		_methodParameterTypes25 = new String[] { "java.lang.String" };
 
-		_methodName28 = "resetPasswordByEmailAddress";
+		_methodName28 = "sendRememberPasswordEmailByEmailAddress";
 
 		_methodParameterTypes28 = new String[] { "long", "java.lang.String" };
 
-		_methodName29 = "resetPasswordByScreenName";
+		_methodName29 = "sendRememberPasswordEmailByScreenName";
 
 		_methodParameterTypes29 = new String[] { "long", "java.lang.String" };
 
-		_methodName30 = "resetPasswordByUserId";
+		_methodName30 = "sendRememberPasswordEmailByUserId";
 
 		_methodParameterTypes30 = new String[] { "long" };
 	}
@@ -61,19 +61,19 @@ public class MobileWidgetsUserServiceClpInvoker {
 
 		if (_methodName28.equals(name) &&
 				Arrays.deepEquals(_methodParameterTypes28, parameterTypes)) {
-			return MobileWidgetsUserServiceUtil.resetPasswordByEmailAddress(((Long)arguments[0]).longValue(),
+			return MobileWidgetsUserServiceUtil.sendRememberPasswordEmailByEmailAddress(((Long)arguments[0]).longValue(),
 				(java.lang.String)arguments[1]);
 		}
 
 		if (_methodName29.equals(name) &&
 				Arrays.deepEquals(_methodParameterTypes29, parameterTypes)) {
-			return MobileWidgetsUserServiceUtil.resetPasswordByScreenName(((Long)arguments[0]).longValue(),
+			return MobileWidgetsUserServiceUtil.sendRememberPasswordEmailByScreenName(((Long)arguments[0]).longValue(),
 				(java.lang.String)arguments[1]);
 		}
 
 		if (_methodName30.equals(name) &&
 				Arrays.deepEquals(_methodParameterTypes30, parameterTypes)) {
-			return MobileWidgetsUserServiceUtil.resetPasswordByUserId(((Long)arguments[0]).longValue());
+			return MobileWidgetsUserServiceUtil.sendRememberPasswordEmailByUserId(((Long)arguments[0]).longValue());
 		}
 
 		throw new UnsupportedOperationException();

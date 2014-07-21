@@ -64,13 +64,20 @@ public interface MobileWidgetsUserService extends BaseService, InvokableService 
 		java.lang.String[] parameterTypes, java.lang.Object[] arguments)
 		throws java.lang.Throwable;
 
-	public java.util.Map<java.lang.String, java.lang.Object> resetPasswordByEmailAddress(
+	/**
+	* NOTE FOR DEVELOPERS:
+	*
+	* Never reference this interface directly. Always use
+	* {@link com.liferay.mobile.widgets.service.MobileWidgetsUserServiceUtil}
+	* to access the mobile widgets user remote service.
+	*/
+	public java.util.Map<java.lang.String, java.lang.Object> sendRememberPasswordEmailByEmailAddress(
 		long companyId, java.lang.String emailAddress)
 		throws java.lang.Exception;
 
-	public java.util.Map<java.lang.String, java.lang.Object> resetPasswordByScreenName(
+	public java.util.Map<java.lang.String, java.lang.Object> sendRememberPasswordEmailByScreenName(
 		long companyId, java.lang.String screenName) throws java.lang.Exception;
 
-	public java.util.Map<java.lang.String, java.lang.Object> resetPasswordByUserId(
+	public java.util.Map<java.lang.String, java.lang.Object> sendRememberPasswordEmailByUserId(
 		long userId) throws java.lang.Exception;
 }
