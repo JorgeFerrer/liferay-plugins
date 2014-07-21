@@ -4,4 +4,6 @@
 	<author>Jose M. Navarro</author>
 	<namespace>MobileWidgets</namespace>
 
+	<entity name="MobileWidgetsUser" local-service="false" remote-service="true" />
+
 </service-builder>
