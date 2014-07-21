@@ -57,7 +57,7 @@ public class ClpSerializer {
 						new Class<?>[] { String.class });
 
 				String portletPropsServletContextName = (String)getMethod.invoke(null,
-						"mobile-widgets-compat-portlet-deployment-context");
+						"mobile-widgets-portlet-deployment-context");
 
 				if (Validator.isNotNull(portletPropsServletContextName)) {
 					_servletContextName = portletPropsServletContextName;
@@ -73,7 +73,7 @@ public class ClpSerializer {
 			if (Validator.isNull(_servletContextName)) {
 				try {
 					String propsUtilServletContextName = PropsUtil.get(
-							"mobile-widgets-compat-portlet-deployment-context");
+							"mobile-widgets-portlet-deployment-context");
 
 					if (Validator.isNotNull(propsUtilServletContextName)) {
 						_servletContextName = propsUtilServletContextName;
@@ -88,7 +88,7 @@ public class ClpSerializer {
 			}
 
 			if (Validator.isNull(_servletContextName)) {
-				_servletContextName = "mobile-widgets-compat-portlet";
+				_servletContextName = "mobile-widgets-portlet";
 			}
 
 			return _servletContextName;
