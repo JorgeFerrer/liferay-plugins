@@ -19,12 +19,14 @@ package com.liferay.tasks.service.permission;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.security.auth.PrincipalException;
+import com.liferay.portal.security.permission.BaseResourcePermission;
 import com.liferay.portal.security.permission.PermissionChecker;
+import com.liferay.tasks.util.PortletKeys;
 
 /**
  * @author Ryan Park
  */
-public class TasksPermission {
+public class TasksPermission extends BaseResourcePermission {
 
 	public static final String RESOURCE_NAME = "com.liferay.tasks";
 
@@ -38,10 +40,18 @@ public class TasksPermission {
 	}
 
 	public static boolean contains(
-		PermissionChecker permissionChecker, long groupId, String actionId) {
+		PermissionChecker permissionChecker, long classPK, String actionId) {
 
-		return permissionChecker.hasPermission(
-			groupId, RESOURCE_NAME, groupId, actionId);
+		return contains(
+			permissionChecker, RESOURCE_NAME, PortletKeys.TASKS, classPK,
+			actionId);
+	}
+
+	@Override
+	public Boolean checkResource(
+		PermissionChecker permissionChecker, long classPK, String actionId) {
+
+		return contains(permissionChecker, classPK, actionId);
 	}
 
 }

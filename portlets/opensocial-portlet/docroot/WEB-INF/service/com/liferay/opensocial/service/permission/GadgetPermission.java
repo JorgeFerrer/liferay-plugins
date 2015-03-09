@@ -17,12 +17,13 @@ package com.liferay.opensocial.service.permission;
 import com.liferay.opensocial.model.Gadget;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.security.auth.PrincipalException;
+import com.liferay.portal.security.permission.BaseResourcePermission;
 import com.liferay.portal.security.permission.PermissionChecker;
 
 /**
  * @author Michael Young
  */
-public class GadgetPermission {
+public class GadgetPermission extends BaseResourcePermission {
 
 	public static final String RESOURCE_NAME = "com.liferay.opensocial";
 
@@ -46,18 +47,26 @@ public class GadgetPermission {
 	}
 
 	public static boolean contains(
-		PermissionChecker permissionChecker, long groupId, long gadgetId,
+		PermissionChecker permissionChecker, long groupId, long classPK,
 		String actionId) {
 
-		return permissionChecker.hasPermission(
-			groupId, Gadget.class.getName(), gadgetId, actionId);
+		return contains(
+			permissionChecker, groupId, Gadget.class.getName(), null, classPK,
+			actionId);
 	}
 
 	public static boolean contains(
-		PermissionChecker permissionChecker, long groupId, String actionId) {
+		PermissionChecker permissionChecker, long classPK, String actionId) {
 
-		return permissionChecker.hasPermission(
-			groupId, RESOURCE_NAME, groupId, actionId);
+		return contains(
+			permissionChecker, RESOURCE_NAME, null, classPK, actionId);
+	}
+
+	@Override
+	public Boolean checkResource(
+		PermissionChecker permissionChecker, long classPK, String actionId) {
+
+		return contains(permissionChecker, classPK, actionId);
 	}
 
 }

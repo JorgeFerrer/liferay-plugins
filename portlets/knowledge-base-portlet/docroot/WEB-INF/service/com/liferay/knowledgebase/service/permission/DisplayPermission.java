@@ -14,15 +14,17 @@
 
 package com.liferay.knowledgebase.service.permission;
 
+import com.liferay.knowledgebase.util.PortletKeys;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.security.auth.PrincipalException;
+import com.liferay.portal.security.permission.BaseResourcePermission;
 import com.liferay.portal.security.permission.PermissionChecker;
 
 /**
  * @author Peter Shin
  * @author Brian Wing Shun Chan
  */
-public class DisplayPermission {
+public class DisplayPermission extends BaseResourcePermission {
 
 	public static final String RESOURCE_NAME =
 		"com.liferay.knowledgebase.display";
@@ -37,10 +39,18 @@ public class DisplayPermission {
 	}
 
 	public static boolean contains(
-		PermissionChecker permissionChecker, long groupId, String actionId) {
+		PermissionChecker permissionChecker, long classPK, String actionId) {
 
-		return permissionChecker.hasPermission(
-			groupId, RESOURCE_NAME, groupId, actionId);
+		return contains(
+			permissionChecker, RESOURCE_NAME,
+			PortletKeys.KNOWLEDGE_BASE_DISPLAY, classPK, actionId);
+	}
+
+	@Override
+	public Boolean checkResource(
+		PermissionChecker permissionChecker, long classPK, String actionId) {
+
+		return contains(permissionChecker, classPK, actionId);
 	}
 
 }
