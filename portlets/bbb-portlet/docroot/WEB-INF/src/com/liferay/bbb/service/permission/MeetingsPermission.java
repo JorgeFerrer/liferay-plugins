@@ -16,29 +16,37 @@ package com.liferay.bbb.service.permission;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.security.auth.PrincipalException;
+import com.liferay.portal.security.permission.BaseResourcePermission;
 import com.liferay.portal.security.permission.PermissionChecker;
 
 /**
  * @author Shinn Lok
  */
-public class MeetingsPermission {
+public class MeetingsPermission extends BaseResourcePermission {
 
 	public static final String RESOURCE_NAME = "com.liferay.bbb.meetings";
 
 	public static void check(
-			PermissionChecker permissionChecker, long groupId, String actionId)
+			PermissionChecker permissionChecker, long classPK, String actionId)
 		throws PortalException {
 
-		if (!contains(permissionChecker, groupId, actionId)) {
+		if (!contains(permissionChecker, classPK, actionId)) {
 			throw new PrincipalException();
 		}
 	}
 
 	public static boolean contains(
-		PermissionChecker permissionChecker, long groupId, String actionId) {
+		PermissionChecker permissionChecker, long classPK, String actionId) {
 
-		return permissionChecker.hasPermission(
-			groupId, RESOURCE_NAME, groupId, actionId);
+		return contains(
+			permissionChecker, RESOURCE_NAME, null, classPK, actionId);
+	}
+
+	@Override
+	public Boolean checkResource(
+		PermissionChecker permissionChecker, long classPK, String actionId) {
+
+		return contains(permissionChecker, classPK, actionId);
 	}
 
 }

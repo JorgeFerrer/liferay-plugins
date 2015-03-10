@@ -16,13 +16,15 @@ package com.liferay.calendar.service.permission;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.security.auth.PrincipalException;
+import com.liferay.portal.security.permission.BaseResourcePermission;
 import com.liferay.portal.security.permission.PermissionChecker;
+import com.liferay.portal.util.PortletKeys;
 
 /**
  * @author Eduardo Lundgren
  * @author Andrea Di Giorgi
  */
-public class CalendarPortletPermission {
+public class CalendarPortletPermission extends BaseResourcePermission {
 
 	public static final String RESOURCE_NAME = "com.liferay.calendar";
 
@@ -36,10 +38,18 @@ public class CalendarPortletPermission {
 	}
 
 	public static boolean contains(
-		PermissionChecker permissionChecker, long groupId, String actionId) {
+		PermissionChecker permissionChecker, long classPK, String actionId) {
 
-		return permissionChecker.hasPermission(
-			groupId, RESOURCE_NAME, groupId, actionId);
+		return contains(
+			permissionChecker, RESOURCE_NAME, PortletKeys.CALENDAR, classPK,
+			actionId);
+	}
+
+	@Override
+	public Boolean checkResource(
+		PermissionChecker permissionChecker, long classPK, String actionId) {
+
+		return contains(permissionChecker, classPK, actionId);
 	}
 
 }

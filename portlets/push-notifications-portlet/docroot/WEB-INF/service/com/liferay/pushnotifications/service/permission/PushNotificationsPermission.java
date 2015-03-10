@@ -16,12 +16,13 @@ package com.liferay.pushnotifications.service.permission;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.security.auth.PrincipalException;
+import com.liferay.portal.security.permission.BaseResourcePermission;
 import com.liferay.portal.security.permission.PermissionChecker;
 
 /**
  * @author Bruno Farache
  */
-public class PushNotificationsPermission {
+public class PushNotificationsPermission extends BaseResourcePermission {
 
 	public static final String RESOURCE_NAME = "com.liferay.pushnotifications";
 
@@ -37,7 +38,14 @@ public class PushNotificationsPermission {
 	public static boolean contains(
 		PermissionChecker permissionChecker, String actionId) {
 
-		return permissionChecker.hasPermission(0, RESOURCE_NAME, 0, actionId);
+		return contains(permissionChecker, RESOURCE_NAME, null, 0, actionId);
+	}
+
+	@Override
+	public Boolean checkResource(
+		PermissionChecker permissionChecker, long classPK, String actionId) {
+
+		return contains(permissionChecker, actionId);
 	}
 
 }
