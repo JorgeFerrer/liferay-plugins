@@ -817,9 +817,7 @@ public class CalendarPortlet extends MVCPortlet {
 		String secondReminderType = ParamUtil.getString(
 			portletRequest, "reminderType1");
 
-		return new String[] {
-			firstReminderType, secondReminderType
-		};
+		return new String[] {firstReminderType, secondReminderType};
 	}
 
 	protected TimeZone getTimeZone(PortletRequest portletRequest) {
@@ -938,7 +936,13 @@ public class CalendarPortlet extends MVCPortlet {
 			ResourceRequest resourceRequest, ResourceResponse resourceResponse)
 		throws Exception {
 
-		if (!PortalUtil.isRSSFeedsEnabled()) {
+		PortletPreferences portletPreferences =
+			resourceRequest.getPreferences();
+
+		boolean enableRss = GetterUtil.getBoolean(
+			portletPreferences.getValue("enableRss", null), true);
+
+		if (!PortalUtil.isRSSFeedsEnabled() || !enableRss) {
 			PortalUtil.sendRSSFeedsDisabledError(
 				resourceRequest, resourceResponse);
 
@@ -949,9 +953,6 @@ public class CalendarPortlet extends MVCPortlet {
 			WebKeys.THEME_DISPLAY);
 
 		long calendarId = ParamUtil.getLong(resourceRequest, "calendarId");
-
-		PortletPreferences portletPreferences =
-			resourceRequest.getPreferences();
 
 		long timeInterval = GetterUtil.getLong(
 			portletPreferences.getValue("rssTimeInterval", StringPool.BLANK),

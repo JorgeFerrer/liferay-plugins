@@ -45,7 +45,9 @@ import com.liferay.portal.model.Organization;
 import com.liferay.portal.model.Repository;
 import com.liferay.portal.model.User;
 import com.liferay.portal.security.ac.AccessControlled;
+import com.liferay.portal.security.auth.CompanyThreadLocal;
 import com.liferay.portal.security.permission.ActionKeys;
+import com.liferay.portal.security.permission.InlineSQLHelperUtil;
 import com.liferay.portal.security.permission.PermissionChecker;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.util.comparator.GroupNameComparator;
@@ -68,7 +70,6 @@ import com.liferay.sync.util.JSONWebServiceActionParametersMap;
 import com.liferay.sync.util.PortletPropsKeys;
 import com.liferay.sync.util.PortletPropsValues;
 import com.liferay.sync.util.SyncUtil;
-import com.liferay.util.portlet.PortletProps;
 
 import java.io.File;
 import java.io.InputStream;
@@ -76,12 +77,10 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
-
-import javax.portlet.PortletPreferences;
 
 import jodd.bean.BeanUtil;
 
@@ -274,7 +273,14 @@ public class SyncDLObjectServiceImpl extends SyncDLObjectServiceBaseImpl {
 
 			repositoryService.checkRepository(repositoryId);
 
-			return syncDLObjectFinder.filterFindByC_R(companyId, repositoryId);
+			List<SyncDLObject> syncDLObjects =
+				syncDLObjectFinder.filterFindByC_R(companyId, repositoryId);
+
+			if (!InlineSQLHelperUtil.isEnabled(repositoryId)) {
+				return checkSyncDLObjects(syncDLObjects);
+			}
+
+			return syncDLObjects;
 		}
 		catch (PortalException pe) {
 			throw new PortalException(SyncUtil.buildExceptionMessage(pe), pe);
@@ -457,34 +463,6 @@ public class SyncDLObjectServiceImpl extends SyncDLObjectServiceBaseImpl {
 		return syncDLObjectLocalService.getLatestModifiedTime();
 	}
 
-	@Override
-	public PortletPreferences getPortletPreferences() throws PortalException {
-		User user = getUser();
-
-		PortletPreferences portletPreferences = PrefsPropsUtil.getPreferences(
-			user.getCompanyId());
-
-		Properties properties = PortletProps.getProperties();
-
-		for (Map.Entry<Object, Object> entry : properties.entrySet()) {
-			String key = String.valueOf(entry.getKey());
-			String value = String.valueOf(entry.getValue());
-
-			if (portletPreferences.getValue(key, null) != null) {
-				continue;
-			}
-
-			try {
-				portletPreferences.setValue(key, value);
-			}
-			catch (Exception e) {
-				_log.error(e, e);
-			}
-		}
-
-		return portletPreferences;
-	}
-
 	@AccessControlled(guestAccessEnabled = true)
 	@Override
 	public SyncContext getSyncContext() throws PortalException {
@@ -493,10 +471,32 @@ public class SyncDLObjectServiceImpl extends SyncDLObjectServiceBaseImpl {
 
 			SyncContext syncContext = new SyncContext();
 
-			String authType = PropsUtil.get(
-				PropsKeys.COMPANY_SECURITY_AUTH_TYPE);
+			String authType = PrefsPropsUtil.getString(
+				CompanyThreadLocal.getCompanyId(),
+				PropsKeys.COMPANY_SECURITY_AUTH_TYPE,
+				PropsUtil.get(PropsKeys.COMPANY_SECURITY_AUTH_TYPE));
 
 			syncContext.setAuthType(authType);
+
+			boolean oAuthEnabled = PrefsPropsUtil.getBoolean(
+				user.getCompanyId(), PortletPropsKeys.SYNC_OAUTH_ENABLED,
+				PortletPropsValues.SYNC_OAUTH_ENABLED);
+
+			if (oAuthEnabled) {
+				String oAuthConsumerKey = PrefsPropsUtil.getString(
+					user.getCompanyId(),
+					PortletPropsKeys.SYNC_OAUTH_CONSUMER_KEY);
+
+				syncContext.setOAuthConsumerKey(oAuthConsumerKey);
+
+				String oAuthConsumerSecret = PrefsPropsUtil.getString(
+					user.getCompanyId(),
+					PortletPropsKeys.SYNC_OAUTH_CONSUMER_SECRET);
+
+				syncContext.setOAuthConsumerSecret(oAuthConsumerSecret);
+			}
+
+			syncContext.setOAuthEnabled(oAuthEnabled);
 
 			PluginPackage syncWebPluginPackage =
 				DeployManagerUtil.getInstalledPluginPackage("sync-web");
@@ -552,6 +552,10 @@ public class SyncDLObjectServiceImpl extends SyncDLObjectServiceBaseImpl {
 			List<SyncDLObject> syncDLObjects =
 				syncDLObjectFinder.filterFindByC_M_R_P(
 					companyId, lastAccessTime, repositoryId, -1);
+
+			if (!InlineSQLHelperUtil.isEnabled(repositoryId)) {
+				syncDLObjects = checkSyncDLObjects(syncDLObjects);
+			}
 
 			for (SyncDLObject syncDLObject : syncDLObjects) {
 				if (syncDLObject.getModifiedTime() > lastAccessTime) {
@@ -990,6 +994,34 @@ public class SyncDLObjectServiceImpl extends SyncDLObjectServiceBaseImpl {
 		return syncDLObject;
 	}
 
+	protected List<SyncDLObject> checkSyncDLObjects(
+		List<SyncDLObject> syncDLObjects) {
+
+		Iterator<SyncDLObject> iterator = syncDLObjects.iterator();
+
+		while (iterator.hasNext()) {
+			SyncDLObject syncDLObject = iterator.next();
+
+			String type = syncDLObject.getType();
+
+			try {
+				if (type.equals(SyncConstants.TYPE_FILE) ||
+					type.equals(SyncConstants.TYPE_PRIVATE_WORKING_COPY)) {
+
+					dlAppService.getFileEntry(syncDLObject.getTypePK());
+				}
+				else {
+					dlAppService.getFolder(syncDLObject.getTypePK());
+				}
+			}
+			catch (Exception e) {
+				iterator.remove();
+			}
+		}
+
+		return syncDLObjects;
+	}
+
 	protected Map<String, String> getPortletPreferencesMap()
 		throws PortalException {
 
@@ -1024,6 +1056,10 @@ public class SyncDLObjectServiceImpl extends SyncDLObjectServiceBaseImpl {
 		List<SyncDLObject> curSyncDLObjects =
 			syncDLObjectFinder.filterFindByC_M_R_P(
 				companyId, lastAccessTime, repositoryId, parentFolderId);
+
+		if (!InlineSQLHelperUtil.isEnabled(repositoryId)) {
+			curSyncDLObjects = checkSyncDLObjects(curSyncDLObjects);
+		}
 
 		syncDLObjects.addAll(curSyncDLObjects);
 

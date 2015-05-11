@@ -164,16 +164,17 @@ public class FileSystemImporter extends BaseImporter {
 					PortalUtil.getClassNameId(JournalArticle.class),
 					getKey(fileName), getMap(name), null,
 					DDMTemplateConstants.TEMPLATE_TYPE_DISPLAY,
-					StringPool.BLANK, getDDMTemplateLanguage(name), script,
-					false, false, StringPool.BLANK, null, serviceContext);
+					StringPool.BLANK, getDDMTemplateLanguage(file.getName()),
+					script, false, false, StringPool.BLANK, null,
+					serviceContext);
 			}
 			else {
 				DDMTemplateLocalServiceUtil.updateTemplate(
 					ddmTemplate.getTemplateId(), ddmTemplate.getClassPK(),
 					getMap(name), null,
 					DDMTemplateConstants.TEMPLATE_TYPE_DISPLAY,
-					StringPool.BLANK, getDDMTemplateLanguage(name), script,
-					false, serviceContext);
+					StringPool.BLANK, getDDMTemplateLanguage(file.getName()),
+					script, false, serviceContext);
 			}
 		}
 		catch (PortalException e) {
@@ -244,8 +245,6 @@ public class FileSystemImporter extends BaseImporter {
 		File[] files = listFiles(dir);
 
 		for (File file : files) {
-			String language = getDDMTemplateLanguage(file.getName());
-
 			String script = StringUtil.read(getInputStream(file));
 
 			if (Validator.isNull(script)) {
@@ -254,8 +253,8 @@ public class FileSystemImporter extends BaseImporter {
 
 			addDDMTemplate(
 				groupId, ddmStructure.getStructureId(), file.getName(),
-				language, script, DDMTemplateConstants.TEMPLATE_TYPE_DISPLAY,
-				null);
+				getDDMTemplateLanguage(file.getName()), script,
+				DDMTemplateConstants.TEMPLATE_TYPE_DISPLAY, null);
 		}
 	}
 
@@ -574,11 +573,12 @@ public class FileSystemImporter extends BaseImporter {
 
 	protected void addDDMTemplates(
 			String ddmStructureKey, String fileName, InputStream inputStream)
-		throws Exception {
+		throws Exception {		
 
 		fileName = FileUtil.stripExtension(fileName);
 
 		String name = getName(fileName);
+		String language = getDDMTemplateLanguage(fileName);
 
 		String xsl = StringUtil.read(inputStream);
 
@@ -616,17 +616,17 @@ public class FileSystemImporter extends BaseImporter {
 					ddmStructure.getStructureId(),
 					PortalUtil.getClassNameId(JournalArticle.class),
 					getKey(fileName), getMap(name), null,
-					DDMTemplateConstants.TEMPLATE_TYPE_DISPLAY, null,
-					getDDMTemplateLanguage(fileName), replaceFileEntryURL(xsl),
-					false, false, null, null, serviceContext);
+					DDMTemplateConstants.TEMPLATE_TYPE_DISPLAY, null, language,
+					replaceFileEntryURL(xsl), false, false, null, null,
+					serviceContext);
 			}
 			else {
 				ddmTemplate = DDMTemplateLocalServiceUtil.updateTemplate(
 					ddmTemplate.getTemplateId(),
 					PortalUtil.getClassNameId(DDMStructure.class), getMap(name),
 					null, DDMTemplateConstants.TEMPLATE_TYPE_DISPLAY, null,
-					getDDMTemplateLanguage(fileName), replaceFileEntryURL(xsl),
-					false, false, null, null, serviceContext);
+					language, replaceFileEntryURL(xsl), false, false, null,
+					null, serviceContext);
 			}
 		}
 		catch (PortalException e) {
@@ -874,16 +874,15 @@ public class FileSystemImporter extends BaseImporter {
 					serviceContext);
 			}
 			else {
-				journalArticle =
-					JournalArticleLocalServiceUtil.updateArticle(
-						userId, groupId, 0, journalArticleId,
-						journalArticle.getVersion(),
-						getMap(articleDefaultLocale, title), descriptionMap,
-						content, ddmStructureKey, ddmTemplateKey,
-						StringPool.BLANK, 1, 1, 2010, 0, 0, 0, 0, 0, 0, 0, true,
-						0, 0, 0, 0, 0, true, indexable, smallImage,
-						smallImageURL, null, new HashMap<String, byte[]>(),
-						StringPool.BLANK, serviceContext);
+				journalArticle = JournalArticleLocalServiceUtil.updateArticle(
+					userId, groupId, 0, journalArticleId,
+					journalArticle.getVersion(),
+					getMap(articleDefaultLocale, title), descriptionMap,
+					content, ddmStructureKey, ddmTemplateKey, StringPool.BLANK,
+					1, 1, 2010, 0, 0, 0, 0, 0, 0, 0, true, 0, 0, 0, 0, 0, true,
+					indexable, smallImage, smallImageURL, null,
+					new HashMap<String, byte[]>(), StringPool.BLANK,
+					serviceContext);
 			}
 
 			JournalArticleLocalServiceUtil.updateStatus(
@@ -1761,7 +1760,8 @@ public class FileSystemImporter extends BaseImporter {
 			{"asset_category", AssetCategory.class},
 			{"asset_entry", AssetEntry.class}, {"asset_tag", AssetTag.class},
 			{"blogs_entry", BlogsEntry.class},
-			{"document_library",FileEntry.class}, {"site_map", LayoutSet.class},
+			{"document_library", FileEntry.class},
+			{"site_map", LayoutSet.class},
 			{"wiki_page", WikiPage.class}
 		};
 

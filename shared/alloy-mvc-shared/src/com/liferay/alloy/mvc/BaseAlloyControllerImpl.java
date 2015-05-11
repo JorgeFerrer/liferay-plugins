@@ -1267,7 +1267,27 @@ public abstract class BaseAlloyControllerImpl implements AlloyController {
 		for (String key : modelAttributes.keySet()) {
 			Object value = modelAttributes.get(key);
 
-			jsonObject.put(String.valueOf(key), String.valueOf(value));
+			if (value instanceof Boolean) {
+				jsonObject.put(String.valueOf(key), (Boolean)value);
+			}
+			else if (value instanceof Date) {
+				jsonObject.put(String.valueOf(key), (Date)value);
+			}
+			else if (value instanceof Double) {
+				jsonObject.put(String.valueOf(key), (Double)value);
+			}
+			else if (value instanceof Integer) {
+				jsonObject.put(String.valueOf(key), (Integer)value);
+			}
+			else if (value instanceof Long) {
+				jsonObject.put(String.valueOf(key), (Long)value);
+			}
+			else if (value instanceof Short) {
+				jsonObject.put(String.valueOf(key), (Short)value);
+			}
+			else {
+				jsonObject.put(String.valueOf(key), String.valueOf(value));
+			}
 		}
 
 		return jsonObject;
