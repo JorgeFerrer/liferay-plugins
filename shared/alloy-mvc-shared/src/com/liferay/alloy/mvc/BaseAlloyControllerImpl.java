@@ -35,11 +35,11 @@ import com.liferay.portal.kernel.portlet.LiferayPortletConfig;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.PortletBag;
 import com.liferay.portal.kernel.portlet.PortletBagPool;
-import com.liferay.portal.kernel.scheduler.CronText;
-import com.liferay.portal.kernel.scheduler.CronTrigger;
 import com.liferay.portal.kernel.scheduler.SchedulerEngineHelperUtil;
 import com.liferay.portal.kernel.scheduler.StorageType;
+import com.liferay.portal.kernel.scheduler.TimeUnit;
 import com.liferay.portal.kernel.scheduler.Trigger;
+import com.liferay.portal.kernel.scheduler.TriggerFactoryUtil;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Hits;
@@ -83,6 +83,7 @@ import java.io.StringWriter;
 
 import java.lang.reflect.Method;
 
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -175,6 +176,15 @@ public abstract class BaseAlloyControllerImpl implements AlloyController {
 		}
 	}
 
+	public BaseModel<?> fetchBaseModel(String className, long classPK)
+		throws Exception {
+
+		AlloyServiceInvoker alloyServiceInvoker = new AlloyServiceInvoker(
+			className);
+
+		return alloyServiceInvoker.fetchModel(classPK);
+	}
+
 	@Override
 	public Portlet getPortlet() {
 		return portlet;
@@ -208,8 +218,9 @@ public abstract class BaseAlloyControllerImpl implements AlloyController {
 			indexer.reindex(baseModel);
 		}
 		else {
-			Indexer baseModelIndexer = IndexerRegistryUtil.getIndexer(
-				baseModel.getModelClass());
+			Indexer<BaseModel<?>> baseModelIndexer =
+				(Indexer<BaseModel<?>>)IndexerRegistryUtil.getIndexer(
+					baseModel.getModelClass());
 
 			if (baseModelIndexer != null) {
 				baseModelIndexer.reindex(baseModel);
@@ -312,7 +323,8 @@ public abstract class BaseAlloyControllerImpl implements AlloyController {
 		SessionMessages.add(
 			request,
 			portlet.getPortletId() +
-				SessionMessages.KEY_SUFFIX_REFRESH_PORTLET_DATA, data);
+				SessionMessages.KEY_SUFFIX_REFRESH_PORTLET_DATA,
+			data);
 	}
 
 	protected void addSuccessMessage() {
@@ -349,7 +361,7 @@ public abstract class BaseAlloyControllerImpl implements AlloyController {
 		return sb.toString();
 	}
 
-	protected Indexer buildIndexer() {
+	protected Indexer<BaseModel<?>> buildIndexer() {
 		return null;
 	}
 
@@ -524,12 +536,11 @@ public abstract class BaseAlloyControllerImpl implements AlloyController {
 	}
 
 	protected Trigger getSchedulerTrigger() {
-		CronText cronText = new CronText(
-			CalendarFactoryUtil.getCalendar(), CronText.DAILY_FREQUENCY, 1);
+		Calendar calendar = CalendarFactoryUtil.getCalendar();
 
-		return new CronTrigger(
+		return TriggerFactoryUtil.createTrigger(
 			getSchedulerJobName(), getMessageListenerGroupName(),
-			cronText.toString());
+			calendar.getTime(), 1, TimeUnit.DAY);
 	}
 
 	protected Map<String, Serializable> getSearchAttributes(
@@ -624,7 +635,7 @@ public abstract class BaseAlloyControllerImpl implements AlloyController {
 
 		PortletBag portletBag = PortletBagPool.get(portlet.getPortletId());
 
-		List<Indexer> indexerInstances = portletBag.getIndexerInstances();
+		List<Indexer<?>> indexerInstances = portletBag.getIndexerInstances();
 
 		if (existingIndexer != null) {
 			IndexerRegistryUtil.unregister(existingIndexer);
@@ -1260,7 +1271,8 @@ public abstract class BaseAlloyControllerImpl implements AlloyController {
 		SessionMessages.add(
 			request,
 			portlet.getPortletId() +
-				SessionMessages.KEY_SUFFIX_REFRESH_PORTLET_DATA, data);
+				SessionMessages.KEY_SUFFIX_REFRESH_PORTLET_DATA,
+			data);
 	}
 
 	protected void setPermissioned(boolean permissioned) {
@@ -1399,7 +1411,7 @@ public abstract class BaseAlloyControllerImpl implements AlloyController {
 	protected EventRequest eventRequest;
 	protected EventResponse eventResponse;
 	protected String format;
-	protected Indexer indexer;
+	protected Indexer<BaseModel<?>> indexer;
 	protected String indexerClassName;
 	protected String lifecycle;
 	protected LiferayPortletConfig liferayPortletConfig;

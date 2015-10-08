@@ -9721,7 +9721,7 @@ public class TasksEntryPersistenceImpl extends BasePersistenceImpl<TasksEntry>
 				tasksEntry.setNew(false);
 			}
 			else {
-				session.merge(tasksEntry);
+				tasksEntry = (TasksEntry)session.merge(tasksEntry);
 			}
 		}
 		catch (Exception e) {
@@ -10349,6 +10349,11 @@ public class TasksEntryPersistenceImpl extends BasePersistenceImpl<TasksEntry>
 		}
 
 		return count.intValue();
+	}
+
+	@Override
+	protected Map<String, Integer> getTableColumnsMap() {
+		return TasksEntryModelImpl.TABLE_COLUMNS_MAP;
 	}
 
 	/**

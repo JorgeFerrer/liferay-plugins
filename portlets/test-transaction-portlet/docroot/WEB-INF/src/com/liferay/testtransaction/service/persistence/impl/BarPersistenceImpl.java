@@ -790,7 +790,7 @@ public class BarPersistenceImpl extends BasePersistenceImpl<Bar>
 				bar.setNew(false);
 			}
 			else {
-				session.merge(bar);
+				bar = (Bar)session.merge(bar);
 			}
 		}
 		catch (Exception e) {
@@ -1198,8 +1198,13 @@ public class BarPersistenceImpl extends BasePersistenceImpl<Bar>
 	}
 
 	@Override
-	protected Set<String> getBadColumnNames() {
+	public Set<String> getBadColumnNames() {
 		return _badColumnNames;
+	}
+
+	@Override
+	protected Map<String, Integer> getTableColumnsMap() {
+		return BarModelImpl.TABLE_COLUMNS_MAP;
 	}
 
 	/**

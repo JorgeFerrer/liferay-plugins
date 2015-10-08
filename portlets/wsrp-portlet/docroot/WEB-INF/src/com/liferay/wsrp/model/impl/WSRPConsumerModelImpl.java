@@ -17,7 +17,6 @@ package com.liferay.wsrp.model.impl;
 import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
-import com.liferay.portal.kernel.lar.StagedModelType;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringBundler;
@@ -29,6 +28,7 @@ import com.liferay.portal.util.PortalUtil;
 
 import com.liferay.portlet.expando.model.ExpandoBridge;
 import com.liferay.portlet.expando.util.ExpandoBridgeFactoryUtil;
+import com.liferay.portlet.exportimport.lar.StagedModelType;
 
 import com.liferay.wsrp.model.WSRPConsumer;
 import com.liferay.wsrp.model.WSRPConsumerModel;
@@ -76,9 +76,29 @@ public class WSRPConsumerModelImpl extends BaseModelImpl<WSRPConsumer>
 			{ "registrationPropertiesString", Types.VARCHAR },
 			{ "forwardCookies", Types.VARCHAR },
 			{ "forwardHeaders", Types.VARCHAR },
-			{ "markupCharacterSets", Types.VARCHAR }
+			{ "markupCharacterSets", Types.VARCHAR },
+			{ "lastPublishDate", Types.TIMESTAMP }
 		};
-	public static final String TABLE_SQL_CREATE = "create table WSRP_WSRPConsumer (uuid_ VARCHAR(75) null,wsrpConsumerId LONG not null primary key,companyId LONG,createDate DATE null,modifiedDate DATE null,name VARCHAR(75) null,url STRING null,wsdl TEXT null,registrationContextString TEXT null,registrationPropertiesString STRING null,forwardCookies VARCHAR(255) null,forwardHeaders VARCHAR(255) null,markupCharacterSets VARCHAR(255) null)";
+	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
+
+	static {
+		TABLE_COLUMNS_MAP.put("uuid_", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("wsrpConsumerId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("companyId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("createDate", Types.TIMESTAMP);
+		TABLE_COLUMNS_MAP.put("modifiedDate", Types.TIMESTAMP);
+		TABLE_COLUMNS_MAP.put("name", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("url", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("wsdl", Types.CLOB);
+		TABLE_COLUMNS_MAP.put("registrationContextString", Types.CLOB);
+		TABLE_COLUMNS_MAP.put("registrationPropertiesString", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("forwardCookies", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("forwardHeaders", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("markupCharacterSets", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("lastPublishDate", Types.TIMESTAMP);
+	}
+
+	public static final String TABLE_SQL_CREATE = "create table WSRP_WSRPConsumer (uuid_ VARCHAR(75) null,wsrpConsumerId LONG not null primary key,companyId LONG,createDate DATE null,modifiedDate DATE null,name VARCHAR(75) null,url STRING null,wsdl TEXT null,registrationContextString TEXT null,registrationPropertiesString STRING null,forwardCookies VARCHAR(255) null,forwardHeaders VARCHAR(255) null,markupCharacterSets VARCHAR(255) null,lastPublishDate DATE null)";
 	public static final String TABLE_SQL_DROP = "drop table WSRP_WSRPConsumer";
 	public static final String ORDER_BY_JPQL = " ORDER BY wsrpConsumer.name ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY WSRP_WSRPConsumer.name ASC";
@@ -152,6 +172,7 @@ public class WSRPConsumerModelImpl extends BaseModelImpl<WSRPConsumer>
 		attributes.put("forwardCookies", getForwardCookies());
 		attributes.put("forwardHeaders", getForwardHeaders());
 		attributes.put("markupCharacterSets", getMarkupCharacterSets());
+		attributes.put("lastPublishDate", getLastPublishDate());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -240,6 +261,12 @@ public class WSRPConsumerModelImpl extends BaseModelImpl<WSRPConsumer>
 
 		if (markupCharacterSets != null) {
 			setMarkupCharacterSets(markupCharacterSets);
+		}
+
+		Date lastPublishDate = (Date)attributes.get("lastPublishDate");
+
+		if (lastPublishDate != null) {
+			setLastPublishDate(lastPublishDate);
 		}
 	}
 
@@ -448,6 +475,16 @@ public class WSRPConsumerModelImpl extends BaseModelImpl<WSRPConsumer>
 	}
 
 	@Override
+	public Date getLastPublishDate() {
+		return _lastPublishDate;
+	}
+
+	@Override
+	public void setLastPublishDate(Date lastPublishDate) {
+		_lastPublishDate = lastPublishDate;
+	}
+
+	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(PortalUtil.getClassNameId(
 				WSRPConsumer.class.getName()));
@@ -497,6 +534,7 @@ public class WSRPConsumerModelImpl extends BaseModelImpl<WSRPConsumer>
 		wsrpConsumerImpl.setForwardCookies(getForwardCookies());
 		wsrpConsumerImpl.setForwardHeaders(getForwardHeaders());
 		wsrpConsumerImpl.setMarkupCharacterSets(getMarkupCharacterSets());
+		wsrpConsumerImpl.setLastPublishDate(getLastPublishDate());
 
 		wsrpConsumerImpl.resetOriginalValues();
 
@@ -669,12 +707,21 @@ public class WSRPConsumerModelImpl extends BaseModelImpl<WSRPConsumer>
 			wsrpConsumerCacheModel.markupCharacterSets = null;
 		}
 
+		Date lastPublishDate = getLastPublishDate();
+
+		if (lastPublishDate != null) {
+			wsrpConsumerCacheModel.lastPublishDate = lastPublishDate.getTime();
+		}
+		else {
+			wsrpConsumerCacheModel.lastPublishDate = Long.MIN_VALUE;
+		}
+
 		return wsrpConsumerCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(27);
+		StringBundler sb = new StringBundler(29);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -702,6 +749,8 @@ public class WSRPConsumerModelImpl extends BaseModelImpl<WSRPConsumer>
 		sb.append(getForwardHeaders());
 		sb.append(", markupCharacterSets=");
 		sb.append(getMarkupCharacterSets());
+		sb.append(", lastPublishDate=");
+		sb.append(getLastPublishDate());
 		sb.append("}");
 
 		return sb.toString();
@@ -709,7 +758,7 @@ public class WSRPConsumerModelImpl extends BaseModelImpl<WSRPConsumer>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(43);
+		StringBundler sb = new StringBundler(46);
 
 		sb.append("<model><model-name>");
 		sb.append("com.liferay.wsrp.model.WSRPConsumer");
@@ -767,6 +816,10 @@ public class WSRPConsumerModelImpl extends BaseModelImpl<WSRPConsumer>
 			"<column><column-name>markupCharacterSets</column-name><column-value><![CDATA[");
 		sb.append(getMarkupCharacterSets());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>lastPublishDate</column-name><column-value><![CDATA[");
+		sb.append(getLastPublishDate());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -794,6 +847,7 @@ public class WSRPConsumerModelImpl extends BaseModelImpl<WSRPConsumer>
 	private String _forwardCookies;
 	private String _forwardHeaders;
 	private String _markupCharacterSets;
+	private Date _lastPublishDate;
 	private long _columnBitmask;
 	private WSRPConsumer _escapedModel;
 }

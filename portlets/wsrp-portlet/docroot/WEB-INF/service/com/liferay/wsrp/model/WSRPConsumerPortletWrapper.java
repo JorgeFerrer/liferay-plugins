@@ -16,9 +16,10 @@ package com.liferay.wsrp.model;
 
 import aQute.bnd.annotation.ProviderType;
 
-import com.liferay.portal.kernel.lar.StagedModelType;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.model.ModelWrapper;
+
+import com.liferay.portlet.exportimport.lar.StagedModelType;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -62,6 +63,7 @@ public class WSRPConsumerPortletWrapper implements WSRPConsumerPortlet,
 		attributes.put("wsrpConsumerId", getWsrpConsumerId());
 		attributes.put("name", getName());
 		attributes.put("portletHandle", getPortletHandle());
+		attributes.put("lastPublishDate", getLastPublishDate());
 
 		return attributes;
 	}
@@ -116,6 +118,12 @@ public class WSRPConsumerPortletWrapper implements WSRPConsumerPortlet,
 		if (portletHandle != null) {
 			setPortletHandle(portletHandle);
 		}
+
+		Date lastPublishDate = (Date)attributes.get("lastPublishDate");
+
+		if (lastPublishDate != null) {
+			setLastPublishDate(lastPublishDate);
+		}
 	}
 
 	@Override
@@ -152,6 +160,16 @@ public class WSRPConsumerPortletWrapper implements WSRPConsumerPortlet,
 	@Override
 	public com.liferay.portlet.expando.model.ExpandoBridge getExpandoBridge() {
 		return _wsrpConsumerPortlet.getExpandoBridge();
+	}
+
+	/**
+	* Returns the last publish date of this w s r p consumer portlet.
+	*
+	* @return the last publish date of this w s r p consumer portlet
+	*/
+	@Override
+	public Date getLastPublishDate() {
+		return _wsrpConsumerPortlet.getLastPublishDate();
 	}
 
 	/**
@@ -295,6 +313,16 @@ public class WSRPConsumerPortletWrapper implements WSRPConsumerPortlet,
 	public void setExpandoBridgeAttributes(
 		com.liferay.portal.service.ServiceContext serviceContext) {
 		_wsrpConsumerPortlet.setExpandoBridgeAttributes(serviceContext);
+	}
+
+	/**
+	* Sets the last publish date of this w s r p consumer portlet.
+	*
+	* @param lastPublishDate the last publish date of this w s r p consumer portlet
+	*/
+	@Override
+	public void setLastPublishDate(Date lastPublishDate) {
+		_wsrpConsumerPortlet.setLastPublishDate(lastPublishDate);
 	}
 
 	/**

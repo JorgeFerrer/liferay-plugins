@@ -213,6 +213,11 @@ public interface PushNotificationsDeviceLocalService extends BaseLocalService,
 	public java.util.List<com.liferay.pushnotifications.model.PushNotificationsDevice> getPushNotificationsDevices(
 		int start, int end);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public java.util.List<com.liferay.pushnotifications.model.PushNotificationsDevice> getPushNotificationsDevices(
+		int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator);
+
 	/**
 	* Returns the number of push notifications devices.
 	*
@@ -231,6 +236,12 @@ public interface PushNotificationsDeviceLocalService extends BaseLocalService,
 	public void sendPushNotification(java.lang.String platform,
 		java.util.List<java.lang.String> tokens,
 		com.liferay.portal.kernel.json.JSONObject payloadJSONObject)
+		throws PortalException;
+
+	public void sendPushNotification(java.lang.String platform,
+		java.util.List<java.lang.String> tokens,
+		com.liferay.portal.kernel.json.JSONObject payloadJSONObject,
+		java.util.Map<java.lang.String, java.lang.Object> configuration)
 		throws PortalException;
 
 	public void sendPushNotification(long[] toUserIds,
@@ -253,4 +264,7 @@ public interface PushNotificationsDeviceLocalService extends BaseLocalService,
 	@com.liferay.portal.kernel.search.Indexable(type = IndexableType.REINDEX)
 	public com.liferay.pushnotifications.model.PushNotificationsDevice updatePushNotificationsDevice(
 		com.liferay.pushnotifications.model.PushNotificationsDevice pushNotificationsDevice);
+
+	public void updateToken(java.lang.String oldToken, java.lang.String newToken)
+		throws PortalException;
 }

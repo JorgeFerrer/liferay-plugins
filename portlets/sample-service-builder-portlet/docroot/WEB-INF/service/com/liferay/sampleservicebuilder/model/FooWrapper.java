@@ -16,7 +16,6 @@ package com.liferay.sampleservicebuilder.model;
 
 import aQute.bnd.annotation.ProviderType;
 
-import com.liferay.portal.kernel.lar.StagedModelType;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.model.ModelWrapper;
 
@@ -581,11 +580,6 @@ public class FooWrapper implements Foo, ModelWrapper<Foo> {
 		}
 
 		return false;
-	}
-
-	@Override
-	public StagedModelType getStagedModelType() {
-		return _foo.getStagedModelType();
 	}
 
 	/**

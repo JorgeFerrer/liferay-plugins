@@ -16,9 +16,10 @@ package com.liferay.opensocial.model;
 
 import aQute.bnd.annotation.ProviderType;
 
-import com.liferay.portal.kernel.lar.StagedModelType;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.model.ModelWrapper;
+
+import com.liferay.portlet.exportimport.lar.StagedModelType;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -61,6 +62,7 @@ public class GadgetWrapper implements Gadget, ModelWrapper<Gadget> {
 		attributes.put("name", getName());
 		attributes.put("url", getUrl());
 		attributes.put("portletCategoryNames", getPortletCategoryNames());
+		attributes.put("lastPublishDate", getLastPublishDate());
 
 		return attributes;
 	}
@@ -115,6 +117,12 @@ public class GadgetWrapper implements Gadget, ModelWrapper<Gadget> {
 		if (portletCategoryNames != null) {
 			setPortletCategoryNames(portletCategoryNames);
 		}
+
+		Date lastPublishDate = (Date)attributes.get("lastPublishDate");
+
+		if (lastPublishDate != null) {
+			setLastPublishDate(lastPublishDate);
+		}
 	}
 
 	@Override
@@ -160,6 +168,16 @@ public class GadgetWrapper implements Gadget, ModelWrapper<Gadget> {
 	@Override
 	public long getGadgetId() {
 		return _gadget.getGadgetId();
+	}
+
+	/**
+	* Returns the last publish date of this gadget.
+	*
+	* @return the last publish date of this gadget
+	*/
+	@Override
+	public Date getLastPublishDate() {
+		return _gadget.getLastPublishDate();
 	}
 
 	/**
@@ -303,6 +321,16 @@ public class GadgetWrapper implements Gadget, ModelWrapper<Gadget> {
 	@Override
 	public void setGadgetId(long gadgetId) {
 		_gadget.setGadgetId(gadgetId);
+	}
+
+	/**
+	* Sets the last publish date of this gadget.
+	*
+	* @param lastPublishDate the last publish date of this gadget
+	*/
+	@Override
+	public void setLastPublishDate(Date lastPublishDate) {
+		_gadget.setLastPublishDate(lastPublishDate);
 	}
 
 	/**

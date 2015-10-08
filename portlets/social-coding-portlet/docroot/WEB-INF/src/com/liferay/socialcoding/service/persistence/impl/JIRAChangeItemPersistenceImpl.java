@@ -778,7 +778,7 @@ public class JIRAChangeItemPersistenceImpl extends BasePersistenceImpl<JIRAChang
 				jiraChangeItem.setNew(false);
 			}
 			else {
-				session.merge(jiraChangeItem);
+				jiraChangeItem = (JIRAChangeItem)session.merge(jiraChangeItem);
 			}
 		}
 		catch (Exception e) {
@@ -1202,8 +1202,13 @@ public class JIRAChangeItemPersistenceImpl extends BasePersistenceImpl<JIRAChang
 	}
 
 	@Override
-	protected Set<String> getBadColumnNames() {
+	public Set<String> getBadColumnNames() {
 		return _badColumnNames;
+	}
+
+	@Override
+	protected Map<String, Integer> getTableColumnsMap() {
+		return JIRAChangeItemModelImpl.TABLE_COLUMNS_MAP;
 	}
 
 	/**

@@ -31,6 +31,7 @@ import com.liferay.knowledgebase.model.KBArticleConstants;
 import com.liferay.knowledgebase.model.KBFolder;
 import com.liferay.knowledgebase.model.KBFolderConstants;
 import com.liferay.knowledgebase.service.KBArticleLocalServiceUtil;
+import com.liferay.knowledgebase.service.KBArticleServiceUtil;
 import com.liferay.knowledgebase.service.base.KBArticleLocalServiceBaseImpl;
 import com.liferay.knowledgebase.util.KnowledgeBaseConstants;
 import com.liferay.knowledgebase.util.KnowledgeBaseUtil;
@@ -339,7 +340,8 @@ public class KBArticleLocalServiceImpl extends KBArticleLocalServiceBaseImpl {
 
 		// Indexer
 
-		Indexer indexer = IndexerRegistryUtil.getIndexer(KBArticle.class);
+		Indexer<KBArticle> indexer = IndexerRegistryUtil.getIndexer(
+			KBArticle.class);
 
 		indexer.delete(kbArticle);
 
@@ -576,10 +578,11 @@ public class KBArticleLocalServiceImpl extends KBArticleLocalServiceBaseImpl {
 	}
 
 	/**
-	 * @deprecated As of 7.0.0, replaced by
-	 *             {@link #getKBArticleAndAllDescendantKBArticles(long, int,
+	 * @deprecated As of 7.0.0, replaced by {@link
+	 *             #getKBArticleAndAllDescendantKBArticles(long, int,
 	 *             com.liferay.portal.kernel.util.OrderByComparator)}
 	 */
+	@Deprecated
 	@Override
 	public List<KBArticle> getKBArticleAndAllDescendants(
 		long resourcePrimKey, int status,
@@ -842,6 +845,7 @@ public class KBArticleLocalServiceImpl extends KBArticleLocalServiceBaseImpl {
 	 *             int, int, int,
 	 *             com.liferay.portal.kernel.util.OrderByComparator)}
 	 */
+	@Deprecated
 	@Override
 	public List<KBArticle> getSiblingKBArticles(
 		long groupId, long parentResourcePrimKey, int status, int start,
@@ -856,6 +860,7 @@ public class KBArticleLocalServiceImpl extends KBArticleLocalServiceBaseImpl {
 	 * @deprecated As of 7.0.0, replaced by {@link #getKBArticlesCount(long,
 	 *             long, int)}
 	 */
+	@Deprecated
 	@Override
 	public int getSiblingKBArticlesCount(
 		long groupId, long parentResourcePrimKey, int status) {
@@ -951,6 +956,22 @@ public class KBArticleLocalServiceImpl extends KBArticleLocalServiceBaseImpl {
 				resourcePrimKey, AdminActivityKeys.MOVE_KB_ARTICLE,
 				extraDataJSONObject.toString(), 0);
 		}
+	}
+
+	@Override
+	public KBArticle revertKBArticle(
+			long userId, long resourcePrimKey, int version,
+			ServiceContext serviceContext)
+		throws PortalException {
+
+		KBArticle kbArticle = KBArticleServiceUtil.getKBArticle(
+			resourcePrimKey, version);
+
+		return updateKBArticle(
+			userId, resourcePrimKey, kbArticle.getTitle(),
+			kbArticle.getContent(), kbArticle.getDescription(),
+			kbArticle.getSourceURL(), StringUtil.split(kbArticle.getSections()),
+			null, null, serviceContext);
 	}
 
 	@Override
@@ -1266,7 +1287,8 @@ public class KBArticleLocalServiceImpl extends KBArticleLocalServiceBaseImpl {
 
 		// Indexer
 
-		Indexer indexer = IndexerRegistryUtil.getIndexer(KBArticle.class);
+		Indexer<KBArticle> indexer = IndexerRegistryUtil.getIndexer(
+			KBArticle.class);
 
 		indexer.reindex(kbArticle);
 

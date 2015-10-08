@@ -17,7 +17,6 @@ package com.liferay.wsrp.model.impl;
 import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
-import com.liferay.portal.kernel.lar.StagedModelType;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringBundler;
@@ -29,6 +28,7 @@ import com.liferay.portal.util.PortalUtil;
 
 import com.liferay.portlet.expando.model.ExpandoBridge;
 import com.liferay.portlet.expando.util.ExpandoBridgeFactoryUtil;
+import com.liferay.portlet.exportimport.lar.StagedModelType;
 
 import com.liferay.wsrp.model.WSRPProducer;
 import com.liferay.wsrp.model.WSRPProducerModel;
@@ -72,9 +72,25 @@ public class WSRPProducerModelImpl extends BaseModelImpl<WSRPProducer>
 			{ "modifiedDate", Types.TIMESTAMP },
 			{ "name", Types.VARCHAR },
 			{ "version", Types.VARCHAR },
-			{ "portletIds", Types.VARCHAR }
+			{ "portletIds", Types.VARCHAR },
+			{ "lastPublishDate", Types.TIMESTAMP }
 		};
-	public static final String TABLE_SQL_CREATE = "create table WSRP_WSRPProducer (uuid_ VARCHAR(75) null,wsrpProducerId LONG not null primary key,groupId LONG,companyId LONG,createDate DATE null,modifiedDate DATE null,name VARCHAR(75) null,version VARCHAR(75) null,portletIds STRING null)";
+	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
+
+	static {
+		TABLE_COLUMNS_MAP.put("uuid_", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("wsrpProducerId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("groupId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("companyId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("createDate", Types.TIMESTAMP);
+		TABLE_COLUMNS_MAP.put("modifiedDate", Types.TIMESTAMP);
+		TABLE_COLUMNS_MAP.put("name", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("version", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("portletIds", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("lastPublishDate", Types.TIMESTAMP);
+	}
+
+	public static final String TABLE_SQL_CREATE = "create table WSRP_WSRPProducer (uuid_ VARCHAR(75) null,wsrpProducerId LONG not null primary key,groupId LONG,companyId LONG,createDate DATE null,modifiedDate DATE null,name VARCHAR(75) null,version VARCHAR(75) null,portletIds STRING null,lastPublishDate DATE null)";
 	public static final String TABLE_SQL_DROP = "drop table WSRP_WSRPProducer";
 	public static final String ORDER_BY_JPQL = " ORDER BY wsrpProducer.name ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY WSRP_WSRPProducer.name ASC";
@@ -143,6 +159,7 @@ public class WSRPProducerModelImpl extends BaseModelImpl<WSRPProducer>
 		attributes.put("name", getName());
 		attributes.put("version", getVersion());
 		attributes.put("portletIds", getPortletIds());
+		attributes.put("lastPublishDate", getLastPublishDate());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -204,6 +221,12 @@ public class WSRPProducerModelImpl extends BaseModelImpl<WSRPProducer>
 
 		if (portletIds != null) {
 			setPortletIds(portletIds);
+		}
+
+		Date lastPublishDate = (Date)attributes.get("lastPublishDate");
+
+		if (lastPublishDate != null) {
+			setLastPublishDate(lastPublishDate);
 		}
 	}
 
@@ -358,6 +381,16 @@ public class WSRPProducerModelImpl extends BaseModelImpl<WSRPProducer>
 	}
 
 	@Override
+	public Date getLastPublishDate() {
+		return _lastPublishDate;
+	}
+
+	@Override
+	public void setLastPublishDate(Date lastPublishDate) {
+		_lastPublishDate = lastPublishDate;
+	}
+
+	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(PortalUtil.getClassNameId(
 				WSRPProducer.class.getName()));
@@ -403,6 +436,7 @@ public class WSRPProducerModelImpl extends BaseModelImpl<WSRPProducer>
 		wsrpProducerImpl.setName(getName());
 		wsrpProducerImpl.setVersion(getVersion());
 		wsrpProducerImpl.setPortletIds(getPortletIds());
+		wsrpProducerImpl.setLastPublishDate(getLastPublishDate());
 
 		wsrpProducerImpl.resetOriginalValues();
 
@@ -538,12 +572,21 @@ public class WSRPProducerModelImpl extends BaseModelImpl<WSRPProducer>
 			wsrpProducerCacheModel.portletIds = null;
 		}
 
+		Date lastPublishDate = getLastPublishDate();
+
+		if (lastPublishDate != null) {
+			wsrpProducerCacheModel.lastPublishDate = lastPublishDate.getTime();
+		}
+		else {
+			wsrpProducerCacheModel.lastPublishDate = Long.MIN_VALUE;
+		}
+
 		return wsrpProducerCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(19);
+		StringBundler sb = new StringBundler(21);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -563,6 +606,8 @@ public class WSRPProducerModelImpl extends BaseModelImpl<WSRPProducer>
 		sb.append(getVersion());
 		sb.append(", portletIds=");
 		sb.append(getPortletIds());
+		sb.append(", lastPublishDate=");
+		sb.append(getLastPublishDate());
 		sb.append("}");
 
 		return sb.toString();
@@ -570,7 +615,7 @@ public class WSRPProducerModelImpl extends BaseModelImpl<WSRPProducer>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(31);
+		StringBundler sb = new StringBundler(34);
 
 		sb.append("<model><model-name>");
 		sb.append("com.liferay.wsrp.model.WSRPProducer");
@@ -612,6 +657,10 @@ public class WSRPProducerModelImpl extends BaseModelImpl<WSRPProducer>
 			"<column><column-name>portletIds</column-name><column-value><![CDATA[");
 		sb.append(getPortletIds());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>lastPublishDate</column-name><column-value><![CDATA[");
+		sb.append(getLastPublishDate());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -637,6 +686,7 @@ public class WSRPProducerModelImpl extends BaseModelImpl<WSRPProducer>
 	private String _name;
 	private String _version;
 	private String _portletIds;
+	private Date _lastPublishDate;
 	private long _columnBitmask;
 	private WSRPProducer _escapedModel;
 }

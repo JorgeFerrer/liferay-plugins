@@ -1859,7 +1859,7 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 				svnRevision.setNew(false);
 			}
 			else {
-				session.merge(svnRevision);
+				svnRevision = (SVNRevision)session.merge(svnRevision);
 			}
 		}
 		catch (Exception e) {
@@ -2318,6 +2318,11 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 		}
 
 		return count.intValue();
+	}
+
+	@Override
+	protected Map<String, Integer> getTableColumnsMap() {
+		return SVNRevisionModelImpl.TABLE_COLUMNS_MAP;
 	}
 
 	/**

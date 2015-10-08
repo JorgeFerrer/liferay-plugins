@@ -210,10 +210,11 @@ public class KBArticleServiceSoap {
 	}
 
 	/**
-	* @deprecated As of 7.0.0, replaced by
-	{@link #getKBArticleAndAllDescendantKBArticles(long, long,
-	int, com.liferay.portal.kernel.util.OrderByComparator)}
+	* @deprecated As of 7.0.0, replaced by {@link
+	#getKBArticleAndAllDescendantKBArticles(long, long, int,
+	com.liferay.portal.kernel.util.OrderByComparator)}
 	*/
+	@Deprecated
 	public static com.liferay.knowledgebase.model.KBArticleSoap[] getKBArticleAndAllDescendants(
 		long groupId, long resourcePrimKey, int status,
 		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.knowledgebase.model.KBArticle> orderByComparator)
@@ -424,6 +425,7 @@ public class KBArticleServiceSoap {
 	int, int, int,
 	com.liferay.portal.kernel.util.OrderByComparator)}
 	*/
+	@Deprecated
 	public static com.liferay.knowledgebase.model.KBArticleSoap[] getSiblingKBArticles(
 		long groupId, long parentResourcePrimKey, int status, int start,
 		int end,
@@ -447,6 +449,7 @@ public class KBArticleServiceSoap {
 	* @deprecated As of 7.0.0, replaced by {@link #getKBArticlesCount(long,
 	long, int)}
 	*/
+	@Deprecated
 	public static int getSiblingKBArticlesCount(long groupId,
 		long parentResourcePrimKey, int status) throws RemoteException {
 		try {
@@ -483,6 +486,23 @@ public class KBArticleServiceSoap {
 		try {
 			KBArticleServiceUtil.moveKBArticle(resourcePrimKey,
 				parentResourceClassNameId, parentResourcePrimKey, priority);
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	public static com.liferay.knowledgebase.model.KBArticleSoap revertKBArticle(
+		long resourcePrimKey, int version,
+		com.liferay.portal.service.ServiceContext serviceContext)
+		throws RemoteException {
+		try {
+			com.liferay.knowledgebase.model.KBArticle returnValue = KBArticleServiceUtil.revertKBArticle(resourcePrimKey,
+					version, serviceContext);
+
+			return com.liferay.knowledgebase.model.KBArticleSoap.toSoapModel(returnValue);
 		}
 		catch (Exception e) {
 			_log.error(e, e);

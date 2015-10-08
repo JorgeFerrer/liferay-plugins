@@ -790,7 +790,7 @@ public class ProjectsEntryPersistenceImpl extends BasePersistenceImpl<ProjectsEn
 				projectsEntry.setNew(false);
 			}
 			else {
-				session.merge(projectsEntry);
+				projectsEntry = (ProjectsEntry)session.merge(projectsEntry);
 			}
 		}
 		catch (Exception e) {
@@ -1213,8 +1213,13 @@ public class ProjectsEntryPersistenceImpl extends BasePersistenceImpl<ProjectsEn
 	}
 
 	@Override
-	protected Set<String> getBadColumnNames() {
+	public Set<String> getBadColumnNames() {
 		return _badColumnNames;
+	}
+
+	@Override
+	protected Map<String, Integer> getTableColumnsMap() {
+		return ProjectsEntryModelImpl.TABLE_COLUMNS_MAP;
 	}
 
 	/**

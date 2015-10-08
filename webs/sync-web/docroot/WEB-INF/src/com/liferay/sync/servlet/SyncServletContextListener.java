@@ -23,11 +23,9 @@ import com.liferay.portal.kernel.messaging.MessageBusUtil;
 import com.liferay.portal.kernel.messaging.MessageListener;
 import com.liferay.portal.kernel.messaging.SerialDestination;
 import com.liferay.portal.kernel.scheduler.SchedulerEngineHelperUtil;
-import com.liferay.portal.kernel.scheduler.SchedulerEntry;
-import com.liferay.portal.kernel.scheduler.SchedulerEntryImpl;
 import com.liferay.portal.kernel.scheduler.StorageType;
 import com.liferay.portal.kernel.scheduler.TimeUnit;
-import com.liferay.portal.kernel.scheduler.TriggerType;
+import com.liferay.portal.kernel.scheduler.TriggerFactoryUtil;
 import com.liferay.portal.kernel.util.BasePortalLifecycle;
 import com.liferay.portal.kernel.util.PrefsPropsUtil;
 import com.liferay.portal.model.Company;
@@ -43,6 +41,7 @@ import com.liferay.sync.service.SyncDLObjectLocalServiceUtil;
 import com.liferay.sync.service.SyncPreferencesLocalServiceUtil;
 import com.liferay.sync.util.PortletPropsKeys;
 import com.liferay.sync.util.PortletPropsValues;
+import com.liferay.sync.util.VerifyUtil;
 
 import java.util.HashMap;
 import java.util.List;
@@ -93,6 +92,7 @@ public class SyncServletContextListener
 
 				values.put("event", dlSyncEvent.getEvent());
 				values.put("modifiedTime", dlSyncEvent.getModifiedTime());
+				values.put("syncEventId", dlSyncEvent.getSyncEventId());
 				values.put("type", dlSyncEvent.getType());
 				values.put("typePK", dlSyncEvent.getTypePK());
 
@@ -102,8 +102,6 @@ public class SyncServletContextListener
 					DestinationNames.DOCUMENT_LIBRARY_SYNC_EVENT_PROCESSOR,
 					message);
 			}
-
-			DLSyncEventLocalServiceUtil.deleteDLSyncEvents();
 		}
 		catch (Exception e) {
 			_log.error(e, e);
@@ -112,8 +110,6 @@ public class SyncServletContextListener
 
 	@Override
 	protected void doPortalDestroy() throws Exception {
-		DLSyncEventLocalServiceUtil.deleteDLSyncEvents();
-
 		MessageBusUtil.unregisterMessageListener(
 			DestinationNames.DOCUMENT_LIBRARY_SYNC_EVENT_PROCESSOR,
 			_syncDLObjectMessageListener);
@@ -132,6 +128,10 @@ public class SyncServletContextListener
 	@Override
 	protected void doPortalInit() {
 		try {
+			if (PortletPropsValues.SYNC_VERIFY) {
+				VerifyUtil.verify();
+			}
+
 			List<Company> companies = CompanyLocalServiceUtil.getCompanies();
 
 			for (Company company : companies) {
@@ -211,17 +211,15 @@ public class SyncServletContextListener
 
 	protected void scheduleDLFileVersionDiffMessageListener() {
 		try {
-			SchedulerEntry schedulerEntry = new SchedulerEntryImpl();
-
-			schedulerEntry.setEventListenerClass(
-				SyncDLFileVersionDiffMessageListener.class.getName());
-			schedulerEntry.setTimeUnit(TimeUnit.HOUR);
-			schedulerEntry.setTriggerType(TriggerType.SIMPLE);
-			schedulerEntry.setTriggerValue(
-				PortletPropsValues.SYNC_FILE_DIFF_CACHE_DELETE_INTERVAL);
+			String eventListenerClassName =
+				SyncDLFileVersionDiffMessageListener.class.getName();
 
 			SchedulerEngineHelperUtil.schedule(
-				schedulerEntry.getTrigger(), StorageType.MEMORY_CLUSTERED, null,
+				TriggerFactoryUtil.createTrigger(
+					eventListenerClassName, eventListenerClassName,
+					PortletPropsValues.SYNC_FILE_DIFF_CACHE_DELETE_INTERVAL,
+					TimeUnit.HOUR),
+				StorageType.MEMORY_CLUSTERED, null,
 				SyncDLFileVersionDiffMessageListener.DESTINATION_NAME, null, 0);
 		}
 		catch (Exception e) {

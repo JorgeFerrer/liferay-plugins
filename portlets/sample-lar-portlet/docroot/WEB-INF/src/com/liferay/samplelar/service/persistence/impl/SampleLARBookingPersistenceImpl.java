@@ -1990,7 +1990,7 @@ public class SampleLARBookingPersistenceImpl extends BasePersistenceImpl<SampleL
 		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
 		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 
-		clearUniqueFindersCache(sampleLARBooking);
+		clearUniqueFindersCache((SampleLARBookingModelImpl)sampleLARBooking);
 	}
 
 	@Override
@@ -2002,44 +2002,44 @@ public class SampleLARBookingPersistenceImpl extends BasePersistenceImpl<SampleL
 			EntityCacheUtil.removeResult(SampleLARBookingModelImpl.ENTITY_CACHE_ENABLED,
 				SampleLARBookingImpl.class, sampleLARBooking.getPrimaryKey());
 
-			clearUniqueFindersCache(sampleLARBooking);
+			clearUniqueFindersCache((SampleLARBookingModelImpl)sampleLARBooking);
 		}
 	}
 
-	protected void cacheUniqueFindersCache(SampleLARBooking sampleLARBooking) {
-		if (sampleLARBooking.isNew()) {
+	protected void cacheUniqueFindersCache(
+		SampleLARBookingModelImpl sampleLARBookingModelImpl, boolean isNew) {
+		if (isNew) {
 			Object[] args = new Object[] {
-					sampleLARBooking.getUuid(), sampleLARBooking.getGroupId()
+					sampleLARBookingModelImpl.getUuid(),
+					sampleLARBookingModelImpl.getGroupId()
 				};
 
 			FinderCacheUtil.putResult(FINDER_PATH_COUNT_BY_UUID_G, args,
 				Long.valueOf(1));
 			FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_UUID_G, args,
-				sampleLARBooking);
+				sampleLARBookingModelImpl);
 		}
 		else {
-			SampleLARBookingModelImpl sampleLARBookingModelImpl = (SampleLARBookingModelImpl)sampleLARBooking;
-
 			if ((sampleLARBookingModelImpl.getColumnBitmask() &
 					FINDER_PATH_FETCH_BY_UUID_G.getColumnBitmask()) != 0) {
 				Object[] args = new Object[] {
-						sampleLARBooking.getUuid(),
-						sampleLARBooking.getGroupId()
+						sampleLARBookingModelImpl.getUuid(),
+						sampleLARBookingModelImpl.getGroupId()
 					};
 
 				FinderCacheUtil.putResult(FINDER_PATH_COUNT_BY_UUID_G, args,
 					Long.valueOf(1));
 				FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_UUID_G, args,
-					sampleLARBooking);
+					sampleLARBookingModelImpl);
 			}
 		}
 	}
 
-	protected void clearUniqueFindersCache(SampleLARBooking sampleLARBooking) {
-		SampleLARBookingModelImpl sampleLARBookingModelImpl = (SampleLARBookingModelImpl)sampleLARBooking;
-
+	protected void clearUniqueFindersCache(
+		SampleLARBookingModelImpl sampleLARBookingModelImpl) {
 		Object[] args = new Object[] {
-				sampleLARBooking.getUuid(), sampleLARBooking.getGroupId()
+				sampleLARBookingModelImpl.getUuid(),
+				sampleLARBookingModelImpl.getGroupId()
 			};
 
 		FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_UUID_G, args);
@@ -2210,7 +2210,7 @@ public class SampleLARBookingPersistenceImpl extends BasePersistenceImpl<SampleL
 				sampleLARBooking.setNew(false);
 			}
 			else {
-				session.merge(sampleLARBooking);
+				sampleLARBooking = (SampleLARBooking)session.merge(sampleLARBooking);
 			}
 		}
 		catch (Exception e) {
@@ -2287,8 +2287,8 @@ public class SampleLARBookingPersistenceImpl extends BasePersistenceImpl<SampleL
 			SampleLARBookingImpl.class, sampleLARBooking.getPrimaryKey(),
 			sampleLARBooking, false);
 
-		clearUniqueFindersCache(sampleLARBooking);
-		cacheUniqueFindersCache(sampleLARBooking);
+		clearUniqueFindersCache(sampleLARBookingModelImpl);
+		cacheUniqueFindersCache(sampleLARBookingModelImpl, isNew);
 
 		sampleLARBooking.resetOriginalValues();
 
@@ -2315,6 +2315,7 @@ public class SampleLARBookingPersistenceImpl extends BasePersistenceImpl<SampleL
 		sampleLARBookingImpl.setCreateDate(sampleLARBooking.getCreateDate());
 		sampleLARBookingImpl.setModifiedDate(sampleLARBooking.getModifiedDate());
 		sampleLARBookingImpl.setBookingNumber(sampleLARBooking.getBookingNumber());
+		sampleLARBookingImpl.setLastPublishDate(sampleLARBooking.getLastPublishDate());
 
 		return sampleLARBookingImpl;
 	}
@@ -2675,8 +2676,13 @@ public class SampleLARBookingPersistenceImpl extends BasePersistenceImpl<SampleL
 	}
 
 	@Override
-	protected Set<String> getBadColumnNames() {
+	public Set<String> getBadColumnNames() {
 		return _badColumnNames;
+	}
+
+	@Override
+	protected Map<String, Integer> getTableColumnsMap() {
+		return SampleLARBookingModelImpl.TABLE_COLUMNS_MAP;
 	}
 
 	/**

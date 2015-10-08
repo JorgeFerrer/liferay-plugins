@@ -304,7 +304,7 @@ public class CheckoutPersistenceImpl extends BasePersistenceImpl<Checkout>
 				checkout.setNew(false);
 			}
 			else {
-				session.merge(checkout);
+				checkout = (Checkout)session.merge(checkout);
 			}
 		}
 		catch (Exception e) {
@@ -702,6 +702,11 @@ public class CheckoutPersistenceImpl extends BasePersistenceImpl<Checkout>
 		}
 
 		return count.intValue();
+	}
+
+	@Override
+	protected Map<String, Integer> getTableColumnsMap() {
+		return CheckoutModelImpl.TABLE_COLUMNS_MAP;
 	}
 
 	/**

@@ -302,7 +302,7 @@ public class AssetPersistenceImpl extends BasePersistenceImpl<Asset>
 				asset.setNew(false);
 			}
 			else {
-				session.merge(asset);
+				asset = (Asset)session.merge(asset);
 			}
 		}
 		catch (Exception e) {
@@ -702,8 +702,13 @@ public class AssetPersistenceImpl extends BasePersistenceImpl<Asset>
 	}
 
 	@Override
-	protected Set<String> getBadColumnNames() {
+	public Set<String> getBadColumnNames() {
 		return _badColumnNames;
+	}
+
+	@Override
+	protected Map<String, Integer> getTableColumnsMap() {
+		return AssetModelImpl.TABLE_COLUMNS_MAP;
 	}
 
 	/**

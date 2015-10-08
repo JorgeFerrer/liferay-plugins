@@ -1976,7 +1976,7 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
 		FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 
-		clearUniqueFindersCache(wsrpProducer);
+		clearUniqueFindersCache((WSRPProducerModelImpl)wsrpProducer);
 	}
 
 	@Override
@@ -1988,43 +1988,44 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 			EntityCacheUtil.removeResult(WSRPProducerModelImpl.ENTITY_CACHE_ENABLED,
 				WSRPProducerImpl.class, wsrpProducer.getPrimaryKey());
 
-			clearUniqueFindersCache(wsrpProducer);
+			clearUniqueFindersCache((WSRPProducerModelImpl)wsrpProducer);
 		}
 	}
 
-	protected void cacheUniqueFindersCache(WSRPProducer wsrpProducer) {
-		if (wsrpProducer.isNew()) {
+	protected void cacheUniqueFindersCache(
+		WSRPProducerModelImpl wsrpProducerModelImpl, boolean isNew) {
+		if (isNew) {
 			Object[] args = new Object[] {
-					wsrpProducer.getUuid(), wsrpProducer.getGroupId()
+					wsrpProducerModelImpl.getUuid(),
+					wsrpProducerModelImpl.getGroupId()
 				};
 
 			FinderCacheUtil.putResult(FINDER_PATH_COUNT_BY_UUID_G, args,
 				Long.valueOf(1));
 			FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_UUID_G, args,
-				wsrpProducer);
+				wsrpProducerModelImpl);
 		}
 		else {
-			WSRPProducerModelImpl wsrpProducerModelImpl = (WSRPProducerModelImpl)wsrpProducer;
-
 			if ((wsrpProducerModelImpl.getColumnBitmask() &
 					FINDER_PATH_FETCH_BY_UUID_G.getColumnBitmask()) != 0) {
 				Object[] args = new Object[] {
-						wsrpProducer.getUuid(), wsrpProducer.getGroupId()
+						wsrpProducerModelImpl.getUuid(),
+						wsrpProducerModelImpl.getGroupId()
 					};
 
 				FinderCacheUtil.putResult(FINDER_PATH_COUNT_BY_UUID_G, args,
 					Long.valueOf(1));
 				FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_UUID_G, args,
-					wsrpProducer);
+					wsrpProducerModelImpl);
 			}
 		}
 	}
 
-	protected void clearUniqueFindersCache(WSRPProducer wsrpProducer) {
-		WSRPProducerModelImpl wsrpProducerModelImpl = (WSRPProducerModelImpl)wsrpProducer;
-
+	protected void clearUniqueFindersCache(
+		WSRPProducerModelImpl wsrpProducerModelImpl) {
 		Object[] args = new Object[] {
-				wsrpProducer.getUuid(), wsrpProducer.getGroupId()
+				wsrpProducerModelImpl.getUuid(),
+				wsrpProducerModelImpl.getGroupId()
 			};
 
 		FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_UUID_G, args);
@@ -2194,7 +2195,7 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 				wsrpProducer.setNew(false);
 			}
 			else {
-				session.merge(wsrpProducer);
+				wsrpProducer = (WSRPProducer)session.merge(wsrpProducer);
 			}
 		}
 		catch (Exception e) {
@@ -2273,8 +2274,8 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 			WSRPProducerImpl.class, wsrpProducer.getPrimaryKey(), wsrpProducer,
 			false);
 
-		clearUniqueFindersCache(wsrpProducer);
-		cacheUniqueFindersCache(wsrpProducer);
+		clearUniqueFindersCache(wsrpProducerModelImpl);
+		cacheUniqueFindersCache(wsrpProducerModelImpl, isNew);
 
 		wsrpProducer.resetOriginalValues();
 
@@ -2300,6 +2301,7 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 		wsrpProducerImpl.setName(wsrpProducer.getName());
 		wsrpProducerImpl.setVersion(wsrpProducer.getVersion());
 		wsrpProducerImpl.setPortletIds(wsrpProducer.getPortletIds());
+		wsrpProducerImpl.setLastPublishDate(wsrpProducer.getLastPublishDate());
 
 		return wsrpProducerImpl;
 	}
@@ -2658,8 +2660,13 @@ public class WSRPProducerPersistenceImpl extends BasePersistenceImpl<WSRPProduce
 	}
 
 	@Override
-	protected Set<String> getBadColumnNames() {
+	public Set<String> getBadColumnNames() {
 		return _badColumnNames;
+	}
+
+	@Override
+	protected Map<String, Integer> getTableColumnsMap() {
+		return WSRPProducerModelImpl.TABLE_COLUMNS_MAP;
 	}
 
 	/**

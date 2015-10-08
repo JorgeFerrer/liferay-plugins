@@ -187,6 +187,22 @@ public interface WSRPConsumerPortletModel extends BaseModel<WSRPConsumerPortlet>
 	 */
 	public void setPortletHandle(String portletHandle);
 
+	/**
+	 * Returns the last publish date of this w s r p consumer portlet.
+	 *
+	 * @return the last publish date of this w s r p consumer portlet
+	 */
+	@Override
+	public Date getLastPublishDate();
+
+	/**
+	 * Sets the last publish date of this w s r p consumer portlet.
+	 *
+	 * @param lastPublishDate the last publish date of this w s r p consumer portlet
+	 */
+	@Override
+	public void setLastPublishDate(Date lastPublishDate);
+
 	@Override
 	public boolean isNew();
 

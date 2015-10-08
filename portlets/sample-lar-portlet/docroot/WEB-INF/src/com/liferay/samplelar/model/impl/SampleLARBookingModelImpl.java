@@ -18,7 +18,6 @@ import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.lar.StagedModelType;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringBundler;
@@ -32,6 +31,7 @@ import com.liferay.portal.util.PortalUtil;
 
 import com.liferay.portlet.expando.model.ExpandoBridge;
 import com.liferay.portlet.expando.util.ExpandoBridgeFactoryUtil;
+import com.liferay.portlet.exportimport.lar.StagedModelType;
 
 import com.liferay.samplelar.model.SampleLARBooking;
 import com.liferay.samplelar.model.SampleLARBookingModel;
@@ -75,9 +75,25 @@ public class SampleLARBookingModelImpl extends BaseModelImpl<SampleLARBooking>
 			{ "userName", Types.VARCHAR },
 			{ "createDate", Types.TIMESTAMP },
 			{ "modifiedDate", Types.TIMESTAMP },
-			{ "bookingNumber", Types.VARCHAR }
+			{ "bookingNumber", Types.VARCHAR },
+			{ "lastPublishDate", Types.TIMESTAMP }
 		};
-	public static final String TABLE_SQL_CREATE = "create table SampleLARBooking (uuid_ VARCHAR(75) null,sampleLARBookingId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,bookingNumber VARCHAR(75) null)";
+	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
+
+	static {
+		TABLE_COLUMNS_MAP.put("uuid_", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("sampleLARBookingId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("groupId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("companyId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("userId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("userName", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("createDate", Types.TIMESTAMP);
+		TABLE_COLUMNS_MAP.put("modifiedDate", Types.TIMESTAMP);
+		TABLE_COLUMNS_MAP.put("bookingNumber", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("lastPublishDate", Types.TIMESTAMP);
+	}
+
+	public static final String TABLE_SQL_CREATE = "create table SampleLARBooking (uuid_ VARCHAR(75) null,sampleLARBookingId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,bookingNumber VARCHAR(75) null,lastPublishDate DATE null)";
 	public static final String TABLE_SQL_DROP = "drop table SampleLARBooking";
 	public static final String ORDER_BY_JPQL = " ORDER BY sampleLARBooking.bookingNumber ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY SampleLARBooking.bookingNumber ASC";
@@ -146,6 +162,7 @@ public class SampleLARBookingModelImpl extends BaseModelImpl<SampleLARBooking>
 		attributes.put("createDate", getCreateDate());
 		attributes.put("modifiedDate", getModifiedDate());
 		attributes.put("bookingNumber", getBookingNumber());
+		attributes.put("lastPublishDate", getLastPublishDate());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -207,6 +224,12 @@ public class SampleLARBookingModelImpl extends BaseModelImpl<SampleLARBooking>
 
 		if (bookingNumber != null) {
 			setBookingNumber(bookingNumber);
+		}
+
+		Date lastPublishDate = (Date)attributes.get("lastPublishDate");
+
+		if (lastPublishDate != null) {
+			setLastPublishDate(lastPublishDate);
 		}
 	}
 
@@ -372,6 +395,16 @@ public class SampleLARBookingModelImpl extends BaseModelImpl<SampleLARBooking>
 	}
 
 	@Override
+	public Date getLastPublishDate() {
+		return _lastPublishDate;
+	}
+
+	@Override
+	public void setLastPublishDate(Date lastPublishDate) {
+		_lastPublishDate = lastPublishDate;
+	}
+
+	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(PortalUtil.getClassNameId(
 				SampleLARBooking.class.getName()));
@@ -417,6 +450,7 @@ public class SampleLARBookingModelImpl extends BaseModelImpl<SampleLARBooking>
 		sampleLARBookingImpl.setCreateDate(getCreateDate());
 		sampleLARBookingImpl.setModifiedDate(getModifiedDate());
 		sampleLARBookingImpl.setBookingNumber(getBookingNumber());
+		sampleLARBookingImpl.setLastPublishDate(getLastPublishDate());
 
 		sampleLARBookingImpl.resetOriginalValues();
 
@@ -546,12 +580,21 @@ public class SampleLARBookingModelImpl extends BaseModelImpl<SampleLARBooking>
 			sampleLARBookingCacheModel.bookingNumber = null;
 		}
 
+		Date lastPublishDate = getLastPublishDate();
+
+		if (lastPublishDate != null) {
+			sampleLARBookingCacheModel.lastPublishDate = lastPublishDate.getTime();
+		}
+		else {
+			sampleLARBookingCacheModel.lastPublishDate = Long.MIN_VALUE;
+		}
+
 		return sampleLARBookingCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(19);
+		StringBundler sb = new StringBundler(21);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -571,6 +614,8 @@ public class SampleLARBookingModelImpl extends BaseModelImpl<SampleLARBooking>
 		sb.append(getModifiedDate());
 		sb.append(", bookingNumber=");
 		sb.append(getBookingNumber());
+		sb.append(", lastPublishDate=");
+		sb.append(getLastPublishDate());
 		sb.append("}");
 
 		return sb.toString();
@@ -578,7 +623,7 @@ public class SampleLARBookingModelImpl extends BaseModelImpl<SampleLARBooking>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(31);
+		StringBundler sb = new StringBundler(34);
 
 		sb.append("<model><model-name>");
 		sb.append("com.liferay.samplelar.model.SampleLARBooking");
@@ -620,6 +665,10 @@ public class SampleLARBookingModelImpl extends BaseModelImpl<SampleLARBooking>
 			"<column><column-name>bookingNumber</column-name><column-value><![CDATA[");
 		sb.append(getBookingNumber());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>lastPublishDate</column-name><column-value><![CDATA[");
+		sb.append(getLastPublishDate());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -645,6 +694,7 @@ public class SampleLARBookingModelImpl extends BaseModelImpl<SampleLARBooking>
 	private Date _modifiedDate;
 	private boolean _setModifiedDate;
 	private String _bookingNumber;
+	private Date _lastPublishDate;
 	private long _columnBitmask;
 	private SampleLARBooking _escapedModel;
 }

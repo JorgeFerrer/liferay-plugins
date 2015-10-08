@@ -773,7 +773,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 				foo.setNew(false);
 			}
 			else {
-				session.merge(foo);
+				foo = (Foo)session.merge(foo);
 			}
 		}
 		catch (Exception e) {
@@ -1188,6 +1188,11 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 		}
 
 		return count.intValue();
+	}
+
+	@Override
+	protected Map<String, Integer> getTableColumnsMap() {
+		return FooModelImpl.TABLE_COLUMNS_MAP;
 	}
 
 	/**

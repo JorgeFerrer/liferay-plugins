@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE project>
 
-<project name="build-common" xmlns:antelope="antlib:ise.antelope.tasks" xmlns:ivy="antlib:org.apache.ivy.ant">
+<project name="build-common" xmlns:antelope="antlib:ise.antelope.tasks" xmlns:if="ant:if" xmlns:ivy="antlib:org.apache.ivy.ant" xmlns:unless="ant:unless">
 	<dirname file="${ant.file.build-common}" property="sdk.dir.native" />
 
 	<pathconvert property="sdk.dir" targetos="unix">
@@ -48,18 +48,15 @@
 	<property name="app.server.classes.portal.dir" value="${app.server.portal.dir}/WEB-INF/classes" />
 	<property location="${app.server.portal.dir}/WEB-INF/lib" name="app.server.lib.portal.dir" />
 
-	<if>
-		<not>
-			<equals arg1="${junit.debug}" arg2="true" />
-		</not>
-		<then>
-			<var name="junit.debug.jpda" value="" />
-		</then>
-	</if>
+	<dirname file="${ivy.home}" property="ivy.home.dir" />
+
+	<property name="sdk.tools.dir" value="${ivy.home.dir}/tools" />
 
 	<property name="whip.agent" value="-javaagent:${sdk.dir}/dependencies/com.liferay.whip/lib/com.liferay.whip.jar=${junit.whip.includes};${junit.whip.excludes}" />
 
 	<import file="build-common-ivy.xml" />
+
+	<import file="build-common-node.xml" />
 
 	<path id="plugin.classpath">
 		<path refid="plugin-lib.classpath" />
@@ -91,21 +88,33 @@
 	<taskdef classname="com.liferay.ant.bnd.ReleaseToRepoTask" classpathref="classpath.com.liferay.ant.bnd" name="release-to-repo" />
 	<taskdef classpathref="classpath.com.liferay.ant.bnd" resource="aQute/bnd/ant/taskdef.properties" />
 
+	<path id="classpath.com.liferay.ant.heap.dump">
+		<fileset dir="${sdk.dir}/dependencies/com.liferay.ant.heap.dump/lib" includes="*.jar" />
+	</path>
+
+	<taskdef classname="com.liferay.ant.heap.dump.HeapDumpTask" classpathref="classpath.com.liferay.ant.heap.dump" name="heap-dump" />
+
 	<path id="classpath.com.liferay.ant.jgit">
 		<fileset dir="${sdk.dir}/dependencies/com.liferay.ant.jgit/lib" includes="*.jar" />
 	</path>
 
 	<taskdef classpathref="classpath.com.liferay.ant.jgit" resource="com/liferay/ant/jgit/ant-jgit-tasks.properties" />
 
+	<path id="classpath.net.sourceforge.cobertura">
+		<fileset dir="${sdk.dir}/dependencies/net.sourceforge.cobertura/lib" includes="*.jar" />
+	</path>
+
+	<taskdef classpathref="classpath.net.sourceforge.cobertura" resource="tasks.properties" />
+
 	<path id="classpath.net.sourceforge.pmd">
 		<fileset dir="${sdk.dir}/dependencies/net.sourceforge.pmd/lib" includes="*.jar" />
 	</path>
 
 	<path id="classpath.org.apache.maven.maven.ant.tasks">
-		<fileset dir="${sdk.dir}/dependencies/org.apache.maven.maven.ant.tasks/lib" includes="*.jar"/>
+		<fileset dir="${sdk.dir}/dependencies/org.apache.maven.maven.ant.tasks/lib" includes="*.jar" />
 	</path>
 
-	<taskdef classpathref="classpath.org.apache.maven.maven.ant.tasks" resource="org/apache/maven/artifact/ant/antlib.xml" uri="antlib:org.apache.maven.artifact.ant"/>
+	<taskdef classpathref="classpath.org.apache.maven.maven.ant.tasks" resource="org/apache/maven/artifact/ant/antlib.xml" uri="antlib:org.apache.maven.artifact.ant" />
 
 	<path id="classpath.org.codehaus.groovy">
 		<fileset dir="${sdk.dir}/dependencies/org.codehaus.groovy/lib" includes="*.jar" />
@@ -126,48 +135,26 @@
 		</then>
 	</if>
 
-	<whichresource resource="/org/eclipse/jdt/core/JDTCompilerAdapter.class" property="ecj.compiler" />
 	<whichresource resource="/com/google/errorprone/ErrorProneAntCompilerAdapter.class" property="google.errorprone.compiler" />
 
 	<if>
 		<and>
-			<equals arg1="${javac.compiler}" arg2="org.eclipse.jdt.core.JDTCompilerAdapter" />
+			<equals arg1="${javac.compiler}" arg2="com.google.errorprone.ErrorProneAntCompilerAdapter" />
 			<not>
-				<isset property="ecj.compiler" />
+				<isset property="google.errorprone.compiler" />
 			</not>
 		</and>
 		<then>
-			<copy file="${sdk.dir}/lib/ecj.jar" todir="${ant.home}/lib" />
+			<copy file="${sdk.dir}/lib/error_prone_ant.jar" todir="${ant.home}/lib" />
 
 			<fail>
-.
-
-Task cannot continue because ECJ is not installed.
-
-ECJ was automatically installed. Please rerun your task.
-			</fail>
-		</then>
-		<else>
-			<if>
-				<and>
-					<equals arg1="${javac.compiler}" arg2="com.google.errorprone.ErrorProneAntCompilerAdapter" />
-					<not>
-						<isset property="google.errorprone.compiler" />
-					</not>
-				</and>
-				<then>
-					<copy file="${sdk.dir}/lib/error_prone_ant.jar" todir="${ant.home}/lib" />
-
-					<fail>
 .
 
 Task cannot continue because Error-Prone is not installed.
 
 Error-Prone was automatically installed. Please rerun your task.
-					</fail>
-				</then>
-			</if>
-		</else>
+			</fail>
+		</then>
 	</if>
 
 	<macrodef name="build-css">
@@ -177,20 +164,32 @@ Error-Prone was automatically installed. Please rerun your task.
 		<sequential>
 			<local name="build-css.output" />
 
+			<path id="css.builder.classpath">
+				<fileset dir="${sdk.dir}/dependencies/com.liferay.css.builder/lib" includes="*.jar" />
+			</path>
+
 			<java
-				classname="com.liferay.portal.tools.SassToCssBuilder"
-				classpathref="portal.classpath"
+				classname="com.liferay.css.builder.CSSBuilder"
+				classpathref="css.builder.classpath"
 				fork="true"
 				newenvironment="true"
 				outputproperty="build-css.output"
 			>
 				<jvmarg value="-Dliferay.lib.portal.dir=${app.server.lib.portal.dir}" />
+				<arg value="sass.compiler.class.name=${sass.compiler.class.name}" />
 				<arg value="sass.dir=/" />
 				<arg value="sass.docroot.dir=@{sass.docroot.dir}" />
 				<arg value="sass.portal.common.dir=${app.server.portal.dir}/html/css/common" />
 			</java>
 
-			<echo>${build-css.output}</echo>
+			<if>
+				<not>
+					<equals arg1="${build-css.output}" arg2="" />
+				</not>
+				<then>
+					<echo>${build-css.output}</echo>
+				</then>
+			</if>
 
 			<if>
 				<contains string="${build-css.output}" substring="Error" />
@@ -431,17 +430,11 @@ Error-Prone was automatically installed. Please rerun your task.
 				<then>
 					<property file="@{module.dir}/snapshot.properties" />
 
-					<git-head-hash
-						path="${module.dir.unix}"
-						property="module.git.head.hash"
-						ignoreFileName="snapshot.properties"
-					/>
-
 					<if>
-						<and>
-							<equals arg1="${module.git.head.hash}" arg2="${module.snapshot.git.hash}" />
-							<git-is-clean path="${module.dir.unix}" />
-						</and>
+						<git-up-to-date
+							path="${module.dir.unix}"
+							since="${module.snapshot.git.hash}"
+						/>
 						<then>
 							<var name="snapshot.uptodate" value="true" />
 						</then>
@@ -470,7 +463,6 @@ Error-Prone was automatically installed. Please rerun your task.
 						</then>
 					</if>
 
-					<var name="module.git.head.hash" unset="true" />
 					<var name="module.snapshot.git.hash" unset="true" />
 					<var name="module.snapshot.url" unset="true" />
 				</then>
@@ -519,9 +511,12 @@ Error-Prone was automatically installed. Please rerun your task.
 				</then>
 			</if>
 
+			<delete dir="@{module.dir}/.js-cache" />
+			<delete dir="@{module.dir}/coverage-reports" />
 			<delete dir="@{module.dir}/javadoc" />
 			<delete dir="@{module.dir}/pmd-reports" />
 			<delete dir="@{module.dir}/test-classes" />
+			<delete dir="@{module.dir}/test-coverage" />
 			<delete dir="@{module.dir}/test-results" />
 			<delete dir="@{module.dir}/tmp" />
 
@@ -1188,13 +1183,16 @@ Please find a solution that does not require portal-impl.jar.
 
 	<macrodef name="compile-test-cmd">
 		<attribute name="module.dir" />
+		<attribute name="test.classpathref" default="test.classpath" />
 		<attribute name="test.type" />
 
 		<sequential>
 			<if>
 				<available file="@{module.dir}/test/@{test.type}" type="dir" />
 				<then>
+					<mkdir dir="@{module.dir}/coverage-reports/@{test.type}" />
 					<mkdir dir="@{module.dir}/test-classes/@{test.type}" />
+					<mkdir dir="@{module.dir}/test-coverage/@{test.type}" />
 					<mkdir dir="@{module.dir}/test-results/@{test.type}" />
 
 					<copy todir="@{module.dir}/test-classes/@{test.type}">
@@ -1236,7 +1234,7 @@ Please find a solution that does not require portal-impl.jar.
 					</path>
 
 					<compile-java
-						javac.classpathref="test.classpath"
+						javac.classpathref="@{test.classpathref}"
 						javac.destdir="@{module.dir}/test-classes/@{test.type}"
 						javac.srcdir="@{module.dir}/test/@{test.type}"
 						module.dir="@{module.dir}"
@@ -1294,16 +1292,20 @@ Please find a solution that does not require portal-impl.jar.
 			<if>
 				<equals arg1="${theme.parent}" arg2="_unstyled" />
 				<then>
+					<unzip-parent-theme-jar theme.jar.name="com.liferay.frontend.theme.unstyled" />
+
+					<property name="unstyled.tmp.dir" value="${sdk.dir}/tmp/com.liferay.frontend.theme.unstyled" />
+
 					<copy todir="@{module.dir}/docroot" overwrite="true" preservelastmodified="true">
 						<fileset
-							dir="${app.server.portal.dir}/html/themes/_unstyled"
+							dir="${unstyled.tmp.dir}/_unstyled"
 							excludes="templates/**"
 						/>
 					</copy>
 
 					<copy todir="@{module.dir}/docroot/templates" overwrite="true" preservelastmodified="true">
 						<fileset
-							dir="${app.server.portal.dir}/html/themes/_unstyled/templates"
+							dir="${unstyled.tmp.dir}/_unstyled/templates"
 							excludes="init.${theme.type}"
 							includes="*.${theme.type}"
 						/>
@@ -1312,16 +1314,22 @@ Please find a solution that does not require portal-impl.jar.
 				<elseif>
 					<equals arg1="${theme.parent}" arg2="_styled" />
 					<then>
+						<unzip-parent-theme-jar theme.jar.name="com.liferay.frontend.theme.unstyled" />
+						<unzip-parent-theme-jar theme.jar.name="com.liferay.frontend.theme.styled" />
+
+						<property name="styled.tmp.dir" value="${sdk.dir}/tmp/com.liferay.frontend.theme.styled" />
+						<property name="unstyled.tmp.dir" value="${sdk.dir}/tmp/com.liferay.frontend.theme.unstyled" />
+
 						<copy todir="@{module.dir}/docroot" overwrite="true" preservelastmodified="true">
 							<fileset
-								dir="${app.server.portal.dir}/html/themes/_unstyled"
+								dir="${unstyled.tmp.dir}/_unstyled"
 								excludes="templates/**"
 							/>
 						</copy>
 
 						<copy todir="@{module.dir}/docroot/templates" overwrite="true" preservelastmodified="true">
 							<fileset
-								dir="${app.server.portal.dir}/html/themes/_unstyled/templates"
+								dir="${unstyled.tmp.dir}/_unstyled/templates"
 								excludes="init.${theme.type}"
 								includes="*.${theme.type}"
 							/>
@@ -1329,7 +1337,29 @@ Please find a solution that does not require portal-impl.jar.
 
 						<copy todir="@{module.dir}/docroot" overwrite="true" preservelastmodified="true">
 							<fileset
-								dir="${app.server.portal.dir}/html/themes/_styled"
+								dir="${styled.tmp.dir}/_styled"
+							/>
+						</copy>
+					</then>
+				</elseif>
+				<elseif>
+					<equals arg1="${theme.parent}" arg2="admin" />
+					<then>
+						<unzip-parent-theme-jar theme.jar.name="com.liferay.frontend.theme.admin.web" />
+
+						<property name="classic.tmp.dir" value="${sdk.dir}/tmp/com.liferay.frontend.theme.classic.web" />
+
+						<copy todir="@{module.dir}/docroot" overwrite="true" preservelastmodified="true">
+							<fileset
+								dir="${classic.tmp.dir}/admin"
+								excludes="**/.sass-cache/**,_diffs/**,templates/**"
+							/>
+						</copy>
+
+						<copy todir="@{module.dir}/docroot/templates" overwrite="true" preservelastmodified="true">
+							<fileset
+								dir="${classic.tmp.dir}/admin/templates"
+								includes="*.${theme.type}"
 							/>
 						</copy>
 					</then>
@@ -1337,34 +1367,20 @@ Please find a solution that does not require portal-impl.jar.
 				<elseif>
 					<equals arg1="${theme.parent}" arg2="classic" />
 					<then>
+						<unzip-parent-theme-jar theme.jar.name="com.liferay.frontend.theme.classic.web" />
+
+						<property name="classic.tmp.dir" value="${sdk.dir}/tmp/com.liferay.frontend.theme.classic.web" />
+
 						<copy todir="@{module.dir}/docroot" overwrite="true" preservelastmodified="true">
 							<fileset
-								dir="${app.server.portal.dir}/html/themes/classic"
+								dir="${classic.tmp.dir}/classic"
 								excludes="**/.sass-cache/**,_diffs/**,templates/**"
 							/>
 						</copy>
 
 						<copy todir="@{module.dir}/docroot/templates" overwrite="true" preservelastmodified="true">
 							<fileset
-								dir="${app.server.portal.dir}/html/themes/classic/templates"
-								includes="*.${theme.type}"
-							/>
-						</copy>
-					</then>
-				</elseif>
-				<elseif>
-					<equals arg1="${theme.parent}" arg2="control_panel" />
-					<then>
-						<copy todir="@{module.dir}/docroot" overwrite="true" preservelastmodified="true">
-							<fileset
-								dir="${app.server.portal.dir}/html/themes/control_panel"
-								excludes="**/.sass-cache/**,_diffs/**,templates/**"
-							/>
-						</copy>
-
-						<copy todir="@{module.dir}/docroot/templates" overwrite="true" preservelastmodified="true">
-							<fileset
-								dir="${app.server.portal.dir}/html/themes/control_panel/templates"
+								dir="${classic.tmp.dir}/classic/templates"
 								includes="*.${theme.type}"
 							/>
 						</copy>
@@ -1686,7 +1702,7 @@ Please find a solution that does not require portal-impl.jar.
 				<jvmarg value="-Ddeployer.base.dir=${sdk.dir}/dist" />
 				<jvmarg value="-Ddeployer.dest.dir=@{direct.deploy.dir}" />
 				<jvmarg value="-Ddeployer.app.server.type=${app.server.type}" />
-				<jvmarg value="-Ddeployer.aui.taglib.dtd=${app.server.portal.dir}/WEB-INF/tld/aui.tld" />
+				<jvmarg value="-Ddeployer.aui.taglib.dtd=${app.server.portal.dir}/WEB-INF/tld/liferay-aui.tld" />
 				<jvmarg value="-Ddeployer.portlet.taglib.dtd=${app.server.portal.dir}/WEB-INF/tld/liferay-portlet.tld" />
 				<jvmarg value="-Ddeployer.portlet-ext.taglib.dtd=${app.server.portal.dir}/WEB-INF/tld/liferay-portlet-ext.tld" />
 				<jvmarg value="-Ddeployer.security.taglib.dtd=${app.server.portal.dir}/WEB-INF/tld/liferay-security.tld" />
@@ -1782,6 +1798,7 @@ Please find a solution that does not require portal-impl.jar.
 	</macrodef>
 
 	<macrodef name="gradle-execute">
+		<attribute default="true" name="failonerror" />
 		<attribute name="task" />
 		<element implicit="true" name="args" optional="true" />
 
@@ -1798,7 +1815,7 @@ Please find a solution that does not require portal-impl.jar.
 				</else>
 			</if>
 
-			<exec executable="${sdk.dir}/tools/gradle/gradlew${gradlew.suffix}" failonerror="true">
+			<exec executable="${sdk.dir}/tools/gradle/gradlew${gradlew.suffix}" failonerror="@{failonerror}">
 				<arg value="-PpluginsExcludes=${plugins.excludes}" />
 				<arg value="-PpluginsIncludes=${plugins.includes}" />
 				<args />
@@ -1845,7 +1862,7 @@ Please find a solution that does not require portal-impl.jar.
 				</then>
 				<else>
 					<if>
-						<matches pattern=".*-test" string="@{module.dir}" />
+						<matches pattern=".*-test$" string="@{module.dir}" />
 						<then>
 							<loop-macrodef-or-target
 								module.dirs="@{module.dir}"
@@ -1893,12 +1910,9 @@ Please find a solution that does not require portal-impl.jar.
 								</or>
 								<then>
 									<if>
-										<and>
-											<available file="@{module.dir}/docroot" />
-											<resourcecount count="0" when="gt">
-												<fileset dir="@{module.dir}/docroot" includes="**/*.css" />
-											</resourcecount>
-										</and>
+										<resourcecount count="0" when="gt">
+											<fileset dir="@{module.dir}/docroot" erroronmissingdir="false" includes="**/*.css, **/*.scss" />
+										</resourcecount>
 										<then>
 											<build-css
 												module.dir="@{module.dir}"
@@ -1908,12 +1922,9 @@ Please find a solution that does not require portal-impl.jar.
 									</if>
 
 									<if>
-										<and>
-											<available file="@{module.dir}/src/META-INF/resources" />
-											<resourcecount count="0" when="gt">
-												<fileset dir="@{module.dir}/src/META-INF/resources" includes="**/*.css" />
-											</resourcecount>
-										</and>
+										<resourcecount count="0" when="gt">
+											<fileset dir="@{module.dir}/src/META-INF/resources" erroronmissingdir="false" includes="**/*.css, **/*.scss" />
+										</resourcecount>
 										<then>
 											<build-css
 												module.dir="@{module.dir}"
@@ -1921,6 +1932,36 @@ Please find a solution that does not require portal-impl.jar.
 											/>
 										</then>
 									</if>
+
+									<if>
+										<resourcecount count="0" when="gt">
+											<fileset dir="@{module.dir}/src/META-INF/resources" erroronmissingdir="false" includes="**/${transpile.file.pattern},${transpile.file.pattern}" />
+										</resourcecount>
+										<then>
+											<transpile-js
+												module.dir="@{module.dir}"
+											/>
+										</then>
+									</if>
+
+									<if>
+										<available file="@{module.dir}/bower.json" />
+										<then>
+											<copy
+												file="@{module.dir}/bower.json"
+												overwrite="true"
+												tofile="@{module.dir}/.js-cache/bower.json"
+											/>
+
+											<config-js-modules
+												module.dir="@{module.dir}"
+											/>
+										</then>
+									</if>
+
+									<copy todir="@{module.dir}/classes">
+										<fileset dir="@{module.dir}/.js-cache" erroronmissingdir="false" />
+									</copy>
 
 									<build-wsdl
 										module.dir="@{module.dir}"
@@ -2031,6 +2072,13 @@ Please find a solution that does not require portal-impl.jar.
 													<if>
 														<available file="${temp.deployed.plugin.dir}" />
 														<then>
+															<touch millis="0">
+																<fileset
+																	dir="${temp.deployed.plugin.dir}"
+																	includes="WEB-INF/liferay-web.xml,WEB-INF/web.xml,WEB-INF/tld/*"
+																/>
+															</touch>
+
 															<jar destfile="${sdk.dir}/dist/${plugin.name}-${plugin.full.version}.war" duplicate="preserve" update="true">
 																<fileset
 																	dir="${app.server.portal.dir}"
@@ -2113,6 +2161,34 @@ Please find a solution that does not require portal-impl.jar.
 		</sequential>
 	</macrodef>
 
+	<macrodef name="instrument-code">
+		<attribute name="module.dir" />
+		<attribute name="test.type" />
+
+		<sequential>
+			<if>
+				<equals arg1="${junit.code.coverage}" arg2="true" />
+				<then>
+					<delete file="@{module.dir}/test-coverage/cobertura.ser" />
+
+					<cobertura-instrument
+						datafile="@{module.dir}/test-coverage/@{test.type}/cobertura.ser"
+						todir="@{module.dir}/test-coverage/@{test.type}"
+					>
+						<ignore regex="org.apache.log4j.*" />
+
+						<fileset dir="@{module.dir}/classes" erroronmissingdir="false">
+							<include name="**/*.class" />
+						</fileset>
+						<fileset dir="@{module.dir}/docroot/WEB-INF/classes" erroronmissingdir="false">
+							<include name="**/*.class" />
+						</fileset>
+					</cobertura-instrument>
+				</then>
+			</if>
+		</sequential>
+	</macrodef>
+
 	<macrodef name="javadoc-macro">
 		<attribute name="module.dir" />
 
@@ -2121,14 +2197,10 @@ Please find a solution that does not require portal-impl.jar.
 				module.dir="@{module.dir}"
 			/>
 
-			<resourcecount property="module.java.count">
-				<fileset dir="${plugin.source.dir}" includes="**/*.java" />
-			</resourcecount>
-
 			<if>
-				<not>
-					<equals arg1="${module.java.count}" arg2="0" />
-				</not>
+				<resourcecount count="0" when="gt">
+					<fileset dir="${plugin.source.dir}" includes="**/*.java" />
+				</resourcecount>
 				<then>
 					<javadoc
 						classpathref="plugin.classpath"
@@ -2253,6 +2325,44 @@ Please find a solution that does not require portal-impl.jar.
 		</sequential>
 	</macrodef>
 
+	<macrodef name="merge-coverage">
+		<attribute name="module.dir" />
+
+		<sequential>
+			<if>
+				<equals arg1="${junit.code.coverage}" arg2="true" />
+				<then>
+					<if>
+						<or>
+							<available file="@{module.dir}/test-coverage/integration/cobertura.ser" />
+							<available file="@{module.dir}/test-coverage/unit/cobertura.ser" />
+						</or>
+						<then>
+							<cobertura-merge datafile="@{module.dir}/test-coverage/cobertura.ser">
+								<fileset dir="@{module.dir}/test-coverage/integration" erroronmissingdir="false">
+									<include name="cobertura.ser" />
+								</fileset>
+								<fileset dir="@{module.dir}/test-coverage/unit" erroronmissingdir="false">
+									<include name="cobertura.ser" />
+								</fileset>
+							</cobertura-merge>
+
+							<cobertura-report
+								datafile="@{module.dir}/test-coverage/cobertura.ser"
+								format="${junit.code.coverage.report.format}"
+								destdir="@{module.dir}/coverage-reports"
+							>
+								<fileset dir="@{module.dir}/docroot/WEB-INF/src" erroronmissingdir="false" />
+								<fileset dir="@{module.dir}/service" erroronmissingdir="false" />
+								<fileset dir="@{module.dir}/src" erroronmissingdir="false" />
+							</cobertura-report>
+						</then>
+					</if>
+				</then>
+			</if>
+		</sequential>
+	</macrodef>
+
 	<macrodef name="merge-unzip">
 		<attribute name="module.dir" />
 
@@ -2279,6 +2389,7 @@ Please find a solution that does not require portal-impl.jar.
 		<attribute name="includes" />
 		<attribute name="root.dir" />
 		<attribute name="target" />
+		<element name="properties" optional="true" />
 
 		<sequential>
 			<path id="includes.path">
@@ -2293,6 +2404,7 @@ Please find a solution that does not require portal-impl.jar.
 				<multirootfileset basedirs="${includes.path}">
 					<include name="@{build.file}" />
 				</multirootfileset>
+				<properties />
 			</subant>
 		</sequential>
 	</macrodef>
@@ -2391,6 +2503,28 @@ Please find a solution that does not require portal-impl.jar.
 			<delete dir="@{dir}" />
 
 			<mkdir dir="@{dir}" />
+		</sequential>
+	</macrodef>
+
+	<macrodef name="report-coverage">
+		<attribute name="module.dir" />
+		<attribute name="test.type" />
+
+		<sequential>
+			<if>
+				<equals arg1="${junit.code.coverage}" arg2="true" />
+				<then>
+					<cobertura-report
+						datafile="@{module.dir}/test-coverage/@{test.type}/cobertura.ser"
+						destdir="@{module.dir}/coverage-reports/@{test.type}"
+						format="${junit.code.coverage.report.format}"
+					>
+						<fileset dir="@{module.dir}/docroot/WEB-INF/src" erroronmissingdir="false" />
+						<fileset dir="@{module.dir}/service" erroronmissingdir="false" />
+						<fileset dir="@{module.dir}/src" erroronmissingdir="false" />
+					</cobertura-report>
+				</then>
+			</if>
 		</sequential>
 	</macrodef>
 
@@ -2503,37 +2637,24 @@ Please find a solution that does not require portal-impl.jar.
 			<if>
 				<and>
 					<isset property="lp.portal.project.dir" />
-					<available file="@{module.dir}/test-classes/integration" type="dir" />
-				</and>
-				<then>
-					<resourcecount property="test.integration.count">
-						<fileset dir="@{module.dir}/test-classes/integration" includes="@{test.class}">
+					<resourcecount count="0" when="gt">
+						<fileset dir="@{module.dir}/test-classes/integration" erroronmissingdir="false" includes="@{test.class}">
 							<filename regex="${junit.test.excludes}" negate="true" />
 						</fileset>
 					</resourcecount>
+					<not>
+						<available file="@{module.dir}/test/integration/skip.managed.app.server" type="file" />
+					</not>
+				</and>
+				<then>
+					<ant antfile="${lp.portal.project.dir}/build-test.xml" target="setup-testable-tomcat" inheritAll="false">
+						<property name="project.dir" value="${lp.portal.project.dir}" />
+					</ant>
 
-					<if>
-						<and>
-							<not>
-								<equals arg1="${test.integration.count}" arg2="0" />
-							</not>
-							<not>
-								<available file="@{module.dir}/test/integration/skip.managed.app.server" type="file" />
-							</not>
-						</and>
-						<then>
-							<delete file="${lp.portal.project.dir}/.testable.portal.started" failonerror="false" />
-
-							<ant antfile="${lp.portal.project.dir}/build-test.xml" target="setup-testable-tomcat" inheritAll="false">
-								<property name="project.dir" value="${lp.portal.project.dir}" />
-							</ant>
-
-							<ant antfile="${lp.portal.project.dir}/build-test.xml" target="start-app-server" inheritAll="false">
-								<property name="project.dir" value="${lp.portal.project.dir}" />
-								<property name="testable.portal.started.marker.file" value="${lp.portal.project.dir}/.testable.portal.started" />
-							</ant>
-						</then>
-					</if>
+					<ant antfile="${lp.portal.project.dir}/build-test.xml" target="start-app-server" inheritAll="false">
+						<property name="project.dir" value="${lp.portal.project.dir}" />
+						<property name="testable.portal.started.marker.file" value="${lp.portal.project.dir}/.testable.portal.started" />
+					</ant>
 				</then>
 			</if>
 		</sequential>
@@ -2568,6 +2689,10 @@ Please find a solution that does not require portal-impl.jar.
 			<test-unit
 				module.dir="@{module.dir}"
 			/>
+
+			<merge-coverage
+				module.dir="@{module.dir}"
+			/>
 		</sequential>
 	</macrodef>
 
@@ -2576,33 +2701,20 @@ Please find a solution that does not require portal-impl.jar.
 		<attribute name="test.class" />
 
 		<sequential>
-			<if>
-				<available file="@{module.dir}/test/integration" type="dir" />
-				<then>
-					<resourcecount property="test.integration.count">
-						<fileset dir="@{module.dir}/test-classes/integration" includes="**/@{test.class}.class" />
-					</resourcecount>
-				</then>
-			</if>
 
 			<if>
-				<available file="@{module.dir}/test/unit" type="dir" />
-				<then>
-					<resourcecount property="test.unit.count">
-						<fileset dir="@{module.dir}/test-classes/unit" includes="**/@{test.class}.class" />
-					</resourcecount>
-				</then>
-			</if>
-
-			<if>
-				<equals arg1="${test.integration.count}" arg2="1" />
+				<resourcecount count="1">
+					<fileset dir="@{module.dir}/test/integration" erroronmissingdir="false" includes="**/@{test.class}.java" />
+				</resourcecount>
 				<then>
 					<var name="test.type" value="integration" />
 
 					<setup-arquillian module.dir="@{module.dir}" />
 				</then>
 				<elseif>
-					<equals arg1="${test.unit.count}" arg2="1" />
+					<resourcecount count="1">
+						<fileset dir="@{module.dir}/test/unit" erroronmissingdir="false" includes="**/@{test.class}.java" />
+					</resourcecount>
 					<then>
 						<var name="test.type" value="unit" />
 					</then>
@@ -2640,6 +2752,7 @@ Please find a solution that does not require portal-impl.jar.
 		<attribute name="junit.forkmode" />
 		<attribute name="module.dir" />
 		<attribute name="test.class" />
+		<attribute name="test.classpathref" default="test.classpath" />
 		<attribute name="test.type" />
 
 		<sequential>
@@ -2650,7 +2763,9 @@ Please find a solution that does not require portal-impl.jar.
 			<if>
 				<available file="@{module.dir}/test/@{test.type}" />
 				<then>
+					<delete dir="@{module.dir}/coverage-reports/@{test.type}" />
 					<delete dir="@{module.dir}/test-classes/@{test.type}" />
+					<delete dir="@{module.dir}/test-coverage/@{test.type}" />
 					<delete dir="@{module.dir}/test-results/@{test.type}" />
 
 					<compile
@@ -2659,6 +2774,7 @@ Please find a solution that does not require portal-impl.jar.
 
 					<compile-test-cmd
 						module.dir="@{module.dir}"
+						test.classpathref="@{test.classpathref}"
 						test.type="@{test.type}"
 					/>
 
@@ -2675,15 +2791,45 @@ Please find a solution that does not require portal-impl.jar.
 					<if>
 						<available file="@{module.dir}/test/@{test.type}" type="dir" />
 						<then>
+							<local name="junit.java.gc" />
+
+							<if>
+								<equals arg1="@{test.type}" arg2="unit" />
+								<then>
+									<if>
+										<equals arg1="${junit.java.unit.gc.logging}" arg2="on" />
+										<then>
+											<property name="junit.java.gc" value="${junit.java.unit.gc} -verbose:gc -XX:+PrintGCCause -XX:+PrintGCDetails" />
+										</then>
+										<else>
+											<property name="junit.java.gc" value="${junit.java.unit.gc}" />
+										</else>
+									</if>
+								</then>
+								<else>
+									<local name="project.dir.name" />
+
+									<basename property="module.dir.name" file="@{module.dir}" />
+
+									<property name="junit.java.gc" value="${junit.java.integration.gc} -verbose:gc -Xloggc:/tmp/${module.dir.name}-@{test.type}-gc.log -XX:+PrintGCCause -XX:+PrintGCDetails" />
+								</else>
+							</if>
+
+							<instrument-code
+								module.dir="@{module.dir}"
+								test.type="@{test.type}"
+							/>
+
 							<junit dir="@{module.dir}" fork="on" forkmode="@{junit.forkmode}" jvm="${junit.jvm}" outputtoformatters="false" printsummary="on" showoutput="true">
 								<sysproperty key="app.server.tomcat.dir" value="${app.server.tomcat.dir}" />
+								<sysproperty if:true="${jvm.debug}" key="jvm.debug" value="true" />
+								<sysproperty key="net.sourceforge.cobertura.datafile" file="@{module.dir}/test-coverage/@{test.type}/cobertura.ser" />
 								<sysproperty key="whip.agent" file="${whip.agent}" />
 								<sysproperty key="whip.datafile" file="@{module.dir}/test-coverage/whip.dat" />
 								<sysproperty key="whip.instrument.dump" value="${whip.instrument.dump}" />
-								<jvmarg line="${junit.debug.jpda}" />
+								<jvmarg if:true="${jvm.debug}" line="${jpda.settings}" />
+								<jvmarg line="${junit.java.gc}" />
 								<jvmarg line="${whip.agent}" />
-								<jvmarg value="-Xmx${junit.java.mx}" />
-								<jvmarg value="-XX:MaxPermSize=${junit.java.maxpermsize}" />
 								<jvmarg value="-Dexternal-properties=${test.properties}" />
 								<jvmarg value="-Dfile.encoding=UTF-8" />
 								<jvmarg value="-Djava.net.preferIPv4Stack=true" />
@@ -2692,8 +2838,9 @@ Please find a solution that does not require portal-impl.jar.
 								<jvmarg value="-Dtest.class.group.index=${test.class.group.index}" />
 								<jvmarg value="-Dtest.class.groups=${TEST_CLASS_GROUPS}" />
 								<jvmarg value="-Duser.timezone=GMT" />
-								<classpath location="@{module.dir}/test-coverage" />
-								<classpath refid="test.classpath" />
+								<classpath location="@{module.dir}/test-coverage/@{test.type}" />
+								<classpath location="${sdk.dir}/dependencies/net.sourceforge.cobertura/lib/cobertura.jar" />
+								<classpath refid="@{test.classpathref}" />
 								<formatter type="brief" usefile="false" />
 								<formatter type="xml" />
 								<batchtest todir="@{module.dir}/test-results/@{test.type}">
@@ -2702,6 +2849,11 @@ Please find a solution that does not require portal-impl.jar.
 									</fileset>
 								</batchtest>
 							</junit>
+
+							<report-coverage
+								module.dir="@{module.dir}"
+								test.type="@{test.type}"
+							/>
 						</then>
 					</if>
 				</then>
@@ -2726,14 +2878,77 @@ Please find a solution that does not require portal-impl.jar.
 
 	<macrodef name="test-unit">
 		<attribute name="module.dir" />
+		<attribute name="test.classpathref" default="test.classpath" />
 
 		<sequential>
 			<test-cmd
 				junit.forkmode="perTest"
 				module.dir="@{module.dir}"
 				test.class="**/*Test.class"
+				test.classpathref="@{test.classpathref}"
 				test.type="unit"
 			/>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="unzip-parent-theme-jar">
+		<attribute name="theme.jar.name" />
+
+		<sequential>
+			<if>
+				<resourcecount count="1" when="eq">
+					<fileset dir="${module.framework.base.dir}/modules" includes="@{theme.jar.name}*.jar" />
+				</resourcecount>
+				<then>
+					<property name="theme.tmp.dir" value="${sdk.dir}/tmp/@{theme.jar.name}" />
+
+					<pathconvert property="frontend.theme.web.jar.path">
+						<path>
+							<fileset dir="${module.framework.base.dir}/modules" includes="@{theme.jar.name}*.jar" />
+						</path>
+					</pathconvert>
+
+					<basename file="${frontend.theme.web.jar.path}" property="frontend.theme.web.file" />
+
+					<if>
+						<not>
+							<uptodate
+								srcfile="${module.framework.base.dir}/modules/${frontend.theme.web.file}"
+								targetfile="${theme.tmp.dir}"
+							/>
+						</not>
+						<then>
+							<delete dir="${theme.tmp.dir}" />
+
+							<mkdir dir="${theme.tmp.dir}" />
+
+							<unzip
+								dest="${theme.tmp.dir}"
+								src="${frontend.theme.web.jar.path}"
+							>
+								<patternset>
+									<exclude name="**/META-INF/resources/**/*.css" />
+									<include name="**/META-INF/resources/**" />
+								</patternset>
+								<mapper>
+									<globmapper from="META-INF/resources/*" to="*" />
+								</mapper>
+							</unzip>
+
+							<touch>
+								<fileset dir="${theme.tmp.dir}" />
+							</touch>
+						</then>
+					</if>
+				</then>
+				<else>
+					<fail>The module @{theme.jar.name} does not exist.</fail>
+				</else>
+			</if>
+
+			<var name="frontend.theme.web.file" unset="true" />
+			<var name="frontend.theme.web.jar.path" unset="true"/>
+			<var name="theme.tmp.dir" unset="true"/>
 		</sequential>
 	</macrodef>
 
@@ -2922,8 +3137,23 @@ for (String path : paths) {
 								<zip
 									basedir="@{module.dir}/docroot"
 									destfile="${plugin.file}"
-									excludes="_diffs.*,_diffs/**,${plugins.war.excludes}"
-								/>
+									excludes="**/.sass-cache/**,**/*.scss,WEB-INF/liferay-hook.xml*,_diffs.*,_diffs/**,${plugins.war.excludes}"
+								>
+									<zipfileset
+										dir="@{module.dir}/docroot"
+										fullpath="WEB-INF/liferay-hook.xml"
+										includes="WEB-INF/liferay-hook.xml.processed"
+									/>
+									<mappedresources>
+										<fileset 
+											dir="@{module.dir}/docroot"
+											includes="**/.sass-cache/*.css"
+										/>
+										<filtermapper>
+											<replacestring from=".sass-cache" to="" />
+										</filtermapper>
+									</mappedresources>
+								</zip>
 							</then>
 						</elseif>
 						<else>
@@ -2985,26 +3215,44 @@ for (String path : paths) {
 					<zip
 						basedir="${docroot.dir}"
 						destfile="${plugin.file}"
-						excludes="**/META-INF/context.xml,${liferay-hook.xml.excludes},${plugins.war.excludes}"
+						excludes="**/.sass-cache/**,**/*.scss,**/META-INF/context.xml,${liferay-hook.xml.excludes},${plugins.war.excludes}"
 					>
 						<zipfileset
 							dir="${docroot.dir}"
 							fullpath="WEB-INF/liferay-hook.xml"
 							includes="WEB-INF/liferay-hook.xml.processed"
 						/>
+						<mappedresources>
+							<fileset 
+								dir="${docroot.dir}"
+								includes="**/.sass-cache/*.css"
+							/>
+							<filtermapper>
+								<replacestring from=".sass-cache" to="" />
+							</filtermapper>
+						</mappedresources>
 					</zip>
 				</then>
 				<else>
 					<zip
 						basedir="${docroot.dir}"
 						destfile="${plugin.file}"
-						excludes="${liferay-hook.xml.excludes},${plugins.war.excludes}"
+						excludes="**/.sass-cache/**,**/*.scss,${liferay-hook.xml.excludes},${plugins.war.excludes}"
 					>
 						<zipfileset
 							dir="${docroot.dir}"
 							fullpath="WEB-INF/liferay-hook.xml"
 							includes="WEB-INF/liferay-hook.xml.processed"
 						/>
+						<mappedresources>
+							<fileset 
+								dir="${docroot.dir}"
+								includes="**/.sass-cache/*.css"
+							/>
+							<filtermapper>
+								<replacestring from=".sass-cache" to="" />
+							</filtermapper>
+						</mappedresources>
 					</zip>
 				</else>
 			</if>
@@ -3145,18 +3393,7 @@ for (String path : paths) {
 		<for param="module.web.dir">
 			<dirset dir="." excludes="**/templates/**" />
 			<sequential>
-				<if>
-					<resourcecount count="0" when="gt">
-						<fileset
-							dir="@{module.web.dir}"
-							excludes="**/custom_jsps/**/*"
-							includes="docroot/**/*.jsp,src/META-INF/resources/**/*.jsp,tmp/**/*.jsp"
-						/>
-					</resourcecount>
-					<then>
-						<ant antfile="@{module.web.dir}/build.xml" dir="@{module.web.dir}" target="compile-jsp" />
-					</then>
-				</if>
+				<ant antfile="@{module.web.dir}/build.xml" dir="@{module.web.dir}" target="compile-jsp" />
 			</sequential>
 		</for>
 	</target>
@@ -3200,6 +3437,8 @@ for (String path : paths) {
 	</target>
 
 	<target name="deploy">
+		<git-up-to-date-cache dir="${basedir}" />
+
 		<loop-macrodef-or-target
 			module.dirs="${plugins.includes.path}"
 			target.name="deploy"
@@ -3270,6 +3509,23 @@ for (String path : paths) {
 		>
 			<jvmarg value="-Xmx512m" />
 			<jvmarg value="-Xss2048k" />
+		</java>
+
+		<delete file="ServiceBuilder.temp" />
+	</target>
+
+	<target name="format-tld">
+		<path id="tld.formatter.classpath">
+			<fileset dir="${sdk.dir}/dependencies/com.liferay.tld.formatter/lib" includes="*.jar" />
+		</path>
+
+		<java
+			classname="com.liferay.tld.formatter.TLDFormatter"
+			classpathref="tld.formatter.classpath"
+			fork="true"
+			newenvironment="true"
+		>
+			<arg value="tld.plugin=true" />
 		</java>
 
 		<delete file="ServiceBuilder.temp" />
@@ -3484,6 +3740,15 @@ for (String path : paths) {
 	</target>
 
 	<target name="setup-eclipse">
+		<loop-macrodef-or-target
+			module.dirs="${basedir}"
+			target.name="compile-import-shared"
+		/>
+
+		<process-ivy
+			module.dir="${basedir}"
+		/>
+
 		<java
 			classname="com.liferay.portal.tools.PluginsEnvironmentBuilder"
 			classpathref="portal.classpath"
@@ -3568,5 +3833,61 @@ for (String path : paths) {
 			module.dirs="${plugins.includes.path}"
 			target.name="war"
 		/>
+	</target>
+
+	<target name="watch">
+		<property name="watch.flag.file" location="${sdk.dir}/tmp/watch.flag" />
+
+		<touch file="${watch.flag.file}" mkdirs="true" />
+
+		<antelope:repeat count="-1" interval="2">
+			<outofdate outputsourcespath="watch.sources.path">
+				<sourcefiles>
+					<fileset dir="${basedir}">
+						<include name="**/*.css" />
+						<include name="**/*.ftl" />
+						<include name="**/*.java" />
+						<include name="**/*.js" />
+						<include name="**/*.jsp" />
+						<include name="**/*.jspf" />
+						<include name="**/*.scss" />
+						<include name="**/*.vm" />
+						<exclude name="**/test/unit/**" />
+						<exclude name="**/test/integration/**" />
+						<exclude name="**/classes/**" />
+						<exclude name="**/.sass-cache/**" />
+					</fileset>
+				</sourcefiles>
+				<targetfiles>
+					<pathelement location="${watch.flag.file}" />
+				</targetfiles>
+				<sequential>
+					<property name="watch.sources.path" refid="watch.sources.path" />
+
+					<echo>Detected a modification in ${watch.sources.path}.</echo>
+
+					<propertyregex
+						global="false"
+						input="${watch.sources.path}"
+						override="true"
+						property="watch.deploy.path"
+						regexp="(/|\\)(src.*$|docroot.*$)"
+						replace=""
+					/>
+
+					<echo>Deploying ${watch.deploy.path}.</echo>
+
+					<deploy
+						module.dir="${watch.deploy.path}"
+					/>
+
+					<var name="watch.sources.path" unset="true" />
+
+					<touch file="${watch.flag.file}" />
+
+					<echo>Finished deployment. Watching for additional modifications.</echo>
+				</sequential>
+			</outofdate>
+		</antelope:repeat>
 	</target>
 </project>

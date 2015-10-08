@@ -85,23 +85,17 @@ public static class AlloyControllerImpl extends BaseAlloyControllerImpl {
 	}
 
 	@Override
-	protected Indexer buildIndexer() {
+	protected Indexer<BaseModel<?>> buildIndexer() {
 		return AssetIndexer.getInstance();
 	}
 
 	private void _validateSave() throws Exception {
 		String serialNumber = ParamUtil.getString(request, "serialNumber");
 
-		Pattern pattern = Pattern.compile(_SERIAL_NUMBER_REGEX);
-
-		Matcher matcher = pattern.matcher(serialNumber);
-
-		if (!matcher.find()) {
+		if (!AssetUtil.isValidSerialNumber(serialNumber)) {
 			throw new AlloyException("the-serial-number-is-invalid");
 		}
 	}
-
-	private static final String _SERIAL_NUMBER_REGEX = "^[a-zA-Z0-9]+$";
 
 }
 %>

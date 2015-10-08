@@ -1302,7 +1302,7 @@ public class JIRAChangeGroupPersistenceImpl extends BasePersistenceImpl<JIRAChan
 				jiraChangeGroup.setNew(false);
 			}
 			else {
-				session.merge(jiraChangeGroup);
+				jiraChangeGroup = (JIRAChangeGroup)session.merge(jiraChangeGroup);
 			}
 		}
 		catch (Exception e) {
@@ -1740,8 +1740,13 @@ public class JIRAChangeGroupPersistenceImpl extends BasePersistenceImpl<JIRAChan
 	}
 
 	@Override
-	protected Set<String> getBadColumnNames() {
+	public Set<String> getBadColumnNames() {
 		return _badColumnNames;
+	}
+
+	@Override
+	protected Map<String, Integer> getTableColumnsMap() {
+		return JIRAChangeGroupModelImpl.TABLE_COLUMNS_MAP;
 	}
 
 	/**

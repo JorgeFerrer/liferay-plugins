@@ -273,7 +273,7 @@ public class TypePersistenceImpl extends BasePersistenceImpl<Type>
 				type.setNew(false);
 			}
 			else {
-				session.merge(type);
+				type = (Type)session.merge(type);
 			}
 		}
 		catch (Exception e) {
@@ -663,6 +663,11 @@ public class TypePersistenceImpl extends BasePersistenceImpl<Type>
 		}
 
 		return count.intValue();
+	}
+
+	@Override
+	protected Map<String, Integer> getTableColumnsMap() {
+		return TypeModelImpl.TABLE_COLUMNS_MAP;
 	}
 
 	/**

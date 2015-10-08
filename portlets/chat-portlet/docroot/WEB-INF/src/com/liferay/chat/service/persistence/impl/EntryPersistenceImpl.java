@@ -4382,7 +4382,7 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 				entry.setNew(false);
 			}
 			else {
-				session.merge(entry);
+				entry = (Entry)session.merge(entry);
 			}
 		}
 		catch (Exception e) {
@@ -4941,6 +4941,11 @@ public class EntryPersistenceImpl extends BasePersistenceImpl<Entry>
 		}
 
 		return count.intValue();
+	}
+
+	@Override
+	protected Map<String, Integer> getTableColumnsMap() {
+		return EntryModelImpl.TABLE_COLUMNS_MAP;
 	}
 
 	/**

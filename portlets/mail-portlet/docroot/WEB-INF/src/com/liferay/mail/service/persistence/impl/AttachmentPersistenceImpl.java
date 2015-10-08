@@ -762,7 +762,7 @@ public class AttachmentPersistenceImpl extends BasePersistenceImpl<Attachment>
 				attachment.setNew(false);
 			}
 			else {
-				session.merge(attachment);
+				attachment = (Attachment)session.merge(attachment);
 			}
 		}
 		catch (Exception e) {
@@ -1184,8 +1184,13 @@ public class AttachmentPersistenceImpl extends BasePersistenceImpl<Attachment>
 	}
 
 	@Override
-	protected Set<String> getBadColumnNames() {
+	public Set<String> getBadColumnNames() {
 		return _badColumnNames;
+	}
+
+	@Override
+	protected Map<String, Integer> getTableColumnsMap() {
+		return AttachmentModelImpl.TABLE_COLUMNS_MAP;
 	}
 
 	/**

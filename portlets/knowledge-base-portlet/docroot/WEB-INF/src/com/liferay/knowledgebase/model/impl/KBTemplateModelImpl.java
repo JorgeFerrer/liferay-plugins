@@ -23,7 +23,6 @@ import com.liferay.knowledgebase.model.KBTemplateSoap;
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSON;
-import com.liferay.portal.kernel.lar.StagedModelType;
 import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
@@ -38,6 +37,7 @@ import com.liferay.portal.util.PortalUtil;
 
 import com.liferay.portlet.expando.model.ExpandoBridge;
 import com.liferay.portlet.expando.util.ExpandoBridgeFactoryUtil;
+import com.liferay.portlet.exportimport.lar.StagedModelType;
 
 import java.io.Serializable;
 
@@ -82,9 +82,26 @@ public class KBTemplateModelImpl extends BaseModelImpl<KBTemplate>
 			{ "createDate", Types.TIMESTAMP },
 			{ "modifiedDate", Types.TIMESTAMP },
 			{ "title", Types.VARCHAR },
-			{ "content", Types.CLOB }
+			{ "content", Types.CLOB },
+			{ "lastPublishDate", Types.TIMESTAMP }
 		};
-	public static final String TABLE_SQL_CREATE = "create table KBTemplate (uuid_ VARCHAR(75) null,kbTemplateId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,title STRING null,content TEXT null)";
+	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
+
+	static {
+		TABLE_COLUMNS_MAP.put("uuid_", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("kbTemplateId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("groupId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("companyId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("userId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("userName", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("createDate", Types.TIMESTAMP);
+		TABLE_COLUMNS_MAP.put("modifiedDate", Types.TIMESTAMP);
+		TABLE_COLUMNS_MAP.put("title", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("content", Types.CLOB);
+		TABLE_COLUMNS_MAP.put("lastPublishDate", Types.TIMESTAMP);
+	}
+
+	public static final String TABLE_SQL_CREATE = "create table KBTemplate (uuid_ VARCHAR(75) null,kbTemplateId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,title STRING null,content TEXT null,lastPublishDate DATE null)";
 	public static final String TABLE_SQL_DROP = "drop table KBTemplate";
 	public static final String ORDER_BY_JPQL = " ORDER BY kbTemplate.modifiedDate DESC";
 	public static final String ORDER_BY_SQL = " ORDER BY KBTemplate.modifiedDate DESC";
@@ -128,6 +145,7 @@ public class KBTemplateModelImpl extends BaseModelImpl<KBTemplate>
 		model.setModifiedDate(soapModel.getModifiedDate());
 		model.setTitle(soapModel.getTitle());
 		model.setContent(soapModel.getContent());
+		model.setLastPublishDate(soapModel.getLastPublishDate());
 
 		return model;
 	}
@@ -202,6 +220,7 @@ public class KBTemplateModelImpl extends BaseModelImpl<KBTemplate>
 		attributes.put("modifiedDate", getModifiedDate());
 		attributes.put("title", getTitle());
 		attributes.put("content", getContent());
+		attributes.put("lastPublishDate", getLastPublishDate());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -269,6 +288,12 @@ public class KBTemplateModelImpl extends BaseModelImpl<KBTemplate>
 
 		if (content != null) {
 			setContent(content);
+		}
+
+		Date lastPublishDate = (Date)attributes.get("lastPublishDate");
+
+		if (lastPublishDate != null) {
+			setLastPublishDate(lastPublishDate);
 		}
 	}
 
@@ -458,6 +483,17 @@ public class KBTemplateModelImpl extends BaseModelImpl<KBTemplate>
 		_content = content;
 	}
 
+	@JSON
+	@Override
+	public Date getLastPublishDate() {
+		return _lastPublishDate;
+	}
+
+	@Override
+	public void setLastPublishDate(Date lastPublishDate) {
+		_lastPublishDate = lastPublishDate;
+	}
+
 	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(PortalUtil.getClassNameId(
@@ -505,6 +541,7 @@ public class KBTemplateModelImpl extends BaseModelImpl<KBTemplate>
 		kbTemplateImpl.setModifiedDate(getModifiedDate());
 		kbTemplateImpl.setTitle(getTitle());
 		kbTemplateImpl.setContent(getContent());
+		kbTemplateImpl.setLastPublishDate(getLastPublishDate());
 
 		kbTemplateImpl.resetOriginalValues();
 
@@ -645,12 +682,21 @@ public class KBTemplateModelImpl extends BaseModelImpl<KBTemplate>
 			kbTemplateCacheModel.content = null;
 		}
 
+		Date lastPublishDate = getLastPublishDate();
+
+		if (lastPublishDate != null) {
+			kbTemplateCacheModel.lastPublishDate = lastPublishDate.getTime();
+		}
+		else {
+			kbTemplateCacheModel.lastPublishDate = Long.MIN_VALUE;
+		}
+
 		return kbTemplateCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(21);
+		StringBundler sb = new StringBundler(23);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -672,6 +718,8 @@ public class KBTemplateModelImpl extends BaseModelImpl<KBTemplate>
 		sb.append(getTitle());
 		sb.append(", content=");
 		sb.append(getContent());
+		sb.append(", lastPublishDate=");
+		sb.append(getLastPublishDate());
 		sb.append("}");
 
 		return sb.toString();
@@ -679,7 +727,7 @@ public class KBTemplateModelImpl extends BaseModelImpl<KBTemplate>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(34);
+		StringBundler sb = new StringBundler(37);
 
 		sb.append("<model><model-name>");
 		sb.append("com.liferay.knowledgebase.model.KBTemplate");
@@ -725,6 +773,10 @@ public class KBTemplateModelImpl extends BaseModelImpl<KBTemplate>
 			"<column><column-name>content</column-name><column-value><![CDATA[");
 		sb.append(getContent());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>lastPublishDate</column-name><column-value><![CDATA[");
+		sb.append(getLastPublishDate());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -751,6 +803,7 @@ public class KBTemplateModelImpl extends BaseModelImpl<KBTemplate>
 	private boolean _setModifiedDate;
 	private String _title;
 	private String _content;
+	private Date _lastPublishDate;
 	private long _columnBitmask;
 	private KBTemplate _escapedModel;
 }

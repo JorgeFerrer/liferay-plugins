@@ -1880,7 +1880,7 @@ public class WSRPConsumerPersistenceImpl extends BasePersistenceImpl<WSRPConsume
 				wsrpConsumer.setNew(false);
 			}
 			else {
-				session.merge(wsrpConsumer);
+				wsrpConsumer = (WSRPConsumer)session.merge(wsrpConsumer);
 			}
 		}
 		catch (Exception e) {
@@ -1987,6 +1987,7 @@ public class WSRPConsumerPersistenceImpl extends BasePersistenceImpl<WSRPConsume
 		wsrpConsumerImpl.setForwardCookies(wsrpConsumer.getForwardCookies());
 		wsrpConsumerImpl.setForwardHeaders(wsrpConsumer.getForwardHeaders());
 		wsrpConsumerImpl.setMarkupCharacterSets(wsrpConsumer.getMarkupCharacterSets());
+		wsrpConsumerImpl.setLastPublishDate(wsrpConsumer.getLastPublishDate());
 
 		return wsrpConsumerImpl;
 	}
@@ -2345,8 +2346,13 @@ public class WSRPConsumerPersistenceImpl extends BasePersistenceImpl<WSRPConsume
 	}
 
 	@Override
-	protected Set<String> getBadColumnNames() {
+	public Set<String> getBadColumnNames() {
 		return _badColumnNames;
+	}
+
+	@Override
+	protected Map<String, Integer> getTableColumnsMap() {
+		return WSRPConsumerModelImpl.TABLE_COLUMNS_MAP;
 	}
 
 	/**

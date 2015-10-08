@@ -305,7 +305,7 @@ public class DefinitionPersistenceImpl extends BasePersistenceImpl<Definition>
 				definition.setNew(false);
 			}
 			else {
-				session.merge(definition);
+				definition = (Definition)session.merge(definition);
 			}
 		}
 		catch (Exception e) {
@@ -707,6 +707,11 @@ public class DefinitionPersistenceImpl extends BasePersistenceImpl<Definition>
 		}
 
 		return count.intValue();
+	}
+
+	@Override
+	protected Map<String, Integer> getTableColumnsMap() {
+		return DefinitionModelImpl.TABLE_COLUMNS_MAP;
 	}
 
 	/**
